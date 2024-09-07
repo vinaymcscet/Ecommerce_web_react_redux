@@ -1,0 +1,176 @@
+header {
+    background-color: #1f1f1f;
+    padding: 14px 20px;
+}
+
+ul,
+li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    outline: none;
+}
+
+.leftHead li:first-child img {
+    width: 100px;
+}
+
+.rightHead ul {
+    justify-content: flex-end;
+}
+
+.rightHead {
+    align-items: center;
+    display: flex;
+    justify-content: end;
+}
+
+li img {
+    width: 30px;
+}
+
+li p {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    padding-left: 10px;
+}
+
+li:not(:last-child) {
+    margin-right: 15px;
+}
+
+.searchPanel {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.selectCategory {
+    padding: 10px 5px;
+    font-size: 12px;
+    background-color: #FCCA7F;
+    border: 0;
+    height: 36px;
+    border-radius: 3px;
+    max-width: 98px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.inputBox {
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+
+.inputBox input {
+    padding: 3px 30px 0px 10px;
+    border: 0;
+    width: 100%;
+    font-family: 'Poppins';
+    height: 33px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.inputBox input:focus,
+.inputBox input:focus-visible {
+    outline: none;
+}
+
+.inputBox svg {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    font-size: 20px;
+    color: #A2A2A2;
+}
+
+@media screen and (max-width: 1200px) {
+    li:not(:last-child) {
+        margin-right: 10px;
+    }
+
+    header .MuiGrid-item {
+        padding-left: 0 !important;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    header li p {
+        width: 60%;
+        word-break: break-word;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .rightMenu {
+        display: none;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-flow: wrap column;
+        position: absolute;
+        width: 170px;
+        top: 109px;
+        z-index: 1;
+        background: #000;
+        right: 0;
+        transform: translateX(1000%);
+        transition: all 0.3s linear;
+    }
+
+    .rightMenu.active {
+        display: flex;
+        transform: translateX(0%);
+    }
+
+    .rightMenu li {
+        width: 100%;
+        margin: 0;
+        padding: 7px 0;
+        cursor: pointer;
+        outline: none;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .leftHeaderMenu li p {
+        display: none;
+    }
+
+    .frame p {
+        width: 80%;
+        margin: auto;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .rightMenu {
+        top: 104px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .frame p {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .leftHead li:first-child img {
+        width: 80px;
+    }
+
+    .leftHeaderMenu li:not(:last-child) {
+        margin-right: 5px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    .frame {
+        display: none;
+    }
+}

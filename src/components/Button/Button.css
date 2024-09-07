@@ -1,0 +1,22 @@
+.secondary {
+    background: #F3F3F3;
+    border:1px solid #F1F1F1;
+}
+.explore {
+    background-color: #F6AA37;
+    border:1px solid #F6AA37;
+}
+button {
+    border-radius: 20px;
+    padding: 5px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+}
+button:hover {
+    background-color: #d7d7d7;
+}
+
+.sp-10 {
+    margin: 10px 0;
+}

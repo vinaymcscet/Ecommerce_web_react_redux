@@ -1,0 +1,23 @@
+.categoryModal .modalContent {
+    flex-flow: wrap column;
+}
+
+.categoryModal .allCategory {
+    width: auto;
+    margin: 0;
+}
+
+.categoryModal .allCategory h3:before {
+    width: 50%;
+}
+
+.categoryModal .categoryList {
+    height: 63vh;
+    overflow: auto;
+}
+
+.categoryModal .categoryList > div {
+    margin-bottom: 20px;
+    width: 14%;
+    margin-right: 5%;
+}

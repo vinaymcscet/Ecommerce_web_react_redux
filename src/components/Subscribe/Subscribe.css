@@ -1,0 +1,71 @@
+.subscribe {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #FCCA7F;
+}
+
+.subscribe .MuiBox-root {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.subscribeMessage {
+    width: 100%;
+    padding-left: 30px;
+}
+
+.subscribeMessage h2 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.subscribeMessage p {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.emailSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 30px;
+    position: relative;
+}
+
+.emailSection input {
+    width: 65%;
+    min-height: 50px;
+    border-radius: 50px;
+    padding: 0 20px;
+    border: 1px solid #D1D1D1;
+}
+
+.emailSection input:focus {
+    outline: none;
+}
+
+.emailSection .emailBtn {
+    position: absolute;
+    right: 14%;
+    background: #1E1E1E;
+    color: #fff;
+    border-radius: 50px;
+    min-height: 50px;
+    padding: 0 30px;
+    border: 1px solid #D1D1D1;
+    cursor: pointer;
+    outline: none;
+    width: auto;
+}
+
+@media screen and (max-width: 800px) {
+    .emailSection input {
+        width: 85%;
+    }
+
+    .emailSection .emailBtn {
+        right: 4%;
+    }
+}

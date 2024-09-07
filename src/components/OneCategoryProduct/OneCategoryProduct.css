@@ -1,0 +1,7 @@
+.oneProduct .product {
+    width: 100%;
+}
+.oneProduct .product img {
+    width: 100%;
+    min-height: 330px;
+}

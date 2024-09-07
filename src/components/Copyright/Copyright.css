@@ -1,0 +1,27 @@
+.copyright {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #000;
+}
+
+.copyright p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    padding-left: 20px;
+}
+
+.rightCopyright {
+    text-align: right;
+}
+
+.rightCopyright img {
+    padding-right: 20px;
+}
+
+@media screen and (max-width: 576px) {
+    .rightCopyright img {
+        padding-right: 20px;
+        width: 90%;
+    }
+}

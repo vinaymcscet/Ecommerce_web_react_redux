@@ -1,0 +1,317 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 11;
+}
+
+.modalContent {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  /* max-width: 50%; */
+  min-height: 500px;
+  width: 900px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.left {
+  background-color: rgb(252 202 127 / 21%);
+  border-radius: 10px;
+  width: 35%;
+  min-height: 83vh;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.left h4 {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: left;
+  color: #3F3F3F;
+}
+
+.left p {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 400;
+  color: #3F3F3F;
+  text-align: left;
+  margin-bottom: auto;
+}
+
+.left .name {
+  font-size: 15px;
+  line-height: 30px;
+  font-weight: 400;
+  color: #3F3F3F;
+  text-align: left;
+  margin-top: auto;
+}
+
+.left .name a {
+  text-decoration: none;
+  color: #3F3F3F;
+}
+
+.left .name a:hover,
+.left .name a:focus {
+  text-decoration: underline;
+  color: #e5a23c;
+}
+.right {
+  text-align: left;
+  width: calc(100% - 45%);
+  padding: 30px 10% 0 10%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  min-height: 83vh;
+}
+
+button {
+  background-color: #FFB545;
+  width: 100%;
+  border-radius: 50px;
+  min-height: 50px;
+  border: 1px solid #FFB545;
+  cursor: pointer;
+  outline: none;
+  font-size: 20px;
+}
+
+button:hover {
+  background-color: #e5a23c;
+}
+
+button:focus {
+  outline: none;
+}
+
+.status {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3e3e3e;
+  line-height: 20px;
+  margin-top: 20px;
+}
+.status ul {
+  flex-flow: wrap column;
+}
+.status ul li {
+  position: relative;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3e3e3e;
+  line-height: 20px;
+  padding-left: 10px;
+}
+
+.status ul li:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #3e3e3e;
+}
+
+.right form {
+  margin-bottom: auto;
+  width: 100%;
+}
+
+.right .name {
+  margin-top: auto;
+  text-align: center;
+  width: 100%;
+  font-weight: 400;
+}
+
+.right .name a {
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
+.right .name a:hover {
+  color: #FFB545;
+}
+
+.authentication {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -10px 0 20px 0;
+}
+
+/* CSS Checkbox */
+:root {
+  --form-control-color: #525252;
+}
+
+.round {
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+  cursor: pointer;
+  outline: none;
+}
+
+.round+.round {
+  margin-top: 1em;
+}
+
+.round input[type=checkbox] {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  -moz-appearance: none;
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.05em;
+  height: 1.05em;
+  border: 0.05em solid currentColor;
+  border-radius: 50%;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+.round input[type=checkbox]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  -webkit-clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #fff;
+  /* Windows High Contrast Mode */
+  background-color: #fff;
+}
+
+.round input[type=checkbox]:checked::before {
+  transform: scale(1);
+}
+
+.round input[type=checkbox]:checked {
+  background-color: #ffb545;
+  border: 0.05em solid #ffb545;
+}
+
+.round span {
+  font-size: 12px;
+  font-weight: 400;
+  color: #2a2a2a;
+}
+
+.forgotLink a {
+  color: #747474;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.forgotLink a:hover,
+.forgotLink a:focus {
+  text-decoration: underline;
+}
+
+.partition {
+  color: #747474;
+  font-size: 12px;
+  font-weight: 400;
+  width: 100%;
+  text-align: center;
+  margin: 30px 0;
+}
+
+.socialInt {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.socialInt .box {
+  border: 1px solid #d1d1d1;
+  border-radius: 30px;
+  margin-right: 30px;
+  padding: 15px 20px;
+  min-width: 38%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  outline: none;
+}
+
+.socialInt span {
+  font-size: 15px;
+  font-weight: 500;
+  color: #2A2A2A;
+  margin-left: 20px;
+}
+
+.modalContent .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  outline: none;
+  color: #d1d1d1;
+}
+
+@media only screen and (max-width: 1200px) {
+  .modalContent {
+    min-height: auto;
+  }
+  .modalContent .left,
+  .modalContent .right {
+    min-height: 60vh;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .modalContent {
+    max-width: 80%;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .modalContent .left {
+    display: none;
+  }
+  .modalContent .right {
+    width: 100%;
+  }
+  .partition {
+    margin: 10px 0;
+  }
+}

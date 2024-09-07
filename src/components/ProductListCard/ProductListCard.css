@@ -1,0 +1,144 @@
+.productBoxes {
+    padding: 10px;
+    border: 1px solid #EAEAEA;
+    box-shadow: -1px 3px 5px 1px #EAEAEA;
+    border-radius: 10px;
+    width: 16%;
+    margin: 0 1%;
+    min-height: 340px;
+}
+
+.productBoxes img {
+    width: 100%;
+}
+
+.productBoxes h2 {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.priceList {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.discount {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-right: 10px;
+}
+
+.original {
+    font-size: 16px;
+    font-weight: 600;
+    color: #727272;
+    text-decoration: line-through;
+}
+
+.offerList {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.offerList span {
+    padding: 3px 5px;
+    background: #DD3333;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 14px;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.offerList h6 {
+    color: #DD3333;
+    font-size: 13px;
+    width: 40%;
+    margin: 10px 0;
+    line-height: 15px;
+}
+
+.offerList.saveMode span {
+    background-color: #649C5B;
+    padding: 3px 5px;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 14px;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.offerList.saveMode p {
+    color: #111;
+    font-size: 13px;
+    width: 40%;
+    margin: 10px 0;
+    line-height: 15px;
+}
+
+.ribbon {
+    width: 106px;
+    height: 30px;
+    background: #DD3333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+}
+
+.ribbon::after {
+    height: 0;
+    width: 0;
+    border-left: 15px solid #DD3333;
+    border-right: 15px solid #DD3333;
+    border-bottom: 14px solid transparent;
+    bottom: 8px;
+    transform: rotate(-90deg);
+    right: -22px;
+    position: absolute;
+    content: '';
+}
+
+@media screen and (max-width: 1200px) {
+    .productBoxes {
+        width: 15%;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .productBoxes {
+        width: 25%;
+        margin: 0 2% 3% 2%;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .productBoxes {
+        width: 25%;
+        margin: 0 2% 4% 1%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .productBoxes {
+        width: 43%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .productBoxes {
+        width: 42%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .productBoxes {
+        width: 90%;
+    }
+}
