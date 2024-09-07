@@ -1,0 +1,13 @@
+.headerPinContainer {
+    background-color: #FCCA7F;
+    padding: 6px 15px;
+}
+.getApp {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+img {
+    cursor: pointer;
+    outline: none;
+}

@@ -1,0 +1,68 @@
+.productList {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 90%;
+    margin: 0 auto 20px auto;
+    flex-flow: wrap row;
+}
+
+.limitedOffer {
+    width: 18%;
+    margin: 0 1%;
+}
+
+.limitedOffer img {
+    min-height: 350px;
+    width: auto;
+    max-width: 100%;
+}
+
+.groupBanner {
+    width: 90%;
+    margin: 20px auto;
+    cursor: pointer;
+    outline: none;
+}
+
+.groupBanner img {
+    width: 100%;
+}
+
+.browisingHistory {
+    width: 90%;
+    margin: auto;
+}
+
+.browisingHistory h3 {
+    font-size: 25px;
+    font-weight: 400;
+}
+
+@media screen and (max-width: 1250px) {
+    .limitedOffer {
+        width: 16%;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .limitedOffer {
+        width: 25%;
+        margin: 0 2% 4% 1%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .limitedOffer {
+        width: 43%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .limitedOffer {
+        width: 90%;
+    }
+    .limitedOffer img {
+        width: 100%;
+    }
+}

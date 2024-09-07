@@ -1,0 +1,42 @@
+.blogsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.blogsHeader h2 {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.Blogs {
+    width: 85%;
+    margin: auto;
+}
+
+.Blogs select {
+    border: 1px solid #888888;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 400;
+    background: url('../../../public/images/icons/down-arrow.svg') no-repeat 95% 8px;
+    background-size: 15px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 150px;
+}
+
+.blogsList {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-flow: wrap row;
+}
+
+
+@media only screen and (max-width: 1200px) {
+    .blogsHeader h2 {
+        font-size: 25px;
+    }
+}

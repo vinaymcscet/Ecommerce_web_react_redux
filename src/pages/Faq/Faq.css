@@ -1,0 +1,70 @@
+.staticContent {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.staticContent h4 {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.staticContent h6 {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+}
+
+.staticContent p {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.staticContent .MuiAccordion-root.MuiPaper-rounded {
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin: 0;
+  }
+  
+  .staticContent
+    .MuiAccordion-root.MuiPaper-rounded
+    .MuiAccordionSummary-root {
+    padding-left: 0;
+  }
+  .staticContent .MuiAccordion-root.MuiPaper-rounded p {
+    font-weight: 400;
+  }
+  .staticContent .MuiAccordionSummary-expandIconWrapper {
+    background-color: #FBB540;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .staticContent .MuiAccordionSummary-expandIconWrapper svg{
+    color: #fff;
+    width: 18px;
+    height: 18px;
+  }
+
+  .faqList {
+    margin-bottom: 30px;
+  }
+
+@media screen and (max-width: 767px) {
+    .staticContent h4 {
+        font-size: 25px;
+    }
+    .staticContent h6 {
+        font-size: 18px;
+    }
+    .staticContent p {
+        font-size: 14px;
+    }
+}

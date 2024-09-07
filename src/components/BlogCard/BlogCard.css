@@ -1,0 +1,96 @@
+.blogCard {
+  width: 30%;
+  border: 1px solid #eaeaea;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 0 1% 2% 0;
+}
+
+.blogCard img {
+  width: 100%;
+}
+
+.blogCard .date {
+  font-size: 15px;
+  color: #4c4c4c;
+  font-weight: 400;
+}
+
+.blogCard h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.blogCard p {
+  font-size: 13px;
+  font-weight: 400;
+  height: 80px;
+  overflow: hidden;
+}
+
+.blogCard .blogFooter p {
+  color: #4c4c4c;
+}
+
+.blogCard .blogFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.blogCard .blogFooter p strong {
+  color: #141414;
+  font-weight: 500;
+}
+
+.blogCard .blogFooter a {
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4c4c4c;
+  text-decoration: none;
+}
+
+.blogCard .blogFooter a:hover {
+  text-decoration: underline;
+}
+.blogCard .blogFooter a span {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #fbb540;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.blogCard .blogFooter a span img {
+  width: 20px;
+  height: 20px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .blogCard {
+    width: 28%;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .blogCard {
+    width: 43%;
+  }
+}
+
+@media only screen and (max-width: 567px) {
+  .blogCard {
+    width: 100%;
+    margin: 0 0 5% 0;
+  }
+}

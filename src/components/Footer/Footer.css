@@ -1,0 +1,77 @@
+.mainFooter {
+    background-color: #1E1E1E;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.mainFooter .MuiBox-root {
+    width: 90%;
+    margin: 0 auto;
+    padding: 30px 130px;
+}
+
+.mainFooter .list {
+    width: 100%;
+}
+
+.mainFooter .list h4 {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 400;
+}
+
+.mainFooter .list ul {
+    display: block;
+}
+
+.mainFooter .list ul li {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.mainFooter .list ul li a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mainFooter .list ul li a:hover {
+    color: #FCCA7F;
+    text-decoration: underline;
+}
+
+.mainFooter .list.connect ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainFooter .list.connect ul li {
+    margin-bottom: 30px;
+}
+
+.mainFooter .list.connect ul li a img {
+    margin-right: 20px;
+    width: 28px;
+    height: 28px;
+}
+
+.mainFooter .list.store ul li {
+    margin-bottom: 20px;
+}
+
+.mainFooter .list.store ul li a img {
+    margin-right: 20px;
+    width: auto;
+    height: auto;
+}
+
+@media screen and (max-width: 800px) {
+    .mainFooter .MuiBox-root {
+        width: 90%;
+        margin: 0 auto;
+        padding: 30px 50px;
+    }
+}

@@ -1,0 +1,250 @@
+.blogContent {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.blogContent .leftBlogContent {
+  width: 70%;
+  margin-right: 3%;
+}
+
+.blogContent .rightBlogContent {
+  width: 30%;
+}
+
+.blogContent .leftBlogContent img {
+  width: 100%;
+}
+
+.blogContent .leftBlogContent h4 {
+  font-size: 28px;
+  font-weight: 500;
+  margin: 20px 0;
+}
+
+.blogContent .leftBlogContent p {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 20px 0;
+}
+
+.blogContent .leftBlogContent h6 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 20px 0;
+}
+
+.blogsection {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.blogsection img {
+  margin: 0 3% 0 0;
+}
+
+.blogReviewForm {
+  background-color: #f6f6f6;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.blogContent .leftBlogContent .blogReviewForm h4 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 500;
+  color: #303030;
+}
+.reviewForm {
+  margin: 20px 0 0 0;
+}
+.reviewForm .box .form-control {
+  max-width: 100%;
+  width: 85%;
+  margin-bottom: 20px;
+}
+
+.reviewForm .box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.reviewForm .box input {
+  border-radius: 30px;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 2px 20px;
+  background-color: #fff;
+  width: inherit;
+}
+
+.reviewForm .box input:focus,
+.reviewForm .box input:focus-visible,
+.reviewForm .box input:focus-within,
+.reviewForm .box.full .form-control textarea:focus {
+  outline: none;
+}
+
+.reviewForm .box.full .form-control {
+  width: 100%;
+}
+
+.reviewForm .box.full .form-control textarea {
+  resize: none;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+  width: 93%;
+}
+
+button.review {
+  max-width: 200px;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.blogContent .leftBlogContent p.error {
+  margin: 5px 0 0 20px;
+  font-size: 12px;
+  color: #d52424;
+}
+
+.commentLists {
+  margin: 30px 0;
+  width: 100%;
+}
+
+.commentLists .commentItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.commentLists .commentItem .leftComment {
+  margin-right: 10px;
+}
+
+.commentLists .commentItem .leftComment img {
+  width: 40px;
+  height: 40px;
+}
+
+.commentLists .commentItem .rightComment .name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.commentLists .commentItem .rightComment .commentDesc {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.blogCategory {
+  width: 100%;
+  background-color: #f6f6f6;
+  border: 1px solid #eaeaea;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.blogCategory h4 {
+  font-size: 25px;
+  color: #303030;
+  font-weight: 500;
+  margin: 0;
+}
+
+.blogCategoryList ul {
+  flex-flow: wrap column;
+  justify-content: flex-start;
+}
+
+.blogCategoryList ul li {
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.blogCategoryList ul li:before {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #000;
+  left: 0;
+}
+
+.blogCategoryList .MuiAccordion-root.MuiPaper-rounded {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin: 0;
+}
+
+.blogCategoryList .MuiAccordion-root.MuiPaper-rounded:before {
+  display: none;
+}
+
+.blogCategoryList
+  .MuiAccordion-root.MuiPaper-rounded
+  .MuiAccordionSummary-root {
+  padding-left: 0;
+}
+
+@media only screen and (max-width: 992px) {
+  .blogContent .leftBlogContent {
+    width: 65%;
+  }
+  .blogContent .rightBlogContent {
+    width: 35%;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .blogContent {
+    flex-flow: wrap column;
+  }
+  .blogContent .leftBlogContent {
+    width: 100%;
+    margin: 0;
+  }
+  .blogContent .rightBlogContent {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .blogsection {
+    flex-flow: wrap column;
+  }
+  .blogsection img {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+  .reviewForm .box {
+    flex-flow: wrap column;
+  }
+  .reviewForm .box .form-control {
+    width: 100%;
+  }
+  .reviewForm .box input,
+  .reviewForm .box.full .form-control textarea {
+    width: 90%;
+  }
+}
