@@ -1,6 +1,6 @@
 import React from 'react';
-import './ProductListCard.css';
 import StarRating from '../StarRating/StarRating';
+import './ProductListCard.css';
 
 const ProductListCard = ({ 
   id,

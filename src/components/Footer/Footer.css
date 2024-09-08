@@ -37,6 +37,10 @@
     text-decoration: none;
 }
 
+.mainFooter .list ul li a  span {
+    color: inherit;
+}
+
 .mainFooter .list ul li a:hover {
     color: #FCCA7F;
     text-decoration: underline;
