@@ -12,6 +12,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .prdDetail .productDetailInfo .leftDetailInfo {
@@ -21,6 +22,9 @@
 
 .prdDetail .productDetailInfo .rightDetailInfo {
   width: 70%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .prdDetail .productDetailInfo .leftDetailInfo .image-gallery-left-nav,
@@ -106,84 +110,85 @@
 
 .prdDetail
   .productDetailInfo
-  .leftDetailInfo .image-gallery-content
+  .leftDetailInfo
+  .image-gallery-content
   .image-gallery-slide
   .image-gallery-image {
   max-height: 100%;
 }
 
 .rightDetailInfo .leftBar {
-    width: 60%;
-}  
+  width: 60%;
+}
 .rightDetailInfo .rightBar {
-    width: 40%;
-}  
+  width: 35%;
+}
 
 .bestOption {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .leftBar h1 {
-    font-size: 25px;
-    font-weight: 500;
-    margin-bottom: 0;
+  font-size: 25px;
+  font-weight: 500;
+  margin-bottom: 0;
 }
 
 .ratingBox {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .ratingBox > span {
-    background: #fbb540;
-    width: 20px;
-    height: 20px;
-    color: #fff;
-    text-align: center;
-    border-radius: 3px;
-    margin-right: 10px;
+  background: #fbb540;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  margin-right: 10px;
 }
 
 .ratingBox .starRating {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .priceSection {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .priceSection .priceList {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .cartSection {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .cartInputBox {
-    width: 150px;
-    border: 1px solid #E4E4E4;
-    padding: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 20px;
-    min-height: 40px;
-    margin-right: 10px;
-    margin-top: 10px;
+  width: 150px;
+  border: 1px solid #e4e4e4;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 20px;
+  min-height: 40px;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 .cartInputBox input {
-    border: 0;
-    width: 50px;
-    text-align: center;
+  border: 0;
+  width: 50px;
+  text-align: center;
 }
 
 .cartInputBox input::-webkit-outer-spin-button,
@@ -193,67 +198,501 @@
 }
 
 .cartInputBox input:focus {
-    outline: none;
+  outline: none;
 }
 
 .cartInputBox .increase,
 .cartInputBox .decrease {
-    cursor: pointer;
-    outline: none;
-    font-size: 22px;
-    font-weight: 500;
-    width: 20px;
-    text-align: center;
+  cursor: pointer;
+  outline: none;
+  font-size: 22px;
+  font-weight: 500;
+  width: 20px;
+  text-align: center;
 }
 
 .addToCart {
-    width: auto;
-    text-transform: uppercase;
-    background: #F3F3F3;
-    border: 1px solid #F3F3F3;
+  width: auto;
+  text-transform: uppercase;
+  background: #f3f3f3;
+  border: 1px solid #f3f3f3;
 }
 
 .addToCart:hover,
 .addToCart:focus {
-    background-color: #f5f5f5;
-    border-color: #f5f5f5;
+  background-color: #f5f5f5;
+  border-color: #f5f5f5;
 }
 
 .productColor {
-    margin-top: 10px;
-    font-size: 16px;
-    font-weight: 400;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .ProductColorBoxes img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
 }
 
 .sizeTest {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
 }
 
 .sizeChart {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .sizeChart .sizeList {
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .sizeChart .sizeList li {
-    margin-right: 10px;
-    border:1px solid #D6D6D6;
-    border-radius: 5px;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
+  margin-right: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sizeChart p {
+  color: #dd3333;
+}
+
+.sizeChart .sizeList li.active {
+  color: #fff;
+  background: #fcb840;
+  border: 1px solid #fcb840;
+}
+
+.gaurnteeMessage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.gaurnteeMessage li {
+  flex-flow: wrap column;
+}
+
+.gaurnteeMessage li p {
+  font-size: 12px;
+  font-weight: 400;
+  color: #303030;
+  margin-top: 10px;
+}
+
+.gaurnteeMessage li img {
+  width: 37px;
+  height: 37px;
+}
+
+.detailBtn {
+  margin: 10px 0;
+  width: 100%;
+}
+
+.detailBtn button {
+  text-transform: uppercase;
+  background: #ed9845;
+  border-color: #ed9845;
+  font-weight: 600;
+}
+
+.detailBtn button:hover,
+.detailBtn button:focus {
+  background-color: #ffb545;
+  border-color: #ffb545;
+}
+
+.estimatedDelivery {
+  background-color: #f6f6f6;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.estimatedDelivery h4 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.estimatedDelivery span {
+  color: #dd3333;
+  margin-top: 10px;
+  display: block;
+}
+
+.estimatedDelivery p {
+  color: #515151;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.commitment {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(252 202 127 / 21%);
+  width: 100%;
+}
+
+.commitment h4 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.commitment ul {
+  flex-flow: wrap column;
+  justify-content: flex-start;
+}
+
+.commitment ul li {
+  font-size: 15px;
+  font-weight: 400;
+  color: #515151;
+  position: relative;
+  width: 100%;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.commitment ul li:before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #515151;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.availableOffers {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f6f6f6;
+  width: 100%;
+}
+
+.availableOffers h4 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.availableOffers ul {
+  flex-flow: wrap column;
+  justify-content: flex-start;
+}
+
+.availableOffers ul li {
+  font-size: 15px;
+  font-weight: 400;
+  color: #515151;
+  position: relative;
+  width: 100%;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.availableOffers ul li:before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #515151;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.stockItemLeft {
+  width: 100%;
+  font-size: 14px;
+  color: #dd3333;
+  font-weight: 400;
+}
+
+.tabs-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.productDetailReview {
+  width: 100%;
+}
+
+.tabs-buttons {
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #e7e7e7;
+}
+
+/* Styling for each tab button */
+.tabs-buttons button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #333;
+  width: 20%;
+  min-height: 35px;
+  font-size: 18px;
+  font-weight: 400;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+/* Active tab button styling */
+.tabs-buttons .active {
+  /* border-bottom: 3px solid #FBB540; */
+}
+.tabs-buttons button:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+  height: 3px;
+  margin: 0 auto;
+  left: 15px;
+}
+.tabs-buttons button.active:before {
+  background-color: #fbb540;
+}
+
+.tabs-content {
+  margin: 20px 0;
+}
+
+.tab-content {
+  padding: 20px;
+  /* background-color: #fff;
+  border: 1px solid #ddd; */
+  border-radius: 4px;
+  display: none;
+}
+
+.tab-content.productDescription {
+  background-color: #f6f6f6;
+}
+
+.tab-content:target {
+  scroll-behavior: smooth;
+}
+
+.tab-content.productDescription p {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.additionalInfo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.additionalInfo .info {
+  width: 50%;
+}
+
+.additionalInfo .info:not(:last-child) {
+  margin-right: 20px;
+}
+.additionalInfo .info h5 {
+  font-size: 25px;
+  font-weight: 500;
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  border: 1px solid #d1d1d1;
+  border-collapse: collapse;
+}
+table tr td {
+  border: 1px solid #d1d1d1;
+  padding: 5px;
+  font-size: 15px;
+  font-weight: 500;
+}
+table tr td:first-child {
+  width: 40%;
+}
+
+.reviewSection {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.reviewSection .leftReviewPart {
+  width: 30%;
+  background-color: #f6f6f6;
+  border-radius: 6px;
+  padding: 10px;
+  margin-right: 2%;
+}
+
+.reviewSection .leftReviewPart h4 {
+  font-size: 25px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.reviewSection .rightCommentPart {
+  width: 68%;
+  background-color: #f6f6f6;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.reviewSection .leftReviewPart .MuiLinearProgress-root {
+  height: 8px;
+  border-radius: 8px;
+}
+
+.reviewSection .leftReviewPart .MuiLinearProgress-bar {
+  background-color: #fbb540;
+}
+
+.detailLinearRivewProgress {
+  width: 100%;
+}
+
+.detailLinearRivewProgress .reviewProgress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detailLinearRivewProgress .reviewProgress span {
+  font-size: 15px;
+  font-weight: 400;
+  color: #000;
+  line-height: 30px;
+}
+.progressBar {
+  width: 80%;
+}
+
+.reviewSection .leftReviewPart .ratingCalculateInfo {
+  margin: 10px 0;
+}
+
+.reviewSection .leftReviewPart .ratingCalculateInfo h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.reviewSection .leftReviewPart .ratingCalculateInfo p {
+  color: #454545;
+  line-height: 25px;
+  font-weight: 400;
+}
+
+.rightCommentPart .reviewCommentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rightCommentPart .reviewCommentHeader h4 {
+  font-size: 25px;
+  font-weight: 500;
+  margin: 0 0 10px 0;
+}
+
+.rightCommentPart .reviewCommentHeader .commentSelect select {
+  border: 1px solid #888888;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: 400;
+  background: url("../../../public/images/icons/down-arrow.svg") no-repeat 90%
+    12px #fff;
+  background-size: 15px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  min-width: 140px;
+  min-height: 40px;
+}
+
+.productReviewList {
+  width: 100%;
+}
+
+.productReviewList .reviewComments {
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.productReviewList .reviewComments .userImage {
+  margin-right: 10px;
+}
+
+.productReviewList .reviewComments .userName,
+.productReviewList .reviewComments .rateusername {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.productReviewList .reviewComments .reviewRightomments p {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.reviewed_image {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.reviewed_image img {
+  margin-right: 20px;
+}
+
+.all_reviews {
+  border: 1px solid #888888;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  width: auto;
+  margin: 10px auto;
+  text-align: center;
+  display: block;
+}
+
+.all_reviews:hover,
+.all_reviews:focus {
+  border-color: #e5a23c;
+}
+
+@media (max-width: 768px) {
+  .tabs-buttons button {
+    flex: 1;
+  }
 }
