@@ -333,6 +333,7 @@ const ProductDetail = () => {
                       ))}
                       <button type="button" className="all_reviews">See all reviews</button>
                   </div>
+                  
                 </div>
               </div>
             </div>
