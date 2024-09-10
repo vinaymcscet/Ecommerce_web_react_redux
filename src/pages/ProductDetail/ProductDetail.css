@@ -782,7 +782,7 @@ button.review {
   padding: 0;
 }
 
-.product_review_form .box .form-control  p.error {
+.product_review_form .box .form-control p.error {
   margin: 5px 0 0 20px;
   font-size: 12px;
   color: #d52424;
@@ -796,10 +796,10 @@ button.review {
 }
 
 .allcategory h3:before {
-  content: '';
+  content: "";
   width: 10%;
   height: 2px;
-  background-color: #FFB545;
+  background-color: #ffb545;
   position: absolute;
   left: 0;
   bottom: -5px;
@@ -815,11 +815,88 @@ button.review {
 
 .detailProductContent img {
   margin: 10px;
+  width: auto;
+  max-width: 100%;
 }
 
+@media only screen and (max-width: 1300px) {
+  .leftBar h1 {
+    font-size: 21px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .leftBar h1 {
+    font-size: 21px;
+  }
+  .prdDetail .productDetailInfo {
+    flex-flow: wrap column;
+  }
+  .prdDetail .productDetailInfo .leftDetailInfo {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+  .prdDetail .productDetailInfo .rightDetailInfo {
+    width: 100%;
+  }
+  .allcategory h3 {
+    font-size: 22px;
+  }
+  .productHistory .productList > div {
+    width: 30%;
+  }
+  .reviewSection .rightCommentPart {
+    width: 64%;
+  }
+  .reviewSection .leftCommentPart {
+    width: 35%;
+  }
+  .detailLinearRivewProgress .reviewProgress {
+    flex-flow: wrap column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .progressBar {
+    width: 100%;
+  }
+}
 @media (max-width: 768px) {
   .tabs-buttons button {
     flex: 1;
+  }
+  .prdDetail .productDetailInfo .rightDetailInfo {
+    flex-flow: wrap column;
+  }
+  .rightDetailInfo .leftBar,
+  .rightDetailInfo .rightBar {
+    width: 100%;
+  }
+  .additionalInfo {
+    flex-flow: wrap column;
+  }
+  .additionalInfo .info {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+  .reviewSection {
+    flex-flow: wrap column;
+  }
+  .reviewSection .leftReviewPart {
+    width: 100%;
+    order: 2;
+  }
+  .reviewSection .rightCommentPart {
+    width: 100%;
+    order: 1;
+  }
+  .product_review_form .box {
+    flex-flow: wrap column;
+  }
+  .product_review_form .box .form-control {
+    width: 93%;
+  }
+  .product_review_form .box.full .form-control {
+    width: 93%;
   }
 }
 
@@ -834,5 +911,15 @@ button.review {
   .reviewForm .box.full .form-control textarea {
     width: 90%;
   }
+  .productHistory .productList > div {
+    width: 45%;
+    margin: 0 2% 2% 0;
+  }
 }
 
+@media only screen and (max-width: 489px) {
+  .productHistory .productList > div {
+    width: 100%;
+    margin: 0;
+  }
+}
