@@ -860,6 +860,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -980,6 +987,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1100,6 +1114,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1220,6 +1241,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1340,6 +1368,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1460,6 +1495,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1580,6 +1622,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1700,6 +1749,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1820,6 +1876,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -1940,6 +2003,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2060,6 +2130,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2180,6 +2257,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2300,6 +2384,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2420,6 +2511,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2540,6 +2638,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2660,6 +2765,20 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2780,6 +2899,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -2900,6 +3026,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -3020,6 +3153,13 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg'
       ]},
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
   {
@@ -3139,7 +3279,14 @@ export const productList = [
         '/images/product-review.svg',
         '/images/product-review.svg',
         '/images/product-review.svg'
-      ]},
+      ]}
+    ],
+    detailProductContent: [
+      "/images/product/prd-detail1.svg",
+      "/images/product/prd-detail2.svg",
+      "/images/product/prd-detail3.svg",
+      "/images/product/prd-detail4.svg",
+      "/images/product/prd-detail1.svg",
     ]
   },
 ];

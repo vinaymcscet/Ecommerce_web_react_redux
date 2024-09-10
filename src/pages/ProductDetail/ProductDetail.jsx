@@ -6,12 +6,26 @@ import ImageGallery from "react-image-gallery";
 import StarRating from "../../components/StarRating/StarRating";
 import "./ProductDetail.css";
 import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/LinearProgressWithLabel";
+import Button from "../../components/Button/Button";
+import ProductListCard from "../../components/ProductListCard/ProductListCard";
+import { productHistory } from "../../utils/ProductData";
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false); 
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    review: "",
+  });
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    review: "",
+  });
 
   const location = useLocation();
   const { product } = location.state;
@@ -70,6 +84,68 @@ const ProductDetail = () => {
       clearInterval(timer);
     };
   }, []);
+  
+  // Handle input changes
+  const handleReviewChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  
+    // Clear error message when user starts typing
+    setErrors({
+      ...errors,
+      [name]: '',
+    });
+  };
+  
+
+  const validate = () => {
+    const newErrors = {};
+    let isValid = true;
+  
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full Name is required.";
+      isValid = false;
+    }
+  
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid.";
+      isValid = false;
+    }
+  
+    if (!formData.review.trim()) {
+      newErrors.review = "Review is required.";
+      isValid = false;
+    }
+  
+    setErrors(newErrors);
+    return isValid;
+  };
+  
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validate()) {
+      console.log("Form data:", formData);
+      setFormData({
+        fullName: "",
+        email: "",
+        review: "",
+      });
+      setShowReviewForm(false);
+    }
+  };
+
+  const toggleReviewForm = () => {
+    setShowReviewForm(!showReviewForm);
+  };
 
   return (
     <div className="prdDetail">
@@ -297,21 +373,28 @@ const ProductDetail = () => {
                       analyses reviews to verify trustworthiness.
                     </p>
                   </div>
+                  {!showReviewForm && (
+                    <div className="productReviewBtn">
+                      <button type="button" onClick={toggleReviewForm}>
+                        Write Review
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="rightCommentPart">
-                  <div className="reviewCommentHeader">
-                    <h4>Customer say</h4>
-                    <div class="commentSelect">
-                      <select>
-                        <option>Most Recent</option>
-                        <option>Category 1</option>
-                        <option>Category 2</option>
-                        <option>Category 3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="productReviewList">
-                      {product.customer_review.map((item, index) => (
+                {!showReviewForm && (
+                  <><div className="reviewCommentHeader">
+                      <h4>Customer say</h4>
+                      <div className="commentSelect">
+                        <select>
+                          <option>Most Recent</option>
+                          <option>Category 1</option>
+                          <option>Category 2</option>
+                          <option>Category 3</option>
+                        </select>
+                      </div>
+                    </div><div className="productReviewList">
+                        {product.customer_review.map((item, index) => (
                           <div className="reviewComments" key={index}>
                             <div className="userImage">
                               <img src={item.profile_image} alt={item.rate_name} />
@@ -319,26 +402,152 @@ const ProductDetail = () => {
                             <div className="reviewRightomments">
                               <div className="userName">{item.name}</div>
                               <div className="ratingBox">
-                                  {item.rating && <StarRating userrating={item.rating} />}
-                                  <div className="rateusername">{item.rate_name}</div>
+                                {item.rating && <StarRating userrating={item.rating} />}
+                                <div className="rateusername">{item.rate_name}</div>
                               </div>
                               {item.description && <p>{item.description}</p>}
                               <div className="reviewed_image">
-                              {item.product_review_image && (item.product_review_image.map((review_image, index) => (
-                                  <img  key={index} src={review_image} alt={'Product Image'} />
-                              )))}
-                                </div>
+                                {item.product_review_image && (item.product_review_image.map((review_image, index) => (
+                                  <img key={index} src={review_image} alt={'Product Image'} />
+                                )))}
+                              </div>
                             </div>
                           </div>
-                      ))}
-                      <button type="button" className="all_reviews">See all reviews</button>
+                        ))}
+                        <button type="button" className="all_reviews">See all reviews</button>
+                      </div></>
+                 )}
+                  {showReviewForm && (
+                  <div className="product_review_form">
+                    <form onSubmit={handleSubmit}>
+                      <div className="box">
+                        <div className="form-control">
+                          <input
+                            type="text"
+                            name="fullName"
+                            placeholder="Full Name"
+                            value={formData.fullName}
+                            onChange={handleReviewChange}
+                          />
+                          {errors.fullName && (
+                            <p className="error">{errors.fullName}</p>
+                          )}
+                        </div>
+                        <div className="form-control">
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleReviewChange}
+                          />
+                          {errors.email && <p className="error">{errors.email}</p>}
+                        </div>
+                      </div>
+                      <div className="box full">
+                        <div className="form-control">
+                          <textarea
+                            cols="10"
+                            name="review"
+                            placeholder="Write Your Review"
+                            value={formData.review}
+                            onChange={handleReviewChange}
+                          ></textarea>
+                          {errors.review && <p className="error">{errors.review}</p>}
+                        </div>
+                      </div>
+                      <div className="box full">
+                        <div className="form-control select">
+                          <div className="selectFileBox">
+                              <img src="/images/add-file.svg" alt="Select File" />
+                              <input type="file" />
+                          </div>
+                          <div className="selectFileBox">
+                              <img src="/images/add-file.svg" alt="Select File" />
+                              <input type="file" />
+                          </div>
+                          <div className="selectFileBox">
+                              <img src="/images/add-file.svg" alt="Select File" />
+                              <input type="file" />
+                          </div>
+                          <div className="selectFileBox">
+                              <img src="/images/add-file.svg" alt="Select File" />
+                              <input type="file" />
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        type={"submit"}
+                        value={"submit"}
+                        varient="explore review"
+                        space="sp-10"
+                      />
+                    </form>
                   </div>
-                  
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div className="productHistory allcategory">
+        <h3>Frequently bought</h3>
+        <div className="productList">
+          {productHistory.map((item, index) => {
+            return (
+              <div key={index}>
+              <ProductListCard
+                id={item.id}
+                image={item.image ? item.image : ""}
+                name={item.name ? item.name : ""}
+                userrating={item.rating ? item.rating : ""}
+                discountPrice={item.discount ? item.discount : ""}
+                originalPrice={item.original ? item.original : ""}
+                save={item.save ? item.save : ""}
+                coupenCode={item.coupen ? item.coupen : ""}
+                deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                bestSeller={item.bestseller ? item.bestseller : ""}
+                time={item.time ? item.time : ""}
+                discountLabel={item.discountlabel ? item.discountlabel : ""}
+              />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="productHistory allcategory">
+        <h3>Inspired by your browsing history</h3>
+        <div className="productList">
+          {productHistory.map((item, index) => {
+            return (
+              <div key={index}>
+              <ProductListCard
+                id={item.id}
+                image={item.image ? item.image : ""}
+                name={item.name ? item.name : ""}
+                userrating={item.rating ? item.rating : ""}
+                discountPrice={item.discount ? item.discount : ""}
+                originalPrice={item.original ? item.original : ""}
+                save={item.save ? item.save : ""}
+                coupenCode={item.coupen ? item.coupen : ""}
+                deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                bestSeller={item.bestseller ? item.bestseller : ""}
+                time={item.time ? item.time : ""}
+                discountLabel={item.discountlabel ? item.discountlabel : ""}
+              />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="detailProductContent">
+        {product.detailProductContent && (product.detailProductContent.map((item,index) => (
+          <img src={item} alt="Product detail" />
+
+        )))}
       </div>
     </div>
   );

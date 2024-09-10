@@ -675,7 +675,8 @@ table tr td:first-child {
   margin-right: 20px;
 }
 
-.all_reviews {
+.all_reviews,
+.productReviewBtn button {
   border: 1px solid #888888;
   background-color: #fff;
   font-size: 16px;
@@ -687,8 +688,133 @@ table tr td:first-child {
 }
 
 .all_reviews:hover,
-.all_reviews:focus {
+.all_reviews:focus,
+.productReviewBtn button:hover,
+.productReviewBtn button:focus {
   border-color: #e5a23c;
+  background-color: #e5a23c;
+}
+
+.productReviewBtn button {
+  width: 100%;
+}
+
+.product_review_form {
+  margin: 20px 0 0 0;
+}
+.product_review_form .box .form-control {
+  max-width: 100%;
+  width: 85%;
+  margin-bottom: 20px;
+}
+
+.product_review_form .box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.product_review_form .box input {
+  border-radius: 30px;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 2px 20px;
+  background-color: #fff;
+  width: inherit;
+}
+
+.product_review_form .box input:focus,
+.product_review_form .box input:focus-visible,
+.product_review_form .box input:focus-within,
+.product_review_form .box.full .form-control textarea:focus {
+  outline: none;
+}
+
+.product_review_form .box.full .form-control {
+  width: 100%;
+}
+
+.product_review_form .box.full .form-control textarea {
+  resize: none;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+  width: 93%;
+}
+
+button.review {
+  max-width: 200px;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.product_review_form .box.full .form-control .selectFileBox {
+  width: 80px;
+  height: 80px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #d1d1d1;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  padding: 0;
+  margin-right: 10px;
+}
+.product_review_form .box.full .form-control.select {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-flow: wrap row;
+}
+.product_review_form .box.full .form-control .selectFileBox input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+.product_review_form .box .form-control  p.error {
+  margin: 5px 0 0 20px;
+  font-size: 12px;
+  color: #d52424;
+}
+
+.allcategory h3 {
+  font-weight: 500;
+  position: relative;
+  margin: 0;
+  font-size: 30px;
+}
+
+.allcategory h3:before {
+  content: '';
+  width: 10%;
+  height: 2px;
+  background-color: #FFB545;
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+}
+
+.detailProductContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-flow: wrap row;
+  margin: 10px 0 30px 0;
+}
+
+.detailProductContent img {
+  margin: 10px;
 }
 
 @media (max-width: 768px) {
@@ -696,3 +822,17 @@ table tr td:first-child {
     flex: 1;
   }
 }
+
+@media only screen and (max-width: 600px) {
+  .reviewForm .box {
+    flex-flow: wrap column;
+  }
+  .reviewForm .box .form-control {
+    width: 100%;
+  }
+  .reviewForm .box input,
+  .reviewForm .box.full .form-control textarea {
+    width: 90%;
+  }
+}
+
