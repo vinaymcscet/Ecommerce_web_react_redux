@@ -9,12 +9,18 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { productHistory } from "../../utils/ProductData";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
 
 const ProductDetail = () => {
+  const dispatch = useDispatch();
+  const { selectedSize, cartItems } = useSelector((state) => state.cart);
+
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
+  const [sizeError, setSizeError] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false); 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -56,6 +62,8 @@ const ProductDetail = () => {
 
   const handleSizeChange = (index) => {
     setActiveIndex(index);
+    setSizeError('');
+    dispatch(setSelectedSize(product.sizeList[index]?.name));
   };
 
   useEffect(() => {
@@ -147,6 +155,22 @@ const ProductDetail = () => {
     setShowReviewForm(!showReviewForm);
   };
 
+  const handleAddToCart = () => {
+    if (activeIndex === null) {
+      setSizeError('Please select a size.');
+      return; // Prevent dispatch if size is not selected
+    }
+  
+    // Dispatch product details and quantity to Redux
+    const productData = {
+      ...product,
+      quantity,
+      selectedSize: product.sizeList[activeIndex]?.name,
+    };
+  
+    dispatch(addToCart(productData)); // Assuming you have an addToCart action
+  };
+
   return (
     <div className="prdDetail">
       <ProductSlider title={false} tile={10} />
@@ -196,10 +220,11 @@ const ProductDetail = () => {
                   -
                 </div>
               </div>
-              <button type="button" className="addToCart">
+              <button type="button" className="addToCart" onClick={handleAddToCart}>
                 Add to cart
               </button>
-            </div>
+              {sizeError && <p className="error">{sizeError}</p>}
+              </div>
             <div className="productColor">
               Color: <span>Black</span>
             </div>

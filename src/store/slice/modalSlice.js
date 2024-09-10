@@ -45,9 +45,6 @@ export const modalSlice = createSlice({
       state.isCategoryModalOpen = action.payload.isOpen;
       state.selectedCategory = action.payload.category || null;
     },
-    // setIsCategoryModalOpen: (state, action) => {
-    //   state.isCategoryModalOpen = action.payload;
-    // },
   },
 });
 
