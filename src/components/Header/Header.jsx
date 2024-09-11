@@ -5,12 +5,13 @@ import Box from "@mui/material/Box";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import "./Header.css";
 import Hamburger from "../Hamburger/Hamburger";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const toggleHamburger = () => {
@@ -20,6 +21,9 @@ const Header = () => {
     dispatch(setModalType(type));
     dispatch(toggleModal(true));
   };
+  const redirectToCart = () => {
+    navigate('/cart');
+  }
   return (
     <div>
       <HeaderPin />
@@ -70,7 +74,7 @@ const Header = () => {
                   <img src="/images/icons/login.png" alt="Login" />
                   <p>Login / Sign up</p>
                 </li>
-                <li>
+                <li onClick={() => redirectToCart()}>
                   <img src="/images/icons/cart.png" alt="Cart" />
                   <p>Cart</p>
                 </li>

@@ -99,6 +99,10 @@
   object-fit: cover;
 }
 
+.ribbon::after {
+  right: -20px;
+}
+
 .prdDetail
   .productDetailInfo
   .leftDetailInfo
@@ -170,7 +174,19 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  flex-flow: wrap row;
 }
+
+.cartError {
+  display: block;
+  width: 100%;
+}
+.error {
+  margin: 5px 0 0 20px;
+  font-size: 12px;
+  color: #d52424;
+}
+
 
 .cartInputBox {
   width: 150px;
@@ -464,9 +480,6 @@
 }
 
 /* Active tab button styling */
-.tabs-buttons .active {
-  /* border-bottom: 3px solid #FBB540; */
-}
 .tabs-buttons button:before {
   content: "";
   position: absolute;

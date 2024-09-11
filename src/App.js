@@ -23,6 +23,7 @@ import Contact from "./pages/Contact/Contact";
 import Category from "./pages/Category/Category";
 import ProductList from "./pages/ProductList/ProductList";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
+import Cart from "./pages/Cart/Cart";
 
 function App() {
  
@@ -48,6 +49,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="productlist" element={<ProductList />} />
           <Route path="product/:id" element={<ProductDetail />} />
+          <Route path="cart" element={<Cart />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       <Footer />

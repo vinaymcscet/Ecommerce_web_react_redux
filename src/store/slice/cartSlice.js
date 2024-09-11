@@ -14,6 +14,17 @@ export const cartSlice = createSlice({
       const product = action.payload;
       state.cartItems.push(product);
     },
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const item = state.cartItems.find((item) => item.id === id);
+      if (item) {
+        item.quantity = quantity;
+      }
+    },
+    removeItem: (state, action) => {
+      const id = action.payload;
+      state.cartItems = state.cartItems.filter((item) => item.id !== id);
+    },
     setSelectedSize: (state, action) => {
       state.selectedSize = action.payload;
     },
@@ -26,5 +37,5 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, setSelectedSize, setQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, setSelectedSize, setQuantity, clearCart, updateQuantity, removeItem } = cartSlice.actions;
 export default cartSlice.reducer;

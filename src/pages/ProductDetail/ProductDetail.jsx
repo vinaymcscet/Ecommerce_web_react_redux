@@ -4,18 +4,18 @@ import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import ImageGallery from "react-image-gallery";
 import StarRating from "../../components/StarRating/StarRating";
-import "./ProductDetail.css";
 import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/LinearProgressWithLabel";
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { productHistory } from "../../utils/ProductData";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import "./ProductDetail.css";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
-  const { selectedSize, cartItems } = useSelector((state) => state.cart);
-
+  
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -87,6 +87,8 @@ const ProductDetail = () => {
         prevProgress >= 100 ? 0 : prevProgress + 10
       );
     }, 800);
+    
+  
 
     return () => {
       clearInterval(timer);
@@ -168,7 +170,8 @@ const ProductDetail = () => {
       selectedSize: product.sizeList[activeIndex]?.name,
     };
   
-    dispatch(addToCart(productData)); // Assuming you have an addToCart action
+    dispatch(addToCart(productData));
+    toast.success("Item added to Cart successfully");
   };
 
   return (
@@ -184,7 +187,7 @@ const ProductDetail = () => {
             <div className="bestOption">
               <div className="ribbon">#Best Seller</div>
               <div className="whislistBox">
-                <img src="/images/product/whislist.svg" />
+                <img src="/images/product/whislist.svg" alt="whistlist" />
               </div>
             </div>
             <h1>{product.name}</h1>
@@ -223,7 +226,7 @@ const ProductDetail = () => {
               <button type="button" className="addToCart" onClick={handleAddToCart}>
                 Add to cart
               </button>
-              {sizeError && <p className="error">{sizeError}</p>}
+              {sizeError && <p className="cartError error">{sizeError}</p>}
               </div>
             <div className="productColor">
               Color: <span>Black</span>
@@ -574,6 +577,7 @@ const ProductDetail = () => {
 
         )))}
       </div>
+      <ToastContainer />
     </div>
   );
 };
