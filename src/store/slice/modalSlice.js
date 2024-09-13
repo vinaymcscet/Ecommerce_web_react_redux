@@ -14,6 +14,10 @@ const initialState = {
   },
   isCategoryModalOpen: false,
   selectedCategory: null,
+  isAddressModelOpen: false,
+  addresses: [],
+  defaultAddressId: null,
+  selectedAddress: null
 };
 
 export const modalSlice = createSlice({
@@ -45,6 +49,32 @@ export const modalSlice = createSlice({
       state.isCategoryModalOpen = action.payload.isOpen;
       state.selectedCategory = action.payload.category || null;
     },
+    toggleAddressModal: (state, action) => {
+      state.isAddressModelOpen = action.payload.isOpen;
+      if (action.payload.address) {
+        state.selectedAddress = action.payload.address;
+      } else {
+        state.selectedAddress = null;
+      }
+    },
+    saveAddress: (state, action) => {
+      const newAddress = { ...action.payload, id: Date.now() };
+      state.addresses.push(newAddress);
+    },
+    removeAddress: (state, action) => {
+      state.addresses = state.addresses.filter(
+        (address) => address.id !== action.payload
+      );
+    },
+    setDefaultAddress: (state, action) => {
+      state.defaultAddressId = action.payload; // Set the ID of the default address
+    },
+    editAddress: (state, action) => {
+      const { id, updatedData } = action.payload;
+      state.addresses = state.addresses.map((address) =>
+        address.id === id ? { ...address, ...updatedData } : address
+      );
+    },
   },
 });
 
@@ -56,5 +86,10 @@ export const {
   setOtp,
   setForgotPassword,
   toggleCategoryModal,
+  toggleAddressModal,
+  saveAddress,
+  removeAddress,
+  setDefaultAddress,
+  editAddress
 } = modalSlice.actions;
 export default modalSlice.reducer;

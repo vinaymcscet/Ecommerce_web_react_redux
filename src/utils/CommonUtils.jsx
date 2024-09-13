@@ -482,3 +482,8 @@ export const colors = [
   "/images/color-palette/color27.svg",
   "/images/color-palette/color28.svg",
 ];
+
+export const paymentOptions = [
+  { id: '1', label: "Cash On Delivery" },
+  { id: '2', label: "Pay Online" },
+];

@@ -229,6 +229,7 @@
 
 .userAddresses {
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .userAddresses h4 {
@@ -256,4 +257,40 @@
 .addAddress button:hover,
 .addAddress button:focus {
     background-color: #ede9e9;
+}
+
+.userAddresses .addressList ul li .action p:last-child {
+    color: #ffb545;
+}
+
+.cartWrapper .leftCartItems .tabs-buttons {
+    justify-content: space-between;
+}
+
+.tabs-buttons button:disabled {
+    cursor: not-allowed;
+}
+
+.rightCartItems .continue .cartError {
+    font-size: 13px;
+    font-weight: 400;
+    color: #f00;
+    margin-top: 10px;
+}
+
+.paymentOption {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap column;
+    margin: 10px 0;
+}
+
+.paymentOption li {
+    margin: 10px 0;
+}
+
+.dicountMessage {
+    font-size: 14px;
+    color: #008224;
 }

@@ -1,16 +1,27 @@
 import React, { useRef, useState } from "react";
-import "./Cart.css";
 import { useSelector, useDispatch } from "react-redux";
 import StarRating from "../../components/StarRating/StarRating";
 import { updateQuantity, removeItem } from "../../store/slice/cartSlice";
+import {
+  toggleAddressModal,
+  editAddress,
+  setDefaultAddress,
+  removeAddress,
+} from "../../store/slice/modalSlice";
+import { paymentOptions } from "../../utils/CommonUtils";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
+import "./Cart.css";
 
 const Cart = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const tabRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
-  const dispatch = useDispatch();
+  const tabRefs = [useRef(null), useRef(null), useRef(null)];
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
-  console.log(cartItems);
+  const { addresses, defaultAddressId } = useSelector((state) => state.modal);
 
   const handleQuantityChange = (id, quantity) => {
     dispatch(updateQuantity({ id, quantity }));
@@ -41,6 +52,45 @@ const Cart = () => {
 
   const { itemTotal, itemDiscount, delivery, tax, total } = calculateTotals();
 
+  const handleAddress = () => {
+    dispatch(toggleAddressModal({ isOpen: true }));
+  };
+
+  const handleAddressModal = (address = null) => {
+    dispatch(toggleAddressModal({ isOpen: true, address }));
+    if (address) {
+      dispatch(editAddress({ id: address.id, updatedData: address }));
+    }
+  };
+
+  const handleRemoveAddress = (id) => {
+    dispatch(removeAddress(id));
+  };
+
+  const handleSetDefaultAddress = (id) => {
+    dispatch(setDefaultAddress(id));
+  };
+
+  const handleNextTab = () => {
+    setErrorMessage("");
+    if (activeTab === 0 && cartItems.length === 0) {
+      setErrorMessage(
+        "Your cart is empty. Please add items before proceeding to Shipping."
+      );
+      return;
+    }
+    if (activeTab === 1 && addresses.length === 0) {
+      setErrorMessage(
+        "Please add a shipping address before proceeding to Payment."
+      );
+      return;
+    }
+    if (activeTab === 2) navigate("/order-complete");
+    else setActiveTab(activeTab + 1);
+  };
+
+  const isLastTab = activeTab === 2;
+
   return (
     <div className="staticContent">
       <h4>Cart Your Items</h4>
@@ -56,22 +106,22 @@ const Cart = () => {
                   Items
                 </button>
                 <button
-                  className={activeTab === 1 ? "active" : ""}
-                  onClick={() => setActiveTab(1)}
+                  className={
+                    activeTab === 1 ? "active" : activeTab < 1 ? "disabled" : ""
+                  }
+                  onClick={() => activeTab >= 1 && setActiveTab(1)}
+                  disabled={activeTab < 1}
                 >
                   Shipping
                 </button>
                 <button
-                  className={activeTab === 2 ? "active" : ""}
-                  onClick={() => setActiveTab(2)}
+                  className={
+                    activeTab === 2 ? "active" : activeTab < 2 ? "disabled" : ""
+                  }
+                  onClick={() => activeTab >= 2 && setActiveTab(2)}
+                  disabled={activeTab < 2}
                 >
                   Payment
-                </button>
-                <button
-                  className={activeTab === 3 ? "active" : ""}
-                  onClick={() => setActiveTab(3)}
-                >
-                  Confirmation
                 </button>
               </div>
               <div className="tabs-content">
@@ -175,24 +225,267 @@ const Cart = () => {
                 >
                   <div className="userAddresses">
                     <h4>Shipping to</h4>
-                    <div className="addAddress">
-                      <button type="button">Add Address</button>
+                    <div className="addressList">
+                      {addresses.length > 0 ? (
+                        <ul>
+                          {addresses.map((address) => (
+                            <li key={address.id}>
+                              <h4>{address.fullName}</h4>
+                              <p>
+                                Full Address: {address.address}, {address.city},
+                                {address.state}, {address.pincode}
+                              </p>
+                              <p>Phone Number: {address.mobile}</p>
+                              <div className="action">
+                                <p onClick={() => handleAddressModal(address)}>
+                                  Edit |
+                                </p>
+                                <p
+                                  onClick={() =>
+                                    handleRemoveAddress(address.id)
+                                  }
+                                >
+                                  Remove |
+                                </p>
+                                <p onClick={() => handleAddress()}>Add New |</p>
+                                <p
+                                  onClick={() =>
+                                    handleSetDefaultAddress(address.id)
+                                  }
+                                >
+                                  {defaultAddressId === address.id
+                                    ? "Default"
+                                    : "Set as Default"}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        ""
+                      )}
                     </div>
+                    {addresses.length === 0 && (
+                      <div className="addAddress">
+                        <button type="button" onClick={() => handleAddress()}>
+                          Add Address
+                        </button>
+                      </div>
+                    )}
                   </div>
+                  {cartItems.length > 0 &&
+                    cartItems.map((item, index) => (
+                      <div className="cartProductList">
+                        <div className="leftcartListItem">
+                          <img src={item.image} alt={item.name} />
+                        </div>
+                        <div className="rightcartListItem">
+                          <div className="rightCartInnerLeftItems">
+                            <h4>{item.name}</h4>
+                            {item.rating && (
+                              <StarRating userrating={item.rating} />
+                            )}
+                            <div className="priceSection">
+                              {item.discount && (
+                                <p className="discount">$ {item.discount}</p>
+                              )}
+                              {item.original && (
+                                <p className="original">$ {item.original}</p>
+                              )}
+                              {item.discountlabel && (
+                                <div className="offerList">
+                                  <span>{item.discountlabel}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="rightCartInnerRightItems">
+                            <div class="cartInputBox">
+                              <div
+                                class="increase"
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.quantity + 1
+                                  )
+                                }
+                              >
+                                +
+                              </div>
+                              <input
+                                type="number"
+                                name="cart"
+                                min="1"
+                                value={item.quantity}
+                                readOnly
+                              />
+                              <div
+                                class="decrease"
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.quantity - 1
+                                  )
+                                }
+                              >
+                                -
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="productSizes">
+                          Color: black | Size: {item.selectedSize}
+                        </div>
+                        <div className="cartActionItems">
+                          <div className="icon">
+                            <img
+                              src="/images/icons/share.svg"
+                              alt="share Item"
+                            />
+                          </div>
+                          <div
+                            className="icon"
+                            onClick={() => handleRemoveItem(item.id)}
+                          >
+                            <img
+                              src="/images/icons/delete.svg"
+                              alt="delete Item"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
                 <div
                   className="tab-content"
                   ref={tabRefs[2]}
                   style={{ display: activeTab === 2 ? "block" : "none" }}
                 >
-                  sdfsadfa
-                </div>
-                <div
-                  className="tab-content"
-                  ref={tabRefs[3]}
-                  style={{ display: activeTab === 3 ? "block" : "none" }}
-                >
-                  sdfsadfa
+                  <div className="userAddresses">
+                    <h4>Shipping to</h4>
+                    <div className="addressList">
+                      {addresses.length > 0 ? (
+                        <ul>
+                          {addresses.map((address) => (
+                            <li key={address.id}>
+                              <h4>{address.fullName}</h4>
+                              <p>
+                                Full Address: {address.address}, {address.city},
+                                {address.state}, {address.pincode}
+                              </p>
+                              <p>Phone Number: {address.mobile}</p>
+                              <div className="action">
+                                <p onClick={() => handleAddressModal(address)}>
+                                  Edit |
+                                </p>
+                                <p
+                                  onClick={() =>
+                                    handleRemoveAddress(address.id)
+                                  }
+                                >
+                                  Remove |
+                                </p>
+                                <p onClick={() => handleAddress()}>Add New |</p>
+                                <p
+                                  onClick={() =>
+                                    handleSetDefaultAddress(address.id)
+                                  }
+                                >
+                                  {defaultAddressId === address.id
+                                    ? "Default"
+                                    : "Set as Default"}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                  {cartItems.length > 0 &&
+                    cartItems.map((item, index) => (
+                      <div className="cartProductList">
+                        <div className="leftcartListItem">
+                          <img src={item.image} alt={item.name} />
+                        </div>
+                        <div className="rightcartListItem">
+                          <div className="rightCartInnerLeftItems">
+                            <h4>{item.name}</h4>
+                            {item.rating && (
+                              <StarRating userrating={item.rating} />
+                            )}
+                            <div className="priceSection">
+                              {item.discount && (
+                                <p className="discount">$ {item.discount}</p>
+                              )}
+                              {item.original && (
+                                <p className="original">$ {item.original}</p>
+                              )}
+                              {item.discountlabel && (
+                                <div className="offerList">
+                                  <span>{item.discountlabel}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="rightCartInnerRightItems">
+                            <div class="cartInputBox">
+                              <div
+                                class="increase"
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.quantity + 1
+                                  )
+                                }
+                              >
+                                +
+                              </div>
+                              <input
+                                type="number"
+                                name="cart"
+                                min="1"
+                                value={item.quantity}
+                                readOnly
+                              />
+                              <div
+                                class="decrease"
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.id,
+                                    item.quantity - 1
+                                  )
+                                }
+                              >
+                                -
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="productSizes">
+                          Color: black | Size: {item.selectedSize}
+                        </div>
+                        <div className="cartActionItems">
+                          <div className="icon">
+                            <img
+                              src="/images/icons/share.svg"
+                              alt="share Item"
+                            />
+                          </div>
+                          <div
+                            className="icon"
+                            onClick={() => handleRemoveItem(item.id)}
+                          >
+                            <img
+                              src="/images/icons/delete.svg"
+                              alt="delete Item"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
@@ -228,8 +521,28 @@ const Cart = () => {
                 Apply
               </button>
             </div>
+            {isLastTab && (
+              <ul className="paymentOption">
+                {paymentOptions.map((size) => (
+                  <li key={size.id}>
+                    <label className="round">
+                      <input type="radio" name="size" value={size.label} />
+                      <span>{size.label}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {isLastTab && (
+              <p className="dicountMessage">
+                Get 10% extra discount online payment
+              </p>
+            )}
             <div className="continue">
-              <button type="button">Continue</button>
+              <button type="button" onClick={handleNextTab}>
+                {isLastTab ? "Checkout" : "Continue"}
+              </button>
+              {errorMessage && <p className="cartError">{errorMessage}</p>}
             </div>
           </div>
           {cartItems.length > 0 && (

@@ -24,9 +24,12 @@ import Category from "./pages/Category/Category";
 import ProductList from "./pages/ProductList/ProductList";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import Cart from "./pages/Cart/Cart";
+import AddressModal from "./components/AddressModal/AddressModal";
+import { useSelector } from "react-redux";
+import OrderComplete from "./pages/OrderComplete/OrderComplete";
 
 function App() {
- 
+  const { isAddressModelOpen } = useSelector((state) => state.modal);
   return (
     <div className="App">
       <Header />
@@ -50,11 +53,15 @@ function App() {
           <Route path="productlist" element={<ProductList />} />
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="order-complete" element={<OrderComplete />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       <Footer />
       <Modal />
       <CategoryModal />
+      {isAddressModelOpen && (
+      <AddressModal />
+      )}
     </div>
   );
 }

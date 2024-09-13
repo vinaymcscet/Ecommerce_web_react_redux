@@ -1,0 +1,35 @@
+.order-complete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap column;
+    width: 30%;
+    margin: 70px auto 30px auto;
+    text-align: center;
+}
+
+.order-complete h1 {
+    margin-bottom: 0;
+    font-size: 64px;
+    color: #FFB545;
+    text-transform: uppercase;
+    line-height: 60px;
+}
+
+.order-complete p {
+    font-size: 24px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.trackOrder {
+    font-size: 36px;
+    font-weight: 700;
+    color: #008224;
+    text-transform: uppercase;
+    line-height: 40px;
+}
+
+.order-complete button {
+    margin: 100px 0;
+}
