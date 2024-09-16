@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useRef, useState } from "react";
 import HeaderPin from "../HeaderPin/HeaderPin";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -6,12 +7,17 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import "./Header.css";
 import Hamburger from "../Hamburger/Hamburger";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
+import { setLogout } from '../../store/slice/userSlice';
+import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  const { user } = useSelector((state) => state.user);
 
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const toggleHamburger = () => {
@@ -22,8 +28,20 @@ const Header = () => {
     dispatch(toggleModal(true));
   };
   const redirectToCart = () => {
-    navigate('/cart');
-  }
+    navigate("/cart");
+  };
+
+  const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
+  const toggleUserMenu = (e) => {
+    e.stopPropagation();
+    setIsActive((prevIsActive) => !prevIsActive); // Properly toggle state
+  };
+
+  const handleLogout = () => {
+    dispatch(setLogout()); // Clear the user array in Redux
+    navigate("/"); // Redirect after logout
+  };
+
   return (
     <div>
       <HeaderPin />
@@ -70,10 +88,42 @@ const Header = () => {
                   <img src="/images/icons/support.png" alt="Support" />
                   <p>Support</p>
                 </li>
-                <li onClick={() => handleOpenDialog('login')}>
-                  <img src="/images/icons/login.png" alt="Login" />
-                  <p>Login / Sign up</p>
-                </li>
+                {user.length === 0 && (
+                  <li onClick={() => handleOpenDialog("login")}>
+                    <img src="/images/icons/login.png" alt="Login" />
+                    <p>Login / Sign up</p>
+                  </li>
+                )}
+                {user && user.length > 0 && (
+                  <div className="menu-container">
+                    <li onClick={toggleUserMenu}>
+                      <img src={user[0]?.image} alt={user[0]?.name} />
+                      <p>{user[0]?.name}</p>
+                      <nav
+                        ref={dropdownRef}
+                        className={`menu ${isActive ? "active" : "inactive"}`}
+                      >
+                        <ul>
+                          <li>
+                            <Link to="/userprofile">
+                              <img
+                                src="/images/icons/login.png"
+                                alt="Profile"
+                              />
+                              <span>Profile</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <a onClick={handleLogout}>
+                              <img src="/images/icons/login.png" alt="Logout" />
+                              <span>Logout</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </nav>
+                    </li>
+                  </div>
+                )}
                 <li onClick={() => redirectToCart()}>
                   <img src="/images/icons/cart.png" alt="Cart" />
                   <p>Cart</p>

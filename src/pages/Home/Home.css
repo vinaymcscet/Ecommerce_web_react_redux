@@ -39,6 +39,22 @@
     font-weight: 400;
 }
 
+.productHistory {
+    width: 90%;
+    margin: auto;
+}
+
+.productHistory .productList > div {
+    width: 16%;
+    margin: 0 1%;
+    min-height: 340px;
+}
+
+.productHistory .productList > div .productBoxes {
+    width: 100%;
+}
+
+
 @media screen and (max-width: 1250px) {
     .limitedOffer {
         width: 16%;

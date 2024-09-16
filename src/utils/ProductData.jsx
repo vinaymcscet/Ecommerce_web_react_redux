@@ -663,7 +663,7 @@ export const allCategory = [
   },
 ];
 
-export const productHistory = [
+export const productHistoryList = [
   {
     id: 1,
     image: "/images/product/img-16.svg",
@@ -741,7 +741,7 @@ export const productHistory = [
   },
 ];
 
-export const productList = [
+export const productBulkList = [
   {
     id: 1,
     image: "/images/product/img-16.svg",

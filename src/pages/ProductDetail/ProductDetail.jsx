@@ -7,21 +7,28 @@ import StarRating from "../../components/StarRating/StarRating";
 import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/LinearProgressWithLabel";
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
-import { productHistory } from "../../utils/ProductData";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import "./ProductDetail.css";
+// import { toggleWishlist } from "../../store/slice/userSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
-  
+  const { productHistory } = useSelector((state) => state.product);
+  // const wishlist = useSelector((state) => state.user.user.wishlist);
+
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
-  const [sizeError, setSizeError] = useState('');
-  const [showReviewForm, setShowReviewForm] = useState(false); 
+  const [sizeError, setSizeError] = useState("");
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [whistListBox, setWhistListBox] = useState({
+    whistlist: "/images/product/whistlist.svg",
+    whistlistFill: "/images/product/whistlist-fill.svg",
+    share: "/images/product/share.svg",
+  });
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -62,7 +69,7 @@ const ProductDetail = () => {
 
   const handleSizeChange = (index) => {
     setActiveIndex(index);
-    setSizeError('');
+    setSizeError("");
     dispatch(setSelectedSize(product.sizeList[index]?.name));
   };
 
@@ -81,20 +88,17 @@ const ProductDetail = () => {
   }
 
   useEffect(() => {
-    console.log(product);
     const timer = setInterval(() => {
       setProgress((prevProgress) =>
         prevProgress >= 100 ? 0 : prevProgress + 10
       );
     }, 800);
-    
-  
 
     return () => {
       clearInterval(timer);
     };
   }, []);
-  
+
   // Handle input changes
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
@@ -102,24 +106,23 @@ const ProductDetail = () => {
       ...formData,
       [name]: value,
     });
-  
+
     // Clear error message when user starts typing
     setErrors({
       ...errors,
-      [name]: '',
+      [name]: "",
     });
   };
-  
 
   const validate = () => {
     const newErrors = {};
     let isValid = true;
-  
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full Name is required.";
       isValid = false;
     }
-  
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
       isValid = false;
@@ -127,23 +130,21 @@ const ProductDetail = () => {
       newErrors.email = "Email is invalid.";
       isValid = false;
     }
-  
+
     if (!formData.review.trim()) {
       newErrors.review = "Review is required.";
       isValid = false;
     }
-  
+
     setErrors(newErrors);
     return isValid;
   };
-  
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (validate()) {
-      console.log("Form data:", formData);
       setFormData({
         fullName: "",
         email: "",
@@ -159,19 +160,25 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (activeIndex === null) {
-      setSizeError('Please select a size.');
+      setSizeError("Please select a size.");
       return; // Prevent dispatch if size is not selected
     }
-  
+
     // Dispatch product details and quantity to Redux
     const productData = {
       ...product,
       quantity,
       selectedSize: product.sizeList[activeIndex]?.name,
     };
-  
+
     dispatch(addToCart(productData));
     toast.success("Item added to Cart successfully");
+  };
+
+  // const isWishlisted = wishlist.some((item) => item.id === product.id);
+
+  const handleWhistlist = (productData) => {
+    // toggleWishlist(productData.id);
   };
 
   return (
@@ -187,7 +194,20 @@ const ProductDetail = () => {
             <div className="bestOption">
               <div className="ribbon">#Best Seller</div>
               <div className="whislistBox">
-                <img src="/images/product/whislist.svg" alt="whistlist" />
+                {/* <div
+                  onClick={() => handleWhistlist(product)}
+                  className="wishlist-btn"
+                >
+                  {isWishlisted ? (
+                    <img
+                      src={whistListBox.whistlistFill}
+                      alt="Whistlist Product"
+                    />
+                  ) : (
+                    <img src={whistListBox.whistlist} alt="Whistlist Product" />
+                  )}
+                </div> */}
+                <img src={whistListBox.share} alt="Share Product" />
               </div>
             </div>
             <h1>{product.name}</h1>
@@ -223,11 +243,15 @@ const ProductDetail = () => {
                   -
                 </div>
               </div>
-              <button type="button" className="addToCart" onClick={handleAddToCart}>
+              <button
+                type="button"
+                className="addToCart"
+                onClick={handleAddToCart}
+              >
                 Add to cart
               </button>
               {sizeError && <p className="cartError error">{sizeError}</p>}
-              </div>
+            </div>
             <div className="productColor">
               Color: <span>Black</span>
             </div>
@@ -410,108 +434,143 @@ const ProductDetail = () => {
                   )}
                 </div>
                 <div className="rightCommentPart">
-                {!showReviewForm && (
-                  <><div className="reviewCommentHeader">
-                      <h4>Customer say</h4>
-                      <div className="commentSelect">
-                        <select>
-                          <option>Most Recent</option>
-                          <option>Category 1</option>
-                          <option>Category 2</option>
-                          <option>Category 3</option>
-                        </select>
+                  {!showReviewForm && (
+                    <>
+                      <div className="reviewCommentHeader">
+                        <h4>Customer say</h4>
+                        <div className="commentSelect">
+                          <select>
+                            <option>Most Recent</option>
+                            <option>Category 1</option>
+                            <option>Category 2</option>
+                            <option>Category 3</option>
+                          </select>
+                        </div>
                       </div>
-                    </div><div className="productReviewList">
+                      <div className="productReviewList">
                         {product.customer_review.map((item, index) => (
                           <div className="reviewComments" key={index}>
                             <div className="userImage">
-                              <img src={item.profile_image} alt={item.rate_name} />
+                              <img
+                                src={item.profile_image}
+                                alt={item.rate_name}
+                              />
                             </div>
                             <div className="reviewRightomments">
                               <div className="userName">{item.name}</div>
                               <div className="ratingBox">
-                                {item.rating && <StarRating userrating={item.rating} />}
-                                <div className="rateusername">{item.rate_name}</div>
+                                {item.rating && (
+                                  <StarRating userrating={item.rating} />
+                                )}
+                                <div className="rateusername">
+                                  {item.rate_name}
+                                </div>
                               </div>
                               {item.description && <p>{item.description}</p>}
                               <div className="reviewed_image">
-                                {item.product_review_image && (item.product_review_image.map((review_image, index) => (
-                                  <img key={index} src={review_image} alt={'Product Image'} />
-                                )))}
+                                {item.product_review_image &&
+                                  item.product_review_image.map(
+                                    (review_image, index) => (
+                                      <img
+                                        key={index}
+                                        src={review_image}
+                                        alt={"Product Image"}
+                                      />
+                                    )
+                                  )}
                               </div>
                             </div>
                           </div>
                         ))}
-                        <button type="button" className="all_reviews">See all reviews</button>
-                      </div></>
-                 )}
+                        <button type="button" className="all_reviews">
+                          See all reviews
+                        </button>
+                      </div>
+                    </>
+                  )}
                   {showReviewForm && (
-                  <div className="product_review_form">
-                    <form onSubmit={handleSubmit}>
-                      <div className="box">
-                        <div className="form-control">
-                          <input
-                            type="text"
-                            name="fullName"
-                            placeholder="Full Name"
-                            value={formData.fullName}
-                            onChange={handleReviewChange}
-                          />
-                          {errors.fullName && (
-                            <p className="error">{errors.fullName}</p>
-                          )}
-                        </div>
-                        <div className="form-control">
-                          <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={formData.email}
-                            onChange={handleReviewChange}
-                          />
-                          {errors.email && <p className="error">{errors.email}</p>}
-                        </div>
-                      </div>
-                      <div className="box full">
-                        <div className="form-control">
-                          <textarea
-                            cols="10"
-                            name="review"
-                            placeholder="Write Your Review"
-                            value={formData.review}
-                            onChange={handleReviewChange}
-                          ></textarea>
-                          {errors.review && <p className="error">{errors.review}</p>}
-                        </div>
-                      </div>
-                      <div className="box full">
-                        <div className="form-control select">
-                          <div className="selectFileBox">
-                              <img src="/images/add-file.svg" alt="Select File" />
-                              <input type="file" />
+                    <div className="product_review_form">
+                      <form onSubmit={handleSubmit}>
+                        <div className="box">
+                          <div className="form-control">
+                            <input
+                              type="text"
+                              name="fullName"
+                              placeholder="Full Name"
+                              value={formData.fullName}
+                              onChange={handleReviewChange}
+                            />
+                            {errors.fullName && (
+                              <p className="error">{errors.fullName}</p>
+                            )}
                           </div>
-                          <div className="selectFileBox">
-                              <img src="/images/add-file.svg" alt="Select File" />
-                              <input type="file" />
-                          </div>
-                          <div className="selectFileBox">
-                              <img src="/images/add-file.svg" alt="Select File" />
-                              <input type="file" />
-                          </div>
-                          <div className="selectFileBox">
-                              <img src="/images/add-file.svg" alt="Select File" />
-                              <input type="file" />
+                          <div className="form-control">
+                            <input
+                              type="email"
+                              name="email"
+                              placeholder="Email"
+                              value={formData.email}
+                              onChange={handleReviewChange}
+                            />
+                            {errors.email && (
+                              <p className="error">{errors.email}</p>
+                            )}
                           </div>
                         </div>
-                      </div>
-                      <Button
-                        type={"submit"}
-                        value={"submit"}
-                        varient="explore review"
-                        space="sp-10"
-                      />
-                    </form>
-                  </div>
+                        <div className="box full">
+                          <div className="form-control">
+                            <textarea
+                              cols="10"
+                              name="review"
+                              placeholder="Write Your Review"
+                              value={formData.review}
+                              onChange={handleReviewChange}
+                            ></textarea>
+                            {errors.review && (
+                              <p className="error">{errors.review}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="box full">
+                          <div className="form-control select">
+                            <div className="selectFileBox">
+                              <img
+                                src="/images/add-file.svg"
+                                alt="Select File"
+                              />
+                              <input type="file" />
+                            </div>
+                            <div className="selectFileBox">
+                              <img
+                                src="/images/add-file.svg"
+                                alt="Select File"
+                              />
+                              <input type="file" />
+                            </div>
+                            <div className="selectFileBox">
+                              <img
+                                src="/images/add-file.svg"
+                                alt="Select File"
+                              />
+                              <input type="file" />
+                            </div>
+                            <div className="selectFileBox">
+                              <img
+                                src="/images/add-file.svg"
+                                alt="Select File"
+                              />
+                              <input type="file" />
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          type={"submit"}
+                          value={"submit"}
+                          varient="explore review"
+                          space="sp-10"
+                        />
+                      </form>
+                    </div>
                   )}
                 </div>
               </div>
@@ -522,60 +581,64 @@ const ProductDetail = () => {
       <div className="productHistory allcategory">
         <h3>Frequently bought</h3>
         <div className="productList">
-          {productHistory.map((item, index) => {
-            return (
+          {productHistory && productHistory.length > 0 ? (
+            productHistory[0].map((item, index) => (
               <div key={index}>
-              <ProductListCard
-                id={item.id}
-                image={item.image ? item.image : ""}
-                name={item.name ? item.name : ""}
-                userrating={item.rating ? item.rating : ""}
-                discountPrice={item.discount ? item.discount : ""}
-                originalPrice={item.original ? item.original : ""}
-                save={item.save ? item.save : ""}
-                coupenCode={item.coupen ? item.coupen : ""}
-                deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                bestSeller={item.bestseller ? item.bestseller : ""}
-                time={item.time ? item.time : ""}
-                discountLabel={item.discountlabel ? item.discountlabel : ""}
-              />
+                <ProductListCard
+                  id={item.id}
+                  image={item.image ? item.image : ""}
+                  name={item.name ? item.name : ""}
+                  userrating={item.rating ? item.rating : ""}
+                  discountPrice={item.discount ? item.discount : ""}
+                  originalPrice={item.original ? item.original : ""}
+                  save={item.save ? item.save : ""}
+                  coupenCode={item.coupen ? item.coupen : ""}
+                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                  bestSeller={item.bestseller ? item.bestseller : ""}
+                  time={item.time ? item.time : ""}
+                  discountLabel={item.discountlabel ? item.discountlabel : ""}
+                />
               </div>
-            );
-          })}
+            ))
+          ) : (
+            <p>No product history available</p>
+          )}
         </div>
       </div>
       <div className="productHistory allcategory">
         <h3>Inspired by your browsing history</h3>
         <div className="productList">
-          {productHistory.map((item, index) => {
-            return (
+          {productHistory && productHistory.length > 0 ? (
+            productHistory[0].map((item, index) => (
               <div key={index}>
-              <ProductListCard
-                id={item.id}
-                image={item.image ? item.image : ""}
-                name={item.name ? item.name : ""}
-                userrating={item.rating ? item.rating : ""}
-                discountPrice={item.discount ? item.discount : ""}
-                originalPrice={item.original ? item.original : ""}
-                save={item.save ? item.save : ""}
-                coupenCode={item.coupen ? item.coupen : ""}
-                deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                bestSeller={item.bestseller ? item.bestseller : ""}
-                time={item.time ? item.time : ""}
-                discountLabel={item.discountlabel ? item.discountlabel : ""}
-              />
+                <ProductListCard
+                  id={item.id}
+                  image={item.image ? item.image : ""}
+                  name={item.name ? item.name : ""}
+                  userrating={item.rating ? item.rating : ""}
+                  discountPrice={item.discount ? item.discount : ""}
+                  originalPrice={item.original ? item.original : ""}
+                  save={item.save ? item.save : ""}
+                  coupenCode={item.coupen ? item.coupen : ""}
+                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                  bestSeller={item.bestseller ? item.bestseller : ""}
+                  time={item.time ? item.time : ""}
+                  discountLabel={item.discountlabel ? item.discountlabel : ""}
+                />
               </div>
-            );
-          })}
+            ))
+          ) : (
+            <p>No product history available</p>
+          )}
         </div>
       </div>
       <div className="detailProductContent">
-        {product.detailProductContent && (product.detailProductContent.map((item,index) => (
-          <img src={item} alt="Product detail" />
-
-        )))}
+        {product.detailProductContent &&
+          product.detailProductContent.map((item, index) => (
+            <img src={item} alt="Product detail" />
+          ))}
       </div>
       <ToastContainer />
     </div>

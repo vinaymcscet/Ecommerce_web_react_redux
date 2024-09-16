@@ -3,13 +3,15 @@ import Slider from "react-slick";
 import { categorySlides, slick_category_settings } from "../../utils/ProductData";
 import CategoryCard from "../CategoryCard/CategoryCard";
 import './CategorySlider.css'
+import { useSelector } from "react-redux";
 
 const CategorySlider = () => {
-    
+  const { categorySlide } = useSelector((state) => state.product);
+
     return (
       <div className="catProduct">
         <Slider {...slick_category_settings}>
-          {categorySlides.map((slide, index) => {
+          {categorySlide.map((slide, index) => {
             return (
               <div key={index}>
                 <CategoryCard

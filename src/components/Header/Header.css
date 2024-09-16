@@ -87,7 +87,78 @@ li:not(:last-child) {
     font-size: 20px;
     color: #A2A2A2;
 }
+/* menu dropdown */
+.menu-container {
+    margin-right: 15px;
+}
+.menu {
+    background: #1f1f1f;
+    border-radius: 0;
+    position: absolute;
+    top: 116px;
+    right: 90px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 140px;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    z-index: 1;
+  }
+  
+  .menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-flow: wrap column;
+    width: 100%;
+  }
+  
+  .menu li {
+    border-bottom: 1px solid #dddddd;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .menu li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 20px;
+    display: block;
+    font-weight: 400;
+    text-transform: uppercase;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
 
+  .menu li a span {
+    margin-left: 10px;
+    color: #fff;
+  }
+
+  .menu li a:hover {
+    color: #fbb540;
+  }
+
+  .menu li a:hover span {
+    color: #fbb540;
+  }
+
+  
 @media screen and (max-width: 1200px) {
     li:not(:last-child) {
         margin-right: 10px;

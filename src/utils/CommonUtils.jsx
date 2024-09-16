@@ -439,17 +439,17 @@ export const sizeOptions = [
 ];
 
 export const priceOptions = [
-    { id: 'p1', label: "Under $12" },
-    { id: 'p2', label: "$12 - $185" },
-    { id: 'p3', label: "$185 - $333" },
-    { id: 'p4', label: "Over $333" },
+  { id: "p1", label: "Under $12" },
+  { id: "p2", label: "$12 - $185" },
+  { id: "p3", label: "$185 - $333" },
+  { id: "p4", label: "Over $333" },
 ];
 
 export const ratingOptions = [
-    { id: 'c1', label: "4★ & above" },
-    { id: 'c2', label: "3★ & above" },
-    { id: 'c3', label: "2★ & above" },
-    { id: 'c4', label: "1★ & above" },
+  { id: "c1", label: "4★ & above" },
+  { id: "c2", label: "3★ & above" },
+  { id: "c3", label: "2★ & above" },
+  { id: "c4", label: "1★ & above" },
 ];
 
 export const colors = [
@@ -484,6 +484,15 @@ export const colors = [
 ];
 
 export const paymentOptions = [
-  { id: '1', label: "Cash On Delivery" },
-  { id: '2', label: "Pay Online" },
+  { id: "1", label: "Cash On Delivery" },
+  { id: "2", label: "Pay Online" },
 ];
+
+export const User = {
+  id: 1,
+  name: "John Goige",
+  email: "jhongoige@gmail.com",
+  phone: "+448956231245",
+  password: "12345678",
+  image: "/images/profile/user.svg",
+};

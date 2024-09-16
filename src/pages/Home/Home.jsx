@@ -1,18 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Banner from "../../components/Banner/Banner";
 import { BannerOfferData } from "../../utils/BannerOfferData";
 import "./Home.css";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import FourCategoryProduct from "../../components/FourCategoryProduct/FourCategoryProduct";
 import {
+  allCategory,
+  categorySlides,
   description,
   Onedescription,
-  productHistory,
+  productHistoryList,
 } from "../../utils/ProductData";
 import OneCategoryProduct from "../../components/OneCategoryProduct/OneCategoryProduct";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
+import { setAllCategories, setCategorySlide, setProductHistory, setProductList } from "../../store/slice/productSlice";
+import { productBulkList } from "../../utils/ProductData";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../store/slice/userSlice";
+import { User } from "../../utils/CommonUtils";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setProductHistory(productHistoryList));
+    dispatch(setProductList(productBulkList));
+    dispatch(setCategorySlide(categorySlides))
+    dispatch(setAllCategories(allCategory))
+    dispatch(setUser(User))
+  }, [dispatch]);
+
+  const { productHistory } = useSelector((state) => state.product);
+
   return (
     <div>
       <Banner props={BannerOfferData} />
@@ -167,26 +185,32 @@ const Home = () => {
       <div className="browisingHistory">
         <h3>Inspired by your browsing history</h3>
       </div>
-      <div className="productList">
-        {productHistory.map((item, index) => {
-          return (
-            <ProductListCard
-              id={item.id}
-              image={item.image ? item.image : ""}
-              name={item.name ? item.name : ""}
-              userrating={item.rating ? item.rating : ""}
-              discountPrice={item.discount ? item.discount : ""}
-              originalPrice={item.original ? item.original : ""}
-              save={item.save ? item.save : ""}
-              coupenCode={item.coupen ? item.coupen : ""}
-              deliveryTime={item.deliverytime ? item.deliverytime : ""}
-              freeDelivery={item.freedelivery ? item.freedelivery : ""}
-              bestSeller={item.bestseller ? item.bestseller : ""}
-              time={item.time ? item.time : ""}
-              discountLabel={item.discountlabel ? item.discountlabel : ""}
-            />
-          );
-        })}
+      <div className="productHistory">
+        <div className="productList">
+          {productHistory && productHistory.length > 0 ? (
+            productHistory[0].map((item, index) => (
+              <div key={index}>
+                <ProductListCard
+                  id={item.id}
+                  image={item.image ? item.image : ""}
+                  name={item.name ? item.name : ""}
+                  userrating={item.rating ? item.rating : ""}
+                  discountPrice={item.discount ? item.discount : ""}
+                  originalPrice={item.original ? item.original : ""}
+                  save={item.save ? item.save : ""}
+                  coupenCode={item.coupen ? item.coupen : ""}
+                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                  bestSeller={item.bestseller ? item.bestseller : ""}
+                  time={item.time ? item.time : ""}
+                  discountLabel={item.discountlabel ? item.discountlabel : ""}
+                />
+              </div>
+            ))
+          ) : (
+            <p>No product history available</p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
-import { productList } from "../../utils/ProductData";
+
 import {
   colors,
   mainProductFilterList,
@@ -17,6 +17,7 @@ import {
   sizeOptions,
 } from "../../utils/CommonUtils";
 import "./ProductList.css";
+import { useSelector } from "react-redux";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
@@ -48,6 +49,8 @@ const ProductList = () => {
   const handleProductClick = (item) => {
     navigate(`/product/${item.id}`, { state: { product: item } });
   };
+
+  const { productList } = useSelector((state) => state.product);
 
   return (
     <div className="productListing">
@@ -180,7 +183,7 @@ const ProductList = () => {
                 Customer Rating
               </AccordionSummary>
               <AccordionDetails>
-              <ul className="sizeFilter price">
+                <ul className="sizeFilter price">
                   {ratingOptions.map((size) => (
                     <li key={size.id}>
                       <label className="round">
@@ -218,8 +221,8 @@ const ProductList = () => {
         </div>
         <div className="prdRight">
           <div className="productList">
-            {productList.map((item, index) => {
-              return (
+            {productList && productList.length > 0 ? (
+              productList[0].map((item, index) => (
                 <div key={index} onClick={() => handleProductClick(item)}>
                   <ProductListCard
                     id={item.id}
@@ -237,8 +240,10 @@ const ProductList = () => {
                     discountLabel={item.discountlabel ? item.discountlabel : ""}
                   />
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <p>No product history available</p>
+            )}
           </div>
         </div>
       </div>

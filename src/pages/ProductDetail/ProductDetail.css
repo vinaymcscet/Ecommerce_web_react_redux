@@ -35,16 +35,8 @@
   width: auto;
 }
 
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-left-nav
-  .image-gallery-svg,
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-right-nav
-  .image-gallery-svg {
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-left-nav .image-gallery-svg,
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-right-nav .image-gallery-svg {
   height: 50px;
   width: 50px;
 }
@@ -59,16 +51,8 @@
   width: auto;
 }
 
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-fullscreen-button
-  .image-gallery-svg,
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-play-button
-  .image-gallery-svg {
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-fullscreen-button .image-gallery-svg,
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-play-button .image-gallery-svg {
   height: 20px;
   width: 20px;
 }
@@ -103,27 +87,18 @@
   right: -20px;
 }
 
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-swipe
-  .image-gallery-slides
-  .image-gallery-slide {
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-swipe .image-gallery-slides .image-gallery-slide {
   height: 303px;
 }
 
-.prdDetail
-  .productDetailInfo
-  .leftDetailInfo
-  .image-gallery-content
-  .image-gallery-slide
-  .image-gallery-image {
+.prdDetail .productDetailInfo .leftDetailInfo .image-gallery-content .image-gallery-slide .image-gallery-image {
   max-height: 100%;
 }
 
 .rightDetailInfo .leftBar {
   width: 60%;
 }
+
 .rightDetailInfo .rightBar {
   width: 35%;
 }
@@ -146,7 +121,7 @@
   justify-content: flex-start;
 }
 
-.ratingBox > span {
+.ratingBox>span {
   background: #fbb540;
   width: 20px;
   height: 20px;
@@ -181,6 +156,7 @@
   display: block;
   width: 100%;
 }
+
 .error {
   margin: 5px 0 0 20px;
   font-size: 12px;
@@ -270,6 +246,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .sizeChart .sizeList li {
   margin-right: 10px;
   border: 1px solid #d6d6d6;
@@ -489,6 +466,7 @@
   margin: 0 auto;
   left: 15px;
 }
+
 .tabs-buttons button.active:before {
   background-color: #fbb540;
 }
@@ -524,6 +502,7 @@
   align-items: center;
   justify-content: space-between;
 }
+
 .additionalInfo .info {
   width: 50%;
 }
@@ -531,6 +510,7 @@
 .additionalInfo .info:not(:last-child) {
   margin-right: 20px;
 }
+
 .additionalInfo .info h5 {
   font-size: 25px;
   font-weight: 500;
@@ -542,12 +522,14 @@ table {
   border: 1px solid #d1d1d1;
   border-collapse: collapse;
 }
+
 table tr td {
   border: 1px solid #d1d1d1;
   padding: 5px;
   font-size: 15px;
   font-weight: 500;
 }
+
 table tr td:first-child {
   width: 40%;
 }
@@ -605,6 +587,7 @@ table tr td:first-child {
   color: #000;
   line-height: 30px;
 }
+
 .progressBar {
   width: 80%;
 }
@@ -642,8 +625,7 @@ table tr td:first-child {
   padding: 5px 10px;
   font-size: 14px;
   font-weight: 400;
-  background: url("../../../public/images/icons/down-arrow.svg") no-repeat 90%
-    12px #fff;
+  background: url("../../../public/images/icons/down-arrow.svg") no-repeat 90% 12px #fff;
   background-size: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -715,6 +697,7 @@ table tr td:first-child {
 .product_review_form {
   margin: 20px 0 0 0;
 }
+
 .product_review_form .box .form-control {
   max-width: 100%;
   width: 85%;
@@ -777,12 +760,14 @@ button.review {
   padding: 0;
   margin-right: 10px;
 }
+
 .product_review_form .box.full .form-control.select {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-flow: wrap row;
 }
+
 .product_review_form .box.full .form-control .selectFileBox input[type="file"] {
   position: absolute;
   width: 100%;
@@ -832,6 +817,16 @@ button.review {
   max-width: 100%;
 }
 
+.whislistBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whislistBox img {
+  margin: 0 5px;
+}
+
 @media only screen and (max-width: 1300px) {
   .leftBar h1 {
     font-size: 21px;
@@ -842,72 +837,92 @@ button.review {
   .leftBar h1 {
     font-size: 21px;
   }
+
   .prdDetail .productDetailInfo {
     flex-flow: wrap column;
   }
+
   .prdDetail .productDetailInfo .leftDetailInfo {
     width: 100%;
     margin: 0 0 20px 0;
   }
+
   .prdDetail .productDetailInfo .rightDetailInfo {
     width: 100%;
   }
+
   .allcategory h3 {
     font-size: 22px;
   }
-  .productHistory .productList > div {
+
+  .productHistory .productList>div {
     width: 30%;
   }
+
   .reviewSection .rightCommentPart {
     width: 64%;
   }
+
   .reviewSection .leftCommentPart {
     width: 35%;
   }
+
   .detailLinearRivewProgress .reviewProgress {
     flex-flow: wrap column;
     justify-content: flex-start;
     align-items: flex-start;
   }
+
   .progressBar {
     width: 100%;
   }
 }
+
 @media (max-width: 768px) {
   .tabs-buttons button {
     flex: 1;
   }
+
   .prdDetail .productDetailInfo .rightDetailInfo {
     flex-flow: wrap column;
   }
+
   .rightDetailInfo .leftBar,
   .rightDetailInfo .rightBar {
     width: 100%;
   }
+
   .additionalInfo {
     flex-flow: wrap column;
   }
+
   .additionalInfo .info {
     width: 100%;
     margin: 0 0 20px 0;
   }
+
   .reviewSection {
     flex-flow: wrap column;
   }
+
   .reviewSection .leftReviewPart {
     width: 100%;
     order: 2;
   }
+
   .reviewSection .rightCommentPart {
     width: 100%;
     order: 1;
   }
+
   .product_review_form .box {
     flex-flow: wrap column;
   }
+
   .product_review_form .box .form-control {
     width: 93%;
   }
+
   .product_review_form .box.full .form-control {
     width: 93%;
   }
@@ -917,21 +932,24 @@ button.review {
   .reviewForm .box {
     flex-flow: wrap column;
   }
+
   .reviewForm .box .form-control {
     width: 100%;
   }
+
   .reviewForm .box input,
   .reviewForm .box.full .form-control textarea {
     width: 90%;
   }
-  .productHistory .productList > div {
+
+  .productHistory .productList>div {
     width: 45%;
     margin: 0 2% 2% 0;
   }
 }
 
 @media only screen and (max-width: 489px) {
-  .productHistory .productList > div {
+  .productHistory .productList>div {
     width: 100%;
     margin: 0;
   }

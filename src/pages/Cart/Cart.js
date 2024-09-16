@@ -157,9 +157,9 @@ const Cart = () => {
                             </div>
                           </div>
                           <div className="rightCartInnerRightItems">
-                            <div class="cartInputBox">
+                            <div className="cartInputBox">
                               <div
-                                class="increase"
+                                className="increase"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
@@ -177,7 +177,7 @@ const Cart = () => {
                                 readOnly
                               />
                               <div
-                                class="decrease"
+                                className="decrease"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
@@ -300,9 +300,9 @@ const Cart = () => {
                             </div>
                           </div>
                           <div className="rightCartInnerRightItems">
-                            <div class="cartInputBox">
+                            <div className="cartInputBox">
                               <div
-                                class="increase"
+                                className="increase"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
@@ -320,7 +320,7 @@ const Cart = () => {
                                 readOnly
                               />
                               <div
-                                class="decrease"
+                                className="decrease"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
@@ -431,9 +431,9 @@ const Cart = () => {
                             </div>
                           </div>
                           <div className="rightCartInnerRightItems">
-                            <div class="cartInputBox">
+                            <div className="cartInputBox">
                               <div
-                                class="increase"
+                                className="increase"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
@@ -451,7 +451,7 @@ const Cart = () => {
                                 readOnly
                               />
                               <div
-                                class="decrease"
+                                className="decrease"
                                 onClick={() =>
                                   handleQuantityChange(
                                     item.id,
