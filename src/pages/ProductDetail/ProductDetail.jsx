@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "./ProductDetail.css";
+import { setUser } from "../../store/slice/userSlice";
 // import { toggleWishlist } from "../../store/slice/userSlice";
 
 const ProductDetail = () => {
@@ -39,6 +40,9 @@ const ProductDetail = () => {
     email: "",
     review: "",
   });
+  const { user } = useSelector((state) => state.user);
+
+  const [wishlist, setWishlist] = useState(user[0]?.wishlist || []);
 
   const location = useLocation();
   const { product } = location.state;
@@ -175,10 +179,22 @@ const ProductDetail = () => {
     toast.success("Item added to Cart successfully");
   };
 
-  // const isWishlisted = wishlist.some((item) => item.id === product.id);
+  const handleWishlistToggle = (productData) => {
+    const isWishlisted = wishlist.some((item) => item.id === productData.id);
 
-  const handleWhistlist = (productData) => {
-    // toggleWishlist(productData.id);
+    let updatedWishlist;
+    if (isWishlisted) {
+      // Remove from wishlist
+      updatedWishlist = wishlist.filter((item) => item.id !== productData.id);
+    } else {
+      // Add to wishlist
+      updatedWishlist = [...wishlist, productData];
+    }
+
+    setWishlist(updatedWishlist);
+
+    // Now append the updated wishlist to the user object in Redux
+    dispatch(setUser({ ...user[0], wishlist: updatedWishlist }));
   };
 
   return (
@@ -194,11 +210,11 @@ const ProductDetail = () => {
             <div className="bestOption">
               <div className="ribbon">#Best Seller</div>
               <div className="whislistBox">
-                {/* <div
-                  onClick={() => handleWhistlist(product)}
+                <div
+                  onClick={() => handleWishlistToggle(product)}
                   className="wishlist-btn"
                 >
-                  {isWishlisted ? (
+                  {wishlist.some((item) => item.id === product.id) ? (
                     <img
                       src={whistListBox.whistlistFill}
                       alt="Whistlist Product"
@@ -206,7 +222,7 @@ const ProductDetail = () => {
                   ) : (
                     <img src={whistListBox.whistlist} alt="Whistlist Product" />
                   )}
-                </div> */}
+                </div>
                 <img src={whistListBox.share} alt="Share Product" />
               </div>
             </div>

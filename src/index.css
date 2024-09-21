@@ -5,11 +5,16 @@
 @import 'react-toastify/dist/ReactToastify.css';
 
 
-body {
+body,
+:root {
   margin: 0;
   font-family: 'Poppins';
   font-weight: 600;
   font-style: normal;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -46,4 +51,14 @@ select {
 
 .font-16 {
   font-size: 16px;
+}
+
+.Toastify__close-button {
+  color: #000;
+  opacity: 0.3;
+  width: auto;
+}
+
+.Toastify__close-button:hover {
+  background-color: transparent;
 }

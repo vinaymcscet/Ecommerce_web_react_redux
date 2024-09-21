@@ -432,6 +432,10 @@
   width: 100%;
 }
 
+.productDetailReview .tab-content {
+  width: 100%;
+}
+
 .tabs-buttons {
   display: flex;
   justify-content: center;

@@ -54,6 +54,10 @@
     width: 100%;
 }
 
+.catProduct .slick-slide .product img{
+    width: 140px;
+}
+
 
 @media screen and (max-width: 1250px) {
     .limitedOffer {

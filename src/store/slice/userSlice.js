@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: []
+  user: [],
 };
 
 export const userSlice = createSlice({
@@ -20,11 +20,28 @@ export const userSlice = createSlice({
       console.log("userdetails", userdetails);
     },
     setLogout: (state) => {
-      state.user = []
-    }
-    
+      state.user = [];
+    },
+    removeAddress: (state, action) => {
+      state.user = state.user.map((user) => ({
+        ...user,
+        addresses: user.addresses.filter(
+          (address) => address.id !== action.payload
+        ),
+      }));
+    },
+    setDefaultAddress: (state, action) => {
+      state.user = state.user.map((user) => ({
+        ...user,
+        addresses: user.addresses.map((address) => ({
+          ...address,
+          isDefault: address.id === action.payload ? true : false,
+        })),
+      }));
+    },
   },
 });
 
-export const { setUser, setLogout } = userSlice.actions;
+export const { setUser, setLogout, removeAddress, setDefaultAddress } =
+  userSlice.actions;
 export default userSlice.reducer;

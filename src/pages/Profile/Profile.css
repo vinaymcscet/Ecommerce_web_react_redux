@@ -134,7 +134,7 @@
     height: 50px;
     padding: 2px 20px;
     background-color: #fff;
-    width: inherit;
+    width: 100%;
 }
 
 .login_securityWrapper .box input:disabled {
@@ -202,4 +202,741 @@ button.contact {
 
 .login_securityWrapper button.contact {
     max-width: 250px;
+}
+
+.user_order_list {
+    width: 100%;
+}
+
+.user_order_list h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.user_order_list .horizontal-tabs {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-bottom: 4px solid #e7e7e7;
+    margin-top: 20px;
+}
+
+.user_order_list .horizontal-tabs>div {
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+}
+
+.user_order_list .horizontal-tabs>div:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+}
+
+.user_order_list .horizontal-tabs>div.active:before {
+    background: #FBB540;
+    bottom: -2px;
+}
+
+.user_order_list .orderListWrapper {
+    width: 100%;
+}
+
+.user_order_list .orderList {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    margin-bottom: 20px;
+    flex-flow: wrap row;
+    position: relative;
+    margin: 20px 0;
+}
+
+.user_order_list .orderList .orderDetail {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.user_order_list .orderList .orderDetail .leftOrder {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.user_order_list .orderList .orderDetail .leftOrder img {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+}
+
+.user_order_list .orderList .orderDetail .leftOrder h3 {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.user_order_list .orderList .orderDetail .leftOrder .openReturnWindow {
+    color: #008225
+}
+
+.user_order_list .orderList .orderDetail .leftOrder p {
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.user_order_list .orderList .orderDetail .rightOrder {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex-flow: wrap column;
+}
+
+.user_order_list .orderList .orderDetail .rightOrder a {
+    font-size: 13px;
+    font-weight: 400;
+    color: #000;
+    text-decoration: none;
+    width: 100%;
+    text-align: right;
+}
+
+.user_order_list .orderList .orderDetail .rightOrder a:hover,
+.user_order_list .orderList .orderDetail .rightOrder a:focus {
+    color: #FBB540;
+}
+
+.userDetails {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.userDetails .userAddress {
+    width: 33%;
+}
+
+.userDetails .user_order_details {
+    width: 33%;
+}
+
+.userDetails .user_order_track {
+    width: 33%;
+}
+
+.userDetails .userAddress h6,
+.userDetails .user_order_details h4,
+.userDetails .user_order_track h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.userDetails .userAddress h6 span {
+    color: #000;
+    font-weight: 400;
+}
+
+.userDetails .userAddress p {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.userDetails .user_order_details p,
+.userDetails .user_order_track p {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.userDetails .user_order_track p.track {
+    color: #008224;
+}
+
+.tracking_order_status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 30px;
+}
+
+.tracking_order_status h6 {
+    color: #222222;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.tracking_order_status p {
+    color: #7A7A7A;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    width: 50%;
+}
+
+.tracking_order_status .order {
+    width: 30%;
+    position: relative;
+}
+
+.tracking_order_status.return .order {
+    width: 25%;
+    position: relative;
+}
+
+.tracking_order_status .order:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background-color: #DFDFDF;
+    top: -15px;
+}
+
+.tracking_order_status .order:last-child:before {
+    display: none;
+}
+
+.tracking_order_status .order:after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #DFDFDF;
+    left: 0;
+    border-radius: 50%;
+    top: -21px;
+}
+
+.tracking_order_status .order.started:after {
+    background-color: #008224;
+}
+
+.tracking_order_status .order.done:before {
+    background-color: #008224;
+}
+
+.tracking_order_status .order.started.retrun:after {
+    background-color: #FBB540;
+}
+
+.tracking_order_status .order.started.cancel:after {
+    background-color: #DD3333;
+}
+
+.addressBox {
+    width: 100%;
+}
+
+.addressBox h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.addressBox .addressForm {
+    height: auto;
+}
+
+.addressBox .addressList ul li {
+    width: 32%;
+    background-color: #fff;
+}
+
+.addressBox .addressList ul li p.default {
+    color: #FBB540;
+}
+
+.addressBox .addressList ul li p.address {
+    min-height: 142px;
+}
+
+
+.coupens {
+    width: 100%;
+}
+
+.coupens h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.coupens .coupensList {
+    width: 100%;
+}
+
+.coupens .coupensList .availableCoupen {
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    flex-flow: wrap row;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.copySelection {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FFB545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coupens .coupensList .availableCoupen h4 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+    width: 100%;
+}
+
+.coupens .coupensList .availableCoupen p {
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.coupens .coupensList .availableCoupen ul {
+    flex-flow: wrap column;
+    justify-content: flex-start;
+    width: 100%;
+    padding-left: 10px;
+}
+
+.coupens .coupensList .availableCoupen ul li {
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.coupens .coupensList .availableCoupen ul li:before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #000;
+    left: 0;
+    position: absolute;
+
+}
+
+.coupens .coupensList .availableCoupen p.validity {
+    font-size: 14px;
+    font-weight: 400;
+    color: #008224;
+    margin: 10px 0 0 0;
+}
+
+.coupens .coupensList .availableCoupen p.selectedCopiedMessage {
+    position: absolute;
+    top: 14px;
+    right: 34px;
+    width: auto;
+    border-radius: 8px;
+    background-color: #FFB545;
+    padding: 5px 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+}
+
+.userInvoice {
+    width: 100%;
+    position: relative;
+}
+
+.userInvoice .invoiceHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.userInvoice .invoiceHeader h3 {
+    font-size: 30px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.userInvoice .invoiceHeader .download {
+    font-size: 14px;
+    font-weight: 400;
+    color: #FBB540;
+    transition: all 0.4s ease-in-out;
+}
+
+.userInvoice .invoiceHeader .download:hover,
+.userInvoice .invoiceHeader .download:focus {
+    text-decoration: underline;
+    cursor: pointer;
+    outline: none;
+}
+
+.tabular_invoice {
+    border: 1px solid #D1D1D1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.closePDF {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -15px;
+    right: -10px;
+}
+
+.closePDF img {
+    width: 100%;
+    height: 100%;
+}
+
+@media print {
+    .tabular_invoice {
+        border: none;
+        border-radius: 0;
+    }
+}
+
+.reviewedItems {
+    width: 100%;
+}
+
+.reviewedItems h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.reviewProduct {
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    margin: 10px 0 20px 0;
+}
+
+.reviewProduct .item_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.reviewProduct .item_header .leftReviewPart {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.reviewProduct .item_header .leftReviewPart img {
+    width: 100%;
+    height: 100%;
+}
+
+.reviewProduct .item_header .rightReviewPart h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.reviewProduct .item_header .rightReviewPart p {
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.reviewProduct .item_header .rightReviewPart .starRating .star {
+    cursor: pointer;
+    font-size: 1.3rem;
+    margin: 0 2px 0 0;
+}
+
+.reviewProduct .item_header+p {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 5px 0;
+}
+
+.reviewProduct .reviewd_prd_image {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.reviewProduct .reviewd_prd_image .item {
+    width: 100px;
+    height: 100px;
+    margin: 0 10px 0 0;
+}
+
+.reviewProduct .reviewd_prd_image .item img {
+    width: 100%;
+    height: 100%;
+}
+
+.review_time {
+    font-size: 14px;
+    font-weight: 400;
+    color: #787878;
+    width: 100%;
+    text-align: right;
+}
+
+.whistlistList h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.whistlistList {
+    width: 100%;
+}
+
+.whistListWrapper {
+    width: 100%;
+}
+
+.whistListWrapper .whistlistMainWrapper {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    margin: 10px 0 20px 0;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .leftWhistlist {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .leftWhistlist img {
+    width: 100%;
+    height: 100%;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist {
+    position: relative;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 {
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 span {
+    width: 50%;
+    color: #000;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist {
+    width: 100%;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 .addToCart {
+    font-size: 14px;
+    font-weight: 400;
+    background: #FFB545;
+    max-width: 130px;
+    padding: 10px 15px;
+    min-height: auto;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .star {
+    font-size: 1.3rem;
+    margin: 0 2px 0 0;
+}
+
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .discount,
+.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .original {
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.resp_table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+@media only screen and (max-width: 1350px) {
+    .tracking_order_status p {
+        width: 60%;
+        min-height: 60px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+
+    .editableAction .edit,
+    .editableAction .save,
+    .editableAction .cancel {
+        width: 40px;
+        height: 40px;
+    }
+
+    .userDetails {
+        flex-flow: wrap row;
+    }
+
+    .userDetails .userAddress {
+        width: 43%;
+    }
+
+    .user_order_details,
+    .userDetails .user_order_track {
+        width: 43%;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .login_securityWrapper .box input {
+        width: 90%;
+    }
+
+    .userProfile .tabs span {
+        word-wrap: break-word;
+        width: 75%;
+        text-align: left;
+    }
+
+    .user_order_list .orderList .orderDetail .leftOrder h3,
+    .user_order_list .orderList .orderDetail .leftOrder p {
+        width: 90%;
+    }
+    .addressBox h3,
+    .reviewedItems h3,
+    .coupens h3 {
+        font-size: 22px;
+    }
+    .addressBox .addressList ul li {
+        width: 48% !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .vertical-tabs-container {
+        flex-flow: wrap column;
+    }
+
+    .vertical-tabs-container .tabs {
+        width: 100%;
+    }
+
+    .vertical-tabs-container .tab-content {
+        width: 100%;
+    }
+
+    .user_order_list .orderList .orderDetail {
+        flex-flow: wrap column;
+    }
+
+    .user_order_list .orderList .orderDetail .rightOrder {
+        width: 100%;
+        flex-flow: wrap row;
+        margin: 10px 0;
+        justify-content: flex-start;
+    }
+
+    .user_order_list .orderList .orderDetail .rightOrder a {
+        width: auto;
+        margin: 0 10px;
+    }
+    table tr {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-flow: wrap column;
+    }
+    table td {
+        width: 100% !important;
+    }
+    .addressBox h3,
+    .reviewedItems h3,
+    .coupens h3 {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (max-width: 567px) {
+    .tracking_order_status {
+        flex-flow: wrap column;
+    }
+    .tracking_order_status .order {
+        width: 100%;
+    }
+    .tracking_order_status .order:before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 100%;
+        background-color: #DFDFDF;
+        top: 0;
+        left: 7px;
+    }
+    .tracking_order_status .order:after {
+        top: 0;
+    }
+    .tracking_order_status p,
+    .tracking_order_status h6 {
+        padding-left: 20px;
+    }
+    .addressBox .addressList ul li {
+        width: 100% !important;
+        margin: 0;
+        margin-bottom: 20px;
+    }
+    .addressForm .box {
+        flex-flow: wrap column;
+    }
+    .addressForm .box .form-control,
+    .addressForm .box .form-control:first-child {
+        width: 100%;
+        margin: 0;
+        margin-bottom: 20px;
+    }
 }

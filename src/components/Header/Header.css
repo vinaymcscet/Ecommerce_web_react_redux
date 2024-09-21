@@ -70,7 +70,7 @@ li:not(:last-child) {
     border: 0;
     width: 100%;
     font-family: 'Poppins';
-    height: 33px;
+    height: 36px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
