@@ -54,7 +54,7 @@ const ProductList = () => {
 
   return (
     <div className="productListing">
-      <ProductSlider title={false} tile={10} />
+      <ProductSlider title={false} tile={7} />
       <CategorySlider />
       <div className="prdWrapper">
         <div className="prdLeft">

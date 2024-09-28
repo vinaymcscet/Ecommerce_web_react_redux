@@ -18,6 +18,8 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.cart);
+  
 
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const toggleHamburger = () => {
@@ -85,7 +87,7 @@ const Header = () => {
                 </div>
               </div>
             </Grid>
-            <Grid item xs={0} md={0} lg={4} className="rightHead">
+            <Grid item xs={0} md={4} lg={4} className="rightHead">
               <ul className={hamburgerOpen ? "rightMenu active" : "rightMenu"}>
                 <li onClick={() => redirectToSupport()}>
                   <img src="/images/icons/support.png" alt="Support" />
@@ -127,8 +129,9 @@ const Header = () => {
                     </li>
                   </div>
                 )}
-                <li onClick={() => redirectToCart()}>
+                <li onClick={() => redirectToCart()} className="cartItem">
                   <img src="/images/icons/cart.png" alt="Cart" />
+                  {cartItems.length > 0 && <span className="cartCount">{cartItems.length}</span>}
                   <p>Cart</p>
                 </li>
               </ul>

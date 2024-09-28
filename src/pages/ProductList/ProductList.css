@@ -3,8 +3,26 @@
   margin: auto;
 }
 
+.productListing .catProduct:nth-child(1) {
+  margin-top: 30px;
+}
+
 .productListing .catProduct .product img {
-  width: 100px;
+  width: 110px;
+}
+
+.productListing .catProduct .categoryItem {
+  width: max-content;
+}
+
+.productListing .catProduct .categoryItem p {
+  padding-right: 20px;
+}
+
+.productListing .slick-slide> div > div {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .prdWrapper {
@@ -12,6 +30,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  margin-top: 20px;
 }
 
 .prdWrapper .prdLeft {

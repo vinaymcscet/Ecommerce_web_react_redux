@@ -123,7 +123,7 @@ export const slick_product_settings = {
   dots: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 10,
+  slidesToShow: 7,
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
@@ -192,7 +192,7 @@ export const slick_category_settings = {
     {
       breakpoint: 1200,
       settings: {
-        slidesToShow: 6,
+        slidesToShow: 5,
         slidesToScroll: 1,
       },
     },
@@ -862,11 +862,11 @@ export const productBulkList = [
       ]},
     ],
     detailProductContent: [
-      "/images/product/prd-detail1.svg",
-      "/images/product/prd-detail2.svg",
-      "/images/product/prd-detail3.svg",
-      "/images/product/prd-detail4.svg",
-      "/images/product/prd-detail1.svg",
+      {id: 1, name: "/images/product/prd-detail1.svg", type: 'full'},
+      {id: 2, name: "/images/product/prd-detail2.svg", type: 'small'},
+      {id: 3, name: "/images/product/prd-detail3.svg", type: 'small'},
+      {id: 4, name: "/images/product/prd-detail4.svg", type: 'small'},
+      {id: 5, name: "/images/product/prd-detail1.svg", type: 'full'},
     ]
   },
   {

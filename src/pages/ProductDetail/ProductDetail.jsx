@@ -12,12 +12,11 @@ import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "./ProductDetail.css";
 import { setUser } from "../../store/slice/userSlice";
-// import { toggleWishlist } from "../../store/slice/userSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const { productHistory } = useSelector((state) => state.product);
-  // const wishlist = useSelector((state) => state.user.user.wishlist);
+  
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
@@ -652,8 +651,8 @@ const ProductDetail = () => {
       </div>
       <div className="detailProductContent">
         {product.detailProductContent &&
-          product.detailProductContent.map((item, index) => (
-            <img src={item} alt="Product detail" />
+          product.detailProductContent.map((item) => (
+            <img src={item.name} alt="Product detail" className={item.type === 'small' ? 'prd-small': ''} />
           ))}
       </div>
       <ToastContainer />

@@ -60,6 +60,11 @@
     width: auto;
 }
 
+@media screen and (max-width: 1100px) {
+    .emailSection {
+        padding-bottom: 30px;
+    }
+}
 @media screen and (max-width: 800px) {
     .emailSection input {
         width: 85%;
@@ -67,5 +72,8 @@
 
     .emailSection .emailBtn {
         right: 4%;
+    }
+    .subscribe .MuiBox-root {
+        width: 90%;
     }
 }

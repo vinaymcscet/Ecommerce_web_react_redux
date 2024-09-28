@@ -8,10 +8,10 @@ const Copyright = () => {
     <div className='copyright'>
       <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} lg={3} className="leftHead">
+            <Grid item xs={12} md={3} lg={3} className="leftHead">
               <p>@2024 - All Right reserved!</p>
             </Grid>
-            <Grid item xs={12} lg={9} className="rightCopyright">
+            <Grid item xs={12} md={9} lg={9} className="rightCopyright">
               <img src="/images/icons/support-card.svg" alt="Cards" />
             </Grid>
           </Grid>

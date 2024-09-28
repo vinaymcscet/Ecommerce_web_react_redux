@@ -3,12 +3,29 @@
 }
 .oneProduct .product img {
     width: 100%;
-    height: 314px;
+    /* height: 314px; */
+    height: 48vh;
 }
 
+@media screen and (max-width: 1800px) {
+    .oneProduct .product img {
+        height: 43vh;
+    }
+}
+
+@media screen and (max-width: 1600px) {
+    .oneProduct .product img {
+        height: 41vh;
+    }
+}
 
 @media screen and (max-width: 1500px) {
     .oneProduct .product img {
-        height: 334px;
+        height: 40vh;
+    }
+}
+@media screen and (max-width: 1400px) {
+    .oneProduct .product img {
+        height: auto;
     }
 }

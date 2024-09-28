@@ -137,7 +137,7 @@
 }
 
 .orderPriceBox {
-    width: 93%;
+    width: 100%;
     padding: 10px;
     background-color: #fff;
     border: 1px solid #D6D6D6;
@@ -221,7 +221,7 @@
 
 .tab-content.productDescription .emptyCart p {
     margin: 0;
-    font-size: 25px;
+    font-size: 21px;
     font-weight: 500;
 }
 
@@ -298,14 +298,33 @@
 .productDetailReview .tab-content.productDescription {
     width: 97%;
     padding: 0;
+    border: 0;
 }
 
+.tab-content.productDescription.emptyCart {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.productDetailReview .tab-content {
+    border: 0;
+}
+
+@media only screen and (max-width: 1600px) {
+    .rightCartItems h3 {
+        font-size: 22px;
+    }
+}
 @media only screen and (max-width: 1200px) {
     .action {
         flex-flow: wrap row;
     }
     .addressList ul li {
         margin-bottom: 20px;
+    }
+    .rightCartItems h3 {
+        font-size: 18px;
     }
 }
 @media only screen and (max-width: 991px) {
@@ -323,6 +342,9 @@
     }
     .addressList ul li {
         width: 40% !important;
+    }
+    .rightCartItems h3 {
+        font-size: 16px;
     }
 }
 @media only screen and (max-width: 850px) {
@@ -358,6 +380,9 @@
     }
     .rightCartInnerRightItems {
         margin-left: 0%;
+    }
+    .rightCartItems h3 {
+        font-size: 14px;
     }
 }
 

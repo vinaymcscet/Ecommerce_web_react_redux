@@ -126,7 +126,7 @@ const Cart = () => {
               </div>
               <div className="tabs-content">
                 <div
-                  className="tab-content productDescription"
+                  className={`tab-content productDescription ${cartItems.length === 0 ? 'emptyCart': ''}`}
                   ref={tabRefs[0]}
                   style={{ display: activeTab === 0 ? "block" : "none" }}
                 >

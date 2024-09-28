@@ -225,7 +225,7 @@ const Modal = () => {
                     </div>
                   </div>
                   <button type="submit">SUBMIT</button>
-                  <div className="partition">Or</div>
+                  {/* <div className="partition">Or</div>
                   <div className="socialInt">
                     <div className="box facebook">
                       <img
@@ -241,7 +241,7 @@ const Modal = () => {
                       />
                       <span>Google</span>
                     </div>
-                  </div>
+                  </div> */}
                 </form>
                 <div className="name">
                   Don’t have an account?

@@ -35,7 +35,7 @@ const Category = () => {
           </div>
         </>
       ) : (
-        <p>No Category available</p>
+        <p className="notAvailable">No Category available</p>
       )}
       <div className="productHistory">
         <h3>Frequently bought</h3>
@@ -61,7 +61,7 @@ const Category = () => {
               </div>
             ))
           ) : (
-            <p>No product history available</p>
+            <p className="notAvailable">No product history available</p>
           )}
         </div>
       </div>
@@ -89,7 +89,7 @@ const Category = () => {
               </div>
             ))
           ) : (
-            <p>No product history available</p>
+            <p className="notAvailable">No product history available</p>
           )}
         </div>
       </div>

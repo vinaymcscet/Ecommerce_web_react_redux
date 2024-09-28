@@ -158,6 +158,26 @@ li:not(:last-child) {
     color: #fbb540;
   }
 
+  .cartCount {
+    position: absolute;
+    left: 20px;
+    top: -5px;
+    text-align: center;
+    border-radius: 7px;
+    width: 18px;
+    height: 18px;
+    background-color: #ff6161;
+    border: 1px solid #fff;
+    font-weight: 400;
+    color: #f0f0f0;
+    line-height: 16px;
+    font-size: 12px;
+  }
+
+  .cartItem {
+    position: relative;
+  }
+
   
 @media screen and (max-width: 1200px) {
     li:not(:last-child) {
@@ -173,6 +193,21 @@ li:not(:last-child) {
     header li p {
         width: 60%;
         word-break: break-word;
+    }
+    header li,
+    header li:not(:last-child) {
+        margin-right: 0px;
+        width: 30%;
+    }
+    
+    .menu-container li {
+        width: 100%;
+    }
+    .menu-container {
+        margin: 0;
+    }
+    .rightHead ul {
+        width: 100%;
     }
 }
 
@@ -192,17 +227,46 @@ li:not(:last-child) {
         transition: all 0.3s linear;
     }
 
+    .rightHead ul.rightMenu {
+        width: 170px;
+        z-index: 9;
+    }
+
     .rightMenu.active {
         display: flex;
         transform: translateX(0%);
     }
 
-    .rightMenu li {
+    .rightMenu li,
+    .rightHead ul.rightMenu li {
         width: 100%;
         margin: 0;
         padding: 7px 0;
         cursor: pointer;
         outline: none;
+    }
+
+    .rightMenu .menu-container li {
+        flex-wrap: wrap;
+    }
+
+    .rightMenu .menu-container li .menu {
+        top: 10px;
+        right: 0;
+        width: 100%;
+        position: relative;
+        display: none;
+    }
+
+    .rightMenu .menu-container li .menu.active {
+        display: flex;
+    }
+    .rightMenu.active ~ .hamburgerMenu .burger1 {
+        position: relative;
+        top: -6px;
+    }
+    .menu-container {
+        width: 100%;
     }
 }
 

@@ -19,7 +19,8 @@ body,
 }
 
 button,
-input {
+input,
+textarea {
   font-family: 'Poppins';
   font-weight: 400;
   font-style: normal;
