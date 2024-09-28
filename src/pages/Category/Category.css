@@ -43,13 +43,13 @@
 }
 
 .productHistory .productList {
-    width: 100%;
-    margin: 20px 0;
+    width: 94%;
+    margin: 20px auto;
     justify-content: space-between;
 }
 
 .productHistory .productList > div {
-    width: 16%;
+    width: 18%;
     margin: 0 1%;
     min-height: 340px;
 }

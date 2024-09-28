@@ -11,7 +11,10 @@ const HeaderPin = () => {
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={3}>
-                        <img src="/images/free-shipping.png" alt='Free Shipping' />
+                        <div className='freeItems'>
+                            <img src="/images/Truck.svg" alt='Free Shipping' />
+                            <p>Free Shipping</p>
+                        </div>
                     </Grid>
                     <Grid item xs={6}>
                         <div className="frame">
@@ -20,7 +23,8 @@ const HeaderPin = () => {
                     </Grid>
                     <Grid item xs={3}>
                         <div className="getApp">
-                            <img src="/images/get-app.png" alt='Get Fiki App' />
+                            <img src="/images/Smartphone.svg" alt='Free Shipping' />
+                            <p>Get the FikFis App</p>
                         </div>
                     </Grid>
                 </Grid>

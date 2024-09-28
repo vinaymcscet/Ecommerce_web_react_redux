@@ -1,8 +1,8 @@
 .categoryBoxes {
     padding: 10px;
     border: 1px solid #EAEAEA;
-    box-shadow: -1px 3px 5px 1px #EAEAEA;
-    border-radius: 10px;
+    box-shadow: 1px 1px 1px 0px #EAEAEA;
+    border-radius: 6px;
 }
 
 .prdList .product {
@@ -23,7 +23,7 @@
 
 .categoryBoxes {
     width: 29%;
-    margin: 2% 1%;
+    margin: 1% 1%;
 }
 
 .categoryBoxes h3 {
@@ -34,13 +34,20 @@
 }
 
 .product p {
-    text-align: left;
+    text-align: center;
     font-size: 12px;
-    width: 80%;
+    width: 100%;
+}
+
+.categoryBoxes button {
+    width: auto;
+    font-size: 12px;
+    min-height: 28px;
+    font-weight: 600;
 }
 
 .product img {
-    width: 160px;
+    width: 175px;
 }
 
 .fourCategoryProduct {
@@ -53,41 +60,55 @@
     flex-flow: wrap row;
 }
 
+.categoryBoxes.oneProduct .product {
+    margin: 0;
+}
+.categoryBoxes.oneProduct button {
+    margin-top: 20px;
+}
+
 @media screen and (max-width: 1300px) {
     .product {
         width: 44%;
         margin: 0 2% 2% 2%;
     }
-    
+
     .product img {
         width: 100%;
     }
 }
+
 @media screen and (max-width: 1200px) {
     .categoryBoxes h3 {
         font-size: 18px;
     }
+
     .oneProduct .product img {
         min-height: 305px;
     }
 }
+
 @media screen and (max-width: 1100px) {
     .categoryBoxes {
         width: 25%;
     }
 }
+
 @media screen and (max-width: 767px) {
     .categoryBoxes {
         width: 42%;
     }
+
     .categoryBoxes h3 {
         font-size: 15px;
     }
 }
+
 @media screen and (max-width: 567px) {
     .categoryBoxes {
         width: 90%;
     }
+
     .categoryBoxes h3 {
         min-height: auto;
     }

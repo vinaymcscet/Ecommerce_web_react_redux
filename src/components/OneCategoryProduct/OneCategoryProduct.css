@@ -3,5 +3,12 @@
 }
 .oneProduct .product img {
     width: 100%;
-    min-height: 330px;
+    height: 314px;
+}
+
+
+@media screen and (max-width: 1500px) {
+    .oneProduct .product img {
+        height: 334px;
+    }
 }

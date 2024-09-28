@@ -1,3 +1,6 @@
+.footercontainer {
+    margin-top: 50px;
+}
 .mainFooter {
     background-color: #1E1E1E;
     display: flex;
@@ -8,11 +11,18 @@
 .mainFooter .MuiBox-root {
     width: 90%;
     margin: 0 auto;
-    padding: 30px 130px;
+    padding: 30px 180px;
 }
 
 .mainFooter .list {
     width: 100%;
+}
+
+.mainFooter .list.store {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap column;
 }
 
 .mainFooter .list h4 {

@@ -7,7 +7,25 @@
     align-items: center;
     justify-content: flex-end;
 }
+
+.getApp img {
+    margin-right: 10px;
+}
 img {
     cursor: pointer;
     outline: none;
+}
+
+.freeItems {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.freeItems img {
+    margin-right: 10px;
+}
+.freeItems p {
+    font-weight: 500;
+    font-size: 12px;
 }

@@ -95,7 +95,7 @@ li:not(:last-child) {
     background: #1f1f1f;
     border-radius: 0;
     position: absolute;
-    top: 116px;
+    top: 112px;
     right: 90px;
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
     opacity: 0;

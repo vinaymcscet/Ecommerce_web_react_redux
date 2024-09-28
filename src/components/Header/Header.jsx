@@ -30,6 +30,9 @@ const Header = () => {
   const redirectToCart = () => {
     navigate("/cart");
   };
+  const redirectToSupport = () => {
+    navigate("/contact");
+  };
 
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
   const toggleUserMenu = (e) => {
@@ -52,7 +55,7 @@ const Header = () => {
               <ul className="leftHeaderMenu">
                 <li>
                   <Link to="/">
-                    <img src="/images/icons/logo.png" alt="Logo" />
+                    <img src="/images/icons/LOGO.png" alt="Logo" />
                   </Link>
                 </li>
                 <li>
@@ -84,7 +87,7 @@ const Header = () => {
             </Grid>
             <Grid item xs={0} md={0} lg={4} className="rightHead">
               <ul className={hamburgerOpen ? "rightMenu active" : "rightMenu"}>
-                <li>
+                <li onClick={() => redirectToSupport()}>
                   <img src="/images/icons/support.png" alt="Support" />
                   <p>Support</p>
                 </li>

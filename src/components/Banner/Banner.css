@@ -7,39 +7,54 @@
 
 .bannerContent {
     position: absolute;
-    top: 20%;
+    top: 11%;
     left: 10%;
 }
 
 .bannerContent h4 {
     margin: 0;
     font-size: 30px;
+    font-weight: 700;
 }
 
 .bannerContent h6 {
     margin: 0;
-    font-size: 18px;
-    margin: 5px 0;
-    font-weight: 500;
+    font-size: 24px;
+    margin: 3px 0;
+    font-weight: 400;
 }
 
 .bannerContent p {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 0px;
+    font-weight: 400;
+}
+
+.bannerContent p.font-18 {
+    font-weight: 500;
+    font-size: 16px;
 }
 
 .shopBtn {
-    font-size: 16px;
     text-transform: uppercase;
-    border-radius: 20px;
+    border-radius: 50px;
     border: 0;
     background: #F6AA37;
-    padding: 10px 30px;
+    padding: 0px 30px;
     margin-top: 10px;
     font-weight: 600;
     cursor: pointer;
     outline: none;
+    width: auto;
+    font-size: 18px;
+    min-width: 194px;
+    min-height: 41px;
+}
+
+.productHeader button {
+    min-height: 40px;
+    font-size: 17px;
 }
 
 @media screen and (max-width: 991px) {
