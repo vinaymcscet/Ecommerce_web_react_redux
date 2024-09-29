@@ -13,6 +13,7 @@
 
 .prdDetail .catProduct .categoryItem {
   width: max-content;
+  max-width: 220px;
 }
 
 .prdDetail .catProduct .categoryItem p {
@@ -39,12 +40,12 @@
 }
 
 .prdDetail .productDetailInfo .leftDetailInfo {
-  width: 30%;
+  width: 35%;
   margin-right: 2%;
 }
 
 .prdDetail .productDetailInfo .rightDetailInfo {
-  width: 70%;
+  width: 65%;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -655,8 +656,8 @@ table tr td:first-child {
 }
 
 .reviewSection .leftReviewPart .MuiLinearProgress-root {
-  height: 8px;
-  border-radius: 8px;
+  height: 6px;
+  border-radius: 6px;
 }
 
 .reviewSection .leftReviewPart .MuiLinearProgress-bar {
@@ -680,6 +681,9 @@ table tr td:first-child {
   line-height: 30px;
 }
 
+.detailLinearRivewProgress .reviewProgress span.css-lrbo11-MuiLinearProgress-root {
+  background-color: #D2D2D2;
+}
 .progressBar {
   width: 80%;
 }
@@ -833,6 +837,7 @@ table tr td:first-child {
   border-radius: 20px;
   background-color: #fff;
   width: 93%;
+  color: #646464;
 }
 
 button.review {
