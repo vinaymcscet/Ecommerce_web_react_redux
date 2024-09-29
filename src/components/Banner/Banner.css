@@ -1,39 +1,77 @@
 .bannerContainer {
     width: 100%;
-    background: url('../../../public/images/banner.png') no-repeat 90% 0 #E2E0D2;
+    /* background: url('../../../public/images/banner.png') no-repeat 90% 0 #E2E0D2; */
     min-height: 260px;
     position: relative;
 }
 
 .bannerContent {
+    width: 100%;
+}
+
+.bannerContent .slick-slider {
+    width: 100%;
+    max-width: 100%;
+}
+
+.bannerContent .slick-slider .slick-list {
+    width: 100%;
+    margin: 0;
+}
+
+.bannerContent .slick-slider .slick-next,
+.bannerContent .slick-slider .slick-prev {
+    min-height: 34px;
+}
+
+.bannerContent .slick-slider .slick-slide {
+    position: relative;
+    padding: 0;
+}
+
+
+.bannerContent .slick-slider .slick-slide img {
+    width: 100%;
+}
+
+.bannerContent .slick-slider .slick-next {
+    right: 20px;
+}
+
+.bannerContent .slick-slider .slick-prev  {
+    left: 20px;
+}
+
+.bannerContent .bannerContentList { 
     position: absolute;
     top: 11%;
-    left: 10%;
+    left: 12%;
+    width: 300px;
 }
 
-.bannerContent h4 {
+.bannerContent .bannerContentList h4 {
     margin: 0;
-    font-size: 30px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 600;
 }
 
-.bannerContent h6 {
+.bannerContent .bannerContentList h6 {
     margin: 0;
-    font-size: 24px;
+    font-size: 22px;
     margin: 3px 0;
     font-weight: 400;
 }
 
-.bannerContent p {
+.bannerContent .bannerContentList p {
     margin: 0;
-    font-size: 20px;
+    font-size: 17px;
     margin-bottom: 0px;
     font-weight: 400;
 }
 
-.bannerContent p.font-18 {
+.bannerContent .bannerContentList p.font-18 {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .shopBtn {
@@ -58,6 +96,19 @@
 }
 
 @media screen and (max-width: 991px) {
+    .bannerContent .slick-slider .slick-slide img {
+        width: 100%;
+        min-height: 260px;
+    }
+}
+@media screen and (max-width: 767px) {
+    .bannerContent .slick-slider .slick-slide img {
+        width: 100%;
+        min-height: 200px;
+    }
+}
+/* 
+@media screen and (max-width: 991px) {
     .bannerContainer {
         background: url('../../../public/images/banner.png') no-repeat 200% 0 #E2E0D2;
     }
@@ -71,4 +122,4 @@
     .bannerContainer {
         background: url('../../../public/images/banner.png') no-repeat 0% 0 #E2E0D2;
     }
-}
+} */

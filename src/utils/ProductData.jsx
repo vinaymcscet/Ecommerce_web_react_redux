@@ -57,6 +57,21 @@ export const slides = [
   },
 ];
 
+export const bannerList = [
+  {id:1, name: '/images/banner/web_banner.jpg', alt: "banner 1"},
+  {id:2, name: '/images/banner/web_banner - 2.jpg', alt: "banner 2"},
+  {id:3, name: '/images/banner/web_banner - 3.jpg', alt: "banner 3"},
+  {id:4, name: '/images/banner/web_banner - 4.jpg', alt: "banner 4"},
+]
+
+export const slick_banner_settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+}
+
 export const slick_settings = {
   dots: false,
   infinite: false,
