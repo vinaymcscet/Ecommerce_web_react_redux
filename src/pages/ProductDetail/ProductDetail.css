@@ -681,7 +681,7 @@ table tr td:first-child {
   line-height: 30px;
 }
 
-.detailLinearRivewProgress .reviewProgress span.css-lrbo11-MuiLinearProgress-root {
+.detailLinearRivewProgress .reviewProgress span.MuiLinearProgress-root {
   background-color: #D2D2D2;
 }
 .progressBar {
