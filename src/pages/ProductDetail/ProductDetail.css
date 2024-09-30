@@ -133,7 +133,7 @@
   .image-gallery-swipe
   .image-gallery-slides
   .image-gallery-slide {
-  height: 303px;
+  height: 460px;
 }
 .prdDetail
   .productDetailInfo
@@ -161,6 +161,7 @@
   max-height: 100%;
   width: 100%;
   object-fit: cover;
+  height: 100%;
 }
 
 .rightDetailInfo .leftBar {
@@ -681,7 +682,7 @@ table tr td:first-child {
   line-height: 30px;
 }
 
-.detailLinearRivewProgress .reviewProgress span.MuiLinearProgress-root {
+.detailLinearRivewProgress .reviewProgress .progressBar span.MuiLinearProgress-root {
   background-color: #D2D2D2;
 }
 .progressBar {
@@ -889,7 +890,7 @@ button.review {
   font-weight: 500;
   position: relative;
   margin: 0;
-  font-size: 30px;
+  font-size: 25px;
 }
 
 .allcategory h3:before {
@@ -930,6 +931,14 @@ button.review {
 
 .whislistBox img {
   margin: 0 5px;
+}
+
+.productHistory.allcategory .productList {
+  width: 100%;
+}
+
+.productHistory.allcategory .productList > div {
+  margin: 0 2% 0 0;
 }
 
 @media only screen and (max-width: 1300px) {

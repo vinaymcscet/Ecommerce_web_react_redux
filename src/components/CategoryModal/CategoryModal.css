@@ -7,8 +7,16 @@
     margin: 0;
 }
 
+.categoryModal .allCategory {
+    width: 100%;
+}
+
+.categoryModal .allCategory h3 {
+    text-align: left;
+}
+
 .categoryModal .allCategory h3:before {
-    width: 50%;
+    width: 15%;
 }
 
 .categoryModal .categoryList {

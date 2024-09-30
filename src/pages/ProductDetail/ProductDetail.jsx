@@ -45,6 +45,9 @@ const ProductDetail = () => {
 
   const location = useLocation();
   const { product } = location.state;
+  useEffect(() => {
+    console.log("product---", product);
+  }, [])
 
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
 
