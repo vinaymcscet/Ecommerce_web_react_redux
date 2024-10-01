@@ -22,12 +22,14 @@ const Header = () => {
   
 
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [toggleModalState, setToggleModalState] = useState(false)
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
   };
   const handleOpenDialog = (type) => {
     dispatch(setModalType(type));
-    dispatch(toggleModal(true));
+    setToggleModalState(true);
+    dispatch(toggleModal(toggleModalState));
   };
   const redirectToCart = () => {
     navigate("/cart");

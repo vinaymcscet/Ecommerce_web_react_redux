@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../../components/Banner/Banner";
 import { BannerOfferData } from "../../utils/BannerOfferData";
 import "./Home.css";
@@ -21,6 +21,7 @@ import { User } from "../../utils/CommonUtils";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [productTile, setProductTile] = useState(true);
   useEffect(() => {
     dispatch(setProductHistory(productHistoryList));
     dispatch(setProductList(productBulkList));
@@ -34,7 +35,7 @@ const Home = () => {
   return (
     <div>
       <Banner props={BannerOfferData} />
-      <ProductSlider title={true} />
+      <ProductSlider title={productTile} />
       <div className="fourCategoryProduct">
         <FourCategoryProduct
           header="Appliances for your home Up to 55% off"

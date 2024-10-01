@@ -221,7 +221,7 @@
 
 .tab-content.productDescription .emptyCart p {
     margin: 0;
-    font-size: 21px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -265,6 +265,7 @@
 
 .cartWrapper .leftCartItems .tabs-buttons {
     justify-content: space-between;
+    display: flex;
 }
 
 .tabs-buttons button:disabled {
@@ -309,6 +310,27 @@
 
 .productDetailReview .tab-content {
     border: 0;
+}
+
+.cartWrapper .tabs-buttons button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #333;
+    width: 20%;
+    min-height: 35px;
+    font-size: 18px;
+    font-weight: 400;
+    border-radius: 0;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.cartWrapper .tabs-content {
+    margin: 20px 0;
 }
 
 @media only screen and (max-width: 1600px) {

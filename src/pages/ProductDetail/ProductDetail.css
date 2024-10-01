@@ -520,6 +520,10 @@
   margin: 0 auto;
 }
 
+.leftCartItems .productDetailReview {
+  width: 95%;
+}
+
 .productDetailReview .tab-content {
   width: 100%;
 }

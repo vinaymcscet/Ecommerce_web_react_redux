@@ -1,7 +1,8 @@
+import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import Home from './pages/Home/Home';
+import { useSelector } from "react-redux";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import Terms from "./pages/Terms/Terms";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
@@ -14,20 +15,27 @@ import OrderCancellation from "./pages/OrderCancellation/OrderCancellation";
 import Modal from "./components/Modal/Modal";
 import CategoryModal from "./components/CategoryModal/CategoryModal";
 
-import './App.css';
-import About from "./pages/About/About";
-import Blog from "./pages/Blog/Blog";
-import BlogDetail from "./pages/BlogDetail/BlogDetail";
-import Faq from "./pages/Faq/Faq";
-import Contact from "./pages/Contact/Contact";
-import Category from "./pages/Category/Category";
-import ProductList from "./pages/ProductList/ProductList";
-import ProductDetail from "./pages/ProductDetail/ProductDetail";
-import Cart from "./pages/Cart/Cart";
-import AddressModal from "./components/AddressModal/AddressModal";
-import { useSelector } from "react-redux";
-import OrderComplete from "./pages/OrderComplete/OrderComplete";
-import Profile from "./pages/Profile/Profile";
+import "./App.css";
+// import Home from './pages/Home/Home';
+const Home = React.lazy(() => import("./pages/Home/Home"));
+const About = React.lazy(() => import("./pages/About/About"));
+const Blog = React.lazy(() => import("./pages/Blog/Blog"));
+const BlogDetail = React.lazy(() => import("./pages/BlogDetail/BlogDetail"));
+const Faq = React.lazy(() => import("./pages/Faq/Faq"));
+const Contact = React.lazy(() => import("./pages/Contact/Contact"));
+const Category = React.lazy(() => import("./pages/Category/Category"));
+const ProductList = React.lazy(() => import("./pages/ProductList/ProductList"));
+const ProductDetail = React.lazy(() =>
+  import("./pages/ProductDetail/ProductDetail")
+);
+const Cart = React.lazy(() => import("./pages/Cart/Cart"));
+const OrderComplete = React.lazy(() =>
+  import("./pages/OrderComplete/OrderComplete")
+);
+const Profile = React.lazy(() => import("./pages/Profile/Profile"));
+const AddressModal = React.lazy(() =>
+  import("./components/AddressModal/AddressModal")
+);
 
 function App() {
   const { isAddressModelOpen } = useSelector((state) => state.modal);
@@ -35,6 +43,7 @@ function App() {
     <div className="App">
       <Header />
       <ScrollToTop />
+      <Suspense fallback={<div className="loading"><img src="/images/icons/LOGO.png" alt="Logo" /></div>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
@@ -46,7 +55,10 @@ function App() {
           <Route path="disclaimer" element={<Disclaimer />} />
           <Route path="refund-policy" element={<RefundPolicy />} />
           <Route path="return-and-refund" element={<ReturnAndRefund />} />
-          <Route path="shipping-and-delivery" element={<ShippingAndDelivery />} />
+          <Route
+            path="shipping-and-delivery"
+            element={<ShippingAndDelivery />}
+          />
           <Route path="order-cancellation" element={<OrderCancellation />} />
           <Route path="allcategory" element={<Category />} />
           <Route path="faq" element={<Faq />} />
@@ -58,12 +70,15 @@ function App() {
           <Route path="userprofile" element={<Profile />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
+      </Suspense>
       <Footer />
       <Modal />
       <CategoryModal />
       {isAddressModelOpen && (
-      <AddressModal />
-      )}
+        <Suspense fallback={<div>Loading Address Modal...</div>}>
+          <AddressModal />
+        </Suspense>
+      )}+
     </div>
   );
 }

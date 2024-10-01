@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { startTransition, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import StarRating from "../../components/StarRating/StarRating";
 import { updateQuantity, removeItem } from "../../store/slice/cartSlice";
@@ -53,14 +53,18 @@ const Cart = () => {
   const { itemTotal, itemDiscount, delivery, tax, total } = calculateTotals();
 
   const handleAddress = () => {
-    dispatch(toggleAddressModal({ isOpen: true }));
+    startTransition(() => {
+      dispatch(toggleAddressModal({ isOpen: true }));
+    });
   };
 
   const handleAddressModal = (address = null) => {
-    dispatch(toggleAddressModal({ isOpen: true, address }));
-    if (address) {
-      dispatch(editAddress({ id: address.id, updatedData: address }));
-    }
+    startTransition(() => {
+      dispatch(toggleAddressModal({ isOpen: true, address }));
+      if (address) {
+        dispatch(editAddress({ id: address.id, updatedData: address }));
+      }
+    });
   };
 
   const handleRemoveAddress = (id) => {
@@ -126,7 +130,9 @@ const Cart = () => {
               </div>
               <div className="tabs-content">
                 <div
-                  className={`tab-content productDescription ${cartItems.length === 0 ? 'emptyCart': ''}`}
+                  className={`tab-content productDescription ${
+                    cartItems.length === 0 ? "emptyCart" : ""
+                  }`}
                   ref={tabRefs[0]}
                   style={{ display: activeTab === 0 ? "block" : "none" }}
                 >

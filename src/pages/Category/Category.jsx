@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { allCategory } from "../../utils/ProductData";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
@@ -8,14 +8,14 @@ import "./Category.css";
 
 const Category = () => {
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(true);
   const { productHistory, allCategories } = useSelector(
     (state) => state.product
   );
-  console.log(allCategories);
 
   const handleCategory = (item) => {
     console.log(item);
-    dispatch(toggleCategoryModal({ isOpen: true, category: item }));
+    dispatch(toggleCategoryModal({ isOpen: isOpen, category: item }));
   };
   return (
     <div className="allCategory">

@@ -1,0 +1,18 @@
+.loading {
+  position: fixed;
+  z-index: 9;
+  background: #000000d7;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: l1 1s infinite cubic-bezier(0.5, 300, 0.5, -300);
+}
+
+@keyframes l1 {
+  50%,
+  100% {
+    transform: translateY(0.2px);
+  }
+}
