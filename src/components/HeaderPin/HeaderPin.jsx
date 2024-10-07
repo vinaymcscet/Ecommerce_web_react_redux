@@ -10,18 +10,18 @@ const HeaderPin = () => {
         <div className='headerPinContainer'>
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xl={3} sm={3} xs={5}>
                         <div className='freeItems'>
                             <img src="/images/Truck.svg" alt='Free Shipping' />
                             <p>Free Shipping</p>
                         </div>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xl={6} sm={6} xs={0}>
                         <div className="frame">
                             <QuoteSlider slides={SliderData} />
                         </div>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xl={3} sm={3} xs={6}>
                         <div className="getApp">
                             <img src="/images/Smartphone.svg" alt='Free Shipping' />
                             <p>Get the FikFis App</p>

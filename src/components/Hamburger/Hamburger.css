@@ -40,3 +40,10 @@
         top: 60px;
     }
 }
+
+@media screen and (max-width: 575px) {
+    .hamburger {
+        right: 10px;
+        top: 50px;
+    }
+}

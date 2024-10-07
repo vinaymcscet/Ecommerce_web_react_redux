@@ -301,6 +301,9 @@ li:not(:last-child) {
     .leftHeaderMenu li:not(:last-child) {
         margin-right: 5px;
     }
+    .rightMenu {
+        top: 100px;
+    }
 }
 
 @media screen and (max-width: 500px) {

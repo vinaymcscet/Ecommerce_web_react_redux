@@ -47,9 +47,9 @@
 }
 
 .productHistory .productList > div {
-    width: 16%;
+    width: 16.5%;
     margin: 0 1%;
-    min-height: 340px;
+    min-height: 350px;
 }
 
 .productHistory .productList > div .productBoxes {
@@ -72,7 +72,7 @@
 }
 
 .productHistory .productList { 
-    width: 93%;
+    width: 100%;
 }
 
 @media screen and (max-width: 1800px) {
