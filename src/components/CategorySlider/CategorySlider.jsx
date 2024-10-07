@@ -1,6 +1,6 @@
 import React from "react";
 import Slider from "react-slick";
-import { categorySlides, slick_category_settings } from "../../utils/ProductData";
+import { slick_category_settings } from "../../utils/ProductData";
 import CategoryCard from "../CategoryCard/CategoryCard";
 import './CategorySlider.css'
 import { useSelector } from "react-redux";
@@ -10,7 +10,7 @@ const CategorySlider = () => {
 
     return (
       <div className="catProduct">
-        <Slider {...slick_category_settings}>
+        {categorySlide.length > 0 ? (<Slider {...slick_category_settings}>
           {categorySlide[0].map((slide, index) => {
             return (
               <div key={index}>
@@ -21,7 +21,7 @@ const CategorySlider = () => {
               </div>
             );
           })}
-        </Slider>
+        </Slider>) : ''}
       </div>
     );
   };  

@@ -219,7 +219,7 @@ const ProductList = () => {
             </Accordion>
           </div>
         </div>
-        <div className="prdRight">
+        {<div className="prdRight">
           <div className="productList">
             {productList && productList.length > 0 ? (
               productList[0].map((item, index) => (
@@ -242,10 +242,10 @@ const ProductList = () => {
                 </div>
               ))
             ) : (
-              <p>No product history available</p>
+              <p className="noProductAvailable">No product history available</p>
             )}
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
