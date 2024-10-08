@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { POST } from "../../utils/API";
+import { SIGNUP_BASE_CONSTANT } from "../../utils/Constants";
 
 const initialState = {
   isModalOpen: false,
@@ -17,7 +19,9 @@ const initialState = {
   isAddressModelOpen: false,
   addresses: [],
   defaultAddressId: null,
-  selectedAddress: null
+  selectedAddress: null,
+  error: "",
+  loading: false,
 };
 
 export const modalSlice = createSlice({
@@ -75,6 +79,12 @@ export const modalSlice = createSlice({
         address.id === id ? { ...address, ...updatedData } : address
       );
     },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
 
@@ -90,6 +100,24 @@ export const {
   saveAddress,
   removeAddress,
   setDefaultAddress,
-  editAddress
+  editAddress,
+  setError,
+  setLoading,
 } = modalSlice.actions;
 export default modalSlice.reducer;
+
+// Thunk to handle signup API call
+export const signupUser = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(SIGNUP_BASE_CONSTANT, userData); // Adjust your endpoint here
+    dispatch(setLoading(false));
+
+    // Handle success (e.g., move to the OTP step)
+    dispatch(setModalType("otp"));
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError("Failed to sign up. Please try again."));
+  }
+};

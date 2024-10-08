@@ -27,7 +27,7 @@ const Home = () => {
     dispatch(setProductList(productBulkList));
     dispatch(setCategorySlide(categorySlides))
     dispatch(setAllCategories(allCategory))
-    dispatch(setUser(User))
+    // dispatch(setUser(User))
   }, [dispatch]);
 
   const { productHistory } = useSelector((state) => state.product);

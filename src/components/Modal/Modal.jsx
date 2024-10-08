@@ -10,12 +10,13 @@ import {
   setSignup,
   setOtp,
   setForgotPassword,
+  signupUser,
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
 
 const Modal = () => {
   const dispatch = useDispatch();
-  const { isModalOpen, modalType, login, signup, otp, forgotPassword } =
+  const { isModalOpen, modalType, login, signup, otp, forgotPassword, loading, error } =
     useSelector((state) => state.modal);
 
   useEffect(() => {
@@ -97,7 +98,8 @@ const Modal = () => {
     e.preventDefault();
     // Submit form data
     if (modalType === "signup") {
-      dispatch(setModalType("otp"));
+      // dispatch(setModalType("otp"));
+      dispatch(signupUser(signup));
     }
     if (modalType === "otp") {
       dispatch(toggleModal(false));
