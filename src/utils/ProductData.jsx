@@ -2788,13 +2788,6 @@ export const productBulkList = [
       {id: 4, name: "/images/product/prd-detail4.svg", type: 'small'},
       {id: 5, name: "/images/product/prd-detail1.svg", type: 'full'},
     ],
-    detailProductContent: [
-      {id: 1, name: "/images/product/prd-detail1.svg", type: 'full'},
-      {id: 2, name: "/images/product/prd-detail2.svg", type: 'small'},
-      {id: 3, name: "/images/product/prd-detail3.svg", type: 'small'},
-      {id: 4, name: "/images/product/prd-detail4.svg", type: 'small'},
-      {id: 5, name: "/images/product/prd-detail1.svg", type: 'full'},
-    ]
   },
   {
     id: 17,

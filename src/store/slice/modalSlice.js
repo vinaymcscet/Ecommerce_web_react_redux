@@ -108,15 +108,19 @@ export default modalSlice.reducer;
 
 // Thunk to handle signup API call
 export const signupUser = (userData) => async (dispatch) => {
+  console.log("signup userData on slice ", userData);
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
     const response = await POST(SIGNUP_BASE_CONSTANT, userData); // Adjust your endpoint here
     dispatch(setLoading(false));
+    console.log("response", response);
+    
 
     // Handle success (e.g., move to the OTP step)
     dispatch(setModalType("otp"));
   } catch (error) {
+    console.log("POST Signup Error", error);
     dispatch(setLoading(false));
     dispatch(setError("Failed to sign up. Please try again."));
   }

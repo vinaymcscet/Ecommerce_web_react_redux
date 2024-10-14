@@ -96,10 +96,13 @@ const Modal = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("signup data ", signup);
+    
     // Submit form data
     if (modalType === "signup") {
       // dispatch(setModalType("otp"));
-      dispatch(signupUser(signup));
+      const responseObj = { "username": signup.userPhoneOrEmail}
+      dispatch(signupUser(responseObj));
     }
     if (modalType === "otp") {
       dispatch(toggleModal(false));
@@ -181,7 +184,7 @@ const Modal = () => {
                 </form>
                 <div className="name">
                   Already have an account?
-                  <a onClick={() => openModal("login")}>Login</a>
+                  <a onClick={() => openModal("login")}> Login</a>
                 </div>
               </div>
             </>
@@ -247,7 +250,7 @@ const Modal = () => {
                 </form>
                 <div className="name">
                   Don’t have an account?
-                  <a onClick={() => openModal("signup")}>Sign Up</a>
+                  <a onClick={() => openModal("signup")}> Sign Up</a>
                 </div>
               </div>
             </>

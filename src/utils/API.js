@@ -1,4 +1,4 @@
-import { BASE_URL, BASIC_AUTH_KEY } from "./Constants";
+import { BASE_URL } from "./Constants";
 
 const API_BASE_URL = BASE_URL;
 
@@ -7,7 +7,7 @@ const apiCall = async(url, method='GET', data=null, headers={}) => {
         method,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': BASIC_AUTH_KEY,
+            //'Authorization': BASIC_AUTH_KEY,
             ...headers
         },
         body: data ? JSON.stringify(data) : null,
