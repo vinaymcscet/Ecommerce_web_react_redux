@@ -104,8 +104,8 @@ const Header = () => {
                 {user && user.length > 0 && (
                   <div className="menu-container">
                     <li onClick={toggleUserMenu}>
-                      <img src={user[0]?.image} alt={user[0]?.name} />
-                      <p>{user[0]?.name}</p>
+                      <img src={user[0]?.profile_pic || '/images/icons/avtar.png'} alt={user[0]?.fullname || 'User'} />
+                      <p>{user[0]?.fullname || 'User'}</p>
                       <nav
                         ref={dropdownRef}
                         className={`menu ${isActive ? "active" : "inactive"}`}

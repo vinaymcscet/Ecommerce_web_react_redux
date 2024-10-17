@@ -56,10 +56,14 @@ select {
 
 .Toastify__close-button {
   color: #000;
-  opacity: 0.3;
+  opacity: 0.6;
   width: auto;
 }
 
 .Toastify__close-button:hover {
   background-color: transparent;
+}
+
+.Toastify__toast-body > div:last-child {
+  font-weight: 500;
 }

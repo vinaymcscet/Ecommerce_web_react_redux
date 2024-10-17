@@ -98,7 +98,7 @@ button {
   font-size: 20px;
 }
 
-button:hover {
+.modalContent form button:hover {
   background-color: #e5a23c;
 }
 
@@ -114,10 +114,10 @@ button:focus {
   line-height: 20px;
   margin-top: 20px;
 }
-.status ul {
+ul.status {
   flex-flow: wrap column;
 }
-.status ul li {
+.status li {
   position: relative;
   margin-bottom: 20px;
   font-size: 14px;
@@ -127,7 +127,7 @@ button:focus {
   padding-left: 10px;
 }
 
-.status ul li:before {
+.status li:before {
   content: '';
   position: absolute;
   left: 0;
@@ -290,6 +290,19 @@ button:focus {
   cursor: pointer;
   outline: none;
   color: #d1d1d1;
+}
+
+.error-message {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #ef6e6e;
+  margin: 5px 0 0 15px;
+}
+
+.forgot-link.error-message {
+  position: relative;
+  top: -20px;
 }
 
 @media only screen and (max-width: 1200px) {

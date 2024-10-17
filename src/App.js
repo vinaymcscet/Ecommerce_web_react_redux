@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
@@ -14,8 +14,12 @@ import ShippingAndDelivery from "./pages/ShippingAndDelivery/ShippingAndDelivery
 import OrderCancellation from "./pages/OrderCancellation/OrderCancellation";
 import Modal from "./components/Modal/Modal";
 import CategoryModal from "./components/CategoryModal/CategoryModal";
+import { ToastContainer, toast } from "react-toastify";
 
 import "./App.css";
+import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
+import { setUser } from "./store/slice/userSlice";
+import { getTokensFromLocalStorage } from "./utils/StorageTokens";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -38,12 +42,50 @@ const AddressModal = React.lazy(() =>
 );
 
 function App() {
-  const { isAddressModelOpen } = useSelector((state) => state.modal);
+  const { isAddressModelOpen, error, success } = useSelector(
+    (state) => state.modal
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        toast.success(success);
+        setSuccess("");
+      }, 1000);
+    }
+    if (error) {
+      setTimeout(() => {
+        toast.error(error);
+        setError("");
+      }, 1000);
+    }
+  }, [success, error]);
+
+  useEffect(() => {
+    // Load tokens from localStorage when the app starts
+    dispatch(loadTokensFromStorage());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const tokens = getTokensFromLocalStorage();
+    if(tokens) {
+      console.log("Access token", tokens);
+      dispatch(setUser(tokens));
+    }
+  }, []);
+
   return (
     <div className="App">
       <Header />
       <ScrollToTop />
-      <Suspense fallback={<div className="loading"><img src="/images/icons/LOGO.png" alt="Logo" /></div>}>
+      <Suspense
+        fallback={
+          <div className="loading">
+            <img src="/images/icons/LOGO.png" alt="Logo" />
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
@@ -78,7 +120,8 @@ function App() {
         <Suspense fallback={<div>Loading Address Modal...</div>}>
           <AddressModal />
         </Suspense>
-      )}+
+      )}
+      <ToastContainer />
     </div>
   );
 }

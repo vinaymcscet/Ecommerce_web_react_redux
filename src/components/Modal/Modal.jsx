@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../InputBox/InputBox";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,14 +10,46 @@ import {
   setSignup,
   setOtp,
   setForgotPassword,
-  signupUser,
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
+import { getDeviceType } from "../../utils/CheckDevice";
+import { 
+      device_token, 
+      EMAIL_OR_MOBILE, 
+      fcm_token, 
+      PASSWORD, 
+      PASSWORD_NOT_MATCH_ERROR, 
+      VALID_OTP, 
+      EMAIL_OR_MOBILE_LABEL, 
+      EMAIL_LABEL,
+      PASSWORD_LABEL,
+      PASSWORD_TYPE,
+      NEW_PASSWORD_LABEL,
+      NEW_PASSWORD,
+      CONFIRM_PASSWORD_LABEL,
+      CONFIRM_PASSWORD,
+      PASSWORD_NOT_MATCH_MESSAGE,
+      NEW_PASSWORD_ENTER,
+      TEMP_CODE_LABEL,
+      OTP_NAME,
+      TEMP_CODE_PLACEHOLDER,
+      OTP_ERROR
+  } from "../../utils/Constants";
+import { loginUser, signupUser, signupUserWithOtp } from "../../store/slice/api_integration";
 
 const Modal = () => {
   const dispatch = useDispatch();
-  const { isModalOpen, modalType, login, signup, otp, forgotPassword, loading, error } =
-    useSelector((state) => state.modal);
+  const {
+    isModalOpen,
+    modalType,
+    login,
+    signup,
+    otp,
+    forgotPassword,
+    loading,
+  } = useSelector((state) => state.modal);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMeError, setRememberMeError] = useState(""); 
 
   useEffect(() => {
     if (modalType === "login" && !login.userPhoneOrEmail && !login.password) {
@@ -47,6 +79,7 @@ const Modal = () => {
     signup.password,
     dispatch,
   ]);
+  
 
   if (!isModalOpen) return null;
 
@@ -67,13 +100,17 @@ const Modal = () => {
   };
 
   const validatePasswordMatch = (password, confirmPassword) => {
-    return password === confirmPassword ? "" : "Passwords do not match.";
+    return password === confirmPassword ? "" : PASSWORD_NOT_MATCH_ERROR;
   };
 
   const validatePasswordLength = (value) => {
-    return value.length >= 6
-      ? ""
-      : "Password must be at least 6 characters long.";
+    const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
+  return passwordRegex.test(value)
+    ? ""
+    : PASSWORD;
+
   };
 
   const validateContact = (value) => {
@@ -81,7 +118,7 @@ const Modal = () => {
     const mobilePattern = /^\d{10}$/; // Assuming a 10-digit mobile number
 
     if (!emailPattern.test(value) && !mobilePattern.test(value)) {
-      return "Please enter a valid email address or mobile number.";
+      return EMAIL_OR_MOBILE;
     }
 
     return "";
@@ -90,22 +127,35 @@ const Modal = () => {
   const validateOtp = (value) => {
     const otpPattern = /^\d{6}$/;
     if (!otpPattern.test(value)) {
-      return "Please enter a valid 6-digit OTP.";
+      return VALID_OTP;
     }
     return "";
   };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!rememberMe) {
+      setRememberMeError("Please check Remember Me to proceed");
+      return;
+    } 
     console.log("signup data ", signup);
-    
+
     // Submit form data
     if (modalType === "signup") {
-      // dispatch(setModalType("otp"));
-      const responseObj = { "username": signup.userPhoneOrEmail}
+      const responseObj = { username: signup.userPhoneOrEmail };
       dispatch(signupUser(responseObj));
     }
+
     if (modalType === "otp") {
-      dispatch(toggleModal(false));
+      const responseObj = { 
+        username: signup.userPhoneOrEmail,
+        password: signup.password,
+        otp: otp.otpCode,
+        device_type: getDeviceType(),
+        device_token: device_token,
+        fcm_token: fcm_token
+      }
+      dispatch(signupUserWithOtp(responseObj));
     }
     const passwordError = validatePasswordLength(forgotPassword.newPassword);
     const confirmPasswordError = validatePasswordMatch(
@@ -121,7 +171,17 @@ const Modal = () => {
     if (modalType === "forgot") {
       dispatch(setModalType("otp"));
     }
+    if (modalType === "login") {
+      const responseObj = { 
+        username: login.userPhoneOrEmail,
+        password: login.password,
+        device_token: device_token,
+        fcm_token: fcm_token
+      }
+      dispatch(loginUser(responseObj));
+    }
   };
+  
   const openModal = (type) => {
     dispatch(setModalType(type));
     dispatch(toggleModal(true));
@@ -149,38 +209,53 @@ const Modal = () => {
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
-                    label="Email or mobile phone number"
-                    placeholder="Email or mobile phone number"
-                    name="userPhoneOrEmail"
+                    label = {EMAIL_OR_MOBILE_LABEL}
+                    placeholder= {EMAIL_OR_MOBILE_LABEL}
+                    name={EMAIL_LABEL}
                     value={signup.userPhoneOrEmail}
                     onChange={handleChange}
                     required
                     validate={validateContact}
-                    errorMessage="Please enter a valid email address or mobile number."
+                    errorMessage={EMAIL_OR_MOBILE}
                   />
                   <InputField
-                    label="Password"
-                    placeholder="Password"
-                    type="password"
-                    name="password"
+                    label={PASSWORD_LABEL}
+                    placeholder={PASSWORD_LABEL}
+                    type={PASSWORD_TYPE}
+                    name={PASSWORD_TYPE}
                     value={signup.password}
                     onChange={handleChange}
                     required
-                    minLength={6}
+                    minLength={8}
+                    validate={validatePasswordLength}
+                    errorMessage={PASSWORD}
                   />
-                  <button type="submit">Submit</button>
-                  <p className="status">
-                    <ul>
-                      <li>
-                        By continuing, you agree to FikFis Terms of Use and
-                        Privacy Policy.
-                      </li>
-                      <li>
-                        To verify your number, we will send you a text message
-                        with a temporary code.
-                      </li>
-                    </ul>
-                  </p>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
+                  <ul className="status">
+                    <li>
+                      By continuing, you agree to FikFis Terms of Use and
+                      Privacy Policy.
+                    </li>
+                    <li>
+                      To verify your number, we will send you a text message
+                      with a temporary code.
+                    </li>
+                  </ul>
                 </form>
                 <div className="name">
                   Already have an account?
@@ -199,28 +274,35 @@ const Modal = () => {
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
-                    label="Email or mobile phone number"
-                    placeholder="Email or mobile phone number"
-                    name="userPhoneOrEmail"
+                    label={EMAIL_OR_MOBILE_LABEL}
+                    placeholder={EMAIL_OR_MOBILE_LABEL}
+                    name={EMAIL_LABEL}
                     value={login.userPhoneOrEmail}
                     onChange={handleChange}
                     required
                     validate={validateContact}
-                    errorMessage="Please enter a valid email address or mobile number."
+                    errorMessage={EMAIL_OR_MOBILE}
                   />
                   <InputField
-                    label="Password"
-                    placeholder="Password"
-                    type="password"
-                    name="password"
+                    label={PASSWORD_LABEL}
+                    placeholder={PASSWORD_LABEL}
+                    type={PASSWORD_TYPE}
+                    name={PASSWORD_TYPE}
                     value={login.password}
                     onChange={handleChange}
                     required
-                    minLength={6}
+                    minLength={8}
+                    validate={validatePasswordLength}
+                    errorMessage={PASSWORD}
                   />
                   <div className="authentication">
                     <label className="round">
-                      <input type="checkbox" name="checkbox" />
+                      <input 
+                        type="checkbox" 
+                        name="rememberMe" 
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)} 
+                      />
                       <span>Remember Me</span>
                     </label>
                     <div className="forgotLink">
@@ -229,6 +311,9 @@ const Modal = () => {
                       </Link>
                     </div>
                   </div>
+                  {rememberMeError && <span className="forgot-link error-message">
+                      {rememberMeError}
+                  </span>}
                   <button type="submit">SUBMIT</button>
                   {/* <div className="partition">Or</div>
                   <div className="socialInt">
@@ -268,16 +353,31 @@ const Modal = () => {
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
-                    label="Temporary code (OTP)"
-                    placeholder="Enter a temporary code"
-                    name="otpCode"
+                    label={TEMP_CODE_LABEL}
+                    placeholder={TEMP_CODE_PLACEHOLDER}
+                    name={OTP_NAME}
                     value={otp.otpCode}
                     onChange={handleChange}
                     validate={validateOtp}
                     required
-                    errorMessage="Please enter a valid 6-digit OTP"
+                    errorMessage={OTP_ERROR}
                   />
-                  <button type="submit">SUBMIT</button>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
                 </form>
               </div>
             </>
@@ -286,7 +386,7 @@ const Modal = () => {
             <>
               <div className="left">
                 <h4>Create Password</h4>
-                <p>Your password must be a minimum of 6 characters long.</p>
+                <p>Your password must be a minimum of 8 characters long.</p>
                 <div className="name">
                   Need help?
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
@@ -295,21 +395,21 @@ const Modal = () => {
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
-                    label="New Password"
-                    placeholder="Enter new password"
-                    type="password"
-                    name="newPassword"
+                    label={NEW_PASSWORD_LABEL}
+                    placeholder={NEW_PASSWORD_ENTER}
+                    type={PASSWORD_TYPE}
+                    name={NEW_PASSWORD}
                     value={forgotPassword.newPassword}
                     onChange={handleChange}
                     required
                     validate={validatePasswordLength}
-                    errorMessage="Password must be at least 6 characters long."
+                    errorMessage={PASSWORD}
                   />
                   <InputField
-                    label="Confirm Password"
-                    placeholder="Confirm password"
-                    type="password"
-                    name="confirmPassword"
+                    label={CONFIRM_PASSWORD_LABEL}
+                    placeholder={CONFIRM_PASSWORD_LABEL}
+                    type={PASSWORD_TYPE}
+                    name={CONFIRM_PASSWORD}
                     value={forgotPassword.confirmPassword}
                     onChange={handleChange}
                     required
@@ -319,7 +419,7 @@ const Modal = () => {
                         forgotPassword.confirmPassword
                       )
                     }
-                    errorMessage="Passwords do not match."
+                    errorMessage={PASSWORD_NOT_MATCH_MESSAGE}
                   />
                   <button type="submit">Submit</button>
                 </form>

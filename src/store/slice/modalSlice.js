@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { POST } from "../../utils/API";
-import { SIGNUP_BASE_CONSTANT } from "../../utils/Constants";
+import { getTokensFromLocalStorage, removeTokensFromLocalStorage, saveTokensToLocalStorage } from "../../utils/StorageTokens";
 
 const initialState = {
   isModalOpen: false,
@@ -21,7 +20,16 @@ const initialState = {
   defaultAddressId: null,
   selectedAddress: null,
   error: "",
+  success: "",
   loading: false,
+  accessToken: null,
+  refreshToken: null,
+  email: null,
+  username: null,
+  phone: null,
+  profile_pic: "",
+  fullname: "",
+  isAuthenticated: false,
 };
 
 export const modalSlice = createSlice({
@@ -85,6 +93,57 @@ export const modalSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setSuccess: (state, action) => {
+      state.success = action.payload;
+    },
+    resetSuccess: (state) => {
+      state.success = '';
+    },
+    resetError: (state) => {
+      state.error = '';
+    },
+    setAuthTokens: (state, action) => {
+      const { accessToken, refreshToken, email, username, phone, profile_pic, fullname } = action.payload;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      state.email = email;
+      state.username = username;
+      state.phone = phone;
+      state.profile_pic = profile_pic;
+      state.fullname = fullname;
+      state.isAuthenticated = true;
+      
+      // Save to localStorage
+      saveTokensToLocalStorage(action.payload);
+    },
+    loadTokensFromStorage: (state) => {
+      const tokens = getTokensFromLocalStorage();
+      console.log("tokens", tokens);
+      
+      if (tokens) {
+        state.accessToken = tokens?.accessToken;
+        state.refreshToken = tokens?.refreshToken;
+        state.email = tokens?.email;
+        state.username = tokens?.username;
+        state.phone = tokens?.phone;
+        state.profile_pic = tokens?.profile_pic;
+        state.fullname = tokens?.fullname;
+        state.isAuthenticated = true;
+      }
+    },
+    clearAuthTokens: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.email = null;
+      state.username = null;
+      state.phone = null;
+      state.profile_pic = null;
+      state.fullname = null;    
+      state.isAuthenticated = false;
+
+      // Remove from localStorage
+      removeTokensFromLocalStorage();
+    },
   },
 });
 
@@ -102,26 +161,12 @@ export const {
   setDefaultAddress,
   editAddress,
   setError,
+  setSuccess,
   setLoading,
+  resetSuccess,
+  resetError,
+  setAuthTokens, 
+  loadTokensFromStorage, 
+  clearAuthTokens 
 } = modalSlice.actions;
 export default modalSlice.reducer;
-
-// Thunk to handle signup API call
-export const signupUser = (userData) => async (dispatch) => {
-  console.log("signup userData on slice ", userData);
-  try {
-    dispatch(setLoading(true));
-    // Call the API to sign up the user
-    const response = await POST(SIGNUP_BASE_CONSTANT, userData); // Adjust your endpoint here
-    dispatch(setLoading(false));
-    console.log("response", response);
-    
-
-    // Handle success (e.g., move to the OTP step)
-    dispatch(setModalType("otp"));
-  } catch (error) {
-    console.log("POST Signup Error", error);
-    dispatch(setLoading(false));
-    dispatch(setError("Failed to sign up. Please try again."));
-  }
-};

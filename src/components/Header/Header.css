@@ -37,6 +37,10 @@ li p {
     padding-left: 10px;
 }
 
+li:hover p {
+    color: #FFB545;
+}
+
 li:not(:last-child) {
     margin-right: 15px;
 }

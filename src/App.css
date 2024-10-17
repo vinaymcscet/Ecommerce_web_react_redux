@@ -1,5 +1,6 @@
 .loading {
   position: fixed;
+  top: 0;
   z-index: 9;
   background: #000000d7;
   width: 100vw;
@@ -7,6 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.loading img {
   animation: l1 1s infinite cubic-bezier(0.5, 300, 0.5, -300);
 }
 

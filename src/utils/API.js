@@ -2,22 +2,47 @@ import { BASE_URL } from "./Constants";
 
 const API_BASE_URL = BASE_URL;
 
+const jsonToFormData = (json, formData = new FormData(), parentKey = null) => {
+    for (const key in json) {
+        if (json.hasOwnProperty(key)) {
+            const value = json[key];
+            const formKey = parentKey ? `${parentKey}[${key}]` : key;
+
+            if (value instanceof Date) {
+                formData.append(formKey, value.toISOString());
+            } else if (typeof value === 'object' && !(value instanceof File)) {
+                // Recursively call for nested objects and arrays
+                jsonToFormData(value, formData, formKey);
+            } else {
+                formData.append(formKey, value);
+            }
+        }
+    }
+
+    return formData;
+};
+
 const apiCall = async(url, method='GET', data=null, headers={}) => {
     const config = {
         method,
         headers: {
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
             //'Authorization': BASIC_AUTH_KEY,
             ...headers
         },
-        body: data ? JSON.stringify(data) : null,
+        // body: data ? JSON.stringify(data) : null,
+        body: data ? jsonToFormData(data) : null,
     };
 
     const response = await fetch(`${API_BASE_URL}${url}`, config);
+    
+    const responseData = await response.json();
+    console.log("API response on API.js", responseData);
 
-    if(!response.ok) throw new Error(`Error: ${response.statusText}`);
-
-    return response.json();
+    if (!response.ok) {
+        throw new Error(responseData.messages?.error || responseData.message);
+    }
+    return responseData;
 }
 
 export const GET = (url, headers) => apiCall(url, 'GET', null, headers);
