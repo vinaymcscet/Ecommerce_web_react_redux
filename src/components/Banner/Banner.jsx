@@ -2,15 +2,22 @@ import React from 'react'
 import Slider from "react-slick"
 import { bannerList, slick_banner_settings } from '../../utils/ProductData';
 import './Banner.css';
+import { useSelector } from 'react-redux';
 
-const Banner = ({ props }) => {
+const Banner = () => {
+    const { homeProductData } = useSelector(state => state.product);
     return (
         <div className="bannerContainer">
             <div className="bannerContent">
                 <Slider {...slick_banner_settings}>
-                    {bannerList && bannerList.map((item, index) => (
+                    {homeProductData[0]?.banners && homeProductData[0]?.banners.map((item, index) => (
                         <div key={index}>
-                            <img src={item.name} alt={item.alt} />
+                            <img src={item.banner_image} alt={item.name} />
+                        </div>
+                    ))}
+                    {!homeProductData[0] && bannerList && bannerList.map((item, index) => (
+                        <div key={index}>
+                            <img src={item.banner_image} alt={item.name} />
                         </div>
                     ))}
                 </Slider>

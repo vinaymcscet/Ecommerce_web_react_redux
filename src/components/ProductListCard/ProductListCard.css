@@ -1,15 +1,35 @@
-.productBoxes {
+.productBoxes,
+.productList.special > div {
     padding: 10px;
     border: 1px solid #EAEAEA;
     box-shadow: -1px 3px 5px 1px #EAEAEA;
     border-radius: 10px;
-    width: 16%;
+    /* width: 16%; */
+    width: 18%;
     margin: 1%;
-    min-height: 340px;
+    min-height: 320px;
+}
+
+.productList.special > div {
+    padding: 0;
+}
+
+.productList.special > div .productBoxes {
+    width: 100%;
+    margin: 0;
+    min-height: auto;
+    box-shadow: none;
+    border: 0;
+}
+
+.productBoxes {
+    position: relative;
 }
 
 .productBoxes img {
     width: 100%;
+    min-height: 200px;
+    margin-top: 10px;
 }
 
 .productBoxes h2 {
@@ -110,9 +130,29 @@
     justify-content: flex-start;
 }
 
+.productBoxes .whislistBox {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+}
+
+.productBoxes .wishlist-btn {
+    width: 100%;
+    height: 100%;
+}
+
+.productBoxes .wishlist-btn img {
+    width: 100%;
+    height: 100%;
+    min-height: auto;
+    margin-top: 0;
+}
+
 @media screen and (max-width: 1200px) {
     .productBoxes {
-        width: 17%;
+        width: 22%;
     }
 }
 

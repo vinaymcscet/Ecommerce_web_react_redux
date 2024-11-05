@@ -1,62 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { slick_product_settings, slick_settings, slides } from "../../utils/ProductData";
 import ProductCard from "../ProductCard/ProductCard";
 import Button from "../Button/Button";
+import { useDispatch, useSelector } from "react-redux";
 import "./ProductSlider.css";
+import { getAllCategoryData, getSubCategoryData } from "../../store/slice/api_integration";
+import { toggleCategoryModal } from "../../store/slice/modalSlice";
 
 const ProductSlider = ({ title, tile }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(true);
+  const { homeProductData, subCategoryList } = useSelector(state => state.product);
 
   const handleViewAllClick = () => {
+    dispatch(getAllCategoryData());
     navigate("allcategory");
   };
 
-  const handleProductClick = (product) => {
-    console.log("product", product);
-    navigate(`/productlist`, { state: { product } });
+  const handleProductClick = (item) => {
+    console.log("product", item);
+    const responseObj = { category_id: item.id };
+    dispatch(getSubCategoryData(responseObj))
+    const subCategoryObj = { 
+      isOpen: isOpen, 
+      category: subCategoryList, 
+      category_name: item.name,
+    };
+    dispatch(toggleCategoryModal(subCategoryObj));
+    // navigate(`/productlist`, { state: { product } });
   };
 
   return (
     <div className="catProduct">
       {title && (
-        <div className="productHeader">
-          <h3>Shop By Category</h3>
-          <Button
-            type="button"
-            value="VIEW ALL"
-            varient="secondary"
-            handleClick={handleViewAllClick}
-          />
+        <div className="catProduct"> 
+          <div className="productHeader">
+            <h3>Shop By Category</h3>
+            <Button
+              type="button"
+              value="VIEW ALL"
+              variant="secondary"
+              handleClick={handleViewAllClick}
+            />
+          </div>
+
+          <Slider {...(tile ? slick_product_settings : slick_settings)}>
+            {homeProductData[0]?.categories.map((slide) => (
+              <div key={slide.id}>
+                <ProductCard
+                  imgSrc={slide.category_image || '/images/no-product-available.jpg'}
+                  imgName={slide.name}
+                  handleCategory={() => handleProductClick(slide)}
+                />
+              </div>
+            ))}
+          </Slider>
         </div>
       )}
-      {tile && <Slider {...slick_product_settings}>
-        {slides.map((slide, index) => {
-          return (
-            <div key={index}>
-              <ProductCard
-                imgSrc={slide.img}
-                imgName={slide.PrdName}
-                handleCategory={() => handleProductClick(slide)}
-              />
-            </div>
-          );
-        })}
-      </Slider>}
-      {!tile && <Slider {...slick_settings}>
-        {slides.map((slide, index) => {
-          return (
-            <div key={index}>
-              <ProductCard
-                imgSrc={slide.img}
-                imgName={slide.PrdName}
-                handleCategory={() => handleProductClick(slide)}
-              />
-            </div>
-          );
-        })}
-      </Slider>}
     </div>
   );
 };

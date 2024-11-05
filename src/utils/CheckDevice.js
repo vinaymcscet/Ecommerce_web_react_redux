@@ -3,19 +3,19 @@ export function getDeviceType() {
   
     // Detect mobile devices
     if (/Android/i.test(userAgent)) {
-      return "Android Mobile";
+      return "web";
     } else if (/iPhone/i.test(userAgent)) {
-      return "iPhone";
+      return "web";
     } else if (/iPad|iPod/i.test(userAgent)) {
-      return "iPad";
+      return "web";
     } else if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(userAgent)) {
-      return "MacBook";
+      return "web";
     } else if (/Windows/i.test(userAgent)) {
-      return "Windows Laptop/PC";
+      return "web";
     } else if (/Linux/i.test(userAgent)) {
-      return "Linux Laptop/PC";
+      return "web";
     }
   
     // If no specific device is detected, return 'Unknown Device'
-    return "Unknown Device";
+    return "web";
   }

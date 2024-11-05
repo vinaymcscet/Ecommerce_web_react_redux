@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Banner from "../../components/Banner/Banner";
-import { BannerOfferData } from "../../utils/BannerOfferData";
+// import { BannerOfferData } from "../../utils/BannerOfferData";
 import "./Home.css";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import FourCategoryProduct from "../../components/FourCategoryProduct/FourCategoryProduct";
@@ -14,29 +14,35 @@ import {
 import OneCategoryProduct from "../../components/OneCategoryProduct/OneCategoryProduct";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { setAllCategories, setCategorySlide, setProductHistory, setProductList } from "../../store/slice/productSlice";
-import { productBulkList } from "../../utils/ProductData";
+// import { productBulkList } from "../../utils/ProductData";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/userSlice";
 import { User } from "../../utils/CommonUtils";
+import { getHomeData, getHomeSection } from "../../store/slice/api_integration";
+import { formatDate } from "../../utils/FormatDateTime";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const { homeProductData, homeProductSection } = useSelector(state => state.product);
   const [productTile, setProductTile] = useState(true);
   useEffect(() => {
-    dispatch(setProductHistory(productHistoryList));
-    dispatch(setProductList(productBulkList));
+    // dispatch(setProductHistory(productHistoryList));
+    // dispatch(setProductList(productBulkList));
     dispatch(setCategorySlide(categorySlides))
-    dispatch(setAllCategories(allCategory))
+    // dispatch(setAllCategories(allCategory))
     // dispatch(setUser(User))
+
+    dispatch(getHomeData())
+    dispatch(getHomeSection(0, 20))
   }, [dispatch]);
 
-  const { productHistory } = useSelector((state) => state.product);
+  // const { productHistory } = useSelector((state) => state.product);
 
   return (
     <div>
-      <Banner props={BannerOfferData} />
+      <Banner />
       <ProductSlider title={productTile} />
-      <div className="fourCategoryProduct">
+      {/* <div className="fourCategoryProduct">
         <FourCategoryProduct
           header="Appliances for your home Up to 55% off"
           description={description}
@@ -61,8 +67,8 @@ const Home = () => {
           header="Men's Shoes | Up to 60% off | Limited Stock"
           description={description}
         />
-      </div>
-      <div className="productList">
+      </div> */}
+      {/* <div className="productList">
         <ProductListCard
           image={"/images/product/img-13.svg"}
           name={
@@ -106,8 +112,8 @@ const Home = () => {
         <div className="limitedOffer">
           <img src="/images/limitedOffer.png" alt="Limited Offer" />
         </div>
-      </div>
-      <div className="fourCategoryProduct">
+      </div> */}
+      {/* <div className="fourCategoryProduct">
         <OneCategoryProduct
           header="Automative essentials | Up to 60% off"
           description={Onedescription}
@@ -120,12 +126,26 @@ const Home = () => {
           header="Men's Shoes | Up to 60% off | Limited Stock"
           description={description}
         />
-      </div>
-      <div className="productList">
+      </div> */}
+      <div className="productList special">
         <div className="limitedOffer">
           <img src="/images/limitedOffer.png" alt="Limited Offer" />
         </div>
-        <ProductListCard
+        {homeProductData[0]?.offers && homeProductData[0]?.offers.map((item, index) => (
+          <div key={index}>
+            <ProductListCard
+              id = {item?.categoryId}
+              image={item?.categoryImage}
+              name={item?.categoryName}
+              // discountPrice={"105100"}
+              // originalPrice={"1790.00"}
+              discountLabel={item?.title}
+              time={`valid till ${formatDate(item.validTill)}`}
+              wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+            />
+          </div>
+        ))}
+        {/* <ProductListCard
           image={"/images/product/img-13.svg"}
           name={
             "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
@@ -164,12 +184,47 @@ const Home = () => {
           originalPrice={"1790.00"}
           discountLabel={"47% Off"}
           time={"Limited time Deal"}
-        />
+        /> */}
+      </div>
+      <div className="productHistory">
+          {homeProductSection[0] && homeProductSection[0].length > 0 ? (
+                    homeProductSection[0].map((item, index) => (
+                      <div key={index}>
+                        <div className="browisingHistory">
+                          <h3>{item.title}</h3>
+                        </div>
+                          <div className="productList">
+                          {item?.products.map((product, index) => (
+                            <div key={index}>
+                              <ProductListCard
+                                id={product?.group_id}
+                                image={product.imageUrl ? product.imageUrl : "/images/no-product-available.jpg"}
+                                name={product.name ? product.name : ""}
+                                userrating={product.rating ? product.rating : ""}
+                                discountPrice={product.discountedPrice ? product.discountedPrice : ""}
+                                originalPrice={product.price ? product.price : ""}
+                                save={product.offer ? product.offer : ""}
+                                coupenCode={product.coupen ? product.coupen : ""}
+                                deliveryTime={product.deliverytime ? product.deliverytime : ""}
+                                freeDelivery={product.freedelivery ? item.freedelivery : ""}
+                                bestSeller={item.bestseller ? product.bestseller : ""}
+                                time={product.time ? product.time : ""}
+                                discountLabel={product.offer ? product.offer : ""}
+                                wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                              />
+                            </div>
+                          ))}
+                          </div>
+                      </div>
+                    ))
+            ) : (
+              <p>No products available</p>
+            )}
       </div>
       <div className="groupBanner">
-        <img src="/images/groupBanner.svg" alt="Banner Poster" />
+        <img src={homeProductData[0]?.bottomBanner[0]?.banner_image} alt={homeProductData[0]?.bottomBanner[0]?.name} />
       </div>
-      <div className="fourCategoryProduct">
+      {/* <div className="fourCategoryProduct">
         <FourCategoryProduct
           header="Men's Shoes | Up to 60% off | Limited Stock"
           description={description}
@@ -182,34 +237,35 @@ const Home = () => {
           header="Automative essentials | Up to 60% off"
           description={Onedescription}
         />
-      </div>
+      </div> */}
       <div className="browisingHistory">
         <h3>Inspired by your browsing history</h3>
       </div>
       <div className="productHistory">
         <div className="productList">
-          {productHistory && productHistory.length > 0 ? (
-            productHistory[0].map((item, index) => (
+          {homeProductData[0]?.RecentViewed && homeProductData[0]?.RecentViewed.length > 0 ? (
+            homeProductData[0]?.RecentViewed.map((item, index) => (
               <div key={index}>
                 <ProductListCard
-                  id={item.id}
-                  image={item.image ? item.image : ""}
+                  id={index}
+                  image={item.imageUrl ? item.imageUrl : "/images/no-product-available.jpg"}
                   name={item.name ? item.name : ""}
                   userrating={item.rating ? item.rating : ""}
-                  discountPrice={item.discount ? item.discount : ""}
-                  originalPrice={item.original ? item.original : ""}
-                  save={item.save ? item.save : ""}
+                  discountPrice={item.discountedPrice ? item.discountedPrice : ""}
+                  originalPrice={item.price ? item.price : ""}
+                  save={item.offer ? item.offer : ""}
                   coupenCode={item.coupen ? item.coupen : ""}
                   deliveryTime={item.deliverytime ? item.deliverytime : ""}
                   freeDelivery={item.freedelivery ? item.freedelivery : ""}
                   bestSeller={item.bestseller ? item.bestseller : ""}
                   time={item.time ? item.time : ""}
-                  discountLabel={item.discountlabel ? item.discountlabel : ""}
+                  discountLabel={item.offer ? item.offer : ""}
+                  wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
                 />
               </div>
             ))
           ) : (
-            <p>No product history available</p>
+            <p className="noProductAvailable">No product history available</p>
           )}
         </div>
       </div>

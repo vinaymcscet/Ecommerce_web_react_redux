@@ -19,6 +19,7 @@ const InputField = ({
     const [error, setError] = useState('');
 
     const handleValidation = (value) => {
+        
         if (required && !value) {
             setError('This field is required.');
         } else if (minLength && value.length < minLength) {
@@ -43,7 +44,7 @@ const InputField = ({
 
     return (
         <div className="input-field">
-            <label>{label}</label>
+            <label htmlFor={label}>{label}</label>
             <input
                 type={type}
                 name={name}

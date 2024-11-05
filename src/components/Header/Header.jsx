@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import HeaderPin from "../HeaderPin/HeaderPin";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -9,8 +9,9 @@ import Hamburger from "../Hamburger/Hamburger";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
-import { setLogout } from '../../store/slice/userSlice';
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
+import { getUserRequest, logoutRequest } from "../../store/slice/api_integration";
+import { device_token } from "../../utils/Constants";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const Header = () => {
   
 
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
-  const [toggleModalState, setToggleModalState] = useState(false)
+  const [toggleModalState, setToggleModalState] = useState(true)
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
   };
@@ -45,9 +46,20 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    dispatch(setLogout()); // Clear the user array in Redux
-    navigate("/"); // Redirect after logout
+    const responseObj = {
+      device_token: device_token
+    }
+    dispatch(logoutRequest(responseObj));
   };
+
+  const handleProfile = () => {
+    dispatch(getUserRequest());
+  };
+
+  const getFname = () => {
+    const[fName, ...lName] = user[0]?.fullname.split(" ");
+    return fName;
+  }
 
   return (
     <div>
@@ -105,14 +117,14 @@ const Header = () => {
                   <div className="menu-container">
                     <li onClick={toggleUserMenu}>
                       <img src={user[0]?.profile_pic || '/images/icons/avtar.png'} alt={user[0]?.fullname || 'User'} />
-                      <p>{user[0]?.fullname || 'User'}</p>
+                      <p>{getFname() || 'User'}</p>
                       <nav
                         ref={dropdownRef}
                         className={`menu ${isActive ? "active" : "inactive"}`}
                       >
                         <ul>
                           <li>
-                            <Link to="/userprofile">
+                            <Link to="/userprofile" onClick={handleProfile}>
                               <img
                                 src="/images/icons/login.png"
                                 alt="Profile"
@@ -121,10 +133,10 @@ const Header = () => {
                             </Link>
                           </li>
                           <li>
-                            <a onClick={handleLogout}>
+                            <Link to="/" onClick={handleLogout}>
                               <img src="/images/icons/login.png" alt="Logout" />
                               <span>Logout</span>
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </nav>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button/Button";
 import {
   removeAddress,
+  setChangePassword,
   setDefaultAddress,
   setUser,
 } from "../../store/slice/userSlice";
@@ -13,6 +14,21 @@ import "./Profile.css";
 import StarRating from "../../components/StarRating/StarRating";
 import { ToastContainer, toast } from "react-toastify";
 import { addToCart } from "../../store/slice/cartSlice";
+import InputField from "../../components/InputBox/InputBox";
+import { 
+    CONFIRM_PASSWORD, 
+    CONFIRM_PASSWORD_LABEL, 
+    NEW_PASSWORD, 
+    NEW_PASSWORD_ENTER, 
+    NEW_PASSWORD_LABEL, 
+    OLD_PASSWORD, 
+    OLD_PASSWORD_ENTER, 
+    OLD_PASSWORD_LABEL, 
+    PASSWORD, 
+    PASSWORD_NOT_MATCH_ERROR, 
+    PASSWORD_TYPE 
+  } from "../../utils/Constants";
+import { changePasswordRequest, getListAddress, getUserRequest, updateProfileRequest } from "../../store/slice/api_integration";
 
 const Profile = () => {
   const [copyMessage, setCopyMessage] = useState({ message: "", index: null });
@@ -21,89 +37,136 @@ const Profile = () => {
   const [showInvoice, setShowInvoice] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const { user } = useSelector((state) => state.user);
+  const { user, changePassword } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
-  const { image, email, name, phone, password } = user?.[0] || {};
+  
+  const { profile_pic, email, fullname, phone } = user?.[0] || {};
+
+  const [errorFileType, setErrorFileType] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+
+  // Function to handle image upload and preview
+  const handleImageUpload = (e) => {
+    setErrorFileType("");
+    const file = e.target.files[0]; // Get the uploaded file
+
+    if (file && file.type.startsWith("image/")) {
+      // Create a preview URL for the image
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+      setImageFile(file);
+    } else {
+      setErrorFileType("Please upload a valid image file");
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserRequest());
+  }, [])
+
+// ==============================================================
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [passwordError, setPasswordError] = useState(""); // Error for new password
+const [confirmPasswordError, setConfirmPasswordError] = useState("");
+const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+const validatePasswordLength1 = (password) => {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+const handleFormPasswordChange = (e) => {
+  const newPassword = e.target.value;
+  setPassword(newPassword);
+  
+  if (!validatePasswordLength1(newPassword)) {
+    setPasswordError(PASSWORD);
+    setIsPasswordValid(false);
+  } else {
+    setPasswordError("");
+    setIsPasswordValid(true);
+    if (confirmPassword && newPassword !== confirmPassword) {
+      setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+    } else {
+      setConfirmPasswordError("");
+    }
+  }
+  dispatch(setChangePassword({ newPassword: newPassword }));
+};
+
+const handleConfirmPasswordChange = (e) => {
+  const confirmPasswordValue = e.target.value;
+  setConfirmPassword(confirmPasswordValue);
+
+  // Check if passwords match
+  if (confirmPasswordValue !== password) {
+    setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+  } else {
+    setConfirmPasswordError("");
+  }
+  dispatch(setChangePassword({ confirmPassword: confirmPasswordValue }));
+};
+
+const handlePasswordUpdateSubmit = (e) => {
+  e.preventDefault();
+  console.log("pass - ",  password, confirmPassword);
+  
+  if (isPasswordValid && password === confirmPassword) {
+   
+    const responseObj = {
+      old_password: changePassword.oldPassword,
+      new_password: changePassword.newPassword,
+      confirm_password: changePassword.confirmPassword,
+    }
+    console.log("responseObj", responseObj);
+    dispatch(changePasswordRequest(responseObj));
+    setPassword("");
+    setConfirmPassword("");
+    dispatch(setChangePassword({ oldPassword: "", newPassword: "", confirmPassword: "" }))
+    // Handle form submission
+  } 
+};
+// ==============================================================
+
 
   useEffect(() => {
     if (user && user[0]) {
-      console.log(user[0]);
-      console.log(image, email, name);
+      // console.log(user[0]);
+      // console.log(image, email, name);
     }
+    console.log("changePassword", changePassword);
+    console.log("user", user);
+    
   }, [user]);
 
   const [formData, setFormData] = useState({
-    fullName: name || "",
+    fullName: fullname || "",
     email: email || "",
     phone: phone || "",
-    password: password || "",
   });
 
   const [errors, setErrors] = useState({});
-  const [isEditing, setIsEditing] = useState({
-    fullName: false,
-    email: false,
-    phone: false,
-    password: false,
-  });
-
+  
   useEffect(() => {
     if (user && user[0]) {
       setFormData({
-        fullName: name || "",
+        fullName: fullname || "",
         email: email || "",
         phone: phone || "",
-        password: password || "",
       });
     }
-  }, [user, name, email, phone, password]);
-
-  const handleEditClick = (field) => {
-    setIsEditing({ ...isEditing, [field]: true });
-  };
-
-  const handleSaveClick = (field) => {
-    const updatedErrors = validateField(field);
-    if (Object.keys(updatedErrors).length === 0) {
-      setIsEditing({ ...isEditing, [field]: false });
-    } else {
-      setErrors({ ...errors, ...updatedErrors });
-    }
-  };
-
-  const handleCancelClick = (field) => {
-    setFormData({
-      fullName: name,
-      email: email,
-      phone: phone,
-      password: password,
-    });
-    setIsEditing({ ...isEditing, [field]: false });
-  };
+  // }, [user, name, email, phone, password]);
+  }, [user, fullname, email, phone]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear error on input change
+    setErrors({ ...errors, [name]: "" });
   };
 
-  const validateField = (field) => {
-    const newErrors = {};
-    if (field === "email" && !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email.";
-    }
-    if (field === "phone" && !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid 10-digit phone number.";
-    }
-    if (field === "password" && formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-    }
-    if (field === "fullName" && formData.fullName.trim() === "") {
-      newErrors.fullName = "Full Name is required.";
-    }
-    return newErrors;
-  };
-  //   console.log(formData);
   const validateInputs = () => {
     const newErrors = {};
     if (!formData.fullName || formData.fullName.trim() === "") {
@@ -120,24 +183,44 @@ const Profile = () => {
       newErrors.phone = "Phone number must be a valid 10-digit number.";
     }
 
-    // Ensure password is at least 6 characters long
-    if (!formData.password || formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters long.";
-    }
     return newErrors;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = validateInputs();
     if (Object.keys(newErrors).length === 0) {
-      // Dispatch the action to update the Redux user state
-      dispatch(setUser(formData));
-      alert("Profile updated successfully!");
+      // dispatch(setUser(formData));
+      const [firstName, ...restName] = formData.fullName.split(" ");
+      const lastName = restName.join(" ");
+      const responseObj = {
+        first_name: firstName,
+        last_name: lastName,
+        mobile: formData.phone,
+        email: formData.email,
+        profile_pic: imageFile
+      }
+      console.log("responseObj", responseObj);
+      dispatch(updateProfileRequest(responseObj));
     } else {
       setErrors(newErrors);
     }
   };
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log("++++++++++", name, value);
+    
+    dispatch(setChangePassword({ ...changePassword, [name]: value }));
+  };
 
+  const validatePasswordLength = (value) => {
+    const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
+  return passwordRegex.test(value)
+    ? ""
+    : PASSWORD;
+  };
   //   ======================================================================================================================
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -249,6 +332,12 @@ const Profile = () => {
     setIsEditingAddress(true); // Set the form to edit mode
   };
 
+  
+  const validatePasswordMatch = (password, confirmPassword) => {
+    console.log("Password:", password, "Confirm Password:", confirmPassword);
+    return (password === confirmPassword) ? "" : PASSWORD_NOT_MATCH_ERROR;
+  };
+
   //   ======================================================================================================================
   const handleCopy = (title, index) => {
     // Copy the item.title to the clipboard
@@ -323,54 +412,67 @@ const Profile = () => {
     toast.success("Item added to Cart successfully");
   };
 
+  const handleActiveTabs = (value) => {
+    if(value === 2) {
+      dispatch(getListAddress());
+      setActiveTab(value);
+    }
+    setActiveTab(value);
+  }
+
   return (
     <div className="userProfile">
       <h1>Your Profile</h1>
       <div className="vertical-tabs-container">
         <div className="tabs">
           <div className="profile_user_image">
-            <img src={image} alt={name} />
+            <img src={(imagePreview ? imagePreview : profile_pic) || '/images/icons/avtar.png'} alt={fullname} />
+            <div className="editMode">
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              <img src={'/images/icons/edit.svg'} alt={'edit icon'} />
+            </div>
           </div>
+          {errorFileType && <div className="error errorImageType">{errorFileType}</div>}
           <p>Categories</p>
           <div className="email">{email}</div>
           <div
             className={`tab ${activeTab === 0 ? "active" : ""}`}
-            onClick={() => setActiveTab(0)}
+            onClick={() => handleActiveTabs(0)}
           >
             <img src="/images/profile/user1.svg" alt="Login" />
             <span>Login and Security</span>
           </div>
           <div
             className={`tab ${activeTab === 1 ? "active" : ""}`}
-            onClick={() => setActiveTab(1)}
+            onClick={() => handleActiveTabs(1)}
           >
             <img src="/images/profile/orders.svg" alt="Login" />
             <span>Your Orders</span>
           </div>
           <div
             className={`tab ${activeTab === 2 ? "active" : ""}`}
-            onClick={() => setActiveTab(2)}
+            onClick={() => handleActiveTabs(2)}
           >
             <img src="/images/profile/address.svg" alt="Login" />
             <span>Your Address</span>
           </div>
           <div
             className={`tab ${activeTab === 3 ? "active" : ""}`}
-            onClick={() => setActiveTab(3)}
+            onClick={() => handleActiveTabs(3)}
           >
             <img src="/images/profile/reviews.svg" alt="Login" />
             <span>Your Reviews</span>
           </div>
           <div
             className={`tab ${activeTab === 4 ? "active" : ""}`}
-            onClick={() => setActiveTab(4)}
+            onClick={() => handleActiveTabs(4)}
           >
             <img src="/images/profile/coupen.svg" alt="Login" />
             <span>Coupons & offers</span>
           </div>
           <div
             className={`tab ${activeTab === 5 ? "active" : ""}`}
-            onClick={() => setActiveTab(5)}
+            onClick={() => handleActiveTabs(5)}
           >
             <img src="/images/profile/whistlist.svg" alt="Login" />
             <span>Your Wishlist</span>
@@ -384,89 +486,37 @@ const Profile = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="box">
                     <div className="form-control">
-                      <label for="fullName">Full Name</label>
+                      <label htmlFor="fullName">Full Name</label>
                       <input
                         type="text"
                         name="fullName"
                         placeholder="Full Name"
                         value={formData.fullName}
                         onChange={handleInputChange}
-                        disabled={!isEditing.fullName}
                       />
                       {errors.fullName && (
                         <span className="error">{errors.fullName}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.fullName ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("fullName")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("fullName")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("fullName")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <div className="box">
                     <div className="form-control">
-                      <label for="email">Email</label>
+                      <label htmlFor="email">Email</label>
                       <input
                         type="email"
                         name="email"
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        disabled={!isEditing.email}
                       />
                       {errors.email && (
                         <span className="error">{errors.email}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.email ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("email")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("email")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("email")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <div className="box">
                     <div className="form-control">
-                      <label for="Mobile or Phone Number">
+                      <label htmlFor="Mobile or Phone Number">
                         Mobile or Phone Number
                       </label>
                       <input
@@ -475,85 +525,90 @@ const Profile = () => {
                         placeholder="Mobile or Phone Number"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        disabled={!isEditing.phone}
                       />
                       {errors.phone && (
                         <span className="error">{errors.phone}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.phone ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("phone")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("phone")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("phone")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
-                  <div className="box">
-                    <div className="form-control">
-                      <label for="password">Password</label>
-                      <input
-                        type={!isEditing.password ? "password" : "text"}
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        disabled={!isEditing.password}
+                  <button
+                    type="submit"
+                    className="explore contact sp-10"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
                       />
-                      {errors.password && (
-                        <span className="error">{errors.password}</span>
-                      )}
-                    </div>
-                    <div className="editableAction">
-                      {!isEditing.password ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("password")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("password")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("password")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <Button
-                    type={"submit"}
-                    value={"save changes"}
-                    varient="explore contact"
-                    space="sp-10"
+                    )}
+                    {!loading && <span>save changes</span>}
+                  </button>
+                </form>
+              </div>
+              <h3>Change Password</h3>
+              <div className="login_securityWrapper">
+                <form onSubmit={handlePasswordUpdateSubmit}>
+                <InputField
+                    label={OLD_PASSWORD_LABEL}
+                    placeholder={OLD_PASSWORD_ENTER}
+                    type={PASSWORD_TYPE}
+                    name={OLD_PASSWORD}
+                    value={changePassword.oldPassword}
+                    onChange={handleChange}
+                    required
+                    validate={validatePasswordLength}
+                    errorMessage={PASSWORD}
                   />
+                  <div className="input-field">
+                    <label htmlFor={PASSWORD_TYPE}>{NEW_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={NEW_PASSWORD_ENTER}
+                      name={NEW_PASSWORD}
+                      id={PASSWORD_TYPE}
+                      value={password}
+                      onChange={handleFormPasswordChange}
+                      required
+                    />
+                    {passwordError && (
+                      <p className="error-message">{passwordError}</p>
+                    )}
+                  </div>
+                  <div className="input-field">
+                    <label htmlFor={CONFIRM_PASSWORD_LABEL}>{CONFIRM_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={CONFIRM_PASSWORD_LABEL}
+                      name={CONFIRM_PASSWORD}
+                      id={CONFIRM_PASSWORD}
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      required
+                    />
+                    {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
+                  </div>
+                  <button
+                    type="submit"
+                    className="explore contact sp-10"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
                 </form>
               </div>
             </div>
@@ -568,7 +623,6 @@ const Profile = () => {
                       className="closePDF"
                       onClick={() => setShowInvoice(false)}
                     >
-                      {" "}
                       <img
                         src="/images/profile/cross1.svg"
                         alt="close PDF VIEW"
@@ -824,10 +878,6 @@ const Profile = () => {
                           </table>
                         </td>
                       </tr>
-                      {/* <tr>
-                            <td style={{border: "none" }}>&nbsp;</td>
-                            <td style={{border: "none" }}>&nbsp;</td>
-                        </tr> */}
                       <tr>
                         <td style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
@@ -843,7 +893,7 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   ABDPH1161R
                                 </span>
                               </td>
@@ -860,7 +910,7 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   09ABDPH1161R2ZD
                                 </span>
                               </td>
@@ -956,10 +1006,6 @@ const Profile = () => {
                           </table>
                         </td>
                       </tr>
-                      {/* <tr>
-                            <td style={{ border: "none" }}>&nbsp;</td>
-                            <td style={{ border: "none" }}>&nbsp;</td>
-                        </tr> */}
                       <tr>
                         <td style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
@@ -975,7 +1021,7 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   402-0942907-2957941
                                 </span>
                               </td>
@@ -992,7 +1038,7 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   06.05.2024
                                 </span>
                               </td>
@@ -1431,7 +1477,7 @@ const Profile = () => {
                     {activeOrderTab === 0 && (
                       <div className="orderListWrapper">
                         {user[0] &&
-                          user[0].activeOrders.map((item, index) => (
+                          user[0]?.activeOrders?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
@@ -1503,7 +1549,7 @@ const Profile = () => {
                     {activeOrderTab === 1 && (
                       <div className="orderListWrapper">
                         {user[0] &&
-                          user[0].deliveredOrders.map((item, index) => (
+                          user[0]?.deliveredOrders?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
@@ -1575,7 +1621,7 @@ const Profile = () => {
                     {activeOrderTab === 2 && (
                       <div className="orderListWrapper">
                         {user[0] &&
-                          user[0].returnOrders.map((item, index) => (
+                          user[0]?.returnOrders?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
@@ -1671,7 +1717,7 @@ const Profile = () => {
                     {activeOrderTab === 3 && (
                       <div className="orderListWrapper">
                         {user[0] &&
-                          user[0].cancelledOrders.map((item, index) => (
+                          user[0]?.cancelledOrders?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
@@ -1893,7 +1939,7 @@ const Profile = () => {
                     ))}
                   </ul>
                 ) : (
-                  ""
+                  <p>No Address found!</p>
                 )}
               </div>
             </div>

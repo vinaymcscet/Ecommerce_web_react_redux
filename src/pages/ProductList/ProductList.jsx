@@ -238,6 +238,7 @@ const ProductList = () => {
                     bestSeller={item.bestseller ? item.bestseller : ""}
                     time={item.time ? item.time : ""}
                     discountLabel={item.discountlabel ? item.discountlabel : ""}
+                    wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
                   />
                 </div>
               ))

@@ -5,13 +5,13 @@
 }
 
 .subscribe .MuiBox-root {
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
 }
 
 .subscribeMessage {
     width: 100%;
-    padding-left: 30px;
+    padding-left: 0px;
 }
 
 .subscribeMessage h2 {
@@ -29,7 +29,7 @@
 .emailSection {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     padding-top: 30px;
     position: relative;
 }
@@ -48,7 +48,7 @@
 
 .emailSection .emailBtn {
     position: absolute;
-    right: 12%;
+    right: 0%;
     background: #1E1E1E;
     color: #fff;
     border-radius: 50px;

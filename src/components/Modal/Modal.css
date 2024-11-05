@@ -30,6 +30,7 @@
   border-radius: 10px;
   width: 35%;
   min-height: 70vh;
+  max-height: 87vh;
   padding: 20px;
   display: flex;
   align-items: flex-start;
@@ -38,14 +39,14 @@
 }
 
 .left h4 {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 600;
   text-align: left;
   color: #3F3F3F;
 }
 
 .left p {
-  font-size: 20px;
+  font-size: 17px;
   line-height: 30px;
   font-weight: 400;
   color: #3F3F3F;
@@ -142,12 +143,19 @@ ul.status {
   margin-bottom: auto;
   width: 100%;
 }
+.right form[name="forgotPasswordAssist"] {
+  margin-bottom: 0;
+}
 
 .right .name {
   margin-top: auto;
   text-align: center;
   width: 100%;
   font-weight: 400;
+}
+
+.right.forgot-password .name {
+  margin-top: 20px;
 }
 
 .right .name a {

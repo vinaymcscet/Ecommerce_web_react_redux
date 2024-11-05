@@ -10,6 +10,8 @@ import {
   setSignup,
   setOtp,
   setForgotPassword,
+  setForgotPasswordAssist,
+  setForgotOtp
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
 import { getDeviceType } from "../../utils/CheckDevice";
@@ -35,10 +37,17 @@ import {
       TEMP_CODE_PLACEHOLDER,
       OTP_ERROR
   } from "../../utils/Constants";
-import { loginUser, signupUser, signupUserWithOtp } from "../../store/slice/api_integration";
+import { forgetPasswordConfirmRequest, forgetPasswordOtpRequest, forgetPasswordRequest, loginUser, signupUser, signupUserWithOtp } from "../../store/slice/api_integration";
 
 const Modal = () => {
   const dispatch = useDispatch();
+  // Forgot password 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(""); // Error for new password
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  // End
   const {
     isModalOpen,
     modalType,
@@ -47,41 +56,55 @@ const Modal = () => {
     otp,
     forgotPassword,
     loading,
+    forgotPasswordAssist,
+    forgotOtp,
+    forgotOtpKeyCodeValue,
   } = useSelector((state) => state.modal);
   const [rememberMe, setRememberMe] = useState(false);
   const [rememberMeError, setRememberMeError] = useState(""); 
 
-  useEffect(() => {
-    if (modalType === "login" && !login.userPhoneOrEmail && !login.password) {
-      dispatch(
-        setLogin({
-          userPhoneOrEmail: login.userPhoneOrEmail || "",
-          password: login.password || "",
-        })
-      );
-    } else if (
-      modalType === "signup" &&
-      !signup.userPhoneOrEmail &&
-      !signup.password
-    ) {
-      dispatch(
-        setSignup({
-          userPhoneOrEmail: signup.userPhoneOrEmail || "",
-          password: signup.password || "",
-        })
-      );
-    }
-  }, [
-    modalType,
-    login.userPhoneOrEmail,
-    login.password,
-    signup.userPhoneOrEmail,
-    signup.password,
-    dispatch,
-  ]);
-  
-
   if (!isModalOpen) return null;
+
+  // ==============================================================
+
+
+const validatePasswordLength1 = (password) => {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+const handleFormPasswordChange = (e) => {
+  const newPassword = e.target.value;
+  setPassword(newPassword);
+  
+  if (!validatePasswordLength1(newPassword)) {
+    setPasswordError(PASSWORD);
+    setIsPasswordValid(false);
+  } else {
+    setPasswordError("");
+    setIsPasswordValid(true);
+    if (confirmPassword && newPassword !== confirmPassword) {
+      setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+    } else {
+      setConfirmPasswordError("");
+    }
+  }
+  dispatch(setForgotPassword({ newPassword: newPassword }));
+};
+
+const handleConfirmPasswordChange = (e) => {
+  const confirmPasswordValue = e.target.value;
+  setConfirmPassword(confirmPasswordValue);
+
+  // Check if passwords match
+  if (confirmPasswordValue !== password) {
+    setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+  } else {
+    setConfirmPasswordError("");
+  }
+  dispatch(setForgotPassword({ confirmPassword: confirmPasswordValue }));
+};
+// ==============================================================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,16 +114,16 @@ const Modal = () => {
       dispatch(setSignup({ ...signup, [name]: value }));
     } else if (modalType === "otp") {
       dispatch(setOtp({ otpCode: value }));
+    } else if(modalType === 'forgotPasswordAssist') {
+      dispatch(setForgotPasswordAssist({ ...forgotPasswordAssist, [name]: value}))
+    } else if (modalType === "forgotOtp") {
+      dispatch(setForgotOtp({ otpCode: value }));
     }
     if (modalType === "forgot") {
       if (forgotPassword[name] !== value) {
         dispatch(setForgotPassword({ ...forgotPassword, [name]: value }));
       }
     }
-  };
-
-  const validatePasswordMatch = (password, confirmPassword) => {
-    return password === confirmPassword ? "" : PASSWORD_NOT_MATCH_ERROR;
   };
 
   const validatePasswordLength = (value) => {
@@ -110,7 +133,6 @@ const Modal = () => {
   return passwordRegex.test(value)
     ? ""
     : PASSWORD;
-
   };
 
   const validateContact = (value) => {
@@ -134,10 +156,13 @@ const Modal = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!rememberMe) {
+    if (!rememberMe && modalType === "login") {
       setRememberMeError("Please check Remember Me to proceed");
       return;
-    } 
+    } else {
+      setRememberMeError("");
+      setRememberMe(false)
+    }
     console.log("signup data ", signup);
 
     // Submit form data
@@ -157,28 +182,46 @@ const Modal = () => {
       }
       dispatch(signupUserWithOtp(responseObj));
     }
-    const passwordError = validatePasswordLength(forgotPassword.newPassword);
-    const confirmPasswordError = validatePasswordMatch(
-      forgotPassword.newPassword,
-      forgotPassword.confirmPassword
-    );
 
-    if (!passwordError && !confirmPasswordError) {
-      // Handle form submission
-    } else {
-      // Handle form validation errors
-    }
-    if (modalType === "forgot") {
-      dispatch(setModalType("otp"));
+    if (isPasswordValid && password === confirmPassword) {
+      if (modalType === "forgot") {
+        const responseObj = {
+          username: forgotPasswordAssist.userPhoneOrEmail,
+          password: forgotPassword.confirmPassword,
+          otp_key: forgotOtpKeyCodeValue,
+        }
+        console.log("responseObj", responseObj);
+        dispatch(forgetPasswordConfirmRequest(responseObj));
+        setPassword("");
+        setConfirmPassword("");
+        // Handle form submission
+      } 
     }
     if (modalType === "login") {
       const responseObj = { 
         username: login.userPhoneOrEmail,
         password: login.password,
         device_token: device_token,
+        device_type: getDeviceType(),
         fcm_token: fcm_token
       }
       dispatch(loginUser(responseObj));
+    }
+    if(modalType === 'forgotPasswordAssist') {
+      const responseObj = {
+        username: forgotPasswordAssist.userPhoneOrEmail
+      };
+      dispatch(forgetPasswordRequest(responseObj))
+    }
+    if (modalType === "forgotOtp") {
+      const responseObj = { 
+        username: forgotPasswordAssist.userPhoneOrEmail,
+        otp: forgotOtp.otpCode 
+      };
+      console.log("responseObj", responseObj);
+      
+      dispatch(forgetPasswordOtpRequest(responseObj));
+      // dispatch(setModalType('forgot'));
     }
   };
   
@@ -306,7 +349,7 @@ const Modal = () => {
                       <span>Remember Me</span>
                     </label>
                     <div className="forgotLink">
-                      <Link onClick={() => openModal("forgot")}>
+                      <Link onClick={() => openModal("forgotPasswordAssist")}>
                         Forgot Password
                       </Link>
                     </div>
@@ -314,7 +357,22 @@ const Modal = () => {
                   {rememberMeError && <span className="forgot-link error-message">
                       {rememberMeError}
                   </span>}
-                  <button type="submit">SUBMIT</button>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
                   {/* <div className="partition">Or</div>
                   <div className="socialInt">
                     <div className="box facebook">
@@ -394,34 +452,138 @@ const Modal = () => {
               </div>
               <div className="right">
                 <form onSubmit={handleSubmit}>
+                  <div className="input-field">
+                    <label htmlFor={PASSWORD_TYPE}>{NEW_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={NEW_PASSWORD_ENTER}
+                      name={NEW_PASSWORD}
+                      id={PASSWORD_TYPE}
+                      value={password}
+                      onChange={handleFormPasswordChange}
+                      required
+                    />
+                    {passwordError && (
+                      <p className="error-message">{passwordError}</p>
+                    )}
+                  </div>
+                  <div className="input-field">
+                    <label htmlFor={CONFIRM_PASSWORD_LABEL}>{CONFIRM_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={CONFIRM_PASSWORD_LABEL}
+                      name={CONFIRM_PASSWORD}
+                      id={CONFIRM_PASSWORD}
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      required
+                    />
+                    {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
+                  </div>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
+          {modalType === "forgotPasswordAssist" && (
+            <>
+              <div className="left">
+                <h4>Password Assistance</h4>
+                <p>No Problem! Just enter your email or mobile number, and we'll send you a text message with a temporary code.</p>
+                <div className="name">
+                  Need help?
+                  <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
+                </div>
+              </div>
+              <div className="right forgot-password">
+                <form onSubmit={handleSubmit} name="forgotPasswordAssist">
                   <InputField
-                    label={NEW_PASSWORD_LABEL}
-                    placeholder={NEW_PASSWORD_ENTER}
-                    type={PASSWORD_TYPE}
-                    name={NEW_PASSWORD}
-                    value={forgotPassword.newPassword}
+                    label={EMAIL_OR_MOBILE_LABEL}
+                    placeholder={EMAIL_OR_MOBILE_LABEL}
+                    name={EMAIL_LABEL}
+                    value={forgotPasswordAssist.userPhoneOrEmail}
                     onChange={handleChange}
                     required
-                    validate={validatePasswordLength}
-                    errorMessage={PASSWORD}
+                    validate={validateContact}
+                    errorMessage={EMAIL_OR_MOBILE}
                   />
+                 
+                 <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
+                </form>
+                <div className="name">
+                  To verify your number, we will send you a text message with a temporary code.
+                </div>
+              </div>
+            </>
+          )}
+          {modalType === "forgotOtp" && (
+            <>
+              <div className="left">
+                <h4>Password Assistance</h4>
+                <p>Please enter the temporary code sent via text message.</p>
+                <div className="name">
+                  Need help?
+                  <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
+                </div>
+              </div>
+              <div className="right">
+                <form onSubmit={handleSubmit}>
                   <InputField
-                    label={CONFIRM_PASSWORD_LABEL}
-                    placeholder={CONFIRM_PASSWORD_LABEL}
-                    type={PASSWORD_TYPE}
-                    name={CONFIRM_PASSWORD}
-                    value={forgotPassword.confirmPassword}
+                    label={TEMP_CODE_LABEL}
+                    placeholder={TEMP_CODE_PLACEHOLDER}
+                    name={OTP_NAME}
+                    value={forgotOtp.otpCode}
                     onChange={handleChange}
+                    validate={validateOtp}
                     required
-                    validate={() =>
-                      validatePasswordMatch(
-                        forgotPassword.newPassword,
-                        forgotPassword.confirmPassword
-                      )
-                    }
-                    errorMessage={PASSWORD_NOT_MATCH_MESSAGE}
+                    errorMessage={OTP_ERROR}
                   />
-                  <button type="submit">Submit</button>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
                 </form>
               </div>
             </>

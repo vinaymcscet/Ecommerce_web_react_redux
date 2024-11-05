@@ -6,15 +6,14 @@ const initialState = {
   modalType: "",
   login: { userPhoneOrEmail: "", password: "" },
   signup: { userPhoneOrEmail: "", password: "" },
-  otp: {
-    otpCode: "",
-  },
-  forgotPassword: {
-    newPassword: "",
-    confirmPassword: "",
-  },
+  otp: { otpCode: "" },
+  forgotOtp: { otpCode: "" },
+  forgotOtpKeyCodeValue: "",
+  forgotPassword: { newPassword: "", confirmPassword: "" },
+  forgotPasswordAssist: { userPhoneOrEmail: "" },
   isCategoryModalOpen: false,
   selectedCategory: null,
+  category_name: '',
   isAddressModelOpen: false,
   addresses: [],
   defaultAddressId: null,
@@ -51,15 +50,25 @@ export const modalSlice = createSlice({
     setOtp(state, action) {
       state.otp = { ...state.otp, ...action.payload };
     },
+    setForgotOtp(state, action) {
+      state.forgotOtp = { ...state.forgotOtp, ...action.payload };
+    },
+    setForgotOtpKeyCodeValue(state, action) {
+      state.forgotOtpKeyCodeValue = action.payload;
+    },
     setForgotPassword: (state, action) => {
       state.forgotPassword = {
         ...state.forgotPassword,
         ...action.payload,
       };
     },
+    setForgotPasswordAssist: (state, action) => {
+      state.forgotPasswordAssist = { ...state.forgotPasswordAssist, ...action.payload };
+    },
     toggleCategoryModal: (state, action) => {
       state.isCategoryModalOpen = action.payload.isOpen;
       state.selectedCategory = action.payload.category || null;
+      state.category_name = action.payload.category_name;
     },
     toggleAddressModal: (state, action) => {
       state.isAddressModelOpen = action.payload.isOpen;
@@ -118,8 +127,6 @@ export const modalSlice = createSlice({
     },
     loadTokensFromStorage: (state) => {
       const tokens = getTokensFromLocalStorage();
-      console.log("tokens", tokens);
-      
       if (tokens) {
         state.accessToken = tokens?.accessToken;
         state.refreshToken = tokens?.refreshToken;
@@ -153,7 +160,10 @@ export const {
   setLogin,
   setSignup,
   setOtp,
+  setForgotOtp,
+  setForgotOtpKeyCodeValue,
   setForgotPassword,
+  setForgotPasswordAssist,
   toggleCategoryModal,
   toggleAddressModal,
   saveAddress,

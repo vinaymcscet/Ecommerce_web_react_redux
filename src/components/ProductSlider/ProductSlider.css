@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 83%;
+  width: 90%;
   margin: 2em auto 1em auto;
 }
 
@@ -117,6 +117,13 @@
   display: block;
   left: 10px;
   transform: rotate(360deg);
+}
+
+.catProduct .slick-arrow.slick-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+  background: #cfcfcf;
 }
 
 @media screen and (max-width: 1200px) {

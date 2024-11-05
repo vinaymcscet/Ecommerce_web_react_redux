@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: [],
+  changePassword: { oldPassword: "", newPassword: "", confirmPassword: "" },
 };
 
 export const userSlice = createSlice({
@@ -17,7 +18,6 @@ export const userSlice = createSlice({
         // If no user exists, add the new data as a fresh entry
         state.user.push(userdetails);
       }
-      console.log("userdetails", userdetails);
     },
     setLogout: (state) => {
       state.user = [];
@@ -39,9 +39,15 @@ export const userSlice = createSlice({
         })),
       }));
     },
+    setChangePassword: (state, action) => {
+      state.changePassword = {
+        ...state.changePassword,
+        ...action.payload,
+      };
+    },
   },
 });
 
-export const { setUser, setLogout, removeAddress, setDefaultAddress } =
+export const { setUser, setLogout, removeAddress, setDefaultAddress, setChangePassword } =
   userSlice.actions;
 export default userSlice.reducer;

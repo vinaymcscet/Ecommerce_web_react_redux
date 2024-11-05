@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header/Header";
@@ -20,6 +20,7 @@ import "./App.css";
 import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
 import { setUser } from "./store/slice/userSlice";
 import { getTokensFromLocalStorage } from "./utils/StorageTokens";
+import Offline from "./pages/Offline/Offline";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -45,7 +46,22 @@ function App() {
   const { isAddressModelOpen, error, success } = useSelector(
     (state) => state.modal
   );
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Clean up the event listeners
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     if (success) {
@@ -70,10 +86,13 @@ function App() {
   useEffect(() => {
     const tokens = getTokensFromLocalStorage();
     if(tokens) {
-      console.log("Access token", tokens);
       dispatch(setUser(tokens));
     }
   }, []);
+
+  if (!isOnline) {
+    return <Offline />;
+  }
 
   return (
     <div className="App">

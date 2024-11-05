@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCategoryModal } from "../../store/slice/modalSlice";
@@ -7,11 +7,15 @@ import "./CategoryModal.css";
 
 const CategoryModal = () => {
   const dispatch = useDispatch();
-  const { isCategoryModalOpen, selectedCategory } = useSelector(
+  
+  const { isCategoryModalOpen, category_name } = useSelector(
     (state) => state.modal
   );
+  const { subCategoryList } = useSelector(
+    (state) => state.product
+  );
+
   if (!isCategoryModalOpen) return null;
-  console.log(selectedCategory);
 
   const closeModal = () => {
     dispatch(toggleCategoryModal(false));
@@ -24,15 +28,15 @@ const CategoryModal = () => {
             <CloseIcon />
           </div>
           <div className="allCategory">
-            <h3>{selectedCategory.PrdName}</h3>
+            <h3>{category_name}</h3>
           </div>
           <div className="categoryList">
-            {selectedCategory.subcategory.map((slide, index) => {
+            {subCategoryList?.map((slide) => {
               return (
-                <div key={index}>
+                <div key={slide.id}>
                   <ProductCard
-                    imgSrc={slide.img}
-                    imgName={slide.PrdName}
+                    imgSrc={slide.category_image || '/images/no-product-available.jpg'}
+                    imgName={slide.name}
                   />
                 </div>
               );
