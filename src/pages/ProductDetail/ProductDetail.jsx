@@ -51,7 +51,7 @@ const ProductDetail = () => {
 
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
 
-  const images = product.small.map((item) => ({
+  const images = product?.small?.map((item) => ({
     original: item.image,
     thumbnail: item.image,
   }));
@@ -205,7 +205,7 @@ const ProductDetail = () => {
       <CategorySlider />
       <div className="productDetailInfo">
         <div className="leftDetailInfo">
-          <ImageGallery items={images} />
+          {/* <ImageGallery items={images} /> */}
         </div>
         <div className="rightDetailInfo">
           <div className="leftBar">
@@ -282,7 +282,7 @@ const ProductDetail = () => {
             <p className="sizeTest">Size</p>
             <div className="sizeChart">
               <ul className="sizeList">
-                {product.sizeList.map((size, index) => (
+                {product?.sizeList?.map((size, index) => (
                   <li
                     key={index}
                     className={index === activeIndex ? "active" : ""}
@@ -299,7 +299,7 @@ const ProductDetail = () => {
             </div>
             <div className="gaurnteeMessage">
               <ul>
-                {product.gaurnteeMessage.map((item, index) => (
+                {product?.gaurnteeMessage?.map((item, index) => (
                   <li key={index}>
                     <img src={item.image} alt={item.name} />
                     <p>{item.name}</p>
@@ -320,7 +320,7 @@ const ProductDetail = () => {
             <div className="commitment">
               <h4>FikFis Commitments</h4>
               <ul>
-                {product.commitment.map((data, index) => (
+                {product?.commitment?.map((data, index) => (
                   <li key={index}>{data.name}</li>
                 ))}
               </ul>
@@ -328,7 +328,7 @@ const ProductDetail = () => {
             <div className="availableOffers">
               <h4>Available Offers</h4>
               <ul>
-                {product.availableOffers.map((data, index) => (
+                {product?.availableOffers?.map((data, index) => (
                   <li key={index}>{data.name}</li>
                 ))}
               </ul>
@@ -378,9 +378,9 @@ const ProductDetail = () => {
               <div className="additionalInfo">
                 <div className="technical info">
                   <h5>Technical Details</h5>
-                  <table>
+                  {/* <table>
                     <tbody>
-                      {Object.entries(product.technical_details).map(
+                      {Object.entries(product?.technical_details).map(
                         ([key, value], index) => (
                           <tr key={index}>
                             <td>
@@ -391,11 +391,11 @@ const ProductDetail = () => {
                         )
                       )}
                     </tbody>
-                  </table>
+                  </table> */}
                 </div>
                 <div className="additional info">
                   <h5>Additional Information</h5>
-                  <table>
+                  {/* <table>
                     <tbody>
                       {Object.entries(product.additional_info).map(
                         ([key, value], index) => (
@@ -408,7 +408,7 @@ const ProductDetail = () => {
                         )
                       )}
                     </tbody>
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </div>
@@ -420,9 +420,9 @@ const ProductDetail = () => {
               <div className="reviewSection">
                 <div className="leftReviewPart">
                   <h4>Customer reviews</h4>
-                  {product.rating && <StarRating userrating={product.rating} />}
+                  {product?.rating && <StarRating userrating={product?.rating} />}
                   <div className="detailLinearRivewProgress">
-                    {product.detail_rating.map((item, index) => (
+                    {product?.detail_rating?.map((item, index) => (
                       <div className="reviewProgress" key={index}>
                         <span>{item.name}</span>
                         <div className="progressBar">
@@ -466,7 +466,7 @@ const ProductDetail = () => {
                         </div>
                       </div>
                       <div className="productReviewList">
-                        {product.customer_review.map((item, index) => (
+                        {product?.customer_review?.map((item, index) => (
                           <div className="reviewComments" key={index}>
                             <div className="userImage">
                               <img
@@ -477,7 +477,7 @@ const ProductDetail = () => {
                             <div className="reviewRightomments">
                               <div className="userName">{item.name}</div>
                               <div className="ratingBox">
-                                {item.rating && (
+                                {item?.rating && (
                                   <StarRating userrating={item.rating} />
                                 )}
                                 <div className="rateusername">
@@ -486,8 +486,8 @@ const ProductDetail = () => {
                               </div>
                               {item.description && <p>{item.description}</p>}
                               <div className="reviewed_image">
-                                {item.product_review_image &&
-                                  item.product_review_image.map(
+                                {item?.product_review_image &&
+                                  item?.product_review_image.map(
                                     (review_image, index) => (
                                       <img
                                         key={index}

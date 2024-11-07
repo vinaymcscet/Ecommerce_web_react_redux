@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import { categorySlides, productBulkList, productHistoryList } from "../../utils/ProductData";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCategoryModal } from "../../store/slice/modalSlice";
 import "./Category.css";
 import { getAllCategoryData, getAllRecentViewData, getSubCategoryData } from "../../store/slice/api_integration";
-import { setCategorySlide, setProductHistory, setProductList } from "../../store/slice/productSlice";
 
 const Category = () => {
   const dispatch = useDispatch();
@@ -26,12 +24,8 @@ const Category = () => {
     dispatch(toggleCategoryModal(subCategoryObj));
   };
   useEffect(() => {
-    dispatch(setProductHistory(productHistoryList));
-    dispatch(setProductList(productBulkList));
-    dispatch(setCategorySlide(categorySlides))
-    // dispatch(setAllCategories(allCategory))
     dispatch(getAllCategoryData())
-    dispatch(getAllRecentViewData());
+    dispatch(getAllRecentViewData(0, 10));
   }, [dispatch]);
 
   console.log("recentView", recentView);

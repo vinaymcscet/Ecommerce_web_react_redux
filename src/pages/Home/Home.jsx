@@ -1,42 +1,29 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Banner from "../../components/Banner/Banner";
-// import { BannerOfferData } from "../../utils/BannerOfferData";
 import "./Home.css";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
-import FourCategoryProduct from "../../components/FourCategoryProduct/FourCategoryProduct";
-import {
-  allCategory,
-  categorySlides,
-  description,
-  Onedescription,
-  productHistoryList,
-} from "../../utils/ProductData";
-import OneCategoryProduct from "../../components/OneCategoryProduct/OneCategoryProduct";
+
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
-import { setAllCategories, setCategorySlide, setProductHistory, setProductList } from "../../store/slice/productSlice";
-// import { productBulkList } from "../../utils/ProductData";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../store/slice/userSlice";
-import { User } from "../../utils/CommonUtils";
 import { getHomeData, getHomeSection } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
   const { homeProductData, homeProductSection } = useSelector(state => state.product);
-  const [productTile, setProductTile] = useState(true);
-  useEffect(() => {
-    // dispatch(setProductHistory(productHistoryList));
-    // dispatch(setProductList(productBulkList));
-    dispatch(setCategorySlide(categorySlides))
-    // dispatch(setAllCategories(allCategory))
-    // dispatch(setUser(User))
+  const [productTile] = useState(true);
+  const navigate = useNavigate();
 
+  useEffect(() => {
     dispatch(getHomeData())
     dispatch(getHomeSection(0, 20))
   }, [dispatch]);
 
-  // const { productHistory } = useSelector((state) => state.product);
+  
+  const handleProductClick = (item) => {
+    navigate(`/product/${item.id}`, { state: { product: item } });
+  };
 
   return (
     <div>
@@ -132,7 +119,7 @@ const Home = () => {
           <img src="/images/limitedOffer.png" alt="Limited Offer" />
         </div>
         {homeProductData[0]?.offers && homeProductData[0]?.offers.map((item, index) => (
-          <div key={index}>
+          <div key={index} onClick={() => handleProductClick(item)}>
             <ProductListCard
               id = {item?.categoryId}
               image={item?.categoryImage}
@@ -195,7 +182,7 @@ const Home = () => {
                         </div>
                           <div className="productList">
                           {item?.products.map((product, index) => (
-                            <div key={index}>
+                            <div key={index} onClick={() => handleProductClick(product)}>
                               <ProductListCard
                                 id={product?.group_id}
                                 image={product.imageUrl ? product.imageUrl : "/images/no-product-available.jpg"}
@@ -245,7 +232,7 @@ const Home = () => {
         <div className="productList">
           {homeProductData[0]?.RecentViewed && homeProductData[0]?.RecentViewed.length > 0 ? (
             homeProductData[0]?.RecentViewed.map((item, index) => (
-              <div key={index}>
+              <div key={index} onClick={() => handleProductClick(item)}>
                 <ProductListCard
                   id={index}
                   image={item.imageUrl ? item.imageUrl : "/images/no-product-available.jpg"}

@@ -520,12 +520,12 @@ export const getSubCategoryData = (userdata) => async (dispatch) => {
   }
 };
 
-// Thunk to handle get recently viewed Data API call
-export const getAllRecentViewData = () => async (dispatch) => {
+// Thunk to handle post recently viewed Data API call
+export const getAllRecentViewData = (offset = 0, limit = 10) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
-    const response = await GET(RECENT_VIEW_CONSTANT);
+    const response = await POST(RECENT_VIEW_CONSTANT, null, {}, { offset, limit });
     
     dispatch(setLoading(false));
     dispatch(setRecentView(response.data));
