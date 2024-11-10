@@ -10,6 +10,8 @@ const initialState = {
   allCategoryList: [],
   subCategoryList: null,
   recentView: null,
+  search: [],
+  total: 0,
 };
 
 export const cartSlice = createSlice({
@@ -21,8 +23,7 @@ export const cartSlice = createSlice({
       state.productHistory.push(product);
     },
     setProductList: (state, action) => {
-      const product = action.payload;
-      state.productList.push(product);
+      state.productList = action.payload || [];
     },
     setCategorySlide: (state, action) => {
       const product = action.payload;
@@ -50,6 +51,15 @@ export const cartSlice = createSlice({
     setRecentView: (state, action) => {
       state.recentView = action.payload;
     },
+    setSearch: (state, action) => {
+      state.search = action.payload || [];
+    },
+    setTotalResults: (state, action) => {
+      state.total = action.payload;
+    },
+    clearTotalResults: (state) => {
+      state.total = 0;
+    },
   },
 });
 
@@ -63,5 +73,8 @@ export const {
   setAllCategoryList,
   setSubCategoryList,
   setRecentView,
+  setSearch,
+  setTotalResults,
+  clearTotalResults,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -4,7 +4,7 @@ import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCategoryModal } from "../../store/slice/modalSlice";
 import "./Category.css";
-import { getAllCategoryData, getAllRecentViewData, getSubCategoryData } from "../../store/slice/api_integration";
+import { getAllCategoryData, getAllListProductAPI, getAllRecentViewData, getSubCategoryData } from "../../store/slice/api_integration";
 
 const Category = () => {
   const dispatch = useDispatch();
@@ -22,6 +22,7 @@ const Category = () => {
       category_name: item.name,
     };
     dispatch(toggleCategoryModal(subCategoryObj));
+    
   };
   useEffect(() => {
     dispatch(getAllCategoryData())

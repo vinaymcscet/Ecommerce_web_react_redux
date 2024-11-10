@@ -1,29 +1,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderPin from "../HeaderPin/HeaderPin";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import "./Header.css";
 import Hamburger from "../Hamburger/Hamburger";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
-import { getUserRequest, logoutRequest } from "../../store/slice/api_integration";
+import { getUserRequest, logoutRequest, searchProductData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
   
-
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
+  const [searchValue, setSearchValue] = useState("")
+  
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
   };
@@ -60,6 +62,29 @@ const Header = () => {
     const[fName, ...lName] = user[0]?.fullname.split(" ");
     return fName;
   }
+  useEffect(() => {
+    // Clear search value whenever location changes
+    if(location.pathname !== '/search') setSearchValue('');
+  }, [location]);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get('query');
+    if (query) {
+      setSearchValue(query);
+    }
+  }, [location.search]);
+
+  const handleSearch = () => {
+    if(searchValue) {
+      const responseObj = {
+        keyword: searchValue,
+        offset: 0,
+        limit: 10,
+      }
+      dispatch(searchProductData(responseObj));
+      navigate(`/search?query=${encodeURIComponent(searchValue)}`);
+    }   
+  }
 
   return (
     <div>
@@ -86,18 +111,23 @@ const Header = () => {
             </Grid>
             <Grid item xs={6} md={4} lg={4}>
               <div className="searchPanel">
-                <select name="select category" className="selectCategory">
+                {/* <select name="select category" className="selectCategory">
                   <option>Categories</option>
                   <option>Categories 1</option>
                   <option>Categories 2</option>
                   <option>Categories 3</option>
-                </select>
+                </select> */}
                 <div className="inputBox">
                   <input
                     type="text"
+                    name="search"
                     placeholder="Search all categories products"
+                    value={searchValue}
+                    onChange={(ev) => setSearchValue(ev.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <SearchRoundedIcon />
+                  <SearchRoundedIcon 
+                    onClick={handleSearch} />
                 </div>
               </div>
             </Grid>

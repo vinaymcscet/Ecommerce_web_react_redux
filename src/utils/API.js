@@ -42,7 +42,7 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
         url.toLowerCase().includes("logout") || 
         url.toLowerCase().includes("profile") ||
         url.toLowerCase().includes("changePassword") ||
-        url.toLowerCase().includes("address") 
+        url.toLowerCase().includes("address")
     ) {
         const tokens = getTokensFromLocalStorage();
         config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
@@ -71,7 +71,7 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
     return responseData;
 }
 
-export const GET = (url, headers, params = {}) => apiCall(url, 'GET', null, headers, params);
+export const GET = (url, data, headers, params = {}) => apiCall(url, 'GET', data, headers, params);
 export const POST = (url, data, headers, params = {}) => apiCall(url, 'POST', data, headers, params);
 export const PUT = (url, data, headers, params = {}) => apiCall(url, 'PUT', data, headers, params);
 export const DEL = (url, headers, params = {}) => apiCall(url, 'DELETE', null, headers, params);

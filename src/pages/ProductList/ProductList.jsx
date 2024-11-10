@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import CategorySlider from "../../components/CategorySlider/CategorySlider";
@@ -16,8 +16,10 @@ import {
   ratingOptions,
   sizeOptions,
 } from "../../utils/CommonUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts, getProductOnSubCategory } from "../../store/slice/api_integration";
 import "./ProductList.css";
-import { useSelector } from "react-redux";
+import { setProductList } from "../../store/slice/productSlice";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
@@ -25,6 +27,21 @@ const ProductList = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const { productList } = useSelector((state) => state.product);
+  console.log("productList", productList);
+  
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const subcategory_id = searchParams.get('subcategory_id');
+    if(subcategory_id) 
+        dispatch(getProductOnSubCategory({ sub_category_id: subcategory_id }));
+    else {
+      // dispatch(setProductList())
+      dispatch(getAllProducts())
+    }
+  }, [location.search, dispatch]);
 
   const handleClick = (index) => {
     setActiveIndex(index);
@@ -49,8 +66,6 @@ const ProductList = () => {
   const handleProductClick = (item) => {
     navigate(`/product/${item.id}`, { state: { product: item } });
   };
-
-  const { productList } = useSelector((state) => state.product);
 
   return (
     <div className="productListing">
@@ -222,15 +237,15 @@ const ProductList = () => {
         {<div className="prdRight">
           <div className="productList">
             {productList && productList.length > 0 ? (
-              productList[0].map((item, index) => (
+              productList?.map((item, index) => (
                 <div key={index} onClick={() => handleProductClick(item)}>
                   <ProductListCard
                     id={item.id}
-                    image={item.image ? item.image : ""}
+                    image={item.imageUrl ? item.imageUrl : "/images/no-product-available.jpg"}
                     name={item.name ? item.name : ""}
                     userrating={item.rating ? item.rating : ""}
-                    discountPrice={item.discount ? item.discount : ""}
-                    originalPrice={item.original ? item.original : ""}
+                    discountPrice={item.discountedPrice ? item.discountedPrice : ""}
+                    originalPrice={item.price ? item.price : ""}
                     save={item.save ? item.save : ""}
                     coupenCode={item.coupen ? item.coupen : ""}
                     deliveryTime={item.deliverytime ? item.deliverytime : ""}
@@ -243,7 +258,7 @@ const ProductList = () => {
                 </div>
               ))
             ) : (
-              <p className="noProductAvailable">No product history available</p>
+              <p className="noProductAvailable">No product available</p>
             )}
           </div>
         </div>}

@@ -1,0 +1,59 @@
+.searchProduct {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.searchProduct .productList .productBoxes {
+    width: 100%;
+    min-height: 350px;
+}
+
+.searchProduct .productList > div {
+    width: 23%;
+    margin: 0 2% 2% 0;
+}
+
+.searchProduct h2 {
+    font-weight: 500;
+    position: relative;
+    margin: 20px 0 0 0;
+}
+
+.searchProduct .productList {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap row;
+}
+/* pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination li a {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagination .active a {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.pagination .break-me a {
+    cursor: default;
+}

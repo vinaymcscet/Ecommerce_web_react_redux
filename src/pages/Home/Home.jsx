@@ -115,9 +115,9 @@ const Home = () => {
         />
       </div> */}
       <div className="productList special">
-        <div className="limitedOffer">
+        {homeProductData[0]?.offers && <div className="limitedOffer">
           <img src="/images/limitedOffer.png" alt="Limited Offer" />
-        </div>
+        </div>}
         {homeProductData[0]?.offers && homeProductData[0]?.offers.map((item, index) => (
           <div key={index} onClick={() => handleProductClick(item)}>
             <ProductListCard

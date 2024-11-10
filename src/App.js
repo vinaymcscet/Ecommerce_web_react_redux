@@ -20,7 +20,6 @@ import "./App.css";
 import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
 import { setUser } from "./store/slice/userSlice";
 import { getTokensFromLocalStorage } from "./utils/StorageTokens";
-import Offline from "./pages/Offline/Offline";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -38,6 +37,9 @@ const OrderComplete = React.lazy(() =>
   import("./pages/OrderComplete/OrderComplete")
 );
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
+const Search = React.lazy(() => import("./pages/Search/Search"));
+const Offline = React.lazy(() => import("./pages/Offline/Offline"));
+
 const AddressModal = React.lazy(() =>
   import("./components/AddressModal/AddressModal")
 );
@@ -129,6 +131,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="order-complete" element={<OrderComplete />} />
           <Route path="userprofile" element={<Profile />} />
+          <Route path="search" element={<Search />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>

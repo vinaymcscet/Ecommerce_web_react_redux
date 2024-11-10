@@ -18,6 +18,9 @@ import {
   ALL_CATEGORIES_CONSTANT,
   SUB_CATEGORIES_CONSTANT,
   RECENT_VIEW_CONSTANT,
+  PRODUCTS_CONSTANT,
+  PRODUCTS_LIST_CONSTANT,
+  SEARCH_PRODUCT_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -39,10 +42,10 @@ import {
   toggleCategoryModal,
   toggleModal,
 } from "./modalSlice";
-import { setAddAddress, setLogout, setUser } from "./userSlice";
-import { getTokensFromLocalStorage, removeTokensFromLocalStorage, saveTokensToLocalStorage } from "../../utils/StorageTokens";
+import { setLogout, setUser } from "./userSlice";
+import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 import { setCMSContentType } from "./cmsSlice";
-import { setAllCategories, setAllCategoryList, setHomeProductData, setHomeProductSection, setRecentView, setSubCategoryList } from "./productSlice";
+import { setAllCategoryList, setHomeProductData, setHomeProductSection, setProductList, setRecentView, setSearch, setSubCategoryList, setTotalResults } from "./productSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -529,6 +532,67 @@ export const getAllRecentViewData = (offset = 0, limit = 10) => async (dispatch)
     
     dispatch(setLoading(false));
     dispatch(setRecentView(response.data));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle post recently viewed Data API call
+export const getProductOnSubCategory = (userdata) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(PRODUCTS_CONSTANT, userdata);
+    
+    dispatch(setLoading(false));
+    dispatch(setProductList(response.data));
+    dispatch(toggleCategoryModal(false));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle post recently viewed Data API call
+export const getAllProducts = () => async (dispatch) => {
+  try {
+    dispatch(setProductList([]));
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(PRODUCTS_LIST_CONSTANT);
+    
+    dispatch(setLoading(false));
+    dispatch(setProductList(response.data));
+    dispatch(toggleCategoryModal(false));
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle search result Data API call
+export const searchProductData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setSearch([]));
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(SEARCH_PRODUCT_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setSearch(response.data));
+    dispatch(setTotalResults(response.data.length)); 
   } catch (error) {
 
     dispatch(setLoading(false));

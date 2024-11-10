@@ -17,6 +17,9 @@ export const HOME_SECTION_CONSTANT = 'homeSection';
 export const ALL_CATEGORIES_CONSTANT = 'categories';
 export const SUB_CATEGORIES_CONSTANT = 'category';
 export const RECENT_VIEW_CONSTANT = 'recentlyViewed';
+export const PRODUCTS_CONSTANT = 'product';
+export const PRODUCTS_LIST_CONSTANT = 'products';
+export const SEARCH_PRODUCT_CONSTANT = 'searchProduct';
 export const JWT_TOKEN_CONSTANT = 'jwtViaRefToken';
 
 export const fcm_token = "AxtyAdkasadad565asd";
