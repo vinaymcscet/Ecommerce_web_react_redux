@@ -36,7 +36,7 @@
     height: 45px;
     padding: 2px 20px;
     background-color: #fff;
-    width: 95%;
+    width: 100%;
 }
 
 .addressForm .box input:focus,
@@ -110,16 +110,22 @@
     width: 100%;
     align-items: flex-start;
     flex-flow: wrap row;
+    overflow: auto;
+}
+
+.addressTabsContainer .addressList ul { 
+    height: 350px;
 }
 .addressList ul li {
     border: 1px solid #D1D1D1;
     border-radius: 10px;
-    width: 49%;
+    width: 46%;
     padding: 10px;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-flow: wrap column;
+    margin: 0 10px 20px 0;
 }
 
 .addressList ul li h4 {
@@ -162,10 +168,35 @@
     justify-content: center;
 }
 
+.addressTabsContainer .tabs-buttons button {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    width: auto;
+    font-weight: 400;
+    font-size: 18px;
+    min-height: auto;
+    position: relative;
+}
+
+.addressTabsContainer .tabs-buttons button:before {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    width: 90%;
+    height: 3px;
+    margin: 0 auto;
+    left: 15px;
+}
+
+.addressTabsContainer .tabs-buttons button.active:before {
+    background: #FFB545;
+}
+
 .categoryModal.address .modalContent {
     min-height: auto;
 }
 
 .categoryModal.address .addressTabsContainer .tab-content {
-    width: 95%;
+    width: 100%;
 }

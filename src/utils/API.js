@@ -31,21 +31,38 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
     const config = {
         method,
         headers: {
-            // 'Content-Type': 'application/json',
-            //'Authorization': BASIC_AUTH_KEY,
             ...headers
         },
         // body: data ? JSON.stringify(data) : null,
-        body: data ? jsonToFormData(data) : null,
+        // body: data ? jsonToFormData(data) : null,
     };
+    
     if (
         url.toLowerCase().includes("logout") || 
         url.toLowerCase().includes("profile") ||
-        url.toLowerCase().includes("changePassword") ||
-        url.toLowerCase().includes("address")
+        url.toLowerCase().includes("changepassword") ||
+        url.toLowerCase().includes("address") ||
+        url.toLowerCase().includes("wishlist") ||
+        url.toLowerCase().includes("recentlyviewed") ||
+        url.toLowerCase().includes("review") ||
+        url.toLowerCase().includes("cart") ||
+        url.toLowerCase().includes("order") ||
+        url.toLowerCase().includes("notification") 
     ) {
         const tokens = getTokensFromLocalStorage();
+        console.log("tokens", tokens);
         config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
+    }
+    // Send data in JSON format for specific APIs
+    if (data) {
+        // if (url.toLowerCase().includes("/product")) {
+        if (/^\product$/i.test(url)) {
+            config.headers['Content-Type'] = 'application/json';
+            config.body = JSON.stringify(data);
+        } else {
+            // Default to form-data
+            config.body = jsonToFormData(data);
+        }
     }
 
     // const response = await fetch(`${API_BASE_URL}${url}`, config);
@@ -71,7 +88,7 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
     return responseData;
 }
 
-export const GET = (url, data, headers, params = {}) => apiCall(url, 'GET', data, headers, params);
+export const GET = (url, headers, params = {}) => apiCall(url, 'GET', null, headers, params);
 export const POST = (url, data, headers, params = {}) => apiCall(url, 'POST', data, headers, params);
 export const PUT = (url, data, headers, params = {}) => apiCall(url, 'PUT', data, headers, params);
 export const DEL = (url, headers, params = {}) => apiCall(url, 'DELETE', null, headers, params);

@@ -3,7 +3,7 @@
   border: 1px solid #eaeaea;
   padding: 10px;
   border-radius: 10px;
-  margin: 0 1% 2% 0;
+  margin: 0 2% 2% 0;
 }
 
 .blogCard img {
@@ -25,6 +25,14 @@
 .blogCard p {
   font-size: 13px;
   font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.blogCard p span {
+  font-weight: 500;
+}
+
+.blogCard p.description {
   height: 80px;
   overflow: hidden;
 }

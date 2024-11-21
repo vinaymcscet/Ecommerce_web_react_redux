@@ -41,6 +41,7 @@
     background: #fcca7f;
     padding: 10px;
     font-size: 14px;
+    color: #333;
 }
 
 @media only screen and (max-width: 1200px) {

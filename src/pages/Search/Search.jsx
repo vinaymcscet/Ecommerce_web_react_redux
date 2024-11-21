@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './Search.css';
 import ProductListCard from '../../components/ProductListCard/ProductListCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { searchProductData } from '../../store/slice/api_integration';
 import ReactPaginate from 'react-paginate';
-
-const ITEMS_PER_PAGE = 5;
+import { DEFAULT_OPTIONS } from '../../utils/Constants';
+import './Search.css';
 
 const Search = () => {
     const { search, total = 0 } = useSelector(state => state.product);
@@ -14,6 +13,7 @@ const Search = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const [page, setPage] = useState(0);  // Default page 0 (first page)
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     // Handle product card click
     const handleProductClick = (item) => {
@@ -21,6 +21,11 @@ const Search = () => {
     };
     console.log("total", total);
     
+    // Generate dropdown options based on total results
+    const itemsPerPageOptions = DEFAULT_OPTIONS
+                                    .filter(option => option <= total);
+    console.log("itemsperpageoption", itemsPerPageOptions);
+     
 
     useEffect(() => {
         // Read query and page number from the URL search params
@@ -33,15 +38,23 @@ const Search = () => {
 
         // If there is a query, fetch data from API
         if (query) {
-            const offset = (pageParam - 1) * ITEMS_PER_PAGE; // Calculate the correct offset
+            const offset = (pageParam - 1) * itemsPerPage; // Calculate the correct offset
             const responseObj = {
                 keyword: query,
                 offset,
-                limit: ITEMS_PER_PAGE,
+                limit: itemsPerPage,
             };
             dispatch(searchProductData(responseObj)); // Dispatch API call
         }
-    }, [location.search, dispatch]);  // Trigger this effect when the URL's query or page changes
+    }, [location.search, itemsPerPage, dispatch]);  // Trigger this effect when the URL's query or page changes
+    
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(parseInt(e.target.value, 10));
+        setPage(0); // Reset to the first page
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('page', 1);
+        navigate(`/search?${searchParams.toString()}`);
+    };
 
     // Handle page change event (when user clicks next/previous)
     const handlePageChange = (data) => {
@@ -53,29 +66,39 @@ const Search = () => {
     };
 
     // Calculate total pages based on total results
-    const totalPages = Math.max(Math.ceil(total / ITEMS_PER_PAGE), 1);
+    const totalPages = Math.max(Math.ceil(total / itemsPerPage), 1);
     const validPage = Math.min(page, totalPages - 1);
 
     return (
         <div className='searchProduct'>
             <h2>Your Searched Items</h2>
-
-            {/* Pagination component */}
-            <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={totalPages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={(ev) => handlePageChange(ev)}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={validPage}  // Sync current page with URL
-                disabled={total === 0} 
-            />
-
+            <div className='paginationBox'>
+                <div className="itemsPerPageDropdown">
+                    <label>Items per page: </label>
+                    <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                        {itemsPerPageOptions.map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* Pagination component */}
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={(ev) => handlePageChange(ev)}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    forcePage={validPage}  // Sync current page with URL
+                    disabled={total === 0} 
+                />
+            </div>
             {/* Product list */}
             <div className="productList">
                 {search && search.length > 0 ? (

@@ -3,6 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: [],
   changePassword: { oldPassword: "", newPassword: "", confirmPassword: "" },
+  blogList: null,
+  blogCategoryList: null,
+  blogDetail: null,
+  blogReview: null,
+  notifications: null,
+  notificationCount: 0,
 };
 
 export const userSlice = createSlice({
@@ -45,9 +51,39 @@ export const userSlice = createSlice({
         ...action.payload,
       };
     },
+    setBlogList: (state, action) => {
+      state.blogList = action.payload;
+    },
+    setBlogCategoryList: (state, action) => {
+      state.blogCategoryList = action.payload;
+    },
+    setBlogDetailList: (state, action) => {
+      state.blogDetail = action.payload;
+    },
+    setBlogReviewList: (state, action) => {
+      state.blogReview = action.payload;
+    },
+    setNotificationsList: (state, action) => {
+      state.notifications = action.payload;
+    },
+    setNotificationsCount: (state, action) => {
+      state.notificationCount = action.payload;
+    },
   },
 });
 
-export const { setUser, setLogout, removeAddress, setDefaultAddress, setChangePassword } =
+export const { 
+  setUser, 
+  setLogout, 
+  removeAddress, 
+  setDefaultAddress, 
+  setChangePassword, 
+  setBlogList,
+  setBlogCategoryList,
+  setBlogDetailList,
+  setBlogReviewList,
+  setNotificationsList,
+  setNotificationsCount,
+ } =
   userSlice.actions;
 export default userSlice.reducer;

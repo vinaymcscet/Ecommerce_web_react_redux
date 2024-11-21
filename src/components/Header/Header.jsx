@@ -10,7 +10,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
-import { getUserRequest, logoutRequest, searchProductData } from "../../store/slice/api_integration";
+import { getItemsInCartData, getUserRequest, logoutRequest, searchProductData, viewItemsInCartData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
 
 const Header = () => {
@@ -20,7 +20,8 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
-  const { cartItems } = useSelector((state) => state.cart);
+  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  console.log("cartItems", viewCartItems);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
@@ -35,12 +36,14 @@ const Header = () => {
     dispatch(toggleModal(toggleModalState));
   };
   const redirectToCart = () => {
+    dispatch(viewItemsInCartData());
     navigate("/cart");
   };
   const redirectToSupport = () => {
     navigate("/contact");
   };
-
+  console.log("user", user);
+  
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
   const toggleUserMenu = (e) => {
     e.stopPropagation();
@@ -85,7 +88,10 @@ const Header = () => {
       navigate(`/search?query=${encodeURIComponent(searchValue)}`);
     }   
   }
-
+  useEffect(() => {
+    dispatch(getUserRequest());
+    dispatch(viewItemsInCartData());
+  }, [])
   return (
     <div>
       <HeaderPin />
@@ -146,8 +152,16 @@ const Header = () => {
                 {user && user.length > 0 && (
                   <div className="menu-container">
                     <li onClick={toggleUserMenu}>
-                      <img src={user[0]?.profile_pic || '/images/icons/avtar.png'} alt={user[0]?.fullname || 'User'} />
-                      <p>{getFname() || 'User'}</p>
+                      <img 
+                          src={user[0]?.profile_pic || user[0]?.data?.profile_pic || '/images/icons/avtar.png'} 
+                          alt={user[0]?.fullname || user[0]?.data?.first_name || 'User'} 
+                      />
+                      {user[0]?.fullname && !user[0].fullname.toLowerCase().includes("undefined") && (
+                        <p>{getFname()}</p>
+                      )}
+                      {user[0].fullname.toLowerCase().includes("undefined") && (
+                        <p>{user[0]?.data?.first_name || 'User'}</p>
+                      )}
                       <nav
                         ref={dropdownRef}
                         className={`menu ${isActive ? "active" : "inactive"}`}
@@ -175,7 +189,7 @@ const Header = () => {
                 )}
                 <li onClick={() => redirectToCart()} className="cartItem">
                   <img src="/images/icons/cart.png" alt="Cart" />
-                  {cartItems.length > 0 && <span className="cartCount">{cartItems.length}</span>}
+                  {viewCartItems?.cartItems != undefined && <span className="cartCount">{viewCartItems?.cartItems.length}</span>}
                   <p>Cart</p>
                 </li>
               </ul>

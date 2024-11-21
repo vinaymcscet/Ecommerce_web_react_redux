@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCategoryModal } from "../../store/slice/modalSlice";
 import ProductCard from "../ProductCard/ProductCard";
-import { getProductOnSubCategory } from "../../store/slice/api_integration";
+import { getProductOnSubCategory, totalFilterData } from "../../store/slice/api_integration";
 import "./CategoryModal.css";
 import { useNavigate } from "react-router-dom";
 
@@ -23,8 +23,13 @@ const CategoryModal = () => {
     dispatch(toggleCategoryModal(false));
   };
   const handleClick = (item) => {
-    const responseObj = {sub_category_id: item.id}
+    const responseObj = {
+      sub_category_id: item.id, 
+      offset: 1, 
+      limit: 10
+    }
     dispatch(getProductOnSubCategory(responseObj));
+    // const filterResponse = {sub_category_id: item.id}
     navigate(`/productlist?subcategory_id=${item.id}`);
   }
   return (

@@ -24,6 +24,7 @@
     background: #fcca7f;
     padding: 10px;
     font-size: 14px;
+    color: #333;
 }
 
 @media screen and (max-width: 767px) {

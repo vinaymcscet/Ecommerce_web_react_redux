@@ -55,6 +55,8 @@ li:not(:last-child) {
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    position: relative;
+    top: 5px;
 }
 
 .selectCategory {

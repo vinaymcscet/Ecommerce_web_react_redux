@@ -1,3 +1,18 @@
+.blogsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blogsHeader h2 {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.Blogs {
+  width: 90%;
+  margin: auto;
+}
 .blogContent {
   width: 100%;
   display: flex;
@@ -29,6 +44,11 @@
   margin: 0 0 20px 0;
 }
 
+.blogContent .leftBlogContent .date {
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .blogContent .leftBlogContent h6 {
   font-size: 24px;
   font-weight: 500;
@@ -47,10 +67,16 @@
   margin: 0 3% 0 0;
 }
 
+
+.blogContent p span {
+  font-weight: 500;
+}
+
 .blogReviewForm {
   background-color: #f6f6f6;
   border-radius: 10px;
   padding: 20px;
+  margin-top: 20px;
 }
 
 .blogContent .leftBlogContent .blogReviewForm h4 {
@@ -98,7 +124,7 @@
 .reviewForm .box.full .form-control textarea {
   resize: none;
   border: 1px solid #d1d1d1;
-  height: 50px;
+  height: 70px;
   padding: 20px;
   border-radius: 20px;
   background-color: #fff;

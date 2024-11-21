@@ -20,6 +20,7 @@ import "./App.css";
 import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
 import { setUser } from "./store/slice/userSlice";
 import { getTokensFromLocalStorage } from "./utils/StorageTokens";
+import ProtectedRoute from "./utils/ProtectedRoute";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -130,7 +131,12 @@ function App() {
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
           <Route path="order-complete" element={<OrderComplete />} />
-          <Route path="userprofile" element={<Profile />} />
+          {/* <Route path="userprofile" element={<Profile />} /> */}
+          <Route path="userprofile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
           <Route path="search" element={<Search />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

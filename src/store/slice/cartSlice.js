@@ -2,8 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   cartItems: [],
+  viewCartItems: null,
   selectedSize: null,
   quantity: 1, // Default quantity
+  createOrderResponse: null,
+  confirmOrderResponse: null,
+  orderList: null,
 };
 
 export const cartSlice = createSlice({
@@ -14,9 +18,12 @@ export const cartSlice = createSlice({
       const product = action.payload;
       state.cartItems.push(product);
     },
+    setViewCartItems: (state, action) => {
+      state.viewCartItems = action.payload;
+    },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
-      const item = state.cartItems.find((item) => item.id === id);
+      const item = state.viewCartItems.cartItems.find((item) => item.id === id);
       if (item) {
         item.quantity = quantity;
       }
@@ -34,8 +41,28 @@ export const cartSlice = createSlice({
     clearCart: (state) => {
       state.cartItems = [];
     },
+    setCreateOrderResponse: (state, action) => {
+      state.createOrderResponse = action.payload;
+    },
+    setConfirmOrderResponse: (state, action) => {
+      state.confirmOrderResponse = action.payload;
+    },
+    setOrderListResponse: (state, action) => {
+      state.orderList = action.payload;
+    },
   },
 });
 
-export const { addToCart, setSelectedSize, setQuantity, clearCart, updateQuantity, removeItem } = cartSlice.actions;
+export const { 
+  addToCart, 
+  setViewCartItems, 
+  setSelectedSize, 
+  setQuantity, 
+  clearCart, 
+  updateQuantity, 
+  removeItem,
+  setCreateOrderResponse,
+  setConfirmOrderResponse,
+  setOrderListResponse,
+} = cartSlice.actions;
 export default cartSlice.reducer;

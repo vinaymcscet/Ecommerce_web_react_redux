@@ -27,33 +27,3 @@
     justify-content: flex-start;
     flex-flow: wrap row;
 }
-/* pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-}
-
-.pagination li {
-    margin: 0 5px;
-}
-
-.pagination li a {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    color: #333;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.pagination .active a {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
-.pagination .break-me a {
-    cursor: default;
-}

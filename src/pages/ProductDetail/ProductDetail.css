@@ -1,3 +1,11 @@
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  height: 20vh;
+}
+
 .prdDetail {
   width: 90%;
   margin: auto;
@@ -109,6 +117,7 @@
   border: 1px solid #fcca7f;
   border-radius: 10px;
   background: transparent;
+  overflow: hidden;
 }
 
 .prdDetail .productDetailInfo .leftDetailInfo .image-gallery-thumbnail {
@@ -162,6 +171,7 @@
   width: 100%;
   object-fit: cover;
   height: 100%;
+  border: 1px solid #E3E3E2;
 }
 
 .rightDetailInfo .leftBar {
@@ -193,14 +203,14 @@
 
 .ratingBox > span {
   background: #fbb540;
-  width: 15px;
-  height: 15px;
+  width: 25px;
+  height: 20px;
   color: #fff;
   text-align: center;
   border-radius: 3px;
   margin-right: 7px;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .ratingBox .starRating {
@@ -253,6 +263,10 @@
   margin-top: 10px;
 }
 
+.cartInputBox.disabled {
+  display: none;
+}
+
 .cartInputBox input {
   border: 0;
   width: 50px;
@@ -290,6 +304,10 @@
   min-height: 40px;
 }
 
+.addToCart.disabled {
+  display: none;
+}
+
 .addToCart:hover,
 .addToCart:focus {
   background-color: #f5f5f5;
@@ -304,14 +322,33 @@
 
 .productColor span {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   color: #000;
 }
 
-.ProductColorBoxes img {
+.ProductColorBoxes img.colorImage {
   width: 50px;
   height: 50px;
+}
+
+.ProductColorBoxes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ProductColorBoxes > div {
+  border: 1px solid #e3e3e3;
   margin-right: 10px;
+}
+
+.ProductColorBoxes p {
+  text-align: center;
+  border-top: 1px solid #e3e3e3;
+}
+
+.ProductColorBoxes .selected {
+  border: 1px solid #e5a23c;
 }
 
 .sizeTest {
@@ -361,7 +398,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0;
+  margin: 25px 0 10px 0;
 }
 
 .gaurnteeMessage li {
@@ -516,7 +553,7 @@
 }
 
 .productDetailReview {
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -583,10 +620,16 @@
   background-color: #f6f6f6;
 }
 
+.tab-content.productDescription img {
+  width: 100%;
+}
+
 .tab-content:target {
   scroll-behavior: smooth;
 }
-
+.tab-content.productDescription ul {
+  flex-flow: wrap row;
+}
 .tab-content.productDescription p {
   font-size: 14px;
   font-weight: 400;
@@ -602,7 +645,7 @@
 }
 
 .additionalInfo .info {
-  width: 50%;
+  width: 100%;
 }
 
 .additionalInfo .info:not(:last-child) {
@@ -657,7 +700,7 @@ table tr td:first-child {
   width: 68%;
   background-color: #f6f6f6;
   border-radius: 6px;
-  padding: 10px;
+  padding: 10px 20px;
 }
 
 .reviewSection .leftReviewPart .MuiLinearProgress-root {
@@ -708,35 +751,14 @@ table tr td:first-child {
   font-weight: 400;
 }
 
-.rightCommentPart .reviewCommentHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.rightCommentPart .reviewCommentHeader h4 {
-  font-size: 22px;
-  font-weight: 500;
-  margin: 0 0 10px 0;
-}
-
-.rightCommentPart .reviewCommentHeader .commentSelect select {
-  border: 1px solid #888888;
-  border-radius: 20px;
-  padding: 5px 10px;
-  font-size: 14px;
-  font-weight: 400;
-  background: url("../../../public/images/icons/down-arrow.svg") no-repeat 90%
-    12px #fff;
-  background-size: 15px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  min-width: 140px;
-  min-height: 40px;
-}
-
 .productReviewList {
   width: 100%;
+}
+
+.productReviewList h4 {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 500;
 }
 
 .productReviewList .reviewComments {
@@ -773,7 +795,6 @@ table tr td:first-child {
   margin-right: 20px;
 }
 
-.all_reviews,
 .productReviewBtn button {
   border: 1px solid #888888;
   background-color: #fff;
@@ -785,8 +806,6 @@ table tr td:first-child {
   display: block;
 }
 
-.all_reviews:hover,
-.all_reviews:focus,
 .productReviewBtn button:hover,
 .productReviewBtn button:focus {
   border-color: #e5a23c;
@@ -798,12 +817,18 @@ table tr td:first-child {
 }
 
 .product_review_form {
-  margin: 20px 0 0 0;
+  margin: 0;
+}
+
+.product_review_form h4 {
+  font-size: 22px;
+  margin: 0 0 20px 0;
+  font-weight: 500;
 }
 
 .product_review_form .box .form-control {
   max-width: 100%;
-  width: 85%;
+  width: 95%;
   margin-bottom: 20px;
 }
 
@@ -812,6 +837,26 @@ table tr td:first-child {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+.product_review_form .box.images {
+  flex-flow: wrap row;
+}
+
+.product_review_form .box.rating {
+  flex-flow: wrap column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.product_review_form .box label {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.product_review_form .box .starRating .star {
+  font-size: 1.8rem;
 }
 
 .product_review_form .box input {
@@ -841,7 +886,7 @@ table tr td:first-child {
   padding: 10px 20px;
   border-radius: 20px;
   background-color: #fff;
-  width: 93%;
+  width: 97%;
   color: #646464;
 }
 
@@ -863,6 +908,12 @@ button.review {
   position: relative;
   padding: 0;
   margin-right: 10px;
+  overflow: hidden;
+}
+
+.product_review_form .box.full .form-control .selectFileBox img {
+  width: 100%;
+  height: 100%;
 }
 
 .product_review_form .box.full .form-control.select {
@@ -939,11 +990,53 @@ button.review {
 
 .productHistory.allcategory .productList {
   width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-flow: wrap row;
 }
 
 .productHistory.allcategory .productList > div {
-  margin: 0 2% 0 0;
+  margin: 2% 2% 2% 0;
   width: 18%;
+}
+.productHistory.allcategory .productList > div .productBoxes {
+  width: 100%;
+}
+
+.listPageCategoryItems .catProduct .categoryItem img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.listPageCategoryItems .catProduct .categoryItem p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.prdDetail .listPageCategoryItems .catProduct .categoryItem {
+  width: 100%;
+}
+
+.prdDetail .slick-slide > div > div p {
+  width: 100%;
+  word-break: break-word;
+}
+
+.priceSection .discountLabel {
+  background: #DD3333;
+  border-radius: 5px;
+  padding: 0 5px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.bestOption .ribbon {
+  padding: 0 10px;
+  width: max-content;
 }
 
 @media only screen and (max-width: 1300px) {

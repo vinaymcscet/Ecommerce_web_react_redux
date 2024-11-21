@@ -1,23 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
-import {
-  removeAddress,
-  setChangePassword,
-  setDefaultAddress,
-  setUser,
-} from "../../store/slice/userSlice";
+import { setChangePassword,  setUser } from "../../store/slice/userSlice";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./Profile.css";
 import StarRating from "../../components/StarRating/StarRating";
 import { ToastContainer, toast } from "react-toastify";
-import { addToCart } from "../../store/slice/cartSlice";
 import InputField from "../../components/InputBox/InputBox";
 import { 
     CONFIRM_PASSWORD, 
     CONFIRM_PASSWORD_LABEL, 
+    DEFAULT_OPTIONS, 
     NEW_PASSWORD, 
     NEW_PASSWORD_ENTER, 
     NEW_PASSWORD_LABEL, 
@@ -28,7 +24,26 @@ import {
     PASSWORD_NOT_MATCH_ERROR, 
     PASSWORD_TYPE 
   } from "../../utils/Constants";
-import { changePasswordRequest, getListAddress, getUserRequest, updateProfileRequest } from "../../store/slice/api_integration";
+import { 
+    addListAddress, 
+    addToCartData, 
+    changePasswordRequest, 
+    defaultListAddress, 
+    deleteListAddress, 
+    deleteSingleWhistListData, 
+    getListAddress, 
+    getListOfWhistListData, 
+    getOfferList, 
+    getUserRequest, 
+    getUserReviewProductData, 
+    OrderListData, 
+    updateListAddress, 
+    updateProfileRequest 
+} from "../../store/slice/api_integration";
+import ReactPaginate from "react-paginate";
+import { setListWishList } from "../../store/slice/productSlice";
+import { ShareProduct } from "../../utils/ShareProduct";
+import Notifications from "../Notifications/Notifications";
 
 const Profile = () => {
   const [copyMessage, setCopyMessage] = useState({ message: "", index: null });
@@ -36,13 +51,34 @@ const Profile = () => {
   const [activeOrderTab, setActiveOrderTab] = useState(0);
   const [showInvoice, setShowInvoice] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [page, setPage] = useState(0);  // Default page 0 (first page)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
+  const [wishListItemsPerPage, setWishListItemsPerPage] = useState(10);
+  const [reviewPage, setReviewPage] = useState(0);  // Default page 0 (first page)
+  const [reviewPerPage, setReviewPerPage] = useState(10);
+  const [invoiceData, setInvoiceData] = useState(null);
 
   const { user, changePassword } = useSelector((state) => state.user);
   const { loading } = useSelector((state) => state.modal);
+  const { 
+    totalAddressCount = 0, 
+    offerList, 
+    listWishlist, 
+    totalWishlistCount = 0, 
+    userReviewCount = 0,
+    userReview
+  } = useSelector((state) => state.product);
   const dispatch = useDispatch();
+  const { orderList } = useSelector((state) => state.cart);
+  console.log("orderList", orderList);
   
-  const { profile_pic, email, fullname, phone } = user?.[0] || {};
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const { profile_pic, email, mobile } = user[0]?.data || {};
+  const fullname = user[0]?.data?.first_name + " " + user[0]?.data?.last_name;
+  
   const [errorFileType, setErrorFileType] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState(null);
@@ -63,7 +99,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserRequest());
+    if(user.length > 0) dispatch(getUserRequest());
+    else navigate("/");
   }, [])
 
 // ==============================================================
@@ -112,7 +149,6 @@ const handleConfirmPasswordChange = (e) => {
 
 const handlePasswordUpdateSubmit = (e) => {
   e.preventDefault();
-  console.log("pass - ",  password, confirmPassword);
   
   if (isPasswordValid && password === confirmPassword) {
    
@@ -131,23 +167,11 @@ const handlePasswordUpdateSubmit = (e) => {
 };
 // ==============================================================
 
-
-  useEffect(() => {
-    if (user && user[0]) {
-      // console.log(user[0]);
-      // console.log(image, email, name);
-    }
-    console.log("changePassword", changePassword);
-    console.log("user", user);
-    
-  }, [user]);
-
   const [formData, setFormData] = useState({
     fullName: fullname || "",
     email: email || "",
-    phone: phone || "",
+    phone: mobile || "",
   });
-
   const [errors, setErrors] = useState({});
   
   useEffect(() => {
@@ -155,11 +179,10 @@ const handlePasswordUpdateSubmit = (e) => {
       setFormData({
         fullName: fullname || "",
         email: email || "",
-        phone: phone || "",
+        phone: mobile || "",
       });
     }
-  // }, [user, name, email, phone, password]);
-  }, [user, fullname, email, phone]);
+  }, [user, fullname, email, mobile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -179,18 +202,19 @@ const handlePasswordUpdateSubmit = (e) => {
     }
 
     // Ensure phone number is exactly 10 digits
-    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Phone number must be a valid 10-digit number.";
+    if (!formData.phone || !/^\+44\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
     }
 
     return newErrors;
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = validateInputs();
     if (Object.keys(newErrors).length === 0) {
       // dispatch(setUser(formData));
-      const [firstName, ...restName] = formData.fullName.split(" ");
+      const [firstName, ...restName] = formData.fullName.trim().split(" ");
       const lastName = restName.join(" ");
       const responseObj = {
         first_name: firstName,
@@ -199,7 +223,6 @@ const handlePasswordUpdateSubmit = (e) => {
         email: formData.email,
         profile_pic: imageFile
       }
-      console.log("responseObj", responseObj);
       dispatch(updateProfileRequest(responseObj));
     } else {
       setErrors(newErrors);
@@ -208,8 +231,6 @@ const handlePasswordUpdateSubmit = (e) => {
   
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("++++++++++", name, value);
-    
     dispatch(setChangePassword({ ...changePassword, [name]: value }));
   };
 
@@ -225,13 +246,14 @@ const handlePasswordUpdateSubmit = (e) => {
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [addressFormData, setAddressFormData] = useState({
+    id: "",
     fullName: "",
     email: "",
     phone: "",
+    house_no: "",
     address: "",
     country: "",
     city: "",
-    state: "",
     pincode: "",
     isDefault: false,
   });
@@ -250,9 +272,9 @@ const handlePasswordUpdateSubmit = (e) => {
     if (!addressFormData.country.trim())
       newErrors.country = "Country is required.";
     if (!addressFormData.city.trim()) newErrors.city = "City is required.";
-    if (!addressFormData.state.trim()) newErrors.state = "State is required.";
-    if (!/^\d{6}$/.test(addressFormData.pincode))
-      newErrors.pincode = "Pincode must be a valid 6-digit number.";
+    if (!addressFormData.house_no.trim()) newErrors.house_no = "House Number is required.";
+    if (!/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(addressFormData.pincode))
+      newErrors.pincode = "Invalid UK postal code.";
     return newErrors;
   };
 
@@ -267,38 +289,36 @@ const handlePasswordUpdateSubmit = (e) => {
       newErrors.email = "Invalid email address.";
     if (
       !addressFormData.phone.trim() ||
-      !/^\d{10}$/.test(addressFormData.phone)
+      !/^\+44\d{10}$/.test(addressFormData.phone)
     )
-      newErrors.phone = "Phone number must be a valid 10-digit number.";
+      newErrors.phone = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
     const addressErrors = validateAddressFields();
     return { ...newErrors, ...addressErrors };
   };
 
   const handleAddressSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted!"); // Check if this logs
     const newErrors = validateAllFields();
+    const responseObj = {
+      full_name: addressFormData.fullName,
+      mobile: addressFormData.phone,
+      email: addressFormData.email,
+      house_number: addressFormData.house_no,
+      street: addressFormData.address,
+      locality: addressFormData.city,
+      postcode: addressFormData.pincode,
+      country: addressFormData.country,
+      ...(isEditingAddress && { id: addressFormData.id }) // Add id only if editing
+    };
     if (Object.keys(newErrors).length === 0) {
-      // If no validation errors, update the addresses
-      const updatedAddresses = [...(user[0]?.addresses || [])]; // Clone current addresses array
-
-      const existingIndex = updatedAddresses.findIndex(
-        (addr) => addr.id === addressFormData.id
-      );
-
-      if (existingIndex !== -1) {
-        // If address already exists, update it
-        updatedAddresses[existingIndex] = addressFormData;
+      if(isEditingAddress) {
+        dispatch(updateListAddress(responseObj));
       } else {
-        // If new address, add to array
-        updatedAddresses.push({ ...addressFormData, id: Date.now() });
+        dispatch(addListAddress(responseObj));
       }
-
-      // Dispatch the updated user data with updated addresses
-      dispatch(setUser({ ...user[0], addresses: updatedAddresses }));
-
       // Clear form after successful submission
       setAddressFormData({
+        id: "",
         fullName: "",
         email: "",
         phone: "",
@@ -308,10 +328,9 @@ const handlePasswordUpdateSubmit = (e) => {
         city: "",
         state: "",
         pincode: "",
+        house_no: "",
         isDefault: false,
       });
-
-      alert("Profile updated successfully!");
       setIsEditingAddress(false);
     } else {
       setFormErrors(newErrors);
@@ -319,26 +338,38 @@ const handlePasswordUpdateSubmit = (e) => {
   };
 
   const handleDeleteAddress = (addressId) => {
-    dispatch(removeAddress(addressId));
-    alert("Address deleted successfully!");
+    const responseObj = { id: addressId }
+    dispatch(deleteListAddress(responseObj));
+    // alert("Address deleted successfully!");
   };
 
   const handleSetDefaultAddress = (addressId) => {
-    dispatch(setDefaultAddress(addressId));
+    const responseObj = { id: addressId }
+    dispatch(defaultListAddress(responseObj));
   };
 
   const handleEditAddress = (address) => {
-    setAddressFormData({ ...address }); // Populate form with selected address
+    window.scrollTo({
+      top: 100,
+      behavior: 'smooth', // Adds smooth scrolling
+    });
+    const editAddressObj = {
+      id: address.id,
+      fullName: address?.full_name?.trim(),
+      phone: address?.mobile?.trim(),
+      email: address?.email?.trim(),
+      house_no: address?.house_number?.trim(),
+      address: address?.street?.trim(),
+      city: address?.locality?.trim(),
+      pincode: address?.postcode?.trim(),
+      country: address?.country?.trim(),
+      isDefault: false,
+    }
+    setAddressFormData({ ...editAddressObj }); // Populate form with selected address
     setIsEditingAddress(true); // Set the form to edit mode
   };
 
-  
-  const validatePasswordMatch = (password, confirmPassword) => {
-    console.log("Password:", password, "Confirm Password:", confirmPassword);
-    return (password === confirmPassword) ? "" : PASSWORD_NOT_MATCH_ERROR;
-  };
-
-  //   ======================================================================================================================
+  // ======================================================================================================================
   const handleCopy = (title, index) => {
     // Copy the item.title to the clipboard
     navigator.clipboard
@@ -353,7 +384,6 @@ const handlePasswordUpdateSubmit = (e) => {
         }, 2000); // 2 minutes
       })
       .catch((err) => {
-        console.error("Failed to copy: ", err);
       });
   };
 
@@ -386,39 +416,269 @@ const handlePasswordUpdateSubmit = (e) => {
     });
   };
 
-  const handleRemoveItem = (productId) => {
-    // Filter out the item with the matching productId from the wishlist
-    const updatedWishlist = user[0].wishlist.filter(
-      (item) => item.id !== productId
-    );
-  
-    // Dispatch the updated user object with the modified wishlist
-    dispatch(setUser({
-      ...user[0],                // Spread the existing user object
-      wishlist: updatedWishlist, // Update the wishlist array
-    }));
-  
-    toast.success("Item removed from Wishlist");
+  const handleRemoveWishListItem = (productId) => {
+    const updatedWishlist = listWishlist.filter((item) => item.skuId !== productId);
+    dispatch(setListWishList(updatedWishlist)); 
+
+    const responseObj = { sku_id: productId };
+    dispatch(deleteSingleWhistListData(responseObj));
   };
 
   const handleAddToCart = (item) => {
     // Dispatch product details and quantity to Redux
-    const productData = {
-        ...item,
-        quantity,
-        // selectedSize: product.sizeList[activeIndex]?.name,
-      };
-    dispatch(addToCart(productData));
-    toast.success("Item added to Cart successfully");
+      const responseObj = {
+        sku_id: item?.skuId,
+        type: 'increase'
+      }
+      dispatch(addToCartData(responseObj))
   };
 
   const handleActiveTabs = (value) => {
-    if(value === 2) {
-      dispatch(getListAddress());
-      setActiveTab(value);
+    const searchParams = new URLSearchParams(location.search);
+    // Clear query parameters for cleaner URL
+    if (value !== 2 && value !== 5) {
+      navigate(location.pathname); // Reset URL without parameters
     }
-    setActiveTab(value);
-  }
+  
+    if (value === 2) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      setPage(pageParam - 1); // Set initial page based on URL
+  
+      const offset = (pageParam - 1) * itemsPerPage; // Adjust offset
+      const limit = itemsPerPage;
+      console.log("Address Tab Offset:", offset);
+  
+      const responseObj = {
+        offset,
+        limit,
+      };
+      dispatch(getListAddress(responseObj));
+    }
+  
+    if (value === 4) {
+      dispatch(getOfferList());
+    }
+  
+    if (value === 5) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('wishListPage'), 10) || 1;
+      setWishListPage(pageParam - 1); // Set initial page based on URL
+  
+      const offset = (pageParam - 1) * wishListItemsPerPage; // Adjust offset
+      const limit = wishListItemsPerPage;
+      console.log("Wishlist Tab Offset:", offset);
+  
+      const responseObj = {
+        offset,
+        limit,
+      };
+      dispatch(getListOfWhistListData(responseObj));
+    }
+    if (value === 3) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      setReviewPage(pageParam - 1); // Set initial page based on URL
+  
+      const offset = (pageParam - 1) * itemsPerPage; // Adjust offset
+      const limit = itemsPerPage;
+  
+      const responseObj = {
+        offset,
+        limit,
+      };
+      dispatch(getUserReviewProductData(responseObj));
+    }
+    if ( value === 1) {
+      const responseObj = {
+        status: 1,
+        offset: 1,
+        limit: 10
+      }
+      dispatch(OrderListData(responseObj));
+    }
+    setActiveTab(value); // Update active tab
+  };
+  
+  // Pafination code for Address Lists
+    useEffect(() => {
+      // Extract parameters from the URL
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || itemsPerPage;
+    
+      // Update state with URL parameters
+      setPage(pageParam - 1); // Sync pagination (0-based indexing)
+      setItemsPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
+      const responseObj = {
+        offset,
+        limit
+      }
+      dispatch(getListAddress(responseObj));
+    }, [location.search, itemsPerPage ,dispatch]);
+    
+    // Handle dropdown change for itemsPerPage
+    const handleItemsPerPageChange = (e) => {
+      const newItemsPerPage = parseInt(e.target.value, 10);
+      setItemsPerPage(newItemsPerPage);
+      setPage(0); // Reset to the first page
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", 1);
+      searchParams.set("itemsPerPage", newItemsPerPage);
+      navigate(`?${searchParams.toString()}`);
+    };
+    
+    // Handle page change for pagination
+    const handlePageChange = (data) => {
+      const { selected } = data; // `react-paginate` provides 0-based page index
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", selected + 1); // Convert to 1-based indexing
+      navigate(`?${searchParams.toString()}`); // Update URL
+    };
+
+    // Dropdown options for itemsPerPage
+    const itemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalAddressCount);
+
+    // Pagination Code for WishList Items
+    useEffect(() => {
+      // Extract parameters from the URL
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("wishListPage"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("wishListItemsPerPage"), 10) || wishListItemsPerPage;
+    
+      // Update state with URL parameters
+      setWishListPage(pageParam - 1); // Sync pagination (0-based indexing)
+      setWishListItemsPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
+      const responseObj = {
+        offset,
+        limit
+      }
+      console.log("Offset:", offset);
+      console.log("Limit:", limit);
+      console.log("Wishlist Page:", wishListPage);
+      console.log("Items Per Page:", wishListItemsPerPage);
+      dispatch(getListOfWhistListData(responseObj));
+    }, [location.search, dispatch]);
+    
+    // Handle dropdown change for itemsPerPage
+    const handleWishListItemsPerPageChange = (e) => {
+      const newItemsPerPage = parseInt(e.target.value, 10);
+      setWishListItemsPerPage(newItemsPerPage);
+      setWishListPage(0); // Reset to the first page
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("wishListPage", 1);
+      searchParams.set("wishListItemsPerPage", newItemsPerPage);
+      navigate(`?${searchParams.toString()}`);
+    };
+    
+    // Handle page change for pagination
+    const handleWishListPageChange = (data) => {
+      const { selected } = data; // `react-paginate` provides 0-based page index
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", selected + 1); // Convert to 1-based indexing
+      navigate(`?${searchParams.toString()}`); // Update URL
+    };
+
+    // Dropdown options for itemsPerPage
+    const wishListItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalWishlistCount);
+
+
+    // Pagination code for User Review List
+    useEffect(() => {
+      // Extract parameters from the URL
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+    
+      // Update state with URL parameters
+      setReviewPage(pageParam - 1); // Sync pagination (0-based indexing)
+      setReviewPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
+      const responseObj = {
+        offset,
+        limit
+      }
+      dispatch(getUserReviewProductData(responseObj));
+    }, [location.search, reviewPerPage ,dispatch]);
+    
+    // Handle dropdown change for itemsPerPage
+    const handleReviewPerPageChange = (e) => {
+      const newItemsPerPage = parseInt(e.target.value, 10);
+      setReviewPerPage(newItemsPerPage);
+      setReviewPage(0); // Reset to the first page
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", 1);
+      searchParams.set("itemsPerPage", newItemsPerPage);
+      navigate(`?${searchParams.toString()}`);
+    };
+    
+    // Handle page change for pagination
+    const handleReviewPageChange = (data) => {
+      const { selected } = data; // `react-paginate` provides 0-based page index
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", selected + 1); // Convert to 1-based indexing
+      navigate(`?${searchParams.toString()}`); // Update URL
+    };
+
+    // Dropdown options for itemsPerPage
+    const reviewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= userReviewCount);
+    const handleActiveOrderTab = (value) => {
+      if(value === 0) {
+        const responseObj = {
+          status: 1,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj));
+      }
+      if(value === 1) {
+        const responseObj = {
+          status: 5,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj));
+      }
+      if(value === 2) {
+        const responseObj = {
+          status: 4,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj));
+      }
+      if(value === 3) {
+        const responseObj = {
+          status: 3,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj));
+      }
+      setActiveOrderTab(value);
+    }
+    const handleInvoiceDetails = (product, status) => {
+      setShowInvoice(status);
+      setInvoiceData(product);
+    }
+    console.log("invoiceData", invoiceData);
 
   return (
     <div className="userProfile">
@@ -446,36 +706,43 @@ const handlePasswordUpdateSubmit = (e) => {
             className={`tab ${activeTab === 1 ? "active" : ""}`}
             onClick={() => handleActiveTabs(1)}
           >
-            <img src="/images/profile/orders.svg" alt="Login" />
+            <img src="/images/profile/orders.svg" alt="Your Orders" />
             <span>Your Orders</span>
           </div>
           <div
             className={`tab ${activeTab === 2 ? "active" : ""}`}
             onClick={() => handleActiveTabs(2)}
           >
-            <img src="/images/profile/address.svg" alt="Login" />
+            <img src="/images/profile/address.svg" alt="Your Address" />
             <span>Your Address</span>
           </div>
           <div
             className={`tab ${activeTab === 3 ? "active" : ""}`}
             onClick={() => handleActiveTabs(3)}
           >
-            <img src="/images/profile/reviews.svg" alt="Login" />
+            <img src="/images/profile/reviews.svg" alt="Your Reviews" />
             <span>Your Reviews</span>
           </div>
           <div
             className={`tab ${activeTab === 4 ? "active" : ""}`}
             onClick={() => handleActiveTabs(4)}
           >
-            <img src="/images/profile/coupen.svg" alt="Login" />
+            <img src="/images/profile/coupen.svg" alt="Coupons & offers" />
             <span>Coupons & offers</span>
           </div>
           <div
             className={`tab ${activeTab === 5 ? "active" : ""}`}
             onClick={() => handleActiveTabs(5)}
           >
-            <img src="/images/profile/whistlist.svg" alt="Login" />
+            <img src="/images/profile/whistlist.svg" alt="Your Wishlist" />
             <span>Your Wishlist</span>
+          </div>
+          <div
+            className={`tab ${activeTab === 6 ? "active" : ""}`}
+            onClick={() => handleActiveTabs(6)}
+          >
+            <img src="/images/profile/notification.svg" alt="Notifications" />
+            <span>Notifications</span>
           </div>
         </div>
         <div className="tab-content">
@@ -636,10 +903,11 @@ const handlePasswordUpdateSubmit = (e) => {
                     <table
                       style={{
                         border: "none",
+                        width: "100%"
                       }}
                     >
                       <tr>
-                        <td style={{ border: "none" }}>
+                        <td style={{ border: "none" }} colSpan={'5'}>
                           <img
                             src="/images/icons/logo.svg"
                             alt="FikFis Logo"
@@ -649,6 +917,7 @@ const handlePasswordUpdateSubmit = (e) => {
                           />
                         </td>
                         <td
+                           colSpan={'5'}
                           style={{
                             border: "none",
                             fontSize: "15px",
@@ -662,7 +931,7 @@ const handlePasswordUpdateSubmit = (e) => {
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none" }}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -765,8 +1034,8 @@ const handlePasswordUpdateSubmit = (e) => {
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
-                          <table style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none" }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -879,7 +1148,7 @@ const handlePasswordUpdateSubmit = (e) => {
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: "none", verticalAlign: "top" }}>
+                        <td colSpan={'5'} style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -917,8 +1186,8 @@ const handlePasswordUpdateSubmit = (e) => {
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
-                          <table style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none" }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -1007,7 +1276,7 @@ const handlePasswordUpdateSubmit = (e) => {
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: "none", verticalAlign: "top" }}>
+                        <td colSpan={'5'} style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -1022,7 +1291,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
                                   
-                                  402-0942907-2957941
+                                  {invoiceData?.order_number}
                                 </span>
                               </td>
                             </tr>
@@ -1045,8 +1314,8 @@ const handlePasswordUpdateSubmit = (e) => {
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
-                          <table style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none", width: "100%", }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -1126,7 +1395,7 @@ const handlePasswordUpdateSubmit = (e) => {
                     <div className="resp_table">
                         <table
                         style={{
-                            border: "1px solid #F6F6F6",
+                            border: "1px solid #F6F6F6"
                         }}
                         >
                         <tr>
@@ -1141,7 +1410,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Sl. No
+                            S. No
                             </td>
                             <td
                             style={{
@@ -1271,11 +1540,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            TheGiftKart Crystal Clear Mi Redmi 13C 5G / Poco M6 5G
-                            Back Cover Case | 360 Degree Protection | Shock Proof
-                            Design | Transparent Back Cover Case for Redmi 13C 5G
-                            / Poco M6 (PC & TPU, Black Bumper) | B0CPPCCRM9 (
-                            MA-Black_BumperClearCase-Rdmi_13C_5G ) HSN:392690
+                            {invoiceData.product_name}
                             </td>
                             <td
                             style={{
@@ -1450,25 +1715,25 @@ const handlePasswordUpdateSubmit = (e) => {
                   <div className="horizontal-tabs">
                     <div
                       className={activeOrderTab === 0 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(0)}
+                      onClick={() => handleActiveOrderTab(0)}
                     >
                       Active Orders
                     </div>
                     <div
                       className={activeOrderTab === 1 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(1)}
+                      onClick={() => handleActiveOrderTab(1)}
                     >
                       Delivered Orders
                     </div>
                     <div
                       className={activeOrderTab === 2 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(2)}
+                      onClick={() => handleActiveOrderTab(2)}
                     >
                       Return Orders
                     </div>
                     <div
                       className={activeOrderTab === 3 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(3)}
+                      onClick={() => handleActiveOrderTab(3)}
                     >
                       Cancel Orders
                     </div>
@@ -1476,22 +1741,22 @@ const handlePasswordUpdateSubmit = (e) => {
                   <div className="order-content">
                     {activeOrderTab === 0 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0]?.activeOrders?.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
                                   <a
                                     href="#"
-                                    onClick={() => setShowInvoice(true)}
+                                    onClick={() => handleInvoiceDetails(item, true)}
                                   >
                                     Invoice
                                   </a>
@@ -1544,20 +1809,21 @@ const handlePasswordUpdateSubmit = (e) => {
                               </div>
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                     {activeOrderTab === 1 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0]?.deliveredOrders?.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1616,20 +1882,21 @@ const handlePasswordUpdateSubmit = (e) => {
                               </div>
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                     {activeOrderTab === 2 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0]?.returnOrders?.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1712,20 +1979,21 @@ const handlePasswordUpdateSubmit = (e) => {
                               )}
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                     {activeOrderTab === 3 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0]?.cancelledOrders?.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1785,6 +2053,7 @@ const handlePasswordUpdateSubmit = (e) => {
                               </div>
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                   </div>
@@ -1799,18 +2068,6 @@ const handlePasswordUpdateSubmit = (e) => {
                 <form onSubmit={handleAddressSubmit}>
                   <div className="box">
                     <div className="form-control">
-                      <label>Country/Region</label>
-                      <input
-                        type="text"
-                        name="country"
-                        value={addressFormData.country}
-                        onChange={handleAddressInputChange}
-                      />
-                      {formErrors.country && (
-                        <p className="error">{formErrors.country}</p>
-                      )}
-                    </div>
-                    <div className="form-control">
                       <label>Full name (First and Last name)</label>
                       <input
                         type="text"
@@ -1822,8 +2079,6 @@ const handlePasswordUpdateSubmit = (e) => {
                         <p className="error">{formErrors.fullName}</p>
                       )}
                     </div>
-                  </div>
-                  <div className="box">
                     <div className="form-control">
                       <label>Mobile Number</label>
                       <input
@@ -1836,6 +2091,8 @@ const handlePasswordUpdateSubmit = (e) => {
                         <p className="error">{formErrors.phone}</p>
                       )}
                     </div>
+                  </div>
+                  <div className="box">
                     <div className="form-control">
                       <label>Email</label>
                       <input
@@ -1846,6 +2103,18 @@ const handlePasswordUpdateSubmit = (e) => {
                       />
                       {formErrors.email && (
                         <p className="error">{formErrors.email}</p>
+                      )}
+                    </div>
+                    <div className="form-control">
+                      <label>House Number</label>
+                      <input
+                        type="text"
+                        name="house_no"
+                        value={addressFormData.house_no}
+                        onChange={handleAddressInputChange}
+                      />
+                      {formErrors.house_no && (
+                        <p className="error">{formErrors.house_no}</p>
                       )}
                     </div>
                   </div>
@@ -1863,20 +2132,6 @@ const handlePasswordUpdateSubmit = (e) => {
                       )}
                     </div>
                     <div className="form-control">
-                      <label>Pincode</label>
-                      <input
-                        type="text"
-                        name="pincode"
-                        value={addressFormData.pincode}
-                        onChange={handleAddressInputChange}
-                      />
-                      {formErrors.pincode && (
-                        <p className="error">{formErrors.pincode}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="box">
-                    <div className="form-control">
                       <label>Town/City</label>
                       <input
                         type="text"
@@ -1888,16 +2143,30 @@ const handlePasswordUpdateSubmit = (e) => {
                         <p className="error">{formErrors.city}</p>
                       )}
                     </div>
+                  </div>
+                  <div className="box">
                     <div className="form-control">
-                      <label>State</label>
+                      <label>Pincode</label>
                       <input
                         type="text"
-                        name="state"
-                        value={addressFormData.state}
+                        name="pincode"
+                        value={addressFormData.pincode}
                         onChange={handleAddressInputChange}
                       />
-                      {formErrors.state && (
-                        <p className="error">{formErrors.state}</p>
+                      {formErrors.pincode && (
+                        <p className="error">{formErrors.pincode}</p>
+                      )}
+                    </div>
+                    <div className="form-control">
+                      <label>Country/Region</label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={addressFormData.country}
+                        onChange={handleAddressInputChange}
+                      />
+                      {formErrors.country && (
+                        <p className="error">{formErrors.country}</p>
                       )}
                     </div>
                   </div>
@@ -1910,17 +2179,46 @@ const handlePasswordUpdateSubmit = (e) => {
                 </form>
               </div>
               <h3>Edit, Remove and set as default addresses for orders </h3>
+                {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
+                    <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                            {itemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Pagination component */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handlePageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={page}  // Sync current page with URL
+                        disabled={totalAddressCount === 0} 
+                    />
+                  </div>
+                }
               <div className="addressList">
                 {user[0].addresses ? (
                   <ul>
                     {user[0].addresses.map((address) => (
                       <li key={address.id}>
-                        <h4>{address.fullName}</h4>
+                        <h4>{address.full_name}</h4>
                         <p className="address">
-                          Full Address: {address.address}, {address.city},
-                          {address.state}, {address.pincode}
+                          Full Address: {address.house_number}, {address.street}, {address.country},
+                          {address.postcode}
                         </p>
-                        <p>Phone Number: {address.phone}</p>
+                        <p>Email: {address.email}</p>
+                        <p>Phone Number: {address.mobile}</p>
                         <div className="action">
                           <p onClick={() => handleEditAddress(address)}>
                             Edit |
@@ -1930,9 +2228,9 @@ const handlePasswordUpdateSubmit = (e) => {
                           </p>
                           <p
                             onClick={() => handleSetDefaultAddress(address.id)}
-                            className={address.isDefault ? "default" : ""}
+                            className={address.isDefault === "True" ? "default" : ""}
                           >
-                            {address.isDefault ? "Default" : "Set as Default"}
+                            {address.isDefault === "True" ? "Default" : "Set as Default"}
                           </p>
                         </div>
                       </li>
@@ -1947,32 +2245,60 @@ const handlePasswordUpdateSubmit = (e) => {
           {activeTab === 3 && (
             <div className="reviewedItems">
               <h3>Item Reviews</h3>
+              {userReview && <div className='paginationBox'>
+                    <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                            {reviewItemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Pagination component */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handleReviewPageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={reviewPage}  // Sync current page with URL
+                        disabled={userReviewCount === 0} 
+                    />
+                  </div>
+                }
               <div className="reviewItemList">
-                {user[0].reviewedProducts &&
-                  user[0].reviewedProducts.map((item, index) => (
-                    <div className="reviewProduct">
+                {userReview &&
+                  userReview.map((item, index) => (
+                    <div className="reviewProduct" key={index}>
                       <div className="item_header">
                         <div className="leftReviewPart">
-                          <img src={item.prd_image} alt={item.prd_name} />
+                          <img src={item.imageUrl} alt={item.product_name} />
                         </div>
                         <div className="rightReviewPart">
-                          {item.prd_name && <h4>{item.prd_name}</h4>}
-                          {item.order_no && <p>ORDER # {item.order_no}</p>}
+                          {item.product_name && <h4>{item.product_name}</h4>}
+                          {item.product_id && <p>ORDER # {item.product_id}</p>}
                           {item.rating && (
                             <StarRating userrating={item.rating} />
                           )}
                         </div>
                       </div>
-                      <p>{item.descriptipn}</p>
+                      {/* <p>{item.descriptipn}</p> */}
                       <div className="reviewd_prd_image">
-                        {item.prd_review_image &&
-                          item.prd_review_image.map((img_data) => (
-                            <div className="item">
-                              <img src={item.prd_image} alt={item.prd_name} />
+                        {item.review_images &&
+                          item.review_images.map((img_data, index) => (
+                            <div className="item" key={index}>
+                              <img src={img_data} alt={item.product_name} />
                             </div>
                           ))}
                       </div>
-                      <div className="review_time">{item.date}</div>
+                      {/* <div className="review_time">{item.date}</div> */}
                     </div>
                   ))}
               </div>
@@ -1982,8 +2308,7 @@ const handlePasswordUpdateSubmit = (e) => {
             <div className="coupens">
               <h3>Hurry Up!!! </h3>
               <div className="coupensList">
-                {user[0].availableCoupens &&
-                  user[0].availableCoupens.map((item, index) => (
+                {offerList && offerList.map((item, index) => (
                     <div className="availableCoupen" key={index}>
                       {copyMessage.index === index && (
                         <p className="selectedCopiedMessage">
@@ -1992,33 +2317,61 @@ const handlePasswordUpdateSubmit = (e) => {
                       )}
                       <div
                         className="copySelection"
-                        onClick={() => handleCopy(item.title, index)}
+                        onClick={() => handleCopy(item.coupon_code, index)}
                       >
                         <img src="/images/icons/copy.svg" alt="copy Item" />
                       </div>
-                      <h4>{item.title}</h4>
-                      <p>{item.terms}</p>
-                      <ul>
-                        {item.conditions &&
-                          item.conditions.map((data) => <li>{data.value}</li>)}
-                      </ul>
-                      <p className="validity">{item.validity}</p>
+                      <h4>{item.coupon_title}</h4>
+                      <p>{item.description}</p>
+                      {item.term_of_use &&  (<ul>
+                          <li dangerouslySetInnerHTML={{__html: item.term_of_use}} />
+                        </ul>)
+                      }                      
+                      <p className="validity">Validity: {item.valid_from} to {item.valid_till}</p>
                     </div>
                   ))}
-                {!user[0].availableCoupens && <p>No Coupens available now</p>}
+                {!offerList && <p>No Coupens available now</p>}
               </div>
             </div>
           )}
           {activeTab === 5 && (
             <div className="whistlistList">
               <h3>Your Wishlist Waiting...</h3>
+              {listWishlist?.length > 0 && <div className='paginationBox'>
+                    <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
+                            {wishListItemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Pagination component */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(totalWishlistCount / wishListItemsPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handleWishListPageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={wishListPage}  // Sync current page with URL
+                        disabled={totalWishlistCount === 0} 
+                    />
+                  </div>
+                }
               <div className="whistListWrapper">
-                {user[0].wishlist &&
-                  user[0].wishlist.map((item, index) => (
+                {listWishlist?.length > 0 &&
+                  listWishlist.map((item, index) => (
                     <div key={index} className="whistlistMainWrapper">
                       <div className="whistlistBox">
                         <div className="leftWhistlist">
-                          <img src={item.image} alt={item.name} />
+                          <img src={item.imageUrl} alt={item.name} />
                         </div>
                         <div className="rightWhistlist">
                           <h4>
@@ -2030,11 +2383,11 @@ const handlePasswordUpdateSubmit = (e) => {
                           )}
                           <div className="priceSection">
                             <div className="priceList">
-                              <p className="discount">$ {item.discount}</p>
-                              <p className="original">$ {item.original}</p>
+                              <p className="discount">£ {item.discountedPrice}</p>
+                              <p className="original">£ {item.price}</p>
                             </div>
-                            {item.discountLabel && (
-                              <p className="discount">$ {item.discountLabel}</p>
+                            {item.offer && (
+                              <p className="discount">£ {item.offer}</p>
                             )}
                           </div>
                           <div className="cartActionItems">
@@ -2042,11 +2395,12 @@ const handlePasswordUpdateSubmit = (e) => {
                               <img
                                 src="/images/icons/share.svg"
                                 alt="share Item"
+                                onClick={() => ShareProduct(item?.productId)}
                               />
                             </div>
                             <div
                               className="icon"
-                              onClick={() => handleRemoveItem(item.id)}
+                              onClick={() => handleRemoveWishListItem(item.skuId)}
                             >
                               <img
                                 src="/images/icons/delete.svg"
@@ -2060,6 +2414,11 @@ const handlePasswordUpdateSubmit = (e) => {
                   ))}
               </div>
             </div>
+          )}
+          {activeTab === 6 && (
+            <>
+              <Notifications />
+            </>
           )}
         </div>
       </div>

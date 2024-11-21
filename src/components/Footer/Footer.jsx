@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Subscribe from '../Subscribe/Subscribe';
 import Copyright from '../Copyright/Copyright';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import './Footer.css';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ABOUT_US, DISCLAIMER, FAQS, ORDER_CANCELLATION, PRIVACY_POICY, REFUND_POLICY, RETURN_REFUND, SHIPPING_DELIVERY, TERMS_CONDITION } from '../../utils/Constants';
-import { getCMSRequest } from '../../store/slice/api_integration';
+import { getCMSRequest, getCMSSocialLinksRequest } from '../../store/slice/api_integration';
+import { getAbsoluteUrl } from '../../utils/AbsoluteUrl';
 
 const Footer = () => {
     const dispatch = useDispatch();
+    const { cmsSocialLinks } = useSelector(state => state.cms);
     const handleCMSPage = (url) => {
         dispatch(getCMSRequest(url))
     }
+    
+    useEffect(() => {
+        dispatch(getCMSSocialLinksRequest());
+    }, [])
     return (
         <div className='footercontainer'>
             <Subscribe />
@@ -49,10 +55,10 @@ const Footer = () => {
                             <div className="list connect">
                                 <h4>Connect with FikFis</h4>
                                 <ul>
-                                    <li><Link href="#"><img src="/images/icons/Youtube.svg" alt='Youtube' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Twitter.svg" alt='Twitter' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Instagram.svg" alt='Instagram' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Facebook.svg" alt='Facebook' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.youtube_url)} target='_blank'><img src="/images/icons/Youtube.svg" alt='Youtube' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.twitter_url)} target='_blank'><img src="/images/icons/Twitter.svg" alt='Twitter' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.instagram_url)} target='_blank'><img src="/images/icons/Instagram.svg" alt='Instagram' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.facebook_url)} target='_blank'><img src="/images/icons/Facebook.svg" alt='Facebook' /> <span>@fikfis</span></Link></li>
                                 </ul>
                             </div>
                         </Grid>

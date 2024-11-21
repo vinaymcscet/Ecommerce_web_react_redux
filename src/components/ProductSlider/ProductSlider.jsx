@@ -12,7 +12,7 @@ import { toggleCategoryModal } from "../../store/slice/modalSlice";
 const ProductSlider = ({ title, tile }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen] = useState(true);
   const { homeProductData, subCategoryList } = useSelector(state => state.product);
 
   const handleViewAllClick = () => {
@@ -35,8 +35,8 @@ const ProductSlider = ({ title, tile }) => {
 
   return (
     <div className="catProduct">
-      {title && (
         <div className="catProduct"> 
+        {title && (
           <div className="productHeader">
             <h3>Shop By Category</h3>
             <Button
@@ -46,7 +46,7 @@ const ProductSlider = ({ title, tile }) => {
               handleClick={handleViewAllClick}
             />
           </div>
-
+        )}
           <Slider {...(tile ? slick_product_settings : slick_settings)}>
             {homeProductData[0]?.categories.map((slide) => (
               <div key={slide.id}>
@@ -59,7 +59,6 @@ const ProductSlider = ({ title, tile }) => {
             ))}
           </Slider>
         </div>
-      )}
     </div>
   );
 };

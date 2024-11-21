@@ -21,6 +21,34 @@ import {
   PRODUCTS_CONSTANT,
   PRODUCTS_LIST_CONSTANT,
   SEARCH_PRODUCT_CONSTANT,
+  ADD_ADDRESS_CONSTANT,
+  EDIT_ADDRESS_CONSTANT,
+  DELETE_ADDRESS_CONSTANT,
+  DEFAULT_ADDRESS_CONSTANT,
+  TOTAL_FILTER_CONSTANT,
+  PRODUCT_DETAIL_CONSTANT,
+  OFFER_LIST_CONSTANT,
+  ADD_WHISTLIST_CONSTANT,
+  LIST_WHISTLIST_CONSTANT,
+  DELETE_WHISTLIST_CONSTANT,
+  ADD_REVIEW_CONSTANT,
+  GET_USER_REVIEW_CONSTANT,
+  GET_REVIEW_CONSTANT,
+  ADD_TO_CART_CONSTANT,
+  GET_ITEMS_IN_CART_CONSTANT,
+  VIEW_ITEMS_IN_CART_CONSTANT,
+  DELETE_ITEMS_IN_CART_CONSTANT,
+  CREATE_ORDER_CONSTANT,
+  CONFIRM_ORDER_CONSTANT,
+  GET_ALL_BLOGS_CONSTANT,
+  GET_ALL_BLOGS_CATEGORY_CONSTANT,
+  GET_BLOG_DETAIL_CONSTANT,
+  ADD_BLOG_REVIEW_CONSTANT,
+  GET_NOTIFICATIONS_CONSTANT,
+  CLEAR_NOTIFICATIONS_CONSTANT,
+  CMS_SOCIAL_LINK_CONSTANT,
+  CMS_CONTACT_US_CONSTANT,
+  ORDER_LIST_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -42,10 +70,33 @@ import {
   toggleCategoryModal,
   toggleModal,
 } from "./modalSlice";
-import { setLogout, setUser } from "./userSlice";
+import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setLogout, setNotificationsCount, setNotificationsList, setUser } from "./userSlice";
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
-import { setCMSContentType } from "./cmsSlice";
-import { setAllCategoryList, setHomeProductData, setHomeProductSection, setProductList, setRecentView, setSearch, setSubCategoryList, setTotalResults } from "./productSlice";
+import { setCmsContactUs, setCMSContentType, setCmsSocialLinks } from "./cmsSlice";
+import {
+  setAddWishList,
+  setAllCategoryList, 
+  setGetAnReviewCount, 
+  setHomeProductData, 
+  setHomeProductSection, 
+  setListWishList, 
+  setOfferList, 
+  setProductDetailResponse, 
+  setProductList, 
+  setRecentView, 
+  setReviewCount, 
+  setSearch, 
+  setSubCategoryList, 
+  setTotalAddressCount, 
+  setTotalFilterList, 
+  setTotalProductListCount, 
+  setTotalRecentViewResults, 
+  setTotalResults, 
+  setTotalWishlistCount,
+  setUserReview,
+  setUserReviewCount
+} from "./productSlice";
+import { addToCart, setConfirmOrderResponse, setCreateOrderResponse, setOrderListResponse, setViewCartItems } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -297,13 +348,6 @@ export const getUserRequest = () => async (dispatch) => {
   
     };
     localStorage.setItem("authTokens", JSON.stringify(tokenObject));
-    // const tokens = {
-    //   email: response?.email || "",
-    //   phone: response?.phone || "",
-    //   fullname: response?.first_name + " " + response?.last_name || "",
-    //   profile_pic: response?.profile_pic || "",
-    // };
-    // dispatch(setAuthTokens(tokens));
   } catch (error) {
     dispatch(setLoading(false));
     // 401 - access token expired, call jwt token API again.
@@ -338,7 +382,7 @@ export const generateExpiredToken = (userData) => async (dispatch) => {
       dispatch(resetSuccess());
     }, 0);
     dispatch(clearAuthTokens())
-    dispatch(setError(error.message));
+    // dispatch(setError(error.message));
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);
@@ -351,7 +395,7 @@ export const changePasswordRequest = (userData) => async (dispatch) => {
     dispatch(setLoading(true));
     // Call the API to sign up the user
     const response = await POST(CHANGE_PASSWORD_CONSTANT, userData);
-    
+    console.log("response", response);
     dispatch(setLoading(false));
     dispatch(setSuccess(response.message));
 
@@ -360,6 +404,7 @@ export const changePasswordRequest = (userData) => async (dispatch) => {
     }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
+    console.log("error", error);
     setTimeout(() => {
       dispatch(resetSuccess());
     }, 0);
@@ -376,7 +421,7 @@ export const updateProfileRequest = (userData) => async (dispatch) => {
     dispatch(setLoading(true));
     // Call the API to sign up the user
     const response = await POST(UPDATE_PROFILE_CONSTANT, userData);
-    
+    console.log("response", response);
     dispatch(setLoading(false));
     dispatch(setSuccess(response.message));
     dispatch(setUser(response))
@@ -401,7 +446,7 @@ export const getCMSRequest = (getUrl) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
-    const response = await GET(CMSP_PAGE_CONSTANT, {}, {url: getUrl});
+    const response = await GET(CMSP_PAGE_CONSTANT, null, {url: getUrl});
     
     dispatch(setLoading(false));
     dispatch(setCMSContentType(response));
@@ -416,13 +461,79 @@ export const getCMSRequest = (getUrl) => async (dispatch) => {
   }
 };
 
-
-// Thunk to handle get All Address List API call
-export const getListAddress = () => async (dispatch) => {
+// Thunk to handle get CMS Social Links API call
+export const getCMSSocialLinksRequest = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
-    const response = await GET(LIST_ADDRESS_CONSTANT);
+    const response = await GET(CMS_SOCIAL_LINK_CONSTANT);
+    
+    dispatch(setLoading(false));
+    dispatch(setCmsSocialLinks(response.data));
+
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle get Contact us  Enquiry API call
+export const getCMSContactUsRequest = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await POST(CMS_CONTACT_US_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setCmsContactUs(response.data));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle get All Address List API call
+export const getListAddress = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(LIST_ADDRESS_CONSTANT, userData);
+    console.log("address retreive", response.data);
+    
+    dispatch(setLoading(false));
+    dispatch(setUser({addresses: response.data}));
+    // dispatch(setSuccess(response.message));
+    dispatch(setTotalAddressCount(response.totalCount));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
+
+// Thunk to handle add Address List API call
+export const addListAddress = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_ADDRESS_CONSTANT, userData);
     
     dispatch(setLoading(false));
     dispatch(setUser({addresses: response.data}));
@@ -430,6 +541,96 @@ export const getListAddress = () => async (dispatch) => {
     setTimeout(() => {
       dispatch(resetSuccess());
     }, 1000);
+      const responseObj = {
+        offset: 0,
+        limit: 5
+      }
+      dispatch(getListAddress(responseObj));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
+
+// Thunk to handle update Address List API call
+export const updateListAddress = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(EDIT_ADDRESS_CONSTANT, userData);
+    console.log("response", response);
+    
+    dispatch(setLoading(false));
+    // dispatch(setUser({addresses: response.data}));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+    const responseObj = {
+      offset: 0,
+      limit: 5
+    }
+    dispatch(getListAddress(responseObj));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle delete Address List API call
+export const deleteListAddress = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(DELETE_ADDRESS_CONSTANT, userData);
+    console.log("response", response);
+    
+    dispatch(setLoading(false));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+    const responseObj = {
+      offset: 0,
+      limit: 5
+    }
+    dispatch(getListAddress(responseObj));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle default Address List API call
+export const defaultListAddress = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(DEFAULT_ADDRESS_CONSTANT, userData);
+    console.log("response", response);
+    
+    dispatch(setLoading(false));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+    const responseObj = {
+      offset: 0,
+      limit: 5
+    }
+    dispatch(getListAddress(responseObj));
   } catch (error) {
 
     dispatch(setLoading(false));
@@ -464,7 +665,7 @@ export const getHomeData = () => async (dispatch) => {
 };
 
 // Thunk to handle get Home Section API call
-export const getHomeSection = (offset = 0, limit = 10) => async (dispatch) => {
+export const getHomeSection = (offset = 1, limit = 10) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
@@ -524,14 +725,15 @@ export const getSubCategoryData = (userdata) => async (dispatch) => {
 };
 
 // Thunk to handle post recently viewed Data API call
-export const getAllRecentViewData = (offset = 0, limit = 10) => async (dispatch) => {
+export const getAllRecentViewData = (userData) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     // Call the API to sign up the user
-    const response = await POST(RECENT_VIEW_CONSTANT, null, {}, { offset, limit });
+    const response = await POST(RECENT_VIEW_CONSTANT, userData);
     
     dispatch(setLoading(false));
     dispatch(setRecentView(response.data));
+    dispatch(setTotalRecentViewResults(response.totalCount)); 
   } catch (error) {
 
     dispatch(setLoading(false));
@@ -552,10 +754,12 @@ export const getProductOnSubCategory = (userdata) => async (dispatch) => {
     dispatch(setLoading(false));
     dispatch(setProductList(response.data));
     dispatch(toggleCategoryModal(false));
+    dispatch(setTotalProductListCount(response.totalCount));
   } catch (error) {
-
     dispatch(setLoading(false));
     dispatch(setError(error.message));
+    dispatch(toggleCategoryModal(false));
+    dispatch(setProductList());
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);
@@ -592,7 +796,7 @@ export const searchProductData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setSearch(response.data));
-    dispatch(setTotalResults(response.data.length)); 
+    dispatch(setTotalResults(response.totalCount)); 
   } catch (error) {
 
     dispatch(setLoading(false));
@@ -602,3 +806,512 @@ export const searchProductData = (userData) => async (dispatch) => {
     }, 1000);
   }
 };
+
+// Thunk to handle number of filters result Data API call
+export const totalFilterData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(TOTAL_FILTER_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setTotalFilterList(response.data));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Product detail Data API call
+export const productDetailData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(PRODUCT_DETAIL_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setProductDetailResponse(response));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Add Whistlist Product API call
+export const addProductOnWhistList = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_WHISTLIST_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setAddWishList(response.data));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle List Whistlist Product API call
+export const getListOfWhistListData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(LIST_WHISTLIST_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setListWishList(response.data));
+    // dispatch(setSuccess(response.message));
+    dispatch(setTotalWishlistCount(response.totalCount));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle delete one Whistlist Product API call
+export const deleteSingleWhistListData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(DELETE_WHISTLIST_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(getListOfWhistListData());
+    // dispatch(setSuccess(response.message));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle OfferList Data API call
+export const getOfferList = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(OFFER_LIST_CONSTANT);
+    
+    dispatch(setLoading(false));
+    dispatch(setOfferList(response.data));
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle add Review Product API call
+export const addReviewProductData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_REVIEW_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    // dispatch(setListWishList(response.data));
+    dispatch(setSuccess(response.message));
+    // dispatch(setTotalWishlistCount(response.totalCount));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
+
+// Thunk to handle get user Review Product API call
+export const getUserReviewProductData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(GET_USER_REVIEW_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setUserReview(response.data));
+    dispatch(setSuccess(response.message));
+    dispatch(setUserReviewCount(response.totalCount));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
+
+// Thunk to handle get Review Product API call
+export const getReviewProductData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(GET_REVIEW_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setReviewCount(response.data));
+    dispatch(setSuccess(response.message));
+    dispatch(setGetAnReviewCount(response.totalCount));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Add to cart Product API call
+export const addToCartData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_TO_CART_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    // dispatch(setAddToCart(response.data));
+    dispatch(setSuccess(response.message));
+    dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle total Items in cart API call
+export const getItemsInCartData = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(GET_ITEMS_IN_CART_CONSTANT);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(addToCart(response.data));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle view Items in cart API call
+export const viewItemsInCartData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(VIEW_ITEMS_IN_CART_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setViewCartItems(response.data));
+    // dispatch(setSuccess(response.message));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle delete Items in cart API call
+export const deleteItemsInCartData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(DELETE_ITEMS_IN_CART_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    // dispatch(setViewCartItems(response.data));
+    dispatch(setSuccess(response.message));
+    dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Create Order in Order API call
+export const createOrderData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(CREATE_ORDER_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setCreateOrderResponse(response.data));
+    dispatch(setSuccess(response.message));
+    // dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Confirm Order in order API call
+export const confirmOrderData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(CONFIRM_ORDER_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setConfirmOrderResponse(response.data));
+    dispatch(setSuccess(response.message));
+    dispatch(viewItemsInCartData());
+    // dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to handle Order List API call
+export const OrderListData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ORDER_LIST_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setOrderListResponse(response.data));
+    dispatch(setSuccess(response.message));
+    // dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setOrderListResponse());
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to get All Blogs List API call
+export const getAllBlogs = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(GET_ALL_BLOGS_CONSTANT);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setBlogList(response.data));
+    dispatch(setSuccess(response.message));
+    // dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to get All Blogs Category List API call
+export const getAllBlogsCategory = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(GET_ALL_BLOGS_CATEGORY_CONSTANT);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setBlogCategoryList(response.data));
+    dispatch(setSuccess(response.message));
+    // dispatch(viewItemsInCartData());
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to get Blog Detail API call
+export const getBlogDetailData = (id) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(GET_BLOG_DETAIL_CONSTANT, null, {blog_id: id});
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setBlogDetailList(response.data));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+}
+
+// Thunk to get Add Blog Review API call
+export const addBlogReviewData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_BLOG_REVIEW_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setBlogReviewList(response.data));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+    }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+}
+
+// Thunk to get All Notifications API call
+export const getNotificationsData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(GET_NOTIFICATIONS_CONSTANT, userData);
+    console.log("response", response.message);
+    
+    dispatch(setLoading(false));
+    dispatch(setNotificationsList(response.data));
+    dispatch(setNotificationsCount(response.totalCount))
+    
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+}
+
+// Thunk to get clear All Notifications API call
+export const clearNotificationsData = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(CLEAR_NOTIFICATIONS_CONSTANT);
+    
+    dispatch(setLoading(false));
+    // dispatch(setNotificationsList(response.data));
+    dispatch(getNotificationsData())
+    
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+}
