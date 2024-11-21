@@ -77,7 +77,7 @@ const Notifications = () => {
   return (
     <div className="notifications">
         <h4>Notifications List</h4>
-        <h6 onClick={handleClearNotification}>Clear Notification</h6>
+        {notifications && <h6 onClick={handleClearNotification}>Clear Notification</h6>}
         {notifications?.length > 0 && <div className='paginationBox'>
             <div className="itemsPerPageDropdown">
                 <label>Items per page: </label>
@@ -119,6 +119,7 @@ const Notifications = () => {
                     </div>
                 </div>
             ))}
+            {notifications === null && <p className='noNotifications'>No notifications found.</p>}
         </div>
     </div>
   )

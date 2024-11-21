@@ -31,7 +31,7 @@ const CategorySlider = () => {
             return (
               <div key={index}>
                 <CategoryCard
-                  imgSrc={slide.category_image || '/images/no-product-available.jpg'}
+                  imgSrc={slide.category_image || '/images/no-product-available.png'}
                   imgName={slide.name}
                   handleCategory={() => handleProductClick(slide)}
                 />

@@ -97,7 +97,7 @@ const handlePageChange = (data) => {
               <div key={index}>
                 <ProductCard
                   id = {slide?.id}
-                  imgSrc={slide?.category_image || '/images/no-product-available.jpg'}
+                  imgSrc={slide?.category_image || '/images/no-product-available.png'}
                   imgName={slide?.name}
                   handleCategory={() => handleCategory(slide)}
                 />

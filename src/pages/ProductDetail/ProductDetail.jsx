@@ -86,10 +86,10 @@ const ProductDetail = () => {
 
   const images = productDetailResponse?.data?.images?.length
   ? productDetailResponse?.data?.images.map((item) => ({
-    original: item || '/images/no-product-available.jpg',
-    thumbnail: item || '/images/no-product-available.jpg',
+    original: item || '/images/no-product-available.png',
+    thumbnail: item || '/images/no-product-available.png',
   }))
-  : [{ original: '/images/no-product-available.jpg', thumbnail: '/images/no-product-available.jpg' }];
+  : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
 
   const handleIncrease = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);

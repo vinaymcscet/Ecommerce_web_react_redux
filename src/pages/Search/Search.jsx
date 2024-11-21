@@ -106,7 +106,7 @@ const Search = () => {
                         <div key={index} onClick={() => handleProductClick(item)}>
                             <ProductListCard
                                 id={item.id}
-                                image={item.imageUrl || "/images/no-product-available.jpg"}
+                                image={item.imageUrl || "/images/no-product-available.png"}
                                 name={item.name || ""}
                                 userrating={item.rating || ""}
                                 discountPrice={item.discountedPrice || ""}

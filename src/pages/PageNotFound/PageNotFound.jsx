@@ -9,7 +9,7 @@ const PageNotFound = () => {
   }
   return (
     <div className='notFound'>
-        <svg width="631" height="379" viewBox="0 0 631 379" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* <svg width="631" height="379" viewBox="0 0 631 379" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<g clip-path="url(#clip0)">
 							<path
 								d="M317.524 379C488.625 379 627.33 368.857 627.33 356.346C627.33 343.834 488.625 333.692 317.524 333.692C146.423 333.692 7.71875 343.834 7.71875 356.346C7.71875 368.857 146.423 379 317.524 379Z"
@@ -182,7 +182,8 @@ const PageNotFound = () => {
 								<rect width="631" height="379" fill="white" />
 							</clipPath>
 						</defs>
-					</svg>
+		</svg> */}
+		<img src="/images/404-Image.png" alt='Page not found' />
         <p>The content you are  requesting is not available right now.</p>
 				<button type="button" onClick={() => handleInvalidPage()}>Retry</button>
     </div>

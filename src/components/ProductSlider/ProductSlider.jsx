@@ -51,7 +51,7 @@ const ProductSlider = ({ title, tile }) => {
             {homeProductData[0]?.categories.map((slide) => (
               <div key={slide.id}>
                 <ProductCard
-                  imgSrc={slide.category_image || '/images/no-product-available.jpg'}
+                  imgSrc={slide.category_image || '/images/no-product-available.png'}
                   imgName={slide.name}
                   handleCategory={() => handleProductClick(slide)}
                 />

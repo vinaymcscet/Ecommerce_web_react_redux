@@ -137,7 +137,7 @@ const handleConfirmPasswordChange = (e) => {
 
   const validateContact = (value) => {
     const emailPattern = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    const mobilePattern = /^\d{10}$/; // Assuming a 10-digit mobile number
+    const mobilePattern = /^\+44\d{10}$/; // Assuming a 10-digit mobile number
 
     if (!emailPattern.test(value) && !mobilePattern.test(value)) {
       return EMAIL_OR_MOBILE;

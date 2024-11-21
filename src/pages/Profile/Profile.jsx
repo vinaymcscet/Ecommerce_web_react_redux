@@ -71,7 +71,7 @@ const Profile = () => {
   } = useSelector((state) => state.product);
   const dispatch = useDispatch();
   const { orderList } = useSelector((state) => state.cart);
-  console.log("orderList", orderList);
+  console.log("listWishlist", listWishlist);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -2301,6 +2301,7 @@ const handlePasswordUpdateSubmit = (e) => {
                       {/* <div className="review_time">{item.date}</div> */}
                     </div>
                   ))}
+                {!userReview && <p className="noReviews">No reviews found.</p>}
               </div>
             </div>
           )}
@@ -2337,7 +2338,7 @@ const handlePasswordUpdateSubmit = (e) => {
           {activeTab === 5 && (
             <div className="whistlistList">
               <h3>Your Wishlist Waiting...</h3>
-              {listWishlist?.length > 0 && <div className='paginationBox'>
+              {listWishlist && <div className='paginationBox'>
                     <div className="itemsPerPageDropdown">
                         <label>Items per page: </label>
                         <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
@@ -2366,7 +2367,7 @@ const handlePasswordUpdateSubmit = (e) => {
                   </div>
                 }
               <div className="whistListWrapper">
-                {listWishlist?.length > 0 &&
+                {listWishlist &&
                   listWishlist.map((item, index) => (
                     <div key={index} className="whistlistMainWrapper">
                       <div className="whistlistBox">
@@ -2412,6 +2413,7 @@ const handlePasswordUpdateSubmit = (e) => {
                       </div>
                     </div>
                   ))}
+                  {listWishlist === null && <p className="noWishlist">your wishlist is empty.</p>}
               </div>
             </div>
           )}

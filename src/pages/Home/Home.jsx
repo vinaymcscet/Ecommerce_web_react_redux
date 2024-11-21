@@ -185,7 +185,7 @@ const Home = () => {
                             <div key={index} onClick={() => handleProductClick(product)}>
                               <ProductListCard
                                 id={product?.group_id}
-                                image={product.imageUrl ? product.imageUrl : "/images/no-product-available.jpg"}
+                                image={product.imageUrl ? product.imageUrl : "/images/no-product-available.png"}
                                 name={product.name ? product.name : ""}
                                 userrating={product.rating ? product.rating : ""}
                                 discountPrice={product.discountedPrice ? product.discountedPrice : ""}
@@ -235,7 +235,7 @@ const Home = () => {
               <div key={index} onClick={() => handleProductClick(item)}>
                 <ProductListCard
                   id={index}
-                  image={item.imageUrl ? item.imageUrl : "/images/no-product-available.jpg"}
+                  image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
                   name={item.name ? item.name : ""}
                   userrating={item.rating ? item.rating : ""}
                   discountPrice={item.discountedPrice ? item.discountedPrice : ""}

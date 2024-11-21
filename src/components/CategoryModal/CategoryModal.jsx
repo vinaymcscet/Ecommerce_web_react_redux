@@ -47,7 +47,7 @@ const CategoryModal = () => {
               return (
                 <div key={slide.id}>
                   <ProductCard
-                    imgSrc={slide.category_image || '/images/no-product-available.jpg'}
+                    imgSrc={slide.category_image || '/images/no-product-available.png'}
                     imgName={slide.name}
                     handleCategory={() => handleClick(slide)}
                   />

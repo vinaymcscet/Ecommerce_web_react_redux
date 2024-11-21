@@ -300,6 +300,16 @@ button.contact {
     width: 100%;
 }
 
+.orderListWrapper p,
+.noReviews,
+.noWishlist {
+    font-size: 20px;
+    font-weight: 400;
+    width: 100%;
+    text-align: center;
+    margin: 20px 0 10px 0;
+}
+
 .user_order_list .orderList {
     padding: 10px;
     background-color: #fff;
