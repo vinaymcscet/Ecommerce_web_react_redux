@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { FormatDateTime } from '../../utils/FormatDateTime';
 
 const BlogCard = ({ card }) => {
-    console.log("card", card);
 
     return (
         <>

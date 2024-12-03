@@ -26,7 +26,7 @@ const ProductListCard = ({
     <div className='productBoxes' key={id}>
       <div className="whislistBox">
         <div className="wishlist-btn">
-          {wishlistStatus === 'yes' ? (
+          {wishlistStatus?.toLowerCase() === 'yes' ? (
             <img
               src={whistListBox.whistlistFill}
               alt="Whistlist Product"

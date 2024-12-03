@@ -301,7 +301,6 @@ button.contact {
 }
 
 .orderListWrapper p,
-.noReviews,
 .noWishlist {
     font-size: 20px;
     font-weight: 400;
@@ -342,9 +341,17 @@ button.contact {
     border: 1px solid #D1D1D1;
 }
 
+.user_order_list .orderList .orderDetail .leftOrder > div {
+    width: 100%;
+}
+
 .user_order_list .orderList .orderDetail .leftOrder h3 {
     font-size: 15px;
-    font-weight: 400;
+    font-weight: 600;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .user_order_list .orderList .orderDetail .leftOrder .openReturnWindow {
@@ -354,6 +361,8 @@ button.contact {
 .user_order_list .orderList .orderDetail .leftOrder p {
     font-size: 13px;
     font-weight: 400;
+    text-align: left;
+    margin: 5px 0;
 }
 
 .user_order_list .orderList .orderDetail .rightOrder {
@@ -361,19 +370,38 @@ button.contact {
     align-items: flex-start;
     justify-content: flex-end;
     flex-flow: wrap column;
+    width: 30%;
 }
 
-.user_order_list .orderList .orderDetail .rightOrder a {
+/* .user_order_list .orderList .orderDetail .rightOrder a { */
+.user_order_list .orderList .orderDetail .rightOrder div {
     font-size: 13px;
     font-weight: 400;
     color: #000;
     text-decoration: none;
     width: 100%;
     text-align: right;
+    transition: color 0.3s ease, transform 0.3s ease;
+    transform: scale(1);
+    cursor: pointer;
 }
 
-.user_order_list .orderList .orderDetail .rightOrder a:hover,
-.user_order_list .orderList .orderDetail .rightOrder a:focus {
+/* .user_order_list .orderList .orderDetail .rightOrder a.active { */
+.user_order_list .orderList .orderDetail .rightOrder div.active {
+    pointer-events: auto;
+    transform: scale(1.01);
+}
+
+/* .user_order_list .orderList .orderDetail .rightOrder a.disabled { */
+.user_order_list .orderList .orderDetail .rightOrder div.disabled {
+    color: gray;
+    pointer-events: none;
+  }
+
+/* .user_order_list .orderList .orderDetail .rightOrder a:hover,
+.user_order_list .orderList .orderDetail .rightOrder a:focus { */
+.user_order_list .orderList .orderDetail .rightOrder div:hover,
+.user_order_list .orderList .orderDetail .rightOrder div:focus {
     color: #FBB540;
 }
 
@@ -382,6 +410,30 @@ button.contact {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+}
+
+.user_order_list .orderList .openOrderDetails {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: scaleY(0.95); /* Slightly scale down initially */
+    transform-origin: top;
+    transition: 
+        max-height 0.6s ease-in-out, 
+        opacity 0.6s ease-in-out, 
+        transform 0.6s ease-in-out;
+}
+  
+.user_order_list .orderList .openOrderDetails.show {
+    max-height: 100%; /* Adjust based on content */
+    opacity: 1;
+    transform: scaleY(1);
+}
+  
+.user_order_list .orderList .openOrderDetails.hide {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.95);
 }
 
 .userDetails .userAddress {
@@ -410,18 +462,18 @@ button.contact {
 }
 
 .userDetails .userAddress p {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 13px;
     font-weight: 400;
-    margin-bottom: 5px;
+    margin: 2px 0;
+    text-align: left;
 }
 
 .userDetails .user_order_details p,
 .userDetails .user_order_track p {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 13px;
     font-weight: 400;
-    margin-bottom: 15px;
+    margin: 2px 0;
+    text-align: left;
 }
 
 .userDetails .user_order_track p.track {
@@ -447,7 +499,7 @@ button.contact {
     margin: 0;
     font-size: 12px;
     font-weight: 400;
-    width: 50%;
+    text-align: left;
 }
 
 .tracking_order_status .order {
@@ -693,112 +745,6 @@ button.contact {
 }
 
 
-.coupens {
-    width: 100%;
-}
-
-.coupens h3 {
-    font-size: 30px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.coupens .coupensList {
-    width: 100%;
-}
-
-.coupens .coupensList .availableCoupen {
-    padding: 15px;
-    background-color: #fff;
-    border: 1px solid #D6D6D6;
-    border-radius: 7px;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    margin-bottom: 20px;
-    flex-flow: wrap row;
-    position: relative;
-    box-sizing: border-box;
-}
-
-.copySelection {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #FFB545;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.coupens .coupensList .availableCoupen h4 {
-    font-size: 24px;
-    font-weight: 500;
-    margin: 0;
-    width: 100%;
-}
-
-.coupens .coupensList .availableCoupen p {
-    font-size: 16px;
-    font-weight: 500;
-    width: 100%;
-}
-
-.coupens .coupensList .availableCoupen ul {
-    flex-flow: wrap column;
-    justify-content: flex-start;
-    width: 100%;
-    padding-left: 10px;
-}
-
-.coupens .coupensList .availableCoupen ul li {
-    width: 100%;
-    text-align: left;
-    font-size: 16px;
-    font-weight: 400;
-    margin: 0;
-    position: relative;
-    padding-left: 20px;
-}
-
-.coupens .coupensList .availableCoupen ul li:before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: #000;
-    left: 0;
-    position: absolute;
-
-}
-
-.coupens .coupensList .availableCoupen p.validity {
-    font-size: 14px;
-    font-weight: 400;
-    color: #008224;
-    margin: 10px 0 0 0;
-}
-
-.coupens .coupensList .availableCoupen p.selectedCopiedMessage {
-    position: absolute;
-    top: 14px;
-    right: 34px;
-    width: auto;
-    border-radius: 8px;
-    background-color: #FFB545;
-    padding: 5px 10px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 400;
-    transition: all 0.4s ease-in-out;
-    -webkit-transition: all 0.4s ease-in-out;
-    -moz-transition: all 0.4s ease-in-out;
-}
-
 .userInvoice {
     width: 100%;
     position: relative;
@@ -851,208 +797,18 @@ button.contact {
     height: 100%;
 }
 
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
 @media print {
     .tabular_invoice {
         border: none;
         border-radius: 0;
     }
-}
-
-.reviewedItems {
-    width: 100%;
-}
-
-.reviewedItems h3 {
-    font-size: 30px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.reviewProduct {
-    width: 100%;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #D6D6D6;
-    border-radius: 7px;
-    margin: 10px 0 20px 0;
-}
-
-.reviewProduct .item_header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-}
-
-.reviewProduct .item_header .leftReviewPart {
-    width: 80px;
-    height: 80px;
-    margin-right: 20px;
-}
-
-.reviewProduct .item_header .leftReviewPart img {
-    width: 100%;
-    height: 100%;
-}
-
-.reviewProduct .item_header .rightReviewPart h4 {
-    font-size: 15px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.reviewProduct .item_header .rightReviewPart p {
-    font-size: 13px;
-    font-weight: 400;
-    margin: 0;
-}
-
-.reviewProduct .item_header .rightReviewPart .starRating .star {
-    cursor: pointer;
-    font-size: 1.3rem;
-    margin: 0 2px 0 0;
-}
-
-.reviewProduct .item_header+p {
-    font-size: 16px;
-    font-weight: 400;
-    margin: 5px 0;
-}
-
-.reviewProduct .reviewd_prd_image {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-}
-
-.reviewProduct .reviewd_prd_image .item {
-    width: 100px;
-    height: 100px;
-    margin: 0 10px 0 0;
-}
-
-.reviewProduct .reviewd_prd_image .item img {
-    width: 100%;
-    height: 100%;
-}
-
-.review_time {
-    font-size: 14px;
-    font-weight: 400;
-    color: #787878;
-    width: 100%;
-    text-align: right;
-}
-
-.whistlistList h3 {
-    font-size: 30px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.whistlistList {
-    width: 100%;
-}
-
-.whistListWrapper {
-    width: 100%;
-}
-
-.whistListWrapper .whistlistMainWrapper {
-    width: 100%;
-    background-color: #fff;
-    border: 1px solid #D6D6D6;
-    border-radius: 7px;
-    margin: 10px 0 20px 0;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox {
-    width: 100%;
-    padding: 10px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .leftWhistlist {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .leftWhistlist img {
-    width: 100%;
-    height: 100%;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist {
-    position: relative;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 {
-    font-size: 15px;
-    font-weight: 400;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 span {
-    width: 50%;
-    color: #000;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist {
-    width: 100%;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .priceSection .priceList {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 .addToCart {
-    font-size: 14px;
-    font-weight: 400;
-    background: #FFB545;
-    max-width: 130px;
-    padding: 10px 15px;
-    min-height: auto;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .star {
-    font-size: 1.3rem;
-    margin: 0 2px 0 0;
-}
-
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .discount,
-.whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist .original {
-    font-weight: 500;
-    font-size: 17px;
-    margin: 0 10px 0 0;
-}
-.cartActionItems {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-.cartActionItems .icon {
-    width: 40px;
-    height: 40px;
-    background: #ffb545;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 0 0 10px;
-}
-
-.resp_table {
-    width: 100%;
-    overflow-x: auto;
 }
 
 @media only screen and (max-width: 1350px) {
@@ -1100,9 +856,7 @@ button.contact {
     .user_order_list .orderList .orderDetail .leftOrder p {
         width: 90%;
     }
-    .addressBox h3,
-    .reviewedItems h3,
-    .coupens h3 {
+    .addressBox h3 {
         font-size: 22px;
     }
     .addressBox .addressList ul li {
@@ -1147,9 +901,7 @@ button.contact {
     table td {
         width: 100% !important;
     }
-    .addressBox h3,
-    .reviewedItems h3,
-    .coupens h3 {
+    .addressBox h3 {
         font-size: 18px;
     }
 }

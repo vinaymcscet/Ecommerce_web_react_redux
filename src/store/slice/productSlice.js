@@ -5,8 +5,10 @@ const initialState = {
   productList: [],
   categorySlide: [],
   allCategories: [],
-  homeProductData: [],
-  homeProductSection: [],
+  homeProductData: null,
+  homeProductSection: null,
+  productSectionData: [],
+  productSectionCount: 0,
   allCategoryList: [],
   subCategoryList: null,
   recentView: null,
@@ -18,6 +20,8 @@ const initialState = {
   totalAddressCount: 0,
   totalWishlistCount: 0,
   productDetailResponse: null,
+  similarProductListResponse: null,
+  similarProductCount: 0,
   offerList: null,
   addWishlist: null,
   listWishlist: null,
@@ -25,6 +29,7 @@ const initialState = {
   userReviewCount: 0,
   getReview: null,
   getReviewCount: 0,
+  allOffersList: null,
 };
 
 export const cartSlice = createSlice({
@@ -47,8 +52,10 @@ export const cartSlice = createSlice({
       state.allCategories.push(product);
     },
     setHomeProductData: (state, action) => {
-      const product = action.payload;
-      state.homeProductData.push(product);
+      state.homeProductData = action.payload;
+    },
+    setProductSectionCount: (state, action) => {
+      state.productSectionCount = action.payload;
     },
     setAllCategoryList: (state, action) => {
       const product = action.payload;
@@ -58,8 +65,10 @@ export const cartSlice = createSlice({
       state.subCategoryList = action.payload;
     },
     setHomeProductSection: (state, action) => {
-      const product = action.payload;
-      state.homeProductSection.push(product);
+      state.homeProductSection = action.payload;
+    },
+    setProductSectionData: (state, action) => {
+      state.productSectionData = action.payload;
     },
     setRecentView: (state, action) => {
       state.recentView = action.payload;
@@ -81,6 +90,12 @@ export const cartSlice = createSlice({
     },
     setProductDetailResponse: (state, action) => {
       state.productDetailResponse = action.payload;
+    },
+    setSimilarProductListResponse: (state, action) => {
+      state.similarProductListResponse = action.payload;
+    },
+    setSimilarProductCount: (state, action) => {
+      state.similarProductCount = action.payload;
     },
     setTotalAddressCount: (state, action) => {
       state.totalAddressCount = action.payload;
@@ -109,6 +124,9 @@ export const cartSlice = createSlice({
     setGetAnReviewCount: (state, action) => {
       state.getReviewCount = action.payload;
     },
+    setAllOffersList: (state, action) => {
+      state.allOffersList = action.payload;
+    },
   },
 });
 
@@ -119,6 +137,7 @@ export const {
   setAllCategories,
   setHomeProductData,
   setHomeProductSection,
+  setProductSectionData,
   setAllCategoryList,
   setSubCategoryList,
   setRecentView,
@@ -128,6 +147,8 @@ export const {
   setTotalProductListCount,
   setTotalFilterList,
   setProductDetailResponse,
+  setSimilarProductListResponse,
+  setSimilarProductCount,
   setTotalAddressCount,
   setTotalWishlistCount,
   setOfferList,
@@ -137,5 +158,7 @@ export const {
   setUserReviewCount,
   setReviewCount,
   setGetAnReviewCount,
+  setProductSectionCount,
+  setAllOffersList,
 } = cartSlice.actions;
 export default cartSlice.reducer;

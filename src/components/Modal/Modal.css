@@ -99,6 +99,10 @@ button {
   font-size: 20px;
 }
 
+.modalContent form button span {
+  color: #000;
+}
+
 .modalContent form button:hover {
   background-color: #e5a23c;
 }
@@ -297,7 +301,7 @@ ul.status {
   right: 10px;
   cursor: pointer;
   outline: none;
-  color: #d1d1d1;
+  color: #000000;
 }
 
 .error-message {

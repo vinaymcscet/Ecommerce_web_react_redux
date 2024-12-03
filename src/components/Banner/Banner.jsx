@@ -10,12 +10,12 @@ const Banner = () => {
         <div className="bannerContainer">
             <div className="bannerContent">
                 <Slider {...slick_banner_settings}>
-                    {homeProductData[0]?.banners && homeProductData[0]?.banners.map((item, index) => (
+                    {homeProductData?.banners && homeProductData?.banners.map((item, index) => (
                         <div key={index}>
                             <img src={item.banner_image} alt={item.name} />
                         </div>
                     ))}
-                    {!homeProductData[0] && bannerList && bannerList.map((item, index) => (
+                    {!homeProductData && bannerList && bannerList.map((item, index) => (
                         <div key={index}>
                             <img src={item.banner_image} alt={item.name} />
                         </div>

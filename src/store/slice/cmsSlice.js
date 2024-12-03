@@ -4,6 +4,7 @@ const initialState = {
   cmsContentType: null,
   cmsSocialLinks: null,
   cmsContactUs: null,
+  cmsGroupItem: null,
 };
 
 export const cmsSlice = createSlice({
@@ -16,9 +17,10 @@ export const cmsSlice = createSlice({
     setCmsSocialLinks: (state, action) => {
       state.cmsSocialLinks = action.payload;
     },
-    setCmsContactUs: (state, action) => {
-      state.cmsContactUs = action.payload;
+    setCmsGroupItem: (state, action) => {
+      state.cmsGroupItem = action.payload;
     },
+     
   },
 });
 
@@ -26,5 +28,6 @@ export const {
     setCMSContentType,
     setCmsSocialLinks,
     setCmsContactUs,
+    setCmsGroupItem,
 } = cmsSlice.actions;
 export default cmsSlice.reducer;

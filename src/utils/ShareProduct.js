@@ -7,7 +7,6 @@ export const ShareProduct = async (productId) => {
             title: "Check out this product!",
             url: productURL,
           });
-          console.log("Product shared successfully!");
         } catch (error) {
           console.error("Error sharing product:", error);
         }

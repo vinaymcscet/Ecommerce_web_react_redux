@@ -15,7 +15,7 @@ const Category = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage,setItemsPerPage] = useState(10);
+  const [itemsPerPage,setItemsPerPage] = useState(1);
 
   const { allCategoryList, subCategoryList, recentView, totalRecentView = 0 } = useSelector(
     (state) => state.product
@@ -37,7 +37,6 @@ const Category = () => {
     // dispatch(getAllRecentViewData(0, itemsPerPage));
   }, [dispatch]);
 
-  console.log("recentView", recentView);
 
   useEffect(() => {
     // Read query and page number from the URL search params
@@ -82,8 +81,9 @@ const handlePageChange = (data) => {
   const itemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalRecentView);
   
   const handleProductClick = (item) => {
-    console.log("item", item);
-    const responseObj = { product_id: item.product_id }
+    const responseObj = { 
+      product_id: item.product_id,
+    }
     dispatch(productDetailData(responseObj))
     navigate(`/product/${item.product_id}`, { state: { product: item } });
   };

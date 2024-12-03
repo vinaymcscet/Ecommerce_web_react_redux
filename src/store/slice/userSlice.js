@@ -9,6 +9,7 @@ const initialState = {
   blogReview: null,
   notifications: null,
   notificationCount: 0,
+  newsletter: null,
 };
 
 export const userSlice = createSlice({
@@ -69,6 +70,12 @@ export const userSlice = createSlice({
     setNotificationsCount: (state, action) => {
       state.notificationCount = action.payload;
     },
+    setNewsLetter: (state, action) => {
+      state.newsletter = action.payload;
+    },
+    setClearNewsletterMessage: (state) => {
+      state.newsletter = null;
+    },
   },
 });
 
@@ -84,6 +91,8 @@ export const {
   setBlogReviewList,
   setNotificationsList,
   setNotificationsCount,
+  setNewsLetter,
+  setClearNewsletterMessage,
  } =
   userSlice.actions;
 export default userSlice.reducer;

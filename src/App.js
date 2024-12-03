@@ -21,6 +21,7 @@ import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modal
 import { setUser } from "./store/slice/userSlice";
 import { getTokensFromLocalStorage } from "./utils/StorageTokens";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import CancelOrderModal from "./components/CancelOrderModal/CancelOrderModal";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -31,8 +32,10 @@ const Contact = React.lazy(() => import("./pages/Contact/Contact"));
 const Category = React.lazy(() => import("./pages/Category/Category"));
 const ProductList = React.lazy(() => import("./pages/ProductList/ProductList"));
 const ProductDetail = React.lazy(() =>
-  import("./pages/ProductDetail/ProductDetail")
-);
+  import("./pages/ProductDetail/ProductDetail"));
+const SectionDetail = React.lazy(() =>
+  import("./pages/SectionDetail/SectionDetail"));
+
 const Cart = React.lazy(() => import("./pages/Cart/Cart"));
 const OrderComplete = React.lazy(() =>
   import("./pages/OrderComplete/OrderComplete")
@@ -111,6 +114,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
+          <Route path="sectionDetail/:id" element={<SectionDetail />} />
           <Route path="about" element={<About />} />
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:id" element={<BlogDetail />} />
@@ -144,6 +148,7 @@ function App() {
       <Footer />
       <Modal />
       <CategoryModal />
+      <CancelOrderModal />
       {isAddressModelOpen && (
         <Suspense fallback={<div>Loading Address Modal...</div>}>
           <AddressModal />

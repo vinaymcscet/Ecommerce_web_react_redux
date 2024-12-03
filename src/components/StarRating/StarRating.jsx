@@ -6,7 +6,6 @@ const StarRating = ({ userrating = 0, onRatingChange }) => {
     // const [hover, setHover] = useState(null);
     // const [totalStars, setTotalStars] = useState(5);
     const [totalStars] = useState(5);
-    // console.log("rating", rating);
     const handleRatingSelect = (currentRating) => {
         setRating(currentRating); // Update local rating state
         if (onRatingChange) {

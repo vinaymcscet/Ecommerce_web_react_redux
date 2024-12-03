@@ -7,8 +7,7 @@ import { setChangePassword,  setUser } from "../../store/slice/userSlice";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./Profile.css";
-import StarRating from "../../components/StarRating/StarRating";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import InputField from "../../components/InputBox/InputBox";
 import { 
     CONFIRM_PASSWORD, 
@@ -26,27 +25,29 @@ import {
   } from "../../utils/Constants";
 import { 
     addListAddress, 
-    addToCartData, 
     changePasswordRequest, 
     defaultListAddress, 
     deleteListAddress, 
-    deleteSingleWhistListData, 
     getListAddress, 
     getListOfWhistListData, 
     getOfferList, 
     getUserRequest, 
     getUserReviewProductData, 
+    OrderDetailData, 
     OrderListData, 
     updateListAddress, 
     updateProfileRequest 
 } from "../../store/slice/api_integration";
 import ReactPaginate from "react-paginate";
-import { setListWishList } from "../../store/slice/productSlice";
-import { ShareProduct } from "../../utils/ShareProduct";
 import Notifications from "../Notifications/Notifications";
+import { CircularProgress } from "@mui/material";
+import Wishlist from "../Wishlist/Wishlist";
+import Coupens from "../Coupens/Coupens";
+import Reviews from "../Reviews/Reviews";
+import { setCancelOrderModal } from "../../store/slice/cartSlice";
+import { formatClasses, formatDate, FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 
 const Profile = () => {
-  const [copyMessage, setCopyMessage] = useState({ message: "", index: null });
   const [activeTab, setActiveTab] = useState(0);
   const [activeOrderTab, setActiveOrderTab] = useState(0);
   const [showInvoice, setShowInvoice] = useState(false);
@@ -54,24 +55,24 @@ const Profile = () => {
   const [page, setPage] = useState(0);  // Default page 0 (first page)
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
-  const [wishListItemsPerPage, setWishListItemsPerPage] = useState(10);
+  const [wishListItemsPerPage, setWishListItemsPerPage] = useState(1);
   const [reviewPage, setReviewPage] = useState(0);  // Default page 0 (first page)
-  const [reviewPerPage, setReviewPerPage] = useState(10);
+  const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
+  const [activeItemsPerPage, setActiveItemsPerPage] = useState(1);
+  
   const [invoiceData, setInvoiceData] = useState(null);
+  const [activeOrderIndex, setActiveOrderIndex] = useState(null);
+  const [activeOrderLoading, setActiveOrderLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const { user, changePassword } = useSelector((state) => state.user);
   const { loading } = useSelector((state) => state.modal);
   const { 
     totalAddressCount = 0, 
-    offerList, 
-    listWishlist, 
-    totalWishlistCount = 0, 
-    userReviewCount = 0,
-    userReview
   } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-  const { orderList } = useSelector((state) => state.cart);
-  console.log("listWishlist", listWishlist);
+  const { orderList, orderDetail, activeOrderListCount = 0 } = useSelector((state) => state.cart);
+  console.log("orderDetail", orderDetail);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -157,7 +158,6 @@ const handlePasswordUpdateSubmit = (e) => {
       new_password: changePassword.newPassword,
       confirm_password: changePassword.confirmPassword,
     }
-    console.log("responseObj", responseObj);
     dispatch(changePasswordRequest(responseObj));
     setPassword("");
     setConfirmPassword("");
@@ -370,22 +370,6 @@ const handlePasswordUpdateSubmit = (e) => {
   };
 
   // ======================================================================================================================
-  const handleCopy = (title, index) => {
-    // Copy the item.title to the clipboard
-    navigator.clipboard
-      .writeText(title)
-      .then(() => {
-        // Set success message
-        setCopyMessage({ message: "Item copied to clipboard!", index });
-
-        // Hide message after 2 minutes (120,000 milliseconds)
-        setTimeout(() => {
-          setCopyMessage({ message: "", index: null });
-        }, 2000); // 2 minutes
-      })
-      .catch((err) => {
-      });
-  };
 
   //   download PDF
   const downloadPDF = () => {
@@ -416,23 +400,6 @@ const handlePasswordUpdateSubmit = (e) => {
     });
   };
 
-  const handleRemoveWishListItem = (productId) => {
-    const updatedWishlist = listWishlist.filter((item) => item.skuId !== productId);
-    dispatch(setListWishList(updatedWishlist)); 
-
-    const responseObj = { sku_id: productId };
-    dispatch(deleteSingleWhistListData(responseObj));
-  };
-
-  const handleAddToCart = (item) => {
-    // Dispatch product details and quantity to Redux
-      const responseObj = {
-        sku_id: item?.skuId,
-        type: 'increase'
-      }
-      dispatch(addToCartData(responseObj))
-  };
-
   const handleActiveTabs = (value) => {
     const searchParams = new URLSearchParams(location.search);
     // Clear query parameters for cleaner URL
@@ -447,7 +414,6 @@ const handlePasswordUpdateSubmit = (e) => {
   
       const offset = (pageParam - 1) * itemsPerPage; // Adjust offset
       const limit = itemsPerPage;
-      console.log("Address Tab Offset:", offset);
   
       const responseObj = {
         offset,
@@ -467,7 +433,6 @@ const handlePasswordUpdateSubmit = (e) => {
   
       const offset = (pageParam - 1) * wishListItemsPerPage; // Adjust offset
       const limit = wishListItemsPerPage;
-      console.log("Wishlist Tab Offset:", offset);
   
       const responseObj = {
         offset,
@@ -490,16 +455,79 @@ const handlePasswordUpdateSubmit = (e) => {
       dispatch(getUserReviewProductData(responseObj));
     }
     if ( value === 1) {
+      setActiveOrderLoading(true);
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+    
+      // Update state with URL parameters
+      setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+      setActiveItemsPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
       const responseObj = {
         status: 1,
-        offset: 1,
-        limit: 10
+        offset,
+        limit
       }
-      dispatch(OrderListData(responseObj));
+      dispatch(OrderListData(responseObj)).finally(() => {
+        setActiveOrderLoading(false);
+      });
     }
     setActiveTab(value); // Update active tab
   };
+  // =========================================================
   
+  // Pafination code for Active order List 
+  useEffect(() => {
+    // Extract parameters from the URL
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+  
+    // Update state with URL parameters
+    setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+    setActiveItemsPerPage(itemsPerPageParam);
+  
+    // Calculate offset and limit dynamically
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+  
+    // Dispatch the API call with updated parameters
+    const responseObj = {
+      status: 1,
+      offset,
+      limit
+    }
+    dispatch(OrderListData(responseObj));
+  }, [location.search, itemsPerPage ,dispatch]);
+  
+  // Handle dropdown change for itemsPerPage
+  const handleActiveItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setActiveItemsPerPage(newItemsPerPage);
+    setActivePage(0); // Reset to the first page
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", 1);
+    searchParams.set("itemsPerPage", newItemsPerPage);
+    navigate(`?${searchParams.toString()}`);
+  };
+  
+  // Handle page change for pagination
+  const handleActivePageChange = (data) => {
+    const { selected } = data; // `react-paginate` provides 0-based page index
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", selected + 1); // Convert to 1-based indexing
+    navigate(`?${searchParams.toString()}`); // Update URL
+  };
+
+  // Dropdown options for itemsPerPage
+  const activeItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= activeOrderListCount);
+  // =========================================================
   // Pafination code for Address Lists
     useEffect(() => {
       // Extract parameters from the URL
@@ -545,132 +573,63 @@ const handlePasswordUpdateSubmit = (e) => {
     // Dropdown options for itemsPerPage
     const itemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalAddressCount);
 
-    // Pagination Code for WishList Items
-    useEffect(() => {
-      // Extract parameters from the URL
-      const searchParams = new URLSearchParams(location.search);
-      const pageParam = parseInt(searchParams.get("wishListPage"), 10) || 1;
-      const itemsPerPageParam = parseInt(searchParams.get("wishListItemsPerPage"), 10) || wishListItemsPerPage;
-    
-      // Update state with URL parameters
-      setWishListPage(pageParam - 1); // Sync pagination (0-based indexing)
-      setWishListItemsPerPage(itemsPerPageParam);
-    
-      // Calculate offset and limit dynamically
-      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
-      const limit = itemsPerPageParam;
-    
-      // Dispatch the API call with updated parameters
-      const responseObj = {
-        offset,
-        limit
-      }
-      console.log("Offset:", offset);
-      console.log("Limit:", limit);
-      console.log("Wishlist Page:", wishListPage);
-      console.log("Items Per Page:", wishListItemsPerPage);
-      dispatch(getListOfWhistListData(responseObj));
-    }, [location.search, dispatch]);
-    
-    // Handle dropdown change for itemsPerPage
-    const handleWishListItemsPerPageChange = (e) => {
-      const newItemsPerPage = parseInt(e.target.value, 10);
-      setWishListItemsPerPage(newItemsPerPage);
-      setWishListPage(0); // Reset to the first page
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("wishListPage", 1);
-      searchParams.set("wishListItemsPerPage", newItemsPerPage);
-      navigate(`?${searchParams.toString()}`);
-    };
-    
-    // Handle page change for pagination
-    const handleWishListPageChange = (data) => {
-      const { selected } = data; // `react-paginate` provides 0-based page index
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("page", selected + 1); // Convert to 1-based indexing
-      navigate(`?${searchParams.toString()}`); // Update URL
-    };
-
-    // Dropdown options for itemsPerPage
-    const wishListItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalWishlistCount);
-
-
-    // Pagination code for User Review List
-    useEffect(() => {
-      // Extract parameters from the URL
-      const searchParams = new URLSearchParams(location.search);
-      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
-      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
-    
-      // Update state with URL parameters
-      setReviewPage(pageParam - 1); // Sync pagination (0-based indexing)
-      setReviewPerPage(itemsPerPageParam);
-    
-      // Calculate offset and limit dynamically
-      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
-      const limit = itemsPerPageParam;
-    
-      // Dispatch the API call with updated parameters
-      const responseObj = {
-        offset,
-        limit
-      }
-      dispatch(getUserReviewProductData(responseObj));
-    }, [location.search, reviewPerPage ,dispatch]);
-    
-    // Handle dropdown change for itemsPerPage
-    const handleReviewPerPageChange = (e) => {
-      const newItemsPerPage = parseInt(e.target.value, 10);
-      setReviewPerPage(newItemsPerPage);
-      setReviewPage(0); // Reset to the first page
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("page", 1);
-      searchParams.set("itemsPerPage", newItemsPerPage);
-      navigate(`?${searchParams.toString()}`);
-    };
-    
-    // Handle page change for pagination
-    const handleReviewPageChange = (data) => {
-      const { selected } = data; // `react-paginate` provides 0-based page index
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("page", selected + 1); // Convert to 1-based indexing
-      navigate(`?${searchParams.toString()}`); // Update URL
-    };
-
-    // Dropdown options for itemsPerPage
-    const reviewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= userReviewCount);
     const handleActiveOrderTab = (value) => {
       if(value === 0) {
+        setActiveOrderLoading(true);
+        const searchParams = new URLSearchParams(location.search);
+        const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+        const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+      
+        // Update state with URL parameters
+        setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+        setActiveItemsPerPage(itemsPerPageParam);
+      
+        // Calculate offset and limit dynamically
+        const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+        const limit = itemsPerPageParam;
+      
+        // Dispatch the API call with updated parameters
         const responseObj = {
           status: 1,
-          offset: 1,
-          limit: 10
+          offset,
+          limit
         }
-        dispatch(OrderListData(responseObj));
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
       }
       if(value === 1) {
+        setActiveOrderLoading(true);
         const responseObj = {
           status: 5,
           offset: 1,
           limit: 10
         }
-        dispatch(OrderListData(responseObj));
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
       }
       if(value === 2) {
+        setActiveOrderLoading(true);
         const responseObj = {
           status: 4,
           offset: 1,
           limit: 10
         }
-        dispatch(OrderListData(responseObj));
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
       }
       if(value === 3) {
+        setActiveOrderLoading(true);
         const responseObj = {
           status: 3,
           offset: 1,
           limit: 10
         }
-        dispatch(OrderListData(responseObj));
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
       }
       setActiveOrderTab(value);
     }
@@ -678,8 +637,61 @@ const handlePasswordUpdateSubmit = (e) => {
       setShowInvoice(status);
       setInvoiceData(product);
     }
-    console.log("invoiceData", invoiceData);
 
+    const handleViewOrderDetails = (e, index, order) => {
+      e.preventDefault();
+      setActiveOrderIndex((prevIndex) => {
+        // If closing the current active index, return null to hide details
+        if (prevIndex === index) {
+          return null;
+        }
+    
+        // If opening a new order, trigger the API call
+        if (prevIndex !== index) {
+          const responseObj = {
+            order_id:order?.order_id,
+          }
+          // Call your API function
+          dispatch(OrderDetailData(responseObj))
+        }
+    
+        return index;
+      });
+    };
+    const handleNavigateToDetail = (productList, scroll = false) => {
+      if (!productList || productList.length === 0) {
+        console.error("No matching product found to navigate.");
+        return;
+      }
+    
+      const product = productList[0];
+      if (product?.product_id) {
+        console.log("Navigating to product:", product.product_id); // Debugging
+        // navigate(`/product/${product.product_id}`, { state: { product } });
+        if(scroll) {
+          navigate(`/product/${product.product_id}`, { state: { product, scrollToBottom: scroll } });
+        } else navigate(`/product/${product.product_id}`, { state: { product } });
+      } else {
+        console.error("Product ID is undefined.");
+      }
+    };
+    const redirectToSupport = () => {
+      navigate("/contact");
+    };
+
+    const handleCancelOrder = (e, item) => {
+      const cancelOrderPayload = { 
+        isOpen: isOpen,
+        orderId: item.order_id,
+        skuId: item.sku_id,
+      };
+      // dispatch(toggleCategoryModal(cancelOrderPayload));
+      dispatch(setCancelOrderModal(cancelOrderPayload));
+    }
+    const formattedActiveConfirmedDate = formatDateTimeProduct(orderDetail?.orderDate);
+    const formattedActiveShippeddDate = formatDateTimeProduct(orderDetail?.shippedDate? orderDetail?.shippedDate : orderDetail?.orderDate);
+    const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
+    const formattedActiveDeliveredDate = formatDateTimeProduct(orderDetail?.deliveredDate ? orderDetail?.deliveredDate: orderDetail?.estimatedDeliveryDate);
   return (
     <div className="userProfile">
       <h1>Your Profile</h1>
@@ -907,31 +919,7 @@ const handlePasswordUpdateSubmit = (e) => {
                       }}
                     >
                       <tr>
-                        <td style={{ border: "none" }} colSpan={'5'}>
-                          <img
-                            src="/images/icons/logo.svg"
-                            alt="FikFis Logo"
-                            width={"200px"}
-                            height={"68px"}
-                            style={{ border: "none" }}
-                          />
-                        </td>
-                        <td
-                           colSpan={'5'}
-                          style={{
-                            border: "none",
-                            fontSize: "15px",
-                            fontWeight: "500",
-                            textAlign: "right",
-                            verticalAlign: "top",
-                          }}
-                        >
-                          Tax Invoice <br />
-                          (Original for Recipient)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={'5'} style={{ border: "none" }}>
+                        <td style={{ borderBottom: "2px solid #EAEAEA" }} colSpan={'4'}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -941,100 +929,110 @@ const handlePasswordUpdateSubmit = (e) => {
                                   border: "none",
                                 }}
                               >
-                                Sold By:
+                                <img
+                                  src="/images/icons/logo.svg"
+                                  alt="FikFis Logo"
+                                  width={"200px"}
+                                  height={"68px"}
+                                  style={{ border: "none" }}
+                                />
                               </td>
                             </tr>
                             <tr>
                               <td
                                 style={{
-                                  fontSize: "13px",
+                                  fontSize: "15px",
                                   fontWeight: "500",
                                   border: "none",
                                 }}
                               >
-                                Vendor Name
+                                Customer care number: <p style={{fontSize: "15px", fontWeight:"400"}}>+44 7917 948706</p>
                               </td>
                             </tr>
                             <tr>
                               <td
                                 style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
+                                  fontSize: "15px",
+                                  fontWeight: "500",
                                   border: "none",
                                 }}
                               >
-                                Street Address: 123 Fake Street
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Street Address: 123 Fake Street
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                City: London
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Post Town: Greater London
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Postal Code: SW1A 1AA
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Country: United Kingdom
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Phone Number: +44 845625361
+                                Email: <p style={{fontSize: "15px", fontWeight:"400"}}>support@fikdis.co.uk</p>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td colSpan={'5'} style={{ border: "none" }}>
+                        <td
+                           colSpan={'2'}
+                            style={{
+                              borderBottom: "2px solid #EAEAEA",
+                              fontSize: "15px",
+                              fontWeight: "500",
+                              textAlign: "right",
+                              verticalAlign: "top",
+                            }}
+                        >
+                          <table style={{ border: "none" }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                }}
+                              >
+                                Tax Invoice
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Original for Recipient
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Invoice Number: <p style={{fontSize: "15px", fontWeight:"400"}}>56894123</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Order Number: <p style={{fontSize: "15px", fontWeight:"400"}}>402-0942907-2957941</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Order Date: <p style={{fontSize: "15px", fontWeight:"400"}}>06-05-2024</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
                           <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
@@ -1146,8 +1144,223 @@ const handlePasswordUpdateSubmit = (e) => {
                             </tr>
                           </table>
                         </td>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
+                          <table style={{ border: "none", width: "100%", }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Shipping Address :
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                City: London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Post Town: Greater London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Postal Code: SW1A 1AA
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Country: United Kingdom
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Phone Number: +44 845625361
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                IN
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                State/UT Code: 09
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
+                          <table style={{ border: "none" }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                }}
+                              >
+                                Sold By:
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Vendor Name
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                City: London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Post Town: Greater London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Postal Code: SW1A 1AA
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Country: United Kingdom
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Phone Number: +44 845625361
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
                       </tr>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={'5'} style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
                             <tr>
@@ -1390,7 +1603,7 @@ const handlePasswordUpdateSubmit = (e) => {
                             </tr>
                           </table>
                         </td>
-                      </tr>
+                      </tr> */}
                     </table>
                     <div className="resp_table">
                         <table
@@ -1401,7 +1614,6 @@ const handlePasswordUpdateSubmit = (e) => {
                         <tr>
                             <td
                             style={{
-                                width: "20px",
                                 backgroundColor: "#F6F6F6",
                                 fontSize: "13px",
                                 fontWeight: "600",
@@ -1410,7 +1622,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            S. No
+                            Item Description
                             </td>
                             <td
                             style={{
@@ -1422,7 +1634,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Description
+                            Quantity
                             </td>
                             <td
                             style={{
@@ -1434,7 +1646,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Unit Price
+                            Unit Price (excl. VAT)
                             </td>
                             <td
                             style={{
@@ -1446,7 +1658,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Discount
+                            VAT rate
                             </td>
                             <td
                             style={{
@@ -1458,7 +1670,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Qty
+                            Unit Price (incl. VAT)
                             </td>
                             <td
                             style={{
@@ -1470,55 +1682,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "500",
                             }}
                             >
-                            Net Amount
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Rate
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Type
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Amount
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Total Amount
+                            Item Subtotal
                             </td>
                         </tr>
                         <tr>
@@ -1531,7 +1695,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            1.
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
                             </td>
                             <td
                             style={{
@@ -1540,7 +1704,8 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            {invoiceData.product_name}
+                            {/* {invoiceData.product_name} */}
+                            1
                             </td>
                             <td
                             style={{
@@ -1549,7 +1714,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            £2120
+                            £8.50
                             </td>
                             <td
                             style={{
@@ -1558,7 +1723,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            £0.00
+                            20%
                             </td>
                             <td
                             style={{
@@ -1567,7 +1732,7 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            2
+                            £10.29
                             </td>
                             <td
                             style={{
@@ -1576,7 +1741,47 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            £2120
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                verticalAlign: "top",
+                                width: "20px",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
                             </td>
                             <td
                             style={{
@@ -1585,7 +1790,8 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            10%
+                            {/* {invoiceData.product_name} */}
+                            1
                             </td>
                             <td
                             style={{
@@ -1594,27 +1800,147 @@ const handlePasswordUpdateSubmit = (e) => {
                                 fontWeight: "400",
                             }}
                             >
-                            VAT
+                            £8.50
                             </td>
                             <td
                             style={{
                                 borderRight: "1px solid #D1D1D1",
                                 fontSize: "13px",
                                 fontWeight: "400",
-                                textAlign: "center",
                             }}
                             >
-                            £2320
+                            20%
                             </td>
                             <td
                             style={{
                                 borderRight: "1px solid #D1D1D1",
                                 fontSize: "13px",
                                 fontWeight: "400",
-                                textAlign: "center",
                             }}
                             >
-                            £2320
+                            £10.29
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                verticalAlign: "top",
+                                width: "20px",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            {/* {invoiceData.product_name} */}
+                            1
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £8.50
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            20%
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
                             </td>
                         </tr>
                         <tr>
@@ -1740,77 +2066,163 @@ const handlePasswordUpdateSubmit = (e) => {
                   </div>
                   <div className="order-content">
                     {activeOrderTab === 0 && (
-                      <div className="orderListWrapper">
-                        {orderList &&
-                          orderList?.map((item, index) => (
-                            <div className="orderList active" key={index}>
-                              <div className="orderDetail">
-                                <div className="leftOrder">
-                                  <img src={item.product_image} alt={item.product_name} />
-                                  <div>
-                                    <h3>{item.product_name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
-                                    <p>{`Order # ${item.order_number}`}</p>
+                      <>
+                      {activeOrderLoading ? (
+                          <div className="loadingContainer">
+                              <CircularProgress />
+                          </div>
+                      ) :(
+                        <div className="orderListWrapper">
+                          {orderList && <div className='paginationBox'>
+                                <div className="itemsPerPageDropdown">
+                                    <label>Items per page: </label>
+                                    <select value={activeItemsPerPage} onChange={handleActiveItemsPerPageChange}>
+                                        {activeItemsPerPageOptions.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* Pagination component */}
+                                <ReactPaginate
+                                    previousLabel={"Previous"}
+                                    nextLabel={"Next"}
+                                    breakLabel={"..."}
+                                    breakClassName={"break-me"}
+                                    pageCount={Math.max(Math.ceil(activeOrderListCount / activeItemsPerPage), 1)}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={(ev) => handleActivePageChange(ev)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                    forcePage={page}  // Sync current page with URL
+                                    disabled={activeOrderListCount === 0} 
+                                />
+                              </div>
+                            }
+                          {orderList &&
+                            orderList?.map((item, index) => (
+                              <div className="orderList" key={index}>
+                                <div className="orderDetail">
+                                  <div className="leftOrder">
+                                    <img src={item.product_image} alt={item.product_name} />
+                                    <div>
+                                      <h3>{item.product_name}</h3>
+                                      <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                      <p>{`Order # ${item.order_number}`}</p>
+                                    </div>
+                                  </div>
+                                  <div className="rightOrder">
+                                    <div
+                                      onClick={() => handleInvoiceDetails(item, true)}
+                                    >
+                                      Invoice
+                                    </div>
+                                    <div
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={() => {
+                                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                                        );
+                                        handleNavigateToDetail(matchingProducts);
+                                      }}
+                                    >
+                                      Buy it again
+                                    </div>
+                                    <div onClick={(e) => handleViewOrderDetails(e, index, item)}>
+                                      {activeOrderIndex === index ? "Hide order details" : "View order details"}
+                                    </div>
+                                    <div
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={() => {
+                                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                                        );
+                                        handleNavigateToDetail(matchingProducts, true);
+                                      }}
+                                    >write a product review</div>
+                                    <div onClick={() => redirectToSupport()}>Get product support</div>
+                                    <div 
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={(e) => handleCancelOrder(e, item)}
+                                    >
+                                      {"Cancel Order"}
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="rightOrder">
-                                  <a
-                                    href="#"
-                                    onClick={() => handleInvoiceDetails(item, true)}
-                                  >
-                                    Invoice
-                                  </a>
-                                  <a href="#">Buy it again</a>
-                                  <a href="#">View your item</a>
-                                  <a href="#">view order details</a>
-                                  <a href="#">write a product review</a>
-                                  <a href="#">Get product support</a>
-                                </div>
+                                {orderDetail && <div className={`openOrderDetails ${
+                                  activeOrderIndex === index ? "show" : "hide"
+                                  }`}>
+                                  <div className="userDetails">
+                                    <div className="userAddress">
+                                      <h6>
+                                        SHIP To:
+                                        <span>{orderDetail?.shippingAddress?.name}</span>
+                                      </h6>
+                                      <p>{orderDetail?.shippingAddress?.house_number}, {orderDetail?.shippingAddress?.street}</p>
+                                      <p>{orderDetail?.shippingAddress?.locality}, {orderDetail?.shippingAddress?.country}</p>
+                                      <p>Postal Code: {orderDetail?.shippingAddress?.postcode}</p>
+                                      <p>Phone Number: {orderDetail?.shippingAddress?.phone}</p>
+                                    </div>
+                                    <div className="user_order_details">
+                                      <h4>{orderDetail?.statusDetails[0]?.status}</h4>
+                                      <p>{orderDetail?.statusDetails[0]?.date}</p>
+                                      <h4>Delivered {orderDetail?.estimatedDeliveryDate}</h4>
+                                      {/* <p>{item.delivery_instructions}</p> */}
+                                    </div>
+                                    <div className="user_order_track">
+                                      <h4>TRACK ORDER</h4>
+                                      <p className="track">{orderDetail?.orderId}</p>
+                                      <h4>TOTAL</h4>
+                                      <p className="total">
+                                      {orderDetail?.orderItems?.map(order => (
+                                        order?.productName?.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
+                                      ))} include taxes
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="tracking_order_status">
+                                    { 
+                                        <>
+                                          <div
+                                            className={formatClasses(orderDetail?.orderDate)}
+                                          >
+                                            <h6>{`Order ${orderDetail?.orderStatus}`}</h6>
+                                            <p>{`${formattedActiveConfirmedDate.fullDay} ${formattedActiveConfirmedDate.formattedDate}`}</p>
+                                            <p>{formattedActiveConfirmedDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.shippedDate? orderDetail?.shippedDate : orderDetail?.orderDate)}
+                                          >
+                                            <h6>{`Shipped`}</h6>
+                                            <p>{`${formattedActiveShippeddDate.fullDay} ${formattedActiveShippeddDate.formattedDate}`}</p>
+                                            <p>{formattedActiveShippeddDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.estimatedDeliveryDate)}
+                                          >
+                                            <h6>{`Out for Delivery`}</h6>
+                                            <p>{`${formattedActiveEstDeliveryDate.fullDay} ${formattedActiveEstDeliveryDate.formattedDate}`}</p>
+                                            <p>{formattedActiveEstDeliveryDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.deliveredDate ? orderDetail?.deliveredDate: orderDetail?.estimatedDeliveryDate)}
+                                          >
+                                            <h6>{`Delivered`}</h6>
+                                            <p>{`${formattedActiveDeliveredDate.fullDay} ${formattedActiveDeliveredDate.formattedDate}`}</p>
+                                            <p>{formattedActiveDeliveredDate.time}</p>
+                                          </div>
+                                        </>
+                                      }
+                                  </div>
+                                </div>}
                               </div>
-                              <div className="userDetails">
-                                <div className="userAddress">
-                                  <h6>
-                                    SHIP To:
-                                    <span>{item.order_shipping_user_name}</span>
-                                  </h6>
-                                  <p>{item.address}</p>
-                                  <p>Phone Number: {item.phone_number}</p>
-                                </div>
-                                <div className="user_order_details">
-                                  <h4>ORDER PlACED</h4>
-                                  <p>{item.order_placed}</p>
-                                  <h4>Delivered {item.delivery_date}</h4>
-                                  <p>{item.delivery_instructions}</p>
-                                </div>
-                                <div className="user_order_track">
-                                  <h4>TRACK ORDER</h4>
-                                  <p className="track">{item.tracking_id}</p>
-                                  <h4>TOTAL</h4>
-                                  <p className="total">
-                                    {item.total} include taxes
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="tracking_order_status">
-                                {item.order_track &&
-                                  item.order_track.map((data) => (
-                                    <>
-                                      <div
-                                        key={data.id}
-                                        className={`order ${
-                                          data.started ? "started" : ""
-                                        } ${data.done ? "done" : ""}`}
-                                      >
-                                        <h6>{data.message}</h6>
-                                        <p>{data.track_time}</p>
-                                      </div>
-                                    </>
-                                  ))}
-                              </div>
-                            </div>
-                          ))}
-                          {!orderList && <p>No orders found.</p>}
-                      </div>
+                            ))}
+                            {!orderList && <p>No orders found.</p>}
+                        </div>
+                      )}
+                    </>
                     )}
                     {activeOrderTab === 1 && (
                       <div className="orderListWrapper">
@@ -2243,179 +2655,13 @@ const handlePasswordUpdateSubmit = (e) => {
             </div>
           )}
           {activeTab === 3 && (
-            <div className="reviewedItems">
-              <h3>Item Reviews</h3>
-              {userReview && <div className='paginationBox'>
-                    <div className="itemsPerPageDropdown">
-                        <label>Items per page: </label>
-                        <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                            {reviewItemsPerPageOptions.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    {/* Pagination component */}
-                    <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={(ev) => handleReviewPageChange(ev)}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        forcePage={reviewPage}  // Sync current page with URL
-                        disabled={userReviewCount === 0} 
-                    />
-                  </div>
-                }
-              <div className="reviewItemList">
-                {userReview &&
-                  userReview.map((item, index) => (
-                    <div className="reviewProduct" key={index}>
-                      <div className="item_header">
-                        <div className="leftReviewPart">
-                          <img src={item.imageUrl} alt={item.product_name} />
-                        </div>
-                        <div className="rightReviewPart">
-                          {item.product_name && <h4>{item.product_name}</h4>}
-                          {item.product_id && <p>ORDER # {item.product_id}</p>}
-                          {item.rating && (
-                            <StarRating userrating={item.rating} />
-                          )}
-                        </div>
-                      </div>
-                      {/* <p>{item.descriptipn}</p> */}
-                      <div className="reviewd_prd_image">
-                        {item.review_images &&
-                          item.review_images.map((img_data, index) => (
-                            <div className="item" key={index}>
-                              <img src={img_data} alt={item.product_name} />
-                            </div>
-                          ))}
-                      </div>
-                      {/* <div className="review_time">{item.date}</div> */}
-                    </div>
-                  ))}
-                {!userReview && <p className="noReviews">No reviews found.</p>}
-              </div>
-            </div>
+            <Reviews />
           )}
           {activeTab === 4 && (
-            <div className="coupens">
-              <h3>Hurry Up!!! </h3>
-              <div className="coupensList">
-                {offerList && offerList.map((item, index) => (
-                    <div className="availableCoupen" key={index}>
-                      {copyMessage.index === index && (
-                        <p className="selectedCopiedMessage">
-                          {copyMessage.message}
-                        </p>
-                      )}
-                      <div
-                        className="copySelection"
-                        onClick={() => handleCopy(item.coupon_code, index)}
-                      >
-                        <img src="/images/icons/copy.svg" alt="copy Item" />
-                      </div>
-                      <h4>{item.coupon_title}</h4>
-                      <p>{item.description}</p>
-                      {item.term_of_use &&  (<ul>
-                          <li dangerouslySetInnerHTML={{__html: item.term_of_use}} />
-                        </ul>)
-                      }                      
-                      <p className="validity">Validity: {item.valid_from} to {item.valid_till}</p>
-                    </div>
-                  ))}
-                {!offerList && <p>No Coupens available now</p>}
-              </div>
-            </div>
+            <Coupens />
           )}
           {activeTab === 5 && (
-            <div className="whistlistList">
-              <h3>Your Wishlist Waiting...</h3>
-              {listWishlist && <div className='paginationBox'>
-                    <div className="itemsPerPageDropdown">
-                        <label>Items per page: </label>
-                        <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
-                            {wishListItemsPerPageOptions.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    {/* Pagination component */}
-                    <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={Math.max(Math.ceil(totalWishlistCount / wishListItemsPerPage), 1)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={(ev) => handleWishListPageChange(ev)}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        forcePage={wishListPage}  // Sync current page with URL
-                        disabled={totalWishlistCount === 0} 
-                    />
-                  </div>
-                }
-              <div className="whistListWrapper">
-                {listWishlist &&
-                  listWishlist.map((item, index) => (
-                    <div key={index} className="whistlistMainWrapper">
-                      <div className="whistlistBox">
-                        <div className="leftWhistlist">
-                          <img src={item.imageUrl} alt={item.name} />
-                        </div>
-                        <div className="rightWhistlist">
-                          <h4>
-                            <span>{item.name}</span>
-                            <button className="addToCart" onClick={() => handleAddToCart(item)}>Add to cart</button>
-                          </h4>
-                          {item.rating && (
-                            <StarRating userrating={item.rating} />
-                          )}
-                          <div className="priceSection">
-                            <div className="priceList">
-                              <p className="discount">£ {item.discountedPrice}</p>
-                              <p className="original">£ {item.price}</p>
-                            </div>
-                            {item.offer && (
-                              <p className="discount">£ {item.offer}</p>
-                            )}
-                          </div>
-                          <div className="cartActionItems">
-                            <div className="icon">
-                              <img
-                                src="/images/icons/share.svg"
-                                alt="share Item"
-                                onClick={() => ShareProduct(item?.productId)}
-                              />
-                            </div>
-                            <div
-                              className="icon"
-                              onClick={() => handleRemoveWishListItem(item.skuId)}
-                            >
-                              <img
-                                src="/images/icons/delete.svg"
-                                alt="delete Item"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {listWishlist === null && <p className="noWishlist">your wishlist is empty.</p>}
-              </div>
-            </div>
+            <Wishlist />
           )}
           {activeTab === 6 && (
             <>
@@ -2424,7 +2670,7 @@ const handlePasswordUpdateSubmit = (e) => {
           )}
         </div>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

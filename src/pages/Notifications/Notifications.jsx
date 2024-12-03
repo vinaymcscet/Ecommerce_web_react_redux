@@ -6,31 +6,25 @@ import { FormatDateTime } from '../../utils/FormatDateTime';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import ReactPaginate from 'react-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 const Notifications = () => {
     const [page, setPage] = useState(0);  // Default page 0 (first page)
     const [perPage, setPerPage] = useState(10);
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
     const { notifications, notificationCount = 0 } = useSelector(state => state.user);
-    console.log("notifications", notifications);
     
-    useEffect(() => {
-        const responseObj = {
-            offset: 1,
-            limit: 20,
-        }
-        dispatch(getNotificationsData(responseObj))
-    }, [])
-
     const handleClearNotification = () => {
         dispatch(clearNotificationsData());
     }
 
      // Pagination code for User Review List
      useEffect(() => {
+        setLoading(true)
         // Extract parameters from the URL
         const searchParams = new URLSearchParams(location.search);
         const pageParam = parseInt(searchParams.get("page"), 10) || 1;
@@ -49,7 +43,9 @@ const Notifications = () => {
           offset,
           limit
         }
-        dispatch(getNotificationsData(responseObj));
+        dispatch(getNotificationsData(responseObj)).finally(() => {
+            setLoading(false)
+        });
       }, [location.search, perPage ,dispatch]);
       
       // Handle dropdown change for itemsPerPage
@@ -106,21 +102,27 @@ const Notifications = () => {
             />
             </div>
         }
-        <div className="notificationBox">
-            {notifications && notifications.map((notification, index) => (
-                <div className="notify" key={index}>
-                    <div className="leftNotification">
-                        <img src={notification?.image} alt={notification?.title} />
-                    </div>
-                    <div className="rightNotification">
-                        <h4>{notification?.title}</h4>
-                        <p>{notification.message}</p>
-                        <p className='date'>Date: {FormatDateTime(notification.created_at)}</p>
-                    </div>
+         {loading ? (
+                <div className="loadingContainer">
+                    <CircularProgress />
                 </div>
-            ))}
-            {notifications === null && <p className='noNotifications'>No notifications found.</p>}
-        </div>
+            ) : (
+                <div className="notificationBox">
+                    {notifications && notifications.map((notification, index) => (
+                        <div className="notify" key={index}>
+                            <div className="leftNotification">
+                                <img src={notification?.image} alt={notification?.title} />
+                            </div>
+                            <div className="rightNotification">
+                                <h4>{notification?.title}</h4>
+                                <p>{notification.message}</p>
+                                <p className='date'>Date: {FormatDateTime(notification.created_at)}</p>
+                            </div>
+                        </div>
+                    ))}
+                    {notifications === null && <p className='noNotifications'>No notifications found.</p>}
+                </div>
+            )}
     </div>
   )
 }

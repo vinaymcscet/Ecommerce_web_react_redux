@@ -36,7 +36,6 @@ const AddressModal = () => {
     (state) => state.modal
   );
   const { user } = useSelector((state) => state.user);
-  console.log("user", user[0].addresses);
   
   const closeModal = () => {
     dispatch(toggleAddressModal(false));

@@ -13,15 +13,19 @@ export const UPDATE_PROFILE_CONSTANT = 'updateProfile';
 export const CMSP_PAGE_CONSTANT = 'cms/getPage';
 export const CMS_SOCIAL_LINK_CONSTANT = 'cms/getSocialLink';
 export const CMS_CONTACT_US_CONSTANT = 'cms/saveEnquiry';
+export const CMS_GROUP_ITEM_CONSTANT = 'cms/getGroupItem';
 export const HOME_DATA_CONSTANT = 'homeData';
 export const HOME_SECTION_CONSTANT = 'homeSection';
+export const PRODUCT_SECTION_CONSTANT = 'getSection';
 export const ALL_CATEGORIES_CONSTANT = 'categories';
 export const SUB_CATEGORIES_CONSTANT = 'category';
 export const RECENT_VIEW_CONSTANT = 'recentlyViewed';
+export const ALL_OFFERS_CONSTANT = 'getOffers';
 export const PRODUCTS_CONSTANT = 'product';
 export const PRODUCTS_LIST_CONSTANT = 'products';
 export const SEARCH_PRODUCT_CONSTANT = 'searchProduct';
 export const PRODUCT_DETAIL_CONSTANT = 'singleProduct';
+export const SIMILAR_PRODUCT_LIST_CONSTANT = 'getSimilarProducts';
 export const ADD_WHISTLIST_CONSTANT = 'addWishlist';
 export const LIST_WHISTLIST_CONSTANT = 'listWishlist';
 export const DELETE_WHISTLIST_CONSTANT = 'deleteWishlist';
@@ -43,12 +47,16 @@ export const DELETE_ITEMS_IN_CART_CONSTANT = 'deleteFromCart';
 export const CREATE_ORDER_CONSTANT = 'createOrder';
 export const CONFIRM_ORDER_CONSTANT = 'confirmOrder';
 export const ORDER_LIST_CONSTANT = 'orderList';
+export const ORDER_DETAIL_CONSTANT = 'getOrder';
+export const REASON_LIST_CONSTANT = 'getReasonList';
+export const SELECTED_REASON_PRODUCT_CONSTANT = 'addCancelReturnProducts';
 export const GET_ALL_BLOGS_CONSTANT = 'blog/getBlogs';
 export const GET_ALL_BLOGS_CATEGORY_CONSTANT = 'blog/getBlogCategories';
 export const GET_BLOG_DETAIL_CONSTANT = 'blog/getSingleBlog';
 export const ADD_BLOG_REVIEW_CONSTANT = 'blog/addBlogReview';
 export const GET_NOTIFICATIONS_CONSTANT = 'notifications';
 export const CLEAR_NOTIFICATIONS_CONSTANT = 'clearNotification';
+export const SUBSCRIBE_NEWS_LETTER_CONSTANT = 'subscribeToNewsLetter';
 
 export const fcm_token = "AxtyAdkasadad565asd";
 export const device_token = "60f0d009a0d53777";
@@ -88,6 +96,12 @@ export const TEMP_CODE_PLACEHOLDER = "Enter a temporary code";
 export const OTP_NAME = "otpCode";
 export const OTP_ERROR = "Please enter a valid 6-digit OTP";
 
-
+// Stripe Payment Gateway - constants - keys
 export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 50, 100];
 export const STRIPE_PUBLIC_KEY = 'pk_test_51PiK0KG1GaqCQm17TPkUzvgbYGadO9htgyI4GsN2DMleueorVJfbgEYW86l5mIJpjGmST75eZCGlXxwW7cUDPdm800MOjzVQQJ';
+
+// Reason to cancel/return constants
+export const selectReason = [
+    { id: 1, value: 'cancel', type: 'Cancel'},
+    { id: 2, value: 'return', type: 'Return'},
+]

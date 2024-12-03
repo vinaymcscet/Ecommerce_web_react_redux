@@ -31,11 +31,12 @@
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    background: #e9e8e840;
+    background: #ffffff;
     border-radius: 10px;
     padding: 10px;
     box-shadow: -1px 3px 3px 0px #d7d7d7;
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .notify .left img {
@@ -49,6 +50,7 @@
     border-radius: 50%;
     border: 1px solid #e3e3e3;
     margin-right: 20px;
+    overflow: hidden;
 } 
 
 .leftNotification img {

@@ -156,14 +156,13 @@ const handleConfirmPasswordChange = (e) => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!rememberMe && modalType === "login") {
-      setRememberMeError("Please check Remember Me to proceed");
-      return;
-    } else {
-      setRememberMeError("");
-      setRememberMe(false)
-    }
-    console.log("signup data ", signup);
+    // if (!rememberMe && modalType === "login") {
+    //   setRememberMeError("Please check Remember Me to proceed");
+    //   return;
+    // } else {
+    //   setRememberMeError("");
+    //   setRememberMe(false)
+    // }
 
     // Submit form data
     if (modalType === "signup") {
@@ -190,7 +189,6 @@ const handleConfirmPasswordChange = (e) => {
           password: forgotPassword.confirmPassword,
           otp_key: forgotOtpKeyCodeValue,
         }
-        console.log("responseObj", responseObj);
         dispatch(forgetPasswordConfirmRequest(responseObj));
         setPassword("");
         setConfirmPassword("");
@@ -218,7 +216,6 @@ const handleConfirmPasswordChange = (e) => {
         username: forgotPasswordAssist.userPhoneOrEmail,
         otp: forgotOtp.otpCode 
       };
-      console.log("responseObj", responseObj);
       
       dispatch(forgetPasswordOtpRequest(responseObj));
       // dispatch(setModalType('forgot'));

@@ -1,0 +1,118 @@
+
+.reviewedItems {
+    width: 100%;
+}
+
+.reviewedItems h3 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.reviewProduct {
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    margin: 10px 0 20px 0;
+}
+
+.reviewProduct .item_header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.reviewProduct .item_header .leftReviewPart {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.reviewProduct .item_header .leftReviewPart img {
+    width: 100%;
+    height: 100%;
+}
+
+.reviewProduct .item_header .rightReviewPart h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.reviewProduct .item_header .rightReviewPart p {
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.reviewProduct .item_header .rightReviewPart .starRating .star {
+    cursor: pointer;
+    font-size: 1.3rem;
+    margin: 0 2px 0 0;
+}
+
+.reviewProduct .item_header+p {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 5px 0;
+}
+
+.reviewProduct .reviewd_prd_image {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.reviewProduct .reviewd_prd_image .item {
+    width: 100px;
+    height: 100px;
+    margin: 0 10px 0 0;
+}
+
+.reviewProduct .reviewd_prd_image .item img {
+    width: 100%;
+    height: 100%;
+}
+
+.review_time {
+    font-size: 14px;
+    font-weight: 400;
+    color: #787878;
+    width: 100%;
+    text-align: right;
+}
+
+.resp_table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.noReviews {
+    font-size: 20px;
+    font-weight: 400;
+    width: 100%;
+    text-align: center;
+    margin: 20px 0 10px 0;
+}
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+@media only screen and (max-width: 991px) {
+    .reviewedItems h3 {
+        font-size: 22px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .reviewedItems h3 {
+        font-size: 18px;
+    }
+}

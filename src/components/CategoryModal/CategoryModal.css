@@ -17,10 +17,11 @@
 .categoryModal .allCategory h3 {
     text-align: left;
     font-size: 22px;
+    margin: 0 0 15px 0;
 }
 
 .categoryModal .allCategory h3:before {
-    width: 15%;
+    width: 30%;
 }
 
 .categoryModal .categoryList {
@@ -37,10 +38,26 @@
 .categoryModal .categoryList > div {
     margin-bottom: 20px;
     width: 20%;
-    margin-right: 5%;
+    margin-right: 0%;
 }
 
 .categoryModal .categoryList .product img {
-    width: 100%;
-    min-height: 100px;
+    width: 80%;
+    min-height: 80px;
+}
+
+@media screen and (max-width: 767px) {
+    .categoryModal .categoryList > div {
+        margin-bottom: 20px;
+        width: 28%;
+        margin-right: 5%;
+    }
+}
+
+@media screen and (max-width: 567px) {
+    .categoryModal .categoryList > div {
+        margin-bottom: 20px;
+        width: 44%;
+        margin-right: 5%;
+    }
 }

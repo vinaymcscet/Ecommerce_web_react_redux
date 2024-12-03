@@ -50,7 +50,14 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
         url.toLowerCase().includes("notification") 
     ) {
         const tokens = getTokensFromLocalStorage();
-        console.log("tokens", tokens);
+        config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
+    }
+    const tokens = getTokensFromLocalStorage();
+    if (tokens?.accessToken) {
+        if( 
+            url.toLowerCase().includes("singleproduct") || 
+            url.toLowerCase().includes("product")
+        )
         config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
     }
     // Send data in JSON format for specific APIs
@@ -69,8 +76,6 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
     const response = await fetch(fullUrl, config);
     
     const responseData = await response.json();
-    console.log("API response on API.js", responseData);
-    console.log("API response on API.js", !response.ok);
 
     if (!response.ok) {
         throw new Error(

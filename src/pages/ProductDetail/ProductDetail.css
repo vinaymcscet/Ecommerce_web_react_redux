@@ -6,6 +6,16 @@
   height: 20vh;
 }
 
+.prdDetailNotFound {
+  font-size: 22px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  margin: 20px 0;
+}
+
 .prdDetail {
   width: 90%;
   margin: auto;
@@ -36,6 +46,7 @@
 
 .prdDetail .catProduct .product img {
   width: 110px;
+  height: 110px;
 }
 
 .prdDetail .productDetailInfo {
@@ -249,6 +260,9 @@
   font-size: 12px;
   color: #d52424;
 }
+.cartError.error {
+  margin-left: 0;
+}
 
 .cartInputBox {
   width: 100px;
@@ -335,11 +349,13 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  flex-flow: wrap row;
 }
 
 .ProductColorBoxes > div {
   border: 1px solid #e3e3e3;
   margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .ProductColorBoxes p {
@@ -945,12 +961,13 @@ button.review {
   font-weight: 500;
   position: relative;
   margin: 0;
-  font-size: 25px;
+  font-size: 22px;
+  width: max-content;
 }
 
 .allcategory h3:before {
   content: "";
-  width: 10%;
+  width: 30%;
   height: 2px;
   background-color: #ffb545;
   position: absolute;
@@ -988,12 +1005,20 @@ button.review {
   margin: 0 5px;
 }
 
+.prdDetail .productHistory {
+  width: 100%;
+}
+
 .productHistory.allcategory .productList {
   width: 100%;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   flex-flow: wrap row;
+}
+
+.prdDetail .productHistory.allcategory .productList p {
+  margin-top: 20px;
 }
 
 .productHistory.allcategory .productList > div {
@@ -1023,6 +1048,7 @@ button.review {
 .prdDetail .slick-slide > div > div p {
   width: 100%;
   word-break: break-word;
+  margin-top: 5px;
 }
 
 .priceSection .discountLabel {
@@ -1037,6 +1063,13 @@ button.review {
 .bestOption .ribbon {
   padding: 0 10px;
   width: max-content;
+}
+
+.baseAlignItems {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-flow: wrap row;
 }
 
 @media only screen and (max-width: 1300px) {

@@ -8,254 +8,143 @@ import { useDispatch, useSelector } from "react-redux";
 import { getHomeData, getHomeSection } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const Home = () => {
   const dispatch = useDispatch();
   const { homeProductData, homeProductSection } = useSelector(state => state.product);
   const [productTile] = useState(true);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
+    setLoading(true)
     dispatch(getHomeData())
-    dispatch(getHomeSection(0, 20))
+    const responseObj = {
+      offset: 1,
+      limit: 100
+    }
+    dispatch(getHomeSection(responseObj)).finally(() => {
+      setLoading(false);
+    })
   }, [dispatch]);
-
   
   const handleProductClick = (item) => {
-    navigate(`/product/${item.id}`, { state: { product: item } });
+    navigate(`/product/${item.product_id}`, { state: { product: item } });
   };
+
+  const handleSectionPage = (title, group_id = 0) => {
+    navigate(`/sectionDetail/${group_id}?title=${encodeURIComponent(title)}`)
+  }
 
   return (
     <div>
-      <Banner />
-      <ProductSlider title={productTile} />
-      {/* <div className="fourCategoryProduct">
-        <FourCategoryProduct
-          header="Appliances for your home Up to 55% off"
-          description={description}
-        />
-        <FourCategoryProduct
-          header="Starting $99 | International Brands & more"
-          description={description}
-        />
-        <FourCategoryProduct
-          header="Up to 70% off | Bestseller Smart Phone"
-          description={description}
-        />
-        <FourCategoryProduct
-          header="Automative essentials | Up to 60% off"
-          description={description}
-        />
-        <OneCategoryProduct
-          header="Automative essentials | Up to 60% off"
-          description={Onedescription}
-        />
-        <FourCategoryProduct
-          header="Men's Shoes | Up to 60% off | Limited Stock"
-          description={description}
-        />
-      </div> */}
-      {/* <div className="productList">
-        <ProductListCard
-          image={"/images/product/img-13.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-14.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-15.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-16.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <div className="limitedOffer">
-          <img src="/images/limitedOffer.png" alt="Limited Offer" />
-        </div>
-      </div> */}
-      {/* <div className="fourCategoryProduct">
-        <OneCategoryProduct
-          header="Automative essentials | Up to 60% off"
-          description={Onedescription}
-        />
-        <FourCategoryProduct
-          header="Men's Shoes | Up to 60% off | Limited Stock"
-          description={description}
-        />
-        <FourCategoryProduct
-          header="Men's Shoes | Up to 60% off | Limited Stock"
-          description={description}
-        />
-      </div> */}
-      <div className="productList special">
-        {homeProductData[0]?.offers && <div className="limitedOffer">
-          <img src="/images/limitedOffer.png" alt="Limited Offer" />
-        </div>}
-        {homeProductData[0]?.offers && homeProductData[0]?.offers.map((item, index) => (
-          <div key={index} onClick={() => handleProductClick(item)}>
-            <ProductListCard
-              id = {item?.categoryId}
-              image={item?.categoryImage}
-              name={item?.categoryName}
-              // discountPrice={"105100"}
-              // originalPrice={"1790.00"}
-              discountLabel={item?.title}
-              time={`valid till ${formatDate(item.validTill)}`}
-              wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
-            />
+      {loading ? (
+          <div className="loadingContainer">
+              <CircularProgress />
           </div>
-        ))}
-        {/* <ProductListCard
-          image={"/images/product/img-13.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-14.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-15.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        />
-        <ProductListCard
-          image={"/images/product/img-16.svg"}
-          name={
-            "Glen Active Electric Nutri Blender 350 watt | 2 Interchangable Jars"
-          }
-          discountPrice={"105100"}
-          originalPrice={"1790.00"}
-          discountLabel={"47% Off"}
-          time={"Limited time Deal"}
-        /> */}
-      </div>
-      <div className="productHistory">
-          {homeProductSection[0] && homeProductSection[0].length > 0 ? (
-                    homeProductSection[0].map((item, index) => (
-                      <div key={index}>
-                        <div className="browisingHistory">
-                          <h3>{item.title}</h3>
-                        </div>
-                          <div className="productList">
-                          {item?.products.map((product, index) => (
-                            <div key={index} onClick={() => handleProductClick(product)}>
-                              <ProductListCard
-                                id={product?.group_id}
-                                image={product.imageUrl ? product.imageUrl : "/images/no-product-available.png"}
-                                name={product.name ? product.name : ""}
-                                userrating={product.rating ? product.rating : ""}
-                                discountPrice={product.discountedPrice ? product.discountedPrice : ""}
-                                originalPrice={product.price ? product.price : ""}
-                                save={product.offer ? product.offer : ""}
-                                coupenCode={product.coupen ? product.coupen : ""}
-                                deliveryTime={product.deliverytime ? product.deliverytime : ""}
-                                freeDelivery={product.freedelivery ? item.freedelivery : ""}
-                                bestSeller={item.bestseller ? product.bestseller : ""}
-                                time={product.time ? product.time : ""}
-                                discountLabel={product.offer ? product.offer : ""}
-                                wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
-                              />
-                            </div>
-                          ))}
-                          </div>
-                      </div>
-                    ))
-            ) : (
-              <p>No products available</p>
-            )}
-      </div>
-      <div className="groupBanner">
-        <img src={homeProductData[0]?.bottomBanner[0]?.banner_image} alt={homeProductData[0]?.bottomBanner[0]?.name} />
-      </div>
-      {/* <div className="fourCategoryProduct">
-        <FourCategoryProduct
-          header="Men's Shoes | Up to 60% off | Limited Stock"
-          description={description}
-        />
-        <FourCategoryProduct
-          header="Men's Shoes | Up to 60% off | Limited Stock"
-          description={description}
-        />
-        <OneCategoryProduct
-          header="Automative essentials | Up to 60% off"
-          description={Onedescription}
-        />
-      </div> */}
-      <div className="browisingHistory">
-        <h3>Inspired by your browsing history</h3>
-      </div>
-      <div className="productHistory">
-        <div className="productList">
-          {homeProductData[0]?.RecentViewed && homeProductData[0]?.RecentViewed.length > 0 ? (
-            homeProductData[0]?.RecentViewed.map((item, index) => (
+      ) : (
+        <>
+          <Banner />
+          <ProductSlider title={productTile} />
+          <div className="productHistory">
+            <div>
+              <div className="browisingHistory">
+                <h3>{homeProductData?.offerTitle}</h3>
+                <div className="detailSection" 
+                  onClick={() => handleSectionPage(homeProductData.offerTitle)}><img src="/images/icons/right_arrow.svg" /></div>
+              </div>
+            </div>
+          </div>
+          <div className="productList special">
+            {homeProductData?.offers && homeProductData?.offers.map((item, index) => (
               <div key={index} onClick={() => handleProductClick(item)}>
                 <ProductListCard
-                  id={index}
-                  image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
-                  name={item.name ? item.name : ""}
-                  userrating={item.rating ? item.rating : ""}
-                  discountPrice={item.discountedPrice ? item.discountedPrice : ""}
-                  originalPrice={item.price ? item.price : ""}
-                  save={item.offer ? item.offer : ""}
-                  coupenCode={item.coupen ? item.coupen : ""}
-                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                  bestSeller={item.bestseller ? item.bestseller : ""}
-                  time={item.time ? item.time : ""}
-                  discountLabel={item.offer ? item.offer : ""}
+                  id = {item?.categoryId}
+                  image={item?.categoryImage}
+                  name={item?.categoryName}
+                  // discountPrice={"105100"}
+                  // originalPrice={"1790.00"}
+                  discountLabel={item?.title}
+                  time={`valid till ${formatDate(item.validTill)}`}
                   wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
                 />
               </div>
-            ))
-          ) : (
-            <p className="noProductAvailable">No product history available</p>
-          )}
-        </div>
-      </div>
+            ))}
+          </div>
+          <div className="productHistory">
+              {homeProductSection && homeProductSection.length > 0 ? (
+                  homeProductSection.map((item, index) => (
+                    <div key={index}>
+                      <div className="browisingHistory">
+                        <h3>{item.title}</h3>
+                        <div className="detailSection" onClick={() => handleSectionPage(item.title, item.group_id)}><img src="/images/icons/right_arrow.svg" /></div>
+                      </div>
+                        <div className="productList">
+                        {item?.products.map((product, index) => (
+                          <div key={index} onClick={() => handleProductClick(product)}>
+                            <ProductListCard
+                              id={product?.group_id}
+                              image={product.imageUrl ? product.imageUrl : "/images/no-product-available.png"}
+                              name={product.name ? product.name : ""}
+                              userrating={product.rating ? product.rating : ""}
+                              discountPrice={product.discountedPrice ? product.discountedPrice : ""}
+                              originalPrice={product.price ? product.price : ""}
+                              save={product.offer ? product.offer : ""}
+                              coupenCode={product.coupen ? product.coupen : ""}
+                              deliveryTime={product.deliverytime ? product.deliverytime : ""}
+                              freeDelivery={product.freedelivery ? item.freedelivery : ""}
+                              bestSeller={item.bestseller ? product.bestseller : ""}
+                              time={product.time ? product.time : ""}
+                              discountLabel={product.offer ? product.offer : ""}
+                              wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                            />
+                          </div>
+                        ))}
+                        </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No products available</p>
+                )}
+          </div>
+          <div className="groupBanner">
+            <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
+          </div>
+          {homeProductData?.RecentViewed.length > 0 && <div className="browisingHistory">
+            <h3>Inspired by your browsing history</h3>
+          </div>}
+          {homeProductData?.RecentViewed.length > 0 && <div className="productHistory">
+            <div className="productList">
+              {homeProductData?.RecentViewed && homeProductData?.RecentViewed.length > 0 ? (
+                homeProductData?.RecentViewed.map((item, index) => (
+                  <div key={index} onClick={() => handleProductClick(item)}>
+                    <ProductListCard
+                      id={index}
+                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
+                      name={item.name ? item.name : ""}
+                      userrating={item.rating ? item.rating : ""}
+                      discountPrice={item.discountedPrice ? item.discountedPrice : ""}
+                      originalPrice={item.price ? item.price : ""}
+                      save={item.offer ? item.offer : ""}
+                      coupenCode={item.coupen ? item.coupen : ""}
+                      deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                      freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                      bestSeller={item.bestseller ? item.bestseller : ""}
+                      time={item.time ? item.time : ""}
+                      discountLabel={item.offer ? item.offer : ""}
+                      wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="noProductAvailable">No product history available</p>
+              )}
+            </div>
+          </div>}
+        </>
+      )}
     </div>
   );
 };

@@ -25,10 +25,15 @@ const ProductList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const { productList, totalFilterList, totalProductListCount = 0 } = useSelector((state) => state.product);
+  const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  console.log("productList", productList);
+  
+  console.log("subCategoryList", subCategoryList);
+  const searchParams = new URLSearchParams(location.search);
+  const subcategory_id = searchParams.get('subcategory_id');
+  console.log("subcategory_id", subcategory_id);
+  
   
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -48,17 +53,18 @@ const ProductList = () => {
       }
       setLoading(false);  // Hide loader
     };
-
     fetchProducts();
   }, [location.search, itemsPerPage, dispatch]);
+  
 
   const handleParentAccordionChange = (panel) => (event, isExpanded) => {
     setExpandedParent(isExpanded ? panel : false);
   };
 
   const handleProductClick = (item) => {
-    console.log("item", item);
-    const responseObj = { product_id: item.product_id }
+    const responseObj = { 
+      product_id: item.product_id,
+    }
     dispatch(productDetailData(responseObj))
     navigate(`/product/${item.product_id}`, { state: { product: item } });
   };
@@ -66,7 +72,6 @@ const ProductList = () => {
   // Generate dropdown options based on total results
   const itemsPerPageOptions = DEFAULT_OPTIONS
       .filter(option => option <= totalProductListCount);
-    console.log("itemsperpageoption", itemsPerPageOptions);
 
     const handleItemsPerPageChange = (e) => {
       const newItemsPerPage = parseInt(e.target.value, 10);
@@ -80,7 +85,6 @@ const ProductList = () => {
 
     // Handle page change event (when user clicks next/previous)
     const handlePageChange = (data) => {
-      console.log('Page Changed: ', data);
       const { selected } = data;
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('page', selected + 1); // `react-paginate` uses 0-based index, we set to 1-based index in URL
@@ -95,13 +99,11 @@ const ProductList = () => {
     }
     // Apply Filter
     const handleFilterChange = async (e, filterLabel) => {
-      console.log("updated filter value", e.target.value, filterLabel);
       let filterValue = e.target.value;
       // filterLabel = filterLabel.toLowerCase();
       // const updatedLabel = convertToLowercase(filterLabel);
       const updatedFilters = { ...selectedFilters, [filterLabel]: filterValue };
       setSelectedFilters(updatedFilters);
-      console.log("updatedFilters['Shoe Size']", updatedFilters['Shoe Size']);
       
       const filters = {};
       if (updatedFilters.Color) filters.color = updatedFilters.Color;
@@ -120,7 +122,6 @@ const ProductList = () => {
         filters
       }
       setLoading(true);
-      console.log("Updated response object:", responseObj);
       await dispatch(totalFilterData(responseObj));
       await dispatch(getProductOnSubCategory(responseObj));
       setLoading(false);
@@ -142,14 +143,17 @@ const ProductList = () => {
       await dispatch(getProductOnSubCategory(responseObj));
       setLoading(false);
     };
+    
     useEffect(() => {
-      dispatch(getHomeData())
-    }, [])
+      // if (subCategoryList?.length === 0) {
+        dispatch(getHomeData()); // Fetch home data, which includes `subCategoryList`
+      // }
+    }, [dispatch, subCategoryList])
   return (
     <div className="productListing">
       <ProductSlider title={false} tile={7} />
       <div className="listPageCategoryItems">
-        <CategorySlider />
+        <CategorySlider subCategoryId={subcategory_id} />
       </div>
       <div className="prdWrapper">
       {totalFilterList && <div className="prdLeft">
@@ -235,7 +239,7 @@ const ProductList = () => {
                       bestSeller={item.bestseller || ""}
                       time={item.time || ""}
                       discountLabel={item.discountlabel || ""}
-                      wishlistStatus={item.wishlistStatus || 'no'}
+                      wishlistStatus={item.wishlistStatus || ''}
                     />
                   </div>
                 ))

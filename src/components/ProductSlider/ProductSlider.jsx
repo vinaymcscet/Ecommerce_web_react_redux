@@ -21,7 +21,6 @@ const ProductSlider = ({ title, tile }) => {
   };
 
   const handleProductClick = (item) => {
-    console.log("product", item);
     const responseObj = { category_id: item.id };
     dispatch(getSubCategoryData(responseObj))
     const subCategoryObj = { 
@@ -48,7 +47,7 @@ const ProductSlider = ({ title, tile }) => {
           </div>
         )}
           <Slider {...(tile ? slick_product_settings : slick_settings)}>
-            {homeProductData[0]?.categories.map((slide) => (
+            {homeProductData?.categories.map((slide) => (
               <div key={slide.id}>
                 <ProductCard
                   imgSrc={slide.category_image || '/images/no-product-available.png'}

@@ -27,3 +27,28 @@
     justify-content: flex-start;
     flex-flow: wrap row;
 }
+
+@media screen and (max-width: 767px) {
+    .searchProduct .productList > div {
+        width: 47%;
+        margin: 0 3% 3% 0;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .searchProduct .productList > div {
+        width: 100%;
+        margin: 0 0% 3% 0;
+    }
+    .paginationBox {
+        flex-flow: wrap column;
+    }
+
+    .paginationBox .itemsPerPageDropdown {
+        margin-bottom: 20px;
+    }
+
+    .searchProduct h2 {
+        text-align: center;
+    }
+}

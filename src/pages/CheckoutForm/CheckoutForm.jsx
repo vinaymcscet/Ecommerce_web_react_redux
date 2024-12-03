@@ -46,15 +46,12 @@ const CheckoutForm = ({ amount }) => {
 
       if (error) {
         console.error("Payment failed:", error.message);
-        console.log("Payment failed. Please try again.");
       } else if (paymentIntent.status === "succeeded") {
         // Payment is successful
-        console.log("Payment successful!");
         navigate("/order-complete"); // Redirect to the order complete page
       }
     } catch (err) {
       console.error("Error during payment:", err);
-      console.log("An unexpected error occurred. Please try again.");
     }
   };
 

@@ -1,0 +1,84 @@
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+}
+
+
+.sectionDetail .browisingHistory{
+    width: 100%;
+    margin: 20px auto;
+}
+
+.sectionDetail .productHistory > div .browisingHistory  {
+    width: 98%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sectionDetail .productHistory > div .browisingHistory .detailSection {
+    width: 30px;
+    height: 30px;
+    background: #FFB545;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sectionDetail .productHistory > div .browisingHistory .detailSection img {
+    width: 60%;
+}
+
+.sectionDetail .browisingHistory h3 {
+    font-size: 25px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.sectionDetail .productHistory {
+    width: 90%;
+    margin: 20px auto;
+}
+
+.sectionDetail .productHistory .productList {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap row;
+}
+
+.sectionDetail .productHistory .productList > div {
+    width: 18%;
+    margin: 0 2% 0 0;
+    min-height: 350px;
+}
+
+.sectionDetail .productHistory .productList > div .productBoxes {
+    width: 100%;
+}
+
+.sectionDetail .productHistory .productList .noProductAvailable { 
+    width: 97%;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 767px) {
+    .sectionDetail .productHistory .productList>div {
+        width: 46%;
+        margin: 0px 4% 4% 0;
+    }
+    .sectionDetail .productHistory .productList>div {
+        width: 47%;
+        margin: 0 3% 3% 0;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .sectionDetail .productHistory .productList>div {
+        width: 100%;
+        margin: 0 0 6% 0;
+    }
+}

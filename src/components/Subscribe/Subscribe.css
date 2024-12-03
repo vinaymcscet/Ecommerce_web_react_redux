@@ -15,9 +15,10 @@
 }
 
 .subscribeMessage h2 {
-    font-size: 20px;
-    font-weight: 400;
+    font-size: 30px;
+    font-weight: 500;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .subscribeMessage p {
@@ -32,6 +33,13 @@
     justify-content: flex-end;
     padding-top: 30px;
     position: relative;
+}
+
+.emailSection form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .emailSection input {
@@ -60,9 +68,45 @@
     width: auto;
 }
 
-@media screen and (max-width: 1100px) {
+.subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:last-child {
+    padding-right: 50px;
+}
+
+.subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:first-child {
+    padding-left: 40px;
+}
+
+.error {
+    margin: 5px 0 0 20px;
+    font-size: 12px;
+    color: #d52424;
+    text-align: right;
+}
+
+.newsletterMessage {
+    margin: 5px 0 0 20px;
+    font-size: 12px;
+    color: #06934c;
+    text-align: right;
+}
+
+.subscribe .loadingContainer {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.subscribe .loadingContainer span.MuiCircularProgress-root {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+@media screen and (max-width: 1200px) {
     .emailSection {
+        justify-content: center;
         padding-bottom: 30px;
+    }
+    .emailSection .emailBtn {
+        right: 12%;
     }
 }
 @media screen and (max-width: 800px) {

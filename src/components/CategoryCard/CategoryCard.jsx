@@ -1,9 +1,14 @@
 import React from 'react';
 import './CategoryCard.css';
 
-const CategoryCard = ({ imgSrc, imgName, handleCategory }) => {
+const CategoryCard = ({ imgSrc, imgName, handleCategory, activeCategory }) => {
+  console.log("categoryBoolean", activeCategory);
+  
   return (
-    <div className='categoryItem' onClick={handleCategory}>
+    <div 
+      className={`categoryItem ${activeCategory ? 'active' : ''} `} 
+      onClick={handleCategory}
+    >
         <img src={imgSrc} alt={imgName} />
         <p>{imgName}</p>
     </div>

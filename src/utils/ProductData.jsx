@@ -80,6 +80,13 @@ export const slick_settings = {
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
+    // {
+    //   breakpoint: 1500,
+    //   settings: {
+    //     slidesToShow: 7,
+    //     slidesToScroll: 1,
+    //   },
+    // },
     {
       breakpoint: 1200,
       settings: {
@@ -142,6 +149,13 @@ export const slick_product_settings = {
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
+    // {
+    //   breakpoint: 1500,
+    //   settings: {
+    //     slidesToShow: 7,
+    //     slidesToScroll: 1,
+    //   },
+    // },
     {
       breakpoint: 1200,
       settings: {

@@ -19,13 +19,10 @@ const Search = () => {
     const handleProductClick = (item) => {
         navigate(`/product/${item.id}`, { state: { product: item } });
     };
-    console.log("total", total);
     
     // Generate dropdown options based on total results
     const itemsPerPageOptions = DEFAULT_OPTIONS
-                                    .filter(option => option <= total);
-    console.log("itemsperpageoption", itemsPerPageOptions);
-     
+                                    .filter(option => option <= total);     
 
     useEffect(() => {
         // Read query and page number from the URL search params
@@ -58,7 +55,6 @@ const Search = () => {
 
     // Handle page change event (when user clicks next/previous)
     const handlePageChange = (data) => {
-        console.log('Page Changed: ', data);
         const { selected } = data;
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('page', selected + 1); // `react-paginate` uses 0-based index, we set to 1-based index in URL

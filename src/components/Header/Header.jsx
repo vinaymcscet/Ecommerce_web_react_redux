@@ -21,7 +21,6 @@ const Header = () => {
 
   const { user } = useSelector((state) => state.user);
   const { cartItems, viewCartItems } = useSelector((state) => state.cart);
-  console.log("cartItems", viewCartItems);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
@@ -42,7 +41,6 @@ const Header = () => {
   const redirectToSupport = () => {
     navigate("/contact");
   };
-  console.log("user", user);
   
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
   const toggleUserMenu = (e) => {
@@ -102,7 +100,7 @@ const Header = () => {
               <ul className="leftHeaderMenu">
                 <li>
                   <Link to="/">
-                    <img src="/images/icons/LOGO.png" alt="Logo" />
+                    <img src="/images/icons/LOGO1.png" alt="Logo" />
                   </Link>
                 </li>
                 <li>

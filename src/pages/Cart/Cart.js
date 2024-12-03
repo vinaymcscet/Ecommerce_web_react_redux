@@ -52,7 +52,6 @@ const Cart = () => {
     const responseObj = { coupon_code: coupenCode }
     dispatch(viewItemsInCartData(responseObj))
   }
-  console.log("viewCartItems", viewCartItems, cartItems);
   
   // Function to remove an item
   const handleRemoveItem = (id) => {
@@ -88,7 +87,6 @@ const Cart = () => {
   };
 
   const handleAddressModal = (address = null) => {
-    console.log("cart address", address);
     
     startTransition(() => {
       dispatch(toggleAddressModal({ isOpen: true, address }));
@@ -141,6 +139,11 @@ const Cart = () => {
       const responseObj = {
         address_id : viewCartItems?.address?.id,
         cart_amount : viewCartItems?.cartPrice?.totalAmount,
+        subtotal_amount : viewCartItems?.cartPrice?.totalAmount,
+        coupon_code: coupenCode,
+        discount: viewCartItems?.cartPrice?.discount,
+        total_delivery_charge: viewCartItems?.cartPrice?.deliveryCharge,
+        tax: viewCartItems?.cartPrice?.tax,
         device_type : getDeviceType()
       }
       dispatch(createOrderData(responseObj)).finally(() => {
@@ -249,7 +252,7 @@ const Cart = () => {
                                 className="increase"
                                 onClick={() =>
                                   handleQuantityChange(
-                                    item.skuId, 'increase'
+                                    item.sku_id, 'increase'
                                   )
                                 }
                               >
@@ -266,7 +269,7 @@ const Cart = () => {
                                 className="decrease"
                                 onClick={() =>
                                   handleQuantityChange(
-                                    item.skuId, 'decrease'
+                                    item.sku_id, 'decrease'
                                   )
                                 }
                               >
@@ -281,7 +284,7 @@ const Cart = () => {
                         <div className="cartActionItems">
                           <div 
                             className="icon"
-                            onClick={() => ShareProduct(item.productId)}
+                            onClick={() => ShareProduct(item.product_id)}
                           >
                             <img
                               src="/images/icons/share.svg"
@@ -571,7 +574,7 @@ const Cart = () => {
                                 className="increase"
                                 onClick={() =>
                                   handleQuantityChange(
-                                    item.skuId, 'increase'
+                                    item.sku_id, 'increase'
                                   )
                                 }
                               >
@@ -588,7 +591,7 @@ const Cart = () => {
                                 className="decrease"
                                 onClick={() =>
                                   handleQuantityChange(
-                                    item.skuId, 'decrease'
+                                    item.sku_id, 'decrease'
                                   )
                                 }
                               >
@@ -603,7 +606,7 @@ const Cart = () => {
                         <div className="cartActionItems">
                           <div 
                             className="icon"
-                            onClick={() => ShareProduct(item.productId)}
+                            onClick={() => ShareProduct(item.product_id)}
                           >
                             <img
                               src="/images/icons/share.svg"
@@ -650,7 +653,8 @@ const Cart = () => {
                 <p>Item(s) Discount:</p> <span>£ {viewCartItems?.cartPrice?.discount || 0.00}</span>
               </div>
               <div className="list">
-                <p>Delivery:</p> <span>£ {viewCartItems?.cartPrice?.deliveryCharge.toFixed(2) || 0.00}</span>
+                {/* <p>Delivery:</p> <span>£ {viewCartItems?.cartPrice?.deliveryCharge?.toFixed(2) || 0.00}</span> */}
+                <p>Delivery:</p> <span>£ {viewCartItems?.cartPrice?.deliveryCharge || 0.00}</span>
               </div>
               <div className="list">
                 <p>Tax:</p> <span>£ {viewCartItems?.cartPrice?.tax || 0.00}</span>
@@ -659,7 +663,7 @@ const Cart = () => {
                 <h4>Total: </h4> <span>£ {viewCartItems?.cartPrice?.totalAmount || 0.00}</span>
               </div>
             </div>
-            <div className="applyPromoSection">
+            {activeTab === 2 && <div className="applyPromoSection">
               <input
                 type="text"
                 placeholder="Apply Promo Code"
@@ -669,7 +673,7 @@ const Cart = () => {
               <button type="button" className="promocode" onClick={handleApplyPromoCode}>
                 Apply
               </button>
-            </div>
+            </div>}
             {isSecondLastTab && (
               <ul className="paymentOption">
                 {paymentOptions.map((size) => (

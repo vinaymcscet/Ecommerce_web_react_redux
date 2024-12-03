@@ -81,7 +81,6 @@ const BlogDetail = () => {
     e.preventDefault();
 
     if (validate()) {
-      console.log("Form data:", formData);
       const responseObj = {
         blog_id: id,
         full_name: formData.fullName, 
@@ -102,7 +101,6 @@ const BlogDetail = () => {
   const handleBlogChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  // console.log(JSON.parse(blogDetail));
   
   return (
     <div className="Blogs detail">
