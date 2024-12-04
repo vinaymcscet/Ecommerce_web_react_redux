@@ -13,8 +13,9 @@ button {
     cursor: pointer;
     outline: none;
 }
-button:hover {
-    background-color: #d7d7d7;
+button:hover,
+button:focus {
+    background-color: #d9a24f;
 }
 
 .sp-10 {

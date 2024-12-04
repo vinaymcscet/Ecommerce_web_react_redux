@@ -1,5 +1,6 @@
 .product p {
     text-align: center;
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 13px;
+    margin-top: 0px;
+    word-break: break-all;
 }

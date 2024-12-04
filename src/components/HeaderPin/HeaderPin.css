@@ -29,3 +29,9 @@ img {
     font-weight: 500;
     font-size: 12px;
 }
+
+@media only screen and (max-width:600px) {
+    .headerPinContainer .css-mhc70k-MuiGrid-root>.MuiGrid-item:nth-child(2) {
+        display: none;
+    }
+}

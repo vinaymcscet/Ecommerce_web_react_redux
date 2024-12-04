@@ -1,0 +1,32 @@
+.checkout-form {
+    width: 90%;
+    margin: auto;
+}
+.checkout-form h4 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 500;
+    margin: auto;
+}
+
+.checkout-form form {
+    width: 100%;
+}
+
+.checkout-form form h3 {
+    margin: 0 0 20px 0;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.checkout-form form button {
+    margin-top: 30px;
+    width: 150px;
+    min-height: auto;
+    padding: 5px 0;
+}
+
+.checkout-form form .StripeElement {
+    border: 1px solid #fab244;
+    padding: 20px 0;
+}

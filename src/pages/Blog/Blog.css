@@ -10,7 +10,7 @@
 }
 
 .Blogs {
-    width: 85%;
+    width: 90%;
     margin: auto;
 }
 
@@ -30,7 +30,7 @@
 .blogsList {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     flex-flow: wrap row;
 }
 

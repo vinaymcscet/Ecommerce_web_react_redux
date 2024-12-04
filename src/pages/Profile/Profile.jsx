@@ -1,109 +1,195 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button/Button";
-import {
-  removeAddress,
-  setDefaultAddress,
-  setUser,
-} from "../../store/slice/userSlice";
+import { setChangePassword,  setUser } from "../../store/slice/userSlice";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./Profile.css";
-import StarRating from "../../components/StarRating/StarRating";
-import { ToastContainer, toast } from "react-toastify";
-import { addToCart } from "../../store/slice/cartSlice";
+// import { ToastContainer, toast } from "react-toastify";
+import InputField from "../../components/InputBox/InputBox";
+import { 
+    CONFIRM_PASSWORD, 
+    CONFIRM_PASSWORD_LABEL, 
+    DEFAULT_OPTIONS, 
+    NEW_PASSWORD, 
+    NEW_PASSWORD_ENTER, 
+    NEW_PASSWORD_LABEL, 
+    OLD_PASSWORD, 
+    OLD_PASSWORD_ENTER, 
+    OLD_PASSWORD_LABEL, 
+    PASSWORD, 
+    PASSWORD_NOT_MATCH_ERROR, 
+    PASSWORD_TYPE 
+  } from "../../utils/Constants";
+import { 
+    addListAddress, 
+    changePasswordRequest, 
+    defaultListAddress, 
+    deleteListAddress, 
+    getListAddress, 
+    getListOfWhistListData, 
+    getOfferList, 
+    getUserRequest, 
+    getUserReviewProductData, 
+    OrderDetailData, 
+    OrderListData, 
+    updateListAddress, 
+    updateProfileRequest 
+} from "../../store/slice/api_integration";
+import ReactPaginate from "react-paginate";
+import Notifications from "../Notifications/Notifications";
+import { CircularProgress } from "@mui/material";
+import Wishlist from "../Wishlist/Wishlist";
+import Coupens from "../Coupens/Coupens";
+import Reviews from "../Reviews/Reviews";
+import { setCancelOrderModal } from "../../store/slice/cartSlice";
+import { formatClasses, formatDate, FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 
 const Profile = () => {
-  const [copyMessage, setCopyMessage] = useState({ message: "", index: null });
   const [activeTab, setActiveTab] = useState(0);
   const [activeOrderTab, setActiveOrderTab] = useState(0);
   const [showInvoice, setShowInvoice] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [page, setPage] = useState(0);  // Default page 0 (first page)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
+  const [wishListItemsPerPage, setWishListItemsPerPage] = useState(1);
+  const [reviewPage, setReviewPage] = useState(0);  // Default page 0 (first page)
+  const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
+  const [activeItemsPerPage, setActiveItemsPerPage] = useState(1);
+  
+  const [invoiceData, setInvoiceData] = useState(null);
+  const [activeOrderIndex, setActiveOrderIndex] = useState(null);
+  const [activeOrderLoading, setActiveOrderLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
-  const { user } = useSelector((state) => state.user);
+  const { user, changePassword } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.modal);
+  const { 
+    totalAddressCount = 0, 
+  } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-  const { image, email, name, phone, password } = user?.[0] || {};
+  const { orderList, orderDetail, activeOrderListCount = 0 } = useSelector((state) => state.cart);
+  console.log("orderDetail", orderDetail);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const { profile_pic, email, mobile } = user[0]?.data || {};
+  const fullname = user[0]?.data?.first_name + " " + user[0]?.data?.last_name;
+  
+  const [errorFileType, setErrorFileType] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+
+  // Function to handle image upload and preview
+  const handleImageUpload = (e) => {
+    setErrorFileType("");
+    const file = e.target.files[0]; // Get the uploaded file
+
+    if (file && file.type.startsWith("image/")) {
+      // Create a preview URL for the image
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+      setImageFile(file);
+    } else {
+      setErrorFileType("Please upload a valid image file");
+    }
+  };
 
   useEffect(() => {
-    if (user && user[0]) {
-      console.log(user[0]);
-      console.log(image, email, name);
+    if(user.length > 0) dispatch(getUserRequest());
+    else navigate("/");
+  }, [])
+
+// ==============================================================
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [passwordError, setPasswordError] = useState(""); // Error for new password
+const [confirmPasswordError, setConfirmPasswordError] = useState("");
+const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+const validatePasswordLength1 = (password) => {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+const handleFormPasswordChange = (e) => {
+  const newPassword = e.target.value;
+  setPassword(newPassword);
+  
+  if (!validatePasswordLength1(newPassword)) {
+    setPasswordError(PASSWORD);
+    setIsPasswordValid(false);
+  } else {
+    setPasswordError("");
+    setIsPasswordValid(true);
+    if (confirmPassword && newPassword !== confirmPassword) {
+      setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+    } else {
+      setConfirmPasswordError("");
     }
-  }, [user]);
+  }
+  dispatch(setChangePassword({ newPassword: newPassword }));
+};
+
+const handleConfirmPasswordChange = (e) => {
+  const confirmPasswordValue = e.target.value;
+  setConfirmPassword(confirmPasswordValue);
+
+  // Check if passwords match
+  if (confirmPasswordValue !== password) {
+    setConfirmPasswordError(PASSWORD_NOT_MATCH_ERROR);
+  } else {
+    setConfirmPasswordError("");
+  }
+  dispatch(setChangePassword({ confirmPassword: confirmPasswordValue }));
+};
+
+const handlePasswordUpdateSubmit = (e) => {
+  e.preventDefault();
+  
+  if (isPasswordValid && password === confirmPassword) {
+   
+    const responseObj = {
+      old_password: changePassword.oldPassword,
+      new_password: changePassword.newPassword,
+      confirm_password: changePassword.confirmPassword,
+    }
+    dispatch(changePasswordRequest(responseObj));
+    setPassword("");
+    setConfirmPassword("");
+    dispatch(setChangePassword({ oldPassword: "", newPassword: "", confirmPassword: "" }))
+    // Handle form submission
+  } 
+};
+// ==============================================================
 
   const [formData, setFormData] = useState({
-    fullName: name || "",
+    fullName: fullname || "",
     email: email || "",
-    phone: phone || "",
-    password: password || "",
+    phone: mobile || "",
   });
-
   const [errors, setErrors] = useState({});
-  const [isEditing, setIsEditing] = useState({
-    fullName: false,
-    email: false,
-    phone: false,
-    password: false,
-  });
-
+  
   useEffect(() => {
     if (user && user[0]) {
       setFormData({
-        fullName: name || "",
+        fullName: fullname || "",
         email: email || "",
-        phone: phone || "",
-        password: password || "",
+        phone: mobile || "",
       });
     }
-  }, [user, name, email, phone, password]);
-
-  const handleEditClick = (field) => {
-    setIsEditing({ ...isEditing, [field]: true });
-  };
-
-  const handleSaveClick = (field) => {
-    const updatedErrors = validateField(field);
-    if (Object.keys(updatedErrors).length === 0) {
-      setIsEditing({ ...isEditing, [field]: false });
-    } else {
-      setErrors({ ...errors, ...updatedErrors });
-    }
-  };
-
-  const handleCancelClick = (field) => {
-    setFormData({
-      fullName: name,
-      email: email,
-      phone: phone,
-      password: password,
-    });
-    setIsEditing({ ...isEditing, [field]: false });
-  };
+  }, [user, fullname, email, mobile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear error on input change
+    setErrors({ ...errors, [name]: "" });
   };
 
-  const validateField = (field) => {
-    const newErrors = {};
-    if (field === "email" && !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email.";
-    }
-    if (field === "phone" && !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid 10-digit phone number.";
-    }
-    if (field === "password" && formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-    }
-    if (field === "fullName" && formData.fullName.trim() === "") {
-      newErrors.fullName = "Full Name is required.";
-    }
-    return newErrors;
-  };
-  //   console.log(formData);
   const validateInputs = () => {
     const newErrors = {};
     if (!formData.fullName || formData.fullName.trim() === "") {
@@ -116,39 +202,58 @@ const Profile = () => {
     }
 
     // Ensure phone number is exactly 10 digits
-    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = "Phone number must be a valid 10-digit number.";
+    if (!formData.phone || !/^\+44\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
     }
 
-    // Ensure password is at least 6 characters long
-    if (!formData.password || formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters long.";
-    }
     return newErrors;
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = validateInputs();
     if (Object.keys(newErrors).length === 0) {
-      // Dispatch the action to update the Redux user state
-      dispatch(setUser(formData));
-      alert("Profile updated successfully!");
+      // dispatch(setUser(formData));
+      const [firstName, ...restName] = formData.fullName.trim().split(" ");
+      const lastName = restName.join(" ");
+      const responseObj = {
+        first_name: firstName,
+        last_name: lastName,
+        mobile: formData.phone,
+        email: formData.email,
+        profile_pic: imageFile
+      }
+      dispatch(updateProfileRequest(responseObj));
     } else {
       setErrors(newErrors);
     }
   };
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(setChangePassword({ ...changePassword, [name]: value }));
+  };
 
+  const validatePasswordLength = (value) => {
+    const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
+  return passwordRegex.test(value)
+    ? ""
+    : PASSWORD;
+  };
   //   ======================================================================================================================
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [addressFormData, setAddressFormData] = useState({
+    id: "",
     fullName: "",
     email: "",
     phone: "",
+    house_no: "",
     address: "",
     country: "",
     city: "",
-    state: "",
     pincode: "",
     isDefault: false,
   });
@@ -167,9 +272,9 @@ const Profile = () => {
     if (!addressFormData.country.trim())
       newErrors.country = "Country is required.";
     if (!addressFormData.city.trim()) newErrors.city = "City is required.";
-    if (!addressFormData.state.trim()) newErrors.state = "State is required.";
-    if (!/^\d{6}$/.test(addressFormData.pincode))
-      newErrors.pincode = "Pincode must be a valid 6-digit number.";
+    if (!addressFormData.house_no.trim()) newErrors.house_no = "House Number is required.";
+    if (!/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(addressFormData.pincode))
+      newErrors.pincode = "Invalid UK postal code.";
     return newErrors;
   };
 
@@ -184,38 +289,36 @@ const Profile = () => {
       newErrors.email = "Invalid email address.";
     if (
       !addressFormData.phone.trim() ||
-      !/^\d{10}$/.test(addressFormData.phone)
+      !/^\+44\d{10}$/.test(addressFormData.phone)
     )
-      newErrors.phone = "Phone number must be a valid 10-digit number.";
+      newErrors.phone = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
     const addressErrors = validateAddressFields();
     return { ...newErrors, ...addressErrors };
   };
 
   const handleAddressSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted!"); // Check if this logs
     const newErrors = validateAllFields();
+    const responseObj = {
+      full_name: addressFormData.fullName,
+      mobile: addressFormData.phone,
+      email: addressFormData.email,
+      house_number: addressFormData.house_no,
+      street: addressFormData.address,
+      locality: addressFormData.city,
+      postcode: addressFormData.pincode,
+      country: addressFormData.country,
+      ...(isEditingAddress && { id: addressFormData.id }) // Add id only if editing
+    };
     if (Object.keys(newErrors).length === 0) {
-      // If no validation errors, update the addresses
-      const updatedAddresses = [...(user[0]?.addresses || [])]; // Clone current addresses array
-
-      const existingIndex = updatedAddresses.findIndex(
-        (addr) => addr.id === addressFormData.id
-      );
-
-      if (existingIndex !== -1) {
-        // If address already exists, update it
-        updatedAddresses[existingIndex] = addressFormData;
+      if(isEditingAddress) {
+        dispatch(updateListAddress(responseObj));
       } else {
-        // If new address, add to array
-        updatedAddresses.push({ ...addressFormData, id: Date.now() });
+        dispatch(addListAddress(responseObj));
       }
-
-      // Dispatch the updated user data with updated addresses
-      dispatch(setUser({ ...user[0], addresses: updatedAddresses }));
-
       // Clear form after successful submission
       setAddressFormData({
+        id: "",
         fullName: "",
         email: "",
         phone: "",
@@ -225,10 +328,9 @@ const Profile = () => {
         city: "",
         state: "",
         pincode: "",
+        house_no: "",
         isDefault: false,
       });
-
-      alert("Profile updated successfully!");
       setIsEditingAddress(false);
     } else {
       setFormErrors(newErrors);
@@ -236,37 +338,38 @@ const Profile = () => {
   };
 
   const handleDeleteAddress = (addressId) => {
-    dispatch(removeAddress(addressId));
-    alert("Address deleted successfully!");
+    const responseObj = { id: addressId }
+    dispatch(deleteListAddress(responseObj));
+    // alert("Address deleted successfully!");
   };
 
   const handleSetDefaultAddress = (addressId) => {
-    dispatch(setDefaultAddress(addressId));
+    const responseObj = { id: addressId }
+    dispatch(defaultListAddress(responseObj));
   };
 
   const handleEditAddress = (address) => {
-    setAddressFormData({ ...address }); // Populate form with selected address
+    window.scrollTo({
+      top: 100,
+      behavior: 'smooth', // Adds smooth scrolling
+    });
+    const editAddressObj = {
+      id: address.id,
+      fullName: address?.full_name?.trim(),
+      phone: address?.mobile?.trim(),
+      email: address?.email?.trim(),
+      house_no: address?.house_number?.trim(),
+      address: address?.street?.trim(),
+      city: address?.locality?.trim(),
+      pincode: address?.postcode?.trim(),
+      country: address?.country?.trim(),
+      isDefault: false,
+    }
+    setAddressFormData({ ...editAddressObj }); // Populate form with selected address
     setIsEditingAddress(true); // Set the form to edit mode
   };
 
-  //   ======================================================================================================================
-  const handleCopy = (title, index) => {
-    // Copy the item.title to the clipboard
-    navigator.clipboard
-      .writeText(title)
-      .then(() => {
-        // Set success message
-        setCopyMessage({ message: "Item copied to clipboard!", index });
-
-        // Hide message after 2 minutes (120,000 milliseconds)
-        setTimeout(() => {
-          setCopyMessage({ message: "", index: null });
-        }, 2000); // 2 minutes
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
-  };
+  // ======================================================================================================================
 
   //   download PDF
   const downloadPDF = () => {
@@ -297,83 +400,361 @@ const Profile = () => {
     });
   };
 
-  const handleRemoveItem = (productId) => {
-    // Filter out the item with the matching productId from the wishlist
-    const updatedWishlist = user[0].wishlist.filter(
-      (item) => item.id !== productId
-    );
+  const handleActiveTabs = (value) => {
+    const searchParams = new URLSearchParams(location.search);
+    // Clear query parameters for cleaner URL
+    if (value !== 2 && value !== 5) {
+      navigate(location.pathname); // Reset URL without parameters
+    }
   
-    // Dispatch the updated user object with the modified wishlist
-    dispatch(setUser({
-      ...user[0],                // Spread the existing user object
-      wishlist: updatedWishlist, // Update the wishlist array
-    }));
+    if (value === 2) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      setPage(pageParam - 1); // Set initial page based on URL
   
-    toast.success("Item removed from Wishlist");
-  };
-
-  const handleAddToCart = (item) => {
-    // Dispatch product details and quantity to Redux
-    const productData = {
-        ...item,
-        quantity,
-        // selectedSize: product.sizeList[activeIndex]?.name,
+      const offset = (pageParam - 1) * itemsPerPage; // Adjust offset
+      const limit = itemsPerPage;
+  
+      const responseObj = {
+        offset,
+        limit,
       };
-    dispatch(addToCart(productData));
-    toast.success("Item added to Cart successfully");
+      dispatch(getListAddress(responseObj));
+    }
+  
+    if (value === 4) {
+      dispatch(getOfferList());
+    }
+  
+    if (value === 5) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('wishListPage'), 10) || 1;
+      setWishListPage(pageParam - 1); // Set initial page based on URL
+  
+      const offset = (pageParam - 1) * wishListItemsPerPage; // Adjust offset
+      const limit = wishListItemsPerPage;
+  
+      const responseObj = {
+        offset,
+        limit,
+      };
+      dispatch(getListOfWhistListData(responseObj));
+    }
+    if (value === 3) {
+      navigate(location.pathname);
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      setReviewPage(pageParam - 1); // Set initial page based on URL
+  
+      const offset = (pageParam - 1) * itemsPerPage; // Adjust offset
+      const limit = itemsPerPage;
+  
+      const responseObj = {
+        offset,
+        limit,
+      };
+      dispatch(getUserReviewProductData(responseObj));
+    }
+    if ( value === 1) {
+      setActiveOrderLoading(true);
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+    
+      // Update state with URL parameters
+      setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+      setActiveItemsPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
+      const responseObj = {
+        status: 1,
+        offset,
+        limit
+      }
+      dispatch(OrderListData(responseObj)).finally(() => {
+        setActiveOrderLoading(false);
+      });
+    }
+    setActiveTab(value); // Update active tab
+  };
+  // =========================================================
+  
+  // Pafination code for Active order List 
+  useEffect(() => {
+    // Extract parameters from the URL
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+  
+    // Update state with URL parameters
+    setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+    setActiveItemsPerPage(itemsPerPageParam);
+  
+    // Calculate offset and limit dynamically
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+  
+    // Dispatch the API call with updated parameters
+    const responseObj = {
+      status: 1,
+      offset,
+      limit
+    }
+    dispatch(OrderListData(responseObj));
+  }, [location.search, itemsPerPage ,dispatch]);
+  
+  // Handle dropdown change for itemsPerPage
+  const handleActiveItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setActiveItemsPerPage(newItemsPerPage);
+    setActivePage(0); // Reset to the first page
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", 1);
+    searchParams.set("itemsPerPage", newItemsPerPage);
+    navigate(`?${searchParams.toString()}`);
+  };
+  
+  // Handle page change for pagination
+  const handleActivePageChange = (data) => {
+    const { selected } = data; // `react-paginate` provides 0-based page index
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", selected + 1); // Convert to 1-based indexing
+    navigate(`?${searchParams.toString()}`); // Update URL
   };
 
+  // Dropdown options for itemsPerPage
+  const activeItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= activeOrderListCount);
+  // =========================================================
+  // Pafination code for Address Lists
+    useEffect(() => {
+      // Extract parameters from the URL
+      const searchParams = new URLSearchParams(location.search);
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || itemsPerPage;
+    
+      // Update state with URL parameters
+      setPage(pageParam - 1); // Sync pagination (0-based indexing)
+      setItemsPerPage(itemsPerPageParam);
+    
+      // Calculate offset and limit dynamically
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+    
+      // Dispatch the API call with updated parameters
+      const responseObj = {
+        offset,
+        limit
+      }
+      dispatch(getListAddress(responseObj));
+    }, [location.search, itemsPerPage ,dispatch]);
+    
+    // Handle dropdown change for itemsPerPage
+    const handleItemsPerPageChange = (e) => {
+      const newItemsPerPage = parseInt(e.target.value, 10);
+      setItemsPerPage(newItemsPerPage);
+      setPage(0); // Reset to the first page
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", 1);
+      searchParams.set("itemsPerPage", newItemsPerPage);
+      navigate(`?${searchParams.toString()}`);
+    };
+    
+    // Handle page change for pagination
+    const handlePageChange = (data) => {
+      const { selected } = data; // `react-paginate` provides 0-based page index
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", selected + 1); // Convert to 1-based indexing
+      navigate(`?${searchParams.toString()}`); // Update URL
+    };
+
+    // Dropdown options for itemsPerPage
+    const itemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalAddressCount);
+
+    const handleActiveOrderTab = (value) => {
+      if(value === 0) {
+        setActiveOrderLoading(true);
+        const searchParams = new URLSearchParams(location.search);
+        const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+        const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || activeItemsPerPage;
+      
+        // Update state with URL parameters
+        setActivePage(pageParam - 1); // Sync pagination (0-based indexing)
+        setActiveItemsPerPage(itemsPerPageParam);
+      
+        // Calculate offset and limit dynamically
+        const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+        const limit = itemsPerPageParam;
+      
+        // Dispatch the API call with updated parameters
+        const responseObj = {
+          status: 1,
+          offset,
+          limit
+        }
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
+      }
+      if(value === 1) {
+        setActiveOrderLoading(true);
+        const responseObj = {
+          status: 5,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
+      }
+      if(value === 2) {
+        setActiveOrderLoading(true);
+        const responseObj = {
+          status: 4,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
+      }
+      if(value === 3) {
+        setActiveOrderLoading(true);
+        const responseObj = {
+          status: 3,
+          offset: 1,
+          limit: 10
+        }
+        dispatch(OrderListData(responseObj)).finally(() => {
+          setActiveOrderLoading(false);
+        });
+      }
+      setActiveOrderTab(value);
+    }
+    const handleInvoiceDetails = (product, status) => {
+      setShowInvoice(status);
+      setInvoiceData(product);
+    }
+
+    const handleViewOrderDetails = (e, index, order) => {
+      e.preventDefault();
+      setActiveOrderIndex((prevIndex) => {
+        // If closing the current active index, return null to hide details
+        if (prevIndex === index) {
+          return null;
+        }
+    
+        // If opening a new order, trigger the API call
+        if (prevIndex !== index) {
+          const responseObj = {
+            order_id:order?.order_id,
+          }
+          // Call your API function
+          dispatch(OrderDetailData(responseObj))
+        }
+    
+        return index;
+      });
+    };
+    const handleNavigateToDetail = (productList, scroll = false) => {
+      if (!productList || productList.length === 0) {
+        console.error("No matching product found to navigate.");
+        return;
+      }
+    
+      const product = productList[0];
+      if (product?.product_id) {
+        console.log("Navigating to product:", product.product_id); // Debugging
+        // navigate(`/product/${product.product_id}`, { state: { product } });
+        if(scroll) {
+          navigate(`/product/${product.product_id}`, { state: { product, scrollToBottom: scroll } });
+        } else navigate(`/product/${product.product_id}`, { state: { product } });
+      } else {
+        console.error("Product ID is undefined.");
+      }
+    };
+    const redirectToSupport = () => {
+      navigate("/contact");
+    };
+
+    const handleCancelOrder = (e, item) => {
+      const cancelOrderPayload = { 
+        isOpen: isOpen,
+        orderId: item.order_id,
+        skuId: item.sku_id,
+      };
+      // dispatch(toggleCategoryModal(cancelOrderPayload));
+      dispatch(setCancelOrderModal(cancelOrderPayload));
+    }
+    const formattedActiveConfirmedDate = formatDateTimeProduct(orderDetail?.orderDate);
+    const formattedActiveShippeddDate = formatDateTimeProduct(orderDetail?.shippedDate? orderDetail?.shippedDate : orderDetail?.orderDate);
+    const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
+    const formattedActiveDeliveredDate = formatDateTimeProduct(orderDetail?.deliveredDate ? orderDetail?.deliveredDate: orderDetail?.estimatedDeliveryDate);
   return (
     <div className="userProfile">
       <h1>Your Profile</h1>
       <div className="vertical-tabs-container">
         <div className="tabs">
           <div className="profile_user_image">
-            <img src={image} alt={name} />
+            <img src={(imagePreview ? imagePreview : profile_pic) || '/images/icons/avtar.png'} alt={fullname} />
+            <div className="editMode">
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              <img src={'/images/icons/edit.svg'} alt={'edit icon'} />
+            </div>
           </div>
+          {errorFileType && <div className="error errorImageType">{errorFileType}</div>}
           <p>Categories</p>
           <div className="email">{email}</div>
           <div
             className={`tab ${activeTab === 0 ? "active" : ""}`}
-            onClick={() => setActiveTab(0)}
+            onClick={() => handleActiveTabs(0)}
           >
             <img src="/images/profile/user1.svg" alt="Login" />
             <span>Login and Security</span>
           </div>
           <div
             className={`tab ${activeTab === 1 ? "active" : ""}`}
-            onClick={() => setActiveTab(1)}
+            onClick={() => handleActiveTabs(1)}
           >
-            <img src="/images/profile/orders.svg" alt="Login" />
+            <img src="/images/profile/orders.svg" alt="Your Orders" />
             <span>Your Orders</span>
           </div>
           <div
             className={`tab ${activeTab === 2 ? "active" : ""}`}
-            onClick={() => setActiveTab(2)}
+            onClick={() => handleActiveTabs(2)}
           >
-            <img src="/images/profile/address.svg" alt="Login" />
+            <img src="/images/profile/address.svg" alt="Your Address" />
             <span>Your Address</span>
           </div>
           <div
             className={`tab ${activeTab === 3 ? "active" : ""}`}
-            onClick={() => setActiveTab(3)}
+            onClick={() => handleActiveTabs(3)}
           >
-            <img src="/images/profile/reviews.svg" alt="Login" />
+            <img src="/images/profile/reviews.svg" alt="Your Reviews" />
             <span>Your Reviews</span>
           </div>
           <div
             className={`tab ${activeTab === 4 ? "active" : ""}`}
-            onClick={() => setActiveTab(4)}
+            onClick={() => handleActiveTabs(4)}
           >
-            <img src="/images/profile/coupen.svg" alt="Login" />
+            <img src="/images/profile/coupen.svg" alt="Coupons & offers" />
             <span>Coupons & offers</span>
           </div>
           <div
             className={`tab ${activeTab === 5 ? "active" : ""}`}
-            onClick={() => setActiveTab(5)}
+            onClick={() => handleActiveTabs(5)}
           >
-            <img src="/images/profile/whistlist.svg" alt="Login" />
+            <img src="/images/profile/whistlist.svg" alt="Your Wishlist" />
             <span>Your Wishlist</span>
+          </div>
+          <div
+            className={`tab ${activeTab === 6 ? "active" : ""}`}
+            onClick={() => handleActiveTabs(6)}
+          >
+            <img src="/images/profile/notification.svg" alt="Notifications" />
+            <span>Notifications</span>
           </div>
         </div>
         <div className="tab-content">
@@ -384,89 +765,37 @@ const Profile = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="box">
                     <div className="form-control">
-                      <label for="fullName">Full Name</label>
+                      <label htmlFor="fullName">Full Name</label>
                       <input
                         type="text"
                         name="fullName"
                         placeholder="Full Name"
                         value={formData.fullName}
                         onChange={handleInputChange}
-                        disabled={!isEditing.fullName}
                       />
                       {errors.fullName && (
                         <span className="error">{errors.fullName}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.fullName ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("fullName")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("fullName")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("fullName")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <div className="box">
                     <div className="form-control">
-                      <label for="email">Email</label>
+                      <label htmlFor="email">Email</label>
                       <input
                         type="email"
                         name="email"
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        disabled={!isEditing.email}
                       />
                       {errors.email && (
                         <span className="error">{errors.email}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.email ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("email")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("email")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("email")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <div className="box">
                     <div className="form-control">
-                      <label for="Mobile or Phone Number">
+                      <label htmlFor="Mobile or Phone Number">
                         Mobile or Phone Number
                       </label>
                       <input
@@ -475,85 +804,90 @@ const Profile = () => {
                         placeholder="Mobile or Phone Number"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        disabled={!isEditing.phone}
                       />
                       {errors.phone && (
                         <span className="error">{errors.phone}</span>
                       )}
                     </div>
-                    <div className="editableAction">
-                      {!isEditing.phone ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("phone")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("phone")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("phone")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
-                  <div className="box">
-                    <div className="form-control">
-                      <label for="password">Password</label>
-                      <input
-                        type={!isEditing.password ? "password" : "text"}
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        disabled={!isEditing.password}
+                  <button
+                    type="submit"
+                    className="explore contact sp-10"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
                       />
-                      {errors.password && (
-                        <span className="error">{errors.password}</span>
-                      )}
-                    </div>
-                    <div className="editableAction">
-                      {!isEditing.password ? (
-                        <div
-                          className="edit"
-                          onClick={() => handleEditClick("password")}
-                        >
-                          <img src="/images/profile/edit.svg" alt="edit" />
-                        </div>
-                      ) : (
-                        <div className="saveMode">
-                          <div
-                            className="save"
-                            onClick={() => handleSaveClick("password")}
-                          >
-                            <img src="/images/profile/tick.svg" alt="Save" />
-                          </div>
-                          <div
-                            className="cancel"
-                            onClick={() => handleCancelClick("password")}
-                          >
-                            <img src="/images/profile/cross.svg" alt="cancel" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <Button
-                    type={"submit"}
-                    value={"save changes"}
-                    varient="explore contact"
-                    space="sp-10"
+                    )}
+                    {!loading && <span>save changes</span>}
+                  </button>
+                </form>
+              </div>
+              <h3>Change Password</h3>
+              <div className="login_securityWrapper">
+                <form onSubmit={handlePasswordUpdateSubmit}>
+                <InputField
+                    label={OLD_PASSWORD_LABEL}
+                    placeholder={OLD_PASSWORD_ENTER}
+                    type={PASSWORD_TYPE}
+                    name={OLD_PASSWORD}
+                    value={changePassword.oldPassword}
+                    onChange={handleChange}
+                    required
+                    validate={validatePasswordLength}
+                    errorMessage={PASSWORD}
                   />
+                  <div className="input-field">
+                    <label htmlFor={PASSWORD_TYPE}>{NEW_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={NEW_PASSWORD_ENTER}
+                      name={NEW_PASSWORD}
+                      id={PASSWORD_TYPE}
+                      value={password}
+                      onChange={handleFormPasswordChange}
+                      required
+                    />
+                    {passwordError && (
+                      <p className="error-message">{passwordError}</p>
+                    )}
+                  </div>
+                  <div className="input-field">
+                    <label htmlFor={CONFIRM_PASSWORD_LABEL}>{CONFIRM_PASSWORD_LABEL}</label>
+                    <input
+                      type={PASSWORD_TYPE}
+                      placeholder={CONFIRM_PASSWORD_LABEL}
+                      name={CONFIRM_PASSWORD}
+                      id={CONFIRM_PASSWORD}
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      required
+                    />
+                    {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
+                  </div>
+                  <button
+                    type="submit"
+                    className="explore contact sp-10"
+                    style={{
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {loading && (
+                      <img
+                        src="/images/loader1.svg"
+                        alt="Loader Image"
+                        style={{ display: "flex", margin: "auto" }}
+                      />
+                    )}
+                    {!loading && <span>Submit</span>}
+                  </button>
                 </form>
               </div>
             </div>
@@ -568,7 +902,6 @@ const Profile = () => {
                       className="closePDF"
                       onClick={() => setShowInvoice(false)}
                     >
-                      {" "}
                       <img
                         src="/images/profile/cross1.svg"
                         alt="close PDF VIEW"
@@ -582,33 +915,11 @@ const Profile = () => {
                     <table
                       style={{
                         border: "none",
+                        width: "100%"
                       }}
                     >
                       <tr>
-                        <td style={{ border: "none" }}>
-                          <img
-                            src="/images/icons/logo.svg"
-                            alt="FikFis Logo"
-                            width={"200px"}
-                            height={"68px"}
-                            style={{ border: "none" }}
-                          />
-                        </td>
-                        <td
-                          style={{
-                            border: "none",
-                            fontSize: "15px",
-                            fontWeight: "500",
-                            textAlign: "right",
-                            verticalAlign: "top",
-                          }}
-                        >
-                          Tax Invoice <br />
-                          (Original for Recipient)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style={{ border: "none" }}>
+                        <td style={{ borderBottom: "2px solid #EAEAEA" }} colSpan={'4'}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -618,101 +929,111 @@ const Profile = () => {
                                   border: "none",
                                 }}
                               >
-                                Sold By:
+                                <img
+                                  src="/images/icons/logo.svg"
+                                  alt="FikFis Logo"
+                                  width={"200px"}
+                                  height={"68px"}
+                                  style={{ border: "none" }}
+                                />
                               </td>
                             </tr>
                             <tr>
                               <td
                                 style={{
-                                  fontSize: "13px",
+                                  fontSize: "15px",
                                   fontWeight: "500",
                                   border: "none",
                                 }}
                               >
-                                Vendor Name
+                                Customer care number: <p style={{fontSize: "15px", fontWeight:"400"}}>+44 7917 948706</p>
                               </td>
                             </tr>
                             <tr>
                               <td
                                 style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
+                                  fontSize: "15px",
+                                  fontWeight: "500",
                                   border: "none",
                                 }}
                               >
-                                Street Address: 123 Fake Street
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Street Address: 123 Fake Street
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                City: London
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Post Town: Greater London
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Postal Code: SW1A 1AA
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Country: United Kingdom
-                              </td>
-                            </tr>
-                            <tr>
-                              <td
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "400",
-                                  border: "none",
-                                }}
-                              >
-                                Phone Number: +44 845625361
+                                Email: <p style={{fontSize: "15px", fontWeight:"400"}}>support@fikdis.co.uk</p>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
+                        <td
+                           colSpan={'2'}
+                            style={{
+                              borderBottom: "2px solid #EAEAEA",
+                              fontSize: "15px",
+                              fontWeight: "500",
+                              textAlign: "right",
+                              verticalAlign: "top",
+                            }}
+                        >
                           <table style={{ border: "none" }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                }}
+                              >
+                                Tax Invoice
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Original for Recipient
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Invoice Number: <p style={{fontSize: "15px", fontWeight:"400"}}>56894123</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Order Number: <p style={{fontSize: "15px", fontWeight:"400"}}>402-0942907-2957941</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Order Date: <p style={{fontSize: "15px", fontWeight:"400"}}>06-05-2024</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -823,13 +1144,224 @@ const Profile = () => {
                             </tr>
                           </table>
                         </td>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
+                          <table style={{ border: "none", width: "100%", }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Shipping Address :
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                City: London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Post Town: Greater London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Postal Code: SW1A 1AA
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Country: United Kingdom
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                Phone Number: +44 845625361
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                IN
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                  textAlign: "right",
+                                }}
+                              >
+                                State/UT Code: 09
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td colSpan={'2'} style={{ borderBottom: "2px solid #EAEAEA" }}>
+                          <table style={{ border: "none" }}>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "600",
+                                  border: "none",
+                                }}
+                              >
+                                Sold By:
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  border: "none",
+                                }}
+                              >
+                                Vendor Name
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Street Address: 123 Fake Street
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                City: London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Post Town: Greater London
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Postal Code: SW1A 1AA
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Country: United Kingdom
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "400",
+                                  border: "none",
+                                }}
+                              >
+                                Phone Number: +44 845625361
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
                       </tr>
                       {/* <tr>
-                            <td style={{border: "none" }}>&nbsp;</td>
-                            <td style={{border: "none" }}>&nbsp;</td>
-                        </tr> */}
-                      <tr>
-                        <td style={{ border: "none", verticalAlign: "top" }}>
+                        <td colSpan={'5'} style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -843,7 +1375,7 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   ABDPH1161R
                                 </span>
                               </td>
@@ -860,15 +1392,15 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   09ABDPH1161R2ZD
                                 </span>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
-                          <table style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none" }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -956,12 +1488,8 @@ const Profile = () => {
                           </table>
                         </td>
                       </tr>
-                      {/* <tr>
-                            <td style={{ border: "none" }}>&nbsp;</td>
-                            <td style={{ border: "none" }}>&nbsp;</td>
-                        </tr> */}
                       <tr>
-                        <td style={{ border: "none", verticalAlign: "top" }}>
+                        <td colSpan={'5'} style={{ border: "none", verticalAlign: "top" }}>
                           <table style={{ border: "none" }}>
                             <tr>
                               <td
@@ -975,8 +1503,8 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
-                                  402-0942907-2957941
+                                  
+                                  {invoiceData?.order_number}
                                 </span>
                               </td>
                             </tr>
@@ -992,15 +1520,15 @@ const Profile = () => {
                                 <span
                                   style={{ fontWeight: "400", color: "#000" }}
                                 >
-                                  {" "}
+                                  
                                   06.05.2024
                                 </span>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td style={{ border: "none" }}>
-                          <table style={{ border: "none" }}>
+                        <td colSpan={'5'} style={{ border: "none", width: "100%", }}>
+                          <table style={{ border: "none", width: "100%", }}>
                             <tr>
                               <td
                                 style={{
@@ -1075,18 +1603,17 @@ const Profile = () => {
                             </tr>
                           </table>
                         </td>
-                      </tr>
+                      </tr> */}
                     </table>
                     <div className="resp_table">
                         <table
                         style={{
-                            border: "1px solid #F6F6F6",
+                            border: "1px solid #F6F6F6"
                         }}
                         >
                         <tr>
                             <td
                             style={{
-                                width: "20px",
                                 backgroundColor: "#F6F6F6",
                                 fontSize: "13px",
                                 fontWeight: "600",
@@ -1095,7 +1622,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Sl. No
+                            Item Description
                             </td>
                             <td
                             style={{
@@ -1107,7 +1634,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Description
+                            Quantity
                             </td>
                             <td
                             style={{
@@ -1119,7 +1646,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Unit Price
+                            Unit Price (excl. VAT)
                             </td>
                             <td
                             style={{
@@ -1131,7 +1658,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Discount
+                            VAT rate
                             </td>
                             <td
                             style={{
@@ -1143,7 +1670,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Qty
+                            Unit Price (incl. VAT)
                             </td>
                             <td
                             style={{
@@ -1155,55 +1682,7 @@ const Profile = () => {
                                 fontWeight: "500",
                             }}
                             >
-                            Net Amount
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Rate
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Type
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Tax Amount
-                            </td>
-                            <td
-                            style={{
-                                backgroundColor: "#F6F6F6",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                borderRight: "1px solid #D1D1D1",
-                                fontSize: "13px",
-                                fontWeight: "500",
-                            }}
-                            >
-                            Total Amount
+                            Item Subtotal
                             </td>
                         </tr>
                         <tr>
@@ -1216,7 +1695,7 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            1.
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
                             </td>
                             <td
                             style={{
@@ -1225,11 +1704,8 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            TheGiftKart Crystal Clear Mi Redmi 13C 5G / Poco M6 5G
-                            Back Cover Case | 360 Degree Protection | Shock Proof
-                            Design | Transparent Back Cover Case for Redmi 13C 5G
-                            / Poco M6 (PC & TPU, Black Bumper) | B0CPPCCRM9 (
-                            MA-Black_BumperClearCase-Rdmi_13C_5G ) HSN:392690
+                            {/* {invoiceData.product_name} */}
+                            1
                             </td>
                             <td
                             style={{
@@ -1238,7 +1714,7 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            £2120
+                            £8.50
                             </td>
                             <td
                             style={{
@@ -1247,7 +1723,7 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            £0.00
+                            20%
                             </td>
                             <td
                             style={{
@@ -1256,7 +1732,7 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            2
+                            £10.29
                             </td>
                             <td
                             style={{
@@ -1265,7 +1741,47 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            £2120
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                verticalAlign: "top",
+                                width: "20px",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
                             </td>
                             <td
                             style={{
@@ -1274,7 +1790,8 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            10%
+                            {/* {invoiceData.product_name} */}
+                            1
                             </td>
                             <td
                             style={{
@@ -1283,27 +1800,147 @@ const Profile = () => {
                                 fontWeight: "400",
                             }}
                             >
-                            VAT
+                            £8.50
                             </td>
                             <td
                             style={{
                                 borderRight: "1px solid #D1D1D1",
                                 fontSize: "13px",
                                 fontWeight: "400",
-                                textAlign: "center",
                             }}
                             >
-                            £2320
+                            20%
                             </td>
                             <td
                             style={{
                                 borderRight: "1px solid #D1D1D1",
                                 fontSize: "13px",
                                 fontWeight: "400",
-                                textAlign: "center",
                             }}
                             >
-                            £2320
+                            £10.29
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                verticalAlign: "top",
+                                width: "20px",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            Proin gravida nibh veí velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, Proin gravida nibh veí velit auctor oliquet. Aenean sollicitudin,
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            {/* {invoiceData.product_name} */}
+                            1
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £8.50
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            20%
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                            <td
+                            style={{
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "400",
+                            }}
+                            >
+                            £10.29
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            colSpan={5}
+                            >
+                            Shipping Charges
+                            </td>
+                            <td
+                            style={{
+                                backgroundColor: "#F6F6F6",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                borderRight: "1px solid #D1D1D1",
+                                fontSize: "13px",
+                                fontWeight: "500",
+                            }}
+                            >
+                            £10.29
                             </td>
                         </tr>
                         <tr>
@@ -1404,114 +2041,201 @@ const Profile = () => {
                   <div className="horizontal-tabs">
                     <div
                       className={activeOrderTab === 0 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(0)}
+                      onClick={() => handleActiveOrderTab(0)}
                     >
                       Active Orders
                     </div>
                     <div
                       className={activeOrderTab === 1 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(1)}
+                      onClick={() => handleActiveOrderTab(1)}
                     >
                       Delivered Orders
                     </div>
                     <div
                       className={activeOrderTab === 2 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(2)}
+                      onClick={() => handleActiveOrderTab(2)}
                     >
                       Return Orders
                     </div>
                     <div
                       className={activeOrderTab === 3 ? "active" : ""}
-                      onClick={() => setActiveOrderTab(3)}
+                      onClick={() => handleActiveOrderTab(3)}
                     >
                       Cancel Orders
                     </div>
                   </div>
                   <div className="order-content">
                     {activeOrderTab === 0 && (
-                      <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0].activeOrders.map((item, index) => (
-                            <div className="orderList active" key={index}>
-                              <div className="orderDetail">
-                                <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
-                                  <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                      <>
+                      {activeOrderLoading ? (
+                          <div className="loadingContainer">
+                              <CircularProgress />
+                          </div>
+                      ) :(
+                        <div className="orderListWrapper">
+                          {orderList && <div className='paginationBox'>
+                                <div className="itemsPerPageDropdown">
+                                    <label>Items per page: </label>
+                                    <select value={activeItemsPerPage} onChange={handleActiveItemsPerPageChange}>
+                                        {activeItemsPerPageOptions.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* Pagination component */}
+                                <ReactPaginate
+                                    previousLabel={"Previous"}
+                                    nextLabel={"Next"}
+                                    breakLabel={"..."}
+                                    breakClassName={"break-me"}
+                                    pageCount={Math.max(Math.ceil(activeOrderListCount / activeItemsPerPage), 1)}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={(ev) => handleActivePageChange(ev)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                    forcePage={page}  // Sync current page with URL
+                                    disabled={activeOrderListCount === 0} 
+                                />
+                              </div>
+                            }
+                          {orderList &&
+                            orderList?.map((item, index) => (
+                              <div className="orderList" key={index}>
+                                <div className="orderDetail">
+                                  <div className="leftOrder">
+                                    <img src={item.product_image} alt={item.product_name} />
+                                    <div>
+                                      <h3>{item.product_name}</h3>
+                                      <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                      <p>{`Order # ${item.order_number}`}</p>
+                                    </div>
+                                  </div>
+                                  <div className="rightOrder">
+                                    <div
+                                      onClick={() => handleInvoiceDetails(item, true)}
+                                    >
+                                      Invoice
+                                    </div>
+                                    <div
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={() => {
+                                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                                        );
+                                        handleNavigateToDetail(matchingProducts);
+                                      }}
+                                    >
+                                      Buy it again
+                                    </div>
+                                    <div onClick={(e) => handleViewOrderDetails(e, index, item)}>
+                                      {activeOrderIndex === index ? "Hide order details" : "View order details"}
+                                    </div>
+                                    <div
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={() => {
+                                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                                        );
+                                        handleNavigateToDetail(matchingProducts, true);
+                                      }}
+                                    >write a product review</div>
+                                    <div onClick={() => redirectToSupport()}>Get product support</div>
+                                    <div 
+                                      className={activeOrderIndex === index ? "active" : "disabled"}
+                                      onClick={(e) => handleCancelOrder(e, item)}
+                                    >
+                                      {"Cancel Order"}
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="rightOrder">
-                                  <a
-                                    href="#"
-                                    onClick={() => setShowInvoice(true)}
-                                  >
-                                    Invoice
-                                  </a>
-                                  <a href="#">Buy it again</a>
-                                  <a href="#">View your item</a>
-                                  <a href="#">view order details</a>
-                                  <a href="#">write a product review</a>
-                                  <a href="#">Get product support</a>
-                                </div>
+                                {orderDetail && <div className={`openOrderDetails ${
+                                  activeOrderIndex === index ? "show" : "hide"
+                                  }`}>
+                                  <div className="userDetails">
+                                    <div className="userAddress">
+                                      <h6>
+                                        SHIP To:
+                                        <span>{orderDetail?.shippingAddress?.name}</span>
+                                      </h6>
+                                      <p>{orderDetail?.shippingAddress?.house_number}, {orderDetail?.shippingAddress?.street}</p>
+                                      <p>{orderDetail?.shippingAddress?.locality}, {orderDetail?.shippingAddress?.country}</p>
+                                      <p>Postal Code: {orderDetail?.shippingAddress?.postcode}</p>
+                                      <p>Phone Number: {orderDetail?.shippingAddress?.phone}</p>
+                                    </div>
+                                    <div className="user_order_details">
+                                      <h4>{orderDetail?.statusDetails[0]?.status}</h4>
+                                      <p>{orderDetail?.statusDetails[0]?.date}</p>
+                                      <h4>Delivered {orderDetail?.estimatedDeliveryDate}</h4>
+                                      {/* <p>{item.delivery_instructions}</p> */}
+                                    </div>
+                                    <div className="user_order_track">
+                                      <h4>TRACK ORDER</h4>
+                                      <p className="track">{orderDetail?.orderId}</p>
+                                      <h4>TOTAL</h4>
+                                      <p className="total">
+                                      {orderDetail?.orderItems?.map(order => (
+                                        order?.productName?.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
+                                      ))} include taxes
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="tracking_order_status">
+                                    { 
+                                        <>
+                                          <div
+                                            className={formatClasses(orderDetail?.orderDate)}
+                                          >
+                                            <h6>{`Order ${orderDetail?.orderStatus}`}</h6>
+                                            <p>{`${formattedActiveConfirmedDate.fullDay} ${formattedActiveConfirmedDate.formattedDate}`}</p>
+                                            <p>{formattedActiveConfirmedDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.shippedDate? orderDetail?.shippedDate : orderDetail?.orderDate)}
+                                          >
+                                            <h6>{`Shipped`}</h6>
+                                            <p>{`${formattedActiveShippeddDate.fullDay} ${formattedActiveShippeddDate.formattedDate}`}</p>
+                                            <p>{formattedActiveShippeddDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.estimatedDeliveryDate)}
+                                          >
+                                            <h6>{`Out for Delivery`}</h6>
+                                            <p>{`${formattedActiveEstDeliveryDate.fullDay} ${formattedActiveEstDeliveryDate.formattedDate}`}</p>
+                                            <p>{formattedActiveEstDeliveryDate.time}</p>
+                                          </div>
+                                          <div
+                                            className={formatClasses(orderDetail?.deliveredDate ? orderDetail?.deliveredDate: orderDetail?.estimatedDeliveryDate)}
+                                          >
+                                            <h6>{`Delivered`}</h6>
+                                            <p>{`${formattedActiveDeliveredDate.fullDay} ${formattedActiveDeliveredDate.formattedDate}`}</p>
+                                            <p>{formattedActiveDeliveredDate.time}</p>
+                                          </div>
+                                        </>
+                                      }
+                                  </div>
+                                </div>}
                               </div>
-                              <div className="userDetails">
-                                <div className="userAddress">
-                                  <h6>
-                                    SHIP To:
-                                    <span>{item.order_shipping_user_name}</span>
-                                  </h6>
-                                  <p>{item.address}</p>
-                                  <p>Phone Number: {item.phone_number}</p>
-                                </div>
-                                <div className="user_order_details">
-                                  <h4>ORDER PlACED</h4>
-                                  <p>{item.order_placed}</p>
-                                  <h4>Delivered {item.delivery_date}</h4>
-                                  <p>{item.delivery_instructions}</p>
-                                </div>
-                                <div className="user_order_track">
-                                  <h4>TRACK ORDER</h4>
-                                  <p className="track">{item.tracking_id}</p>
-                                  <h4>TOTAL</h4>
-                                  <p className="total">
-                                    {item.total} include taxes
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="tracking_order_status">
-                                {item.order_track &&
-                                  item.order_track.map((data) => (
-                                    <>
-                                      <div
-                                        key={data.id}
-                                        className={`order ${
-                                          data.started ? "started" : ""
-                                        } ${data.done ? "done" : ""}`}
-                                      >
-                                        <h6>{data.message}</h6>
-                                        <p>{data.track_time}</p>
-                                      </div>
-                                    </>
-                                  ))}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
+                            ))}
+                            {!orderList && <p>No orders found.</p>}
+                        </div>
+                      )}
+                    </>
                     )}
                     {activeOrderTab === 1 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0].deliveredOrders.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1570,20 +2294,21 @@ const Profile = () => {
                               </div>
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                     {activeOrderTab === 2 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0].returnOrders.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1666,20 +2391,21 @@ const Profile = () => {
                               )}
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                     {activeOrderTab === 3 && (
                       <div className="orderListWrapper">
-                        {user[0] &&
-                          user[0].cancelledOrders.map((item, index) => (
+                        {orderList &&
+                          orderList?.map((item, index) => (
                             <div className="orderList active" key={index}>
                               <div className="orderDetail">
                                 <div className="leftOrder">
-                                  <img src={item.image} alt={item.name} />
+                                  <img src={item.product_image} alt={item.product_name} />
                                   <div>
-                                    <h3>{item.name}</h3>
-                                    <p className="openReturnWindow">{`Return window open on ${item.openReturnWindow}`}</p>
-                                    <p>{`Order # ${item.order_id}`}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                                    <p>{`Order # ${item.order_number}`}</p>
                                   </div>
                                 </div>
                                 <div className="rightOrder">
@@ -1739,6 +2465,7 @@ const Profile = () => {
                               </div>
                             </div>
                           ))}
+                          {!orderList && <p>No orders found.</p>}
                       </div>
                     )}
                   </div>
@@ -1753,18 +2480,6 @@ const Profile = () => {
                 <form onSubmit={handleAddressSubmit}>
                   <div className="box">
                     <div className="form-control">
-                      <label>Country/Region</label>
-                      <input
-                        type="text"
-                        name="country"
-                        value={addressFormData.country}
-                        onChange={handleAddressInputChange}
-                      />
-                      {formErrors.country && (
-                        <p className="error">{formErrors.country}</p>
-                      )}
-                    </div>
-                    <div className="form-control">
                       <label>Full name (First and Last name)</label>
                       <input
                         type="text"
@@ -1776,8 +2491,6 @@ const Profile = () => {
                         <p className="error">{formErrors.fullName}</p>
                       )}
                     </div>
-                  </div>
-                  <div className="box">
                     <div className="form-control">
                       <label>Mobile Number</label>
                       <input
@@ -1790,6 +2503,8 @@ const Profile = () => {
                         <p className="error">{formErrors.phone}</p>
                       )}
                     </div>
+                  </div>
+                  <div className="box">
                     <div className="form-control">
                       <label>Email</label>
                       <input
@@ -1800,6 +2515,18 @@ const Profile = () => {
                       />
                       {formErrors.email && (
                         <p className="error">{formErrors.email}</p>
+                      )}
+                    </div>
+                    <div className="form-control">
+                      <label>House Number</label>
+                      <input
+                        type="text"
+                        name="house_no"
+                        value={addressFormData.house_no}
+                        onChange={handleAddressInputChange}
+                      />
+                      {formErrors.house_no && (
+                        <p className="error">{formErrors.house_no}</p>
                       )}
                     </div>
                   </div>
@@ -1817,20 +2544,6 @@ const Profile = () => {
                       )}
                     </div>
                     <div className="form-control">
-                      <label>Pincode</label>
-                      <input
-                        type="text"
-                        name="pincode"
-                        value={addressFormData.pincode}
-                        onChange={handleAddressInputChange}
-                      />
-                      {formErrors.pincode && (
-                        <p className="error">{formErrors.pincode}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="box">
-                    <div className="form-control">
                       <label>Town/City</label>
                       <input
                         type="text"
@@ -1842,16 +2555,30 @@ const Profile = () => {
                         <p className="error">{formErrors.city}</p>
                       )}
                     </div>
+                  </div>
+                  <div className="box">
                     <div className="form-control">
-                      <label>State</label>
+                      <label>Pincode</label>
                       <input
                         type="text"
-                        name="state"
-                        value={addressFormData.state}
+                        name="pincode"
+                        value={addressFormData.pincode}
                         onChange={handleAddressInputChange}
                       />
-                      {formErrors.state && (
-                        <p className="error">{formErrors.state}</p>
+                      {formErrors.pincode && (
+                        <p className="error">{formErrors.pincode}</p>
+                      )}
+                    </div>
+                    <div className="form-control">
+                      <label>Country/Region</label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={addressFormData.country}
+                        onChange={handleAddressInputChange}
+                      />
+                      {formErrors.country && (
+                        <p className="error">{formErrors.country}</p>
                       )}
                     </div>
                   </div>
@@ -1864,17 +2591,46 @@ const Profile = () => {
                 </form>
               </div>
               <h3>Edit, Remove and set as default addresses for orders </h3>
+                {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
+                    <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                            {itemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Pagination component */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handlePageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={page}  // Sync current page with URL
+                        disabled={totalAddressCount === 0} 
+                    />
+                  </div>
+                }
               <div className="addressList">
                 {user[0].addresses ? (
                   <ul>
                     {user[0].addresses.map((address) => (
                       <li key={address.id}>
-                        <h4>{address.fullName}</h4>
+                        <h4>{address.full_name}</h4>
                         <p className="address">
-                          Full Address: {address.address}, {address.city},
-                          {address.state}, {address.pincode}
+                          Full Address: {address.house_number}, {address.street}, {address.country},
+                          {address.postcode}
                         </p>
-                        <p>Phone Number: {address.phone}</p>
+                        <p>Email: {address.email}</p>
+                        <p>Phone Number: {address.mobile}</p>
                         <div className="action">
                           <p onClick={() => handleEditAddress(address)}>
                             Edit |
@@ -1884,140 +2640,37 @@ const Profile = () => {
                           </p>
                           <p
                             onClick={() => handleSetDefaultAddress(address.id)}
-                            className={address.isDefault ? "default" : ""}
+                            className={address.isDefault === "True" ? "default" : ""}
                           >
-                            {address.isDefault ? "Default" : "Set as Default"}
+                            {address.isDefault === "True" ? "Default" : "Set as Default"}
                           </p>
                         </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  ""
+                  <p>No Address found!</p>
                 )}
               </div>
             </div>
           )}
           {activeTab === 3 && (
-            <div className="reviewedItems">
-              <h3>Item Reviews</h3>
-              <div className="reviewItemList">
-                {user[0].reviewedProducts &&
-                  user[0].reviewedProducts.map((item, index) => (
-                    <div className="reviewProduct">
-                      <div className="item_header">
-                        <div className="leftReviewPart">
-                          <img src={item.prd_image} alt={item.prd_name} />
-                        </div>
-                        <div className="rightReviewPart">
-                          {item.prd_name && <h4>{item.prd_name}</h4>}
-                          {item.order_no && <p>ORDER # {item.order_no}</p>}
-                          {item.rating && (
-                            <StarRating userrating={item.rating} />
-                          )}
-                        </div>
-                      </div>
-                      <p>{item.descriptipn}</p>
-                      <div className="reviewd_prd_image">
-                        {item.prd_review_image &&
-                          item.prd_review_image.map((img_data) => (
-                            <div className="item">
-                              <img src={item.prd_image} alt={item.prd_name} />
-                            </div>
-                          ))}
-                      </div>
-                      <div className="review_time">{item.date}</div>
-                    </div>
-                  ))}
-              </div>
-            </div>
+            <Reviews />
           )}
           {activeTab === 4 && (
-            <div className="coupens">
-              <h3>Hurry Up!!! </h3>
-              <div className="coupensList">
-                {user[0].availableCoupens &&
-                  user[0].availableCoupens.map((item, index) => (
-                    <div className="availableCoupen" key={index}>
-                      {copyMessage.index === index && (
-                        <p className="selectedCopiedMessage">
-                          {copyMessage.message}
-                        </p>
-                      )}
-                      <div
-                        className="copySelection"
-                        onClick={() => handleCopy(item.title, index)}
-                      >
-                        <img src="/images/icons/copy.svg" alt="copy Item" />
-                      </div>
-                      <h4>{item.title}</h4>
-                      <p>{item.terms}</p>
-                      <ul>
-                        {item.conditions &&
-                          item.conditions.map((data) => <li>{data.value}</li>)}
-                      </ul>
-                      <p className="validity">{item.validity}</p>
-                    </div>
-                  ))}
-                {!user[0].availableCoupens && <p>No Coupens available now</p>}
-              </div>
-            </div>
+            <Coupens />
           )}
           {activeTab === 5 && (
-            <div className="whistlistList">
-              <h3>Your Wishlist Waiting...</h3>
-              <div className="whistListWrapper">
-                {user[0].wishlist &&
-                  user[0].wishlist.map((item, index) => (
-                    <div key={index} className="whistlistMainWrapper">
-                      <div className="whistlistBox">
-                        <div className="leftWhistlist">
-                          <img src={item.image} alt={item.name} />
-                        </div>
-                        <div className="rightWhistlist">
-                          <h4>
-                            <span>{item.name}</span>
-                            <button className="addToCart" onClick={() => handleAddToCart(item)}>Add to cart</button>
-                          </h4>
-                          {item.rating && (
-                            <StarRating userrating={item.rating} />
-                          )}
-                          <div className="priceSection">
-                            <div className="priceList">
-                              <p className="discount">$ {item.discount}</p>
-                              <p className="original">$ {item.original}</p>
-                            </div>
-                            {item.discountLabel && (
-                              <p className="discount">$ {item.discountLabel}</p>
-                            )}
-                          </div>
-                          <div className="cartActionItems">
-                            <div className="icon">
-                              <img
-                                src="/images/icons/share.svg"
-                                alt="share Item"
-                              />
-                            </div>
-                            <div
-                              className="icon"
-                              onClick={() => handleRemoveItem(item.id)}
-                            >
-                              <img
-                                src="/images/icons/delete.svg"
-                                alt="delete Item"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
+            <Wishlist />
+          )}
+          {activeTab === 6 && (
+            <>
+              <Notifications />
+            </>
           )}
         </div>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

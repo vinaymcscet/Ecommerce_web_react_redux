@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Blog.css';
 import BlogCard from '../../components/BlogCard/BlogCard';
-import { BlogsList } from '../../utils/BlogsList';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllBlogs } from '../../store/slice/api_integration';
 
 const Blog = () => {
+    const dispatch = useDispatch();
+    const { blogList } = useSelector(state => state.user);
+
+    useEffect(() => {
+        dispatch(getAllBlogs());
+    }, [])
+    
   return (
     <div className='Blogs'>
         <div className="blogsHeader">
             <h2>Blogs</h2>
-            <div className="category">
-                <select>
-                    <option>Select Category</option>
-                    <option>Category 1</option>
-                    <option>Category 2</option>
-                    <option>Category 3</option>
-                </select>
-            </div>
         </div>
         <div className="blogsList">
-            <BlogCard card={BlogsList} />
+            <BlogCard card={blogList} />
         </div>
     </div>
   )

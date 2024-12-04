@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Subscribe from '../Subscribe/Subscribe';
 import Copyright from '../Copyright/Copyright';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import './Footer.css';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ABOUT_US, DISCLAIMER, FAQS, ORDER_CANCELLATION, PRIVACY_POICY, REFUND_POLICY, RETURN_REFUND, SHIPPING_DELIVERY, TERMS_CONDITION } from '../../utils/Constants';
+import { getCMSRequest, getCMSSocialLinksRequest } from '../../store/slice/api_integration';
+import { getAbsoluteUrl } from '../../utils/AbsoluteUrl';
 
 const Footer = () => {
+    const dispatch = useDispatch();
+    const { cmsSocialLinks } = useSelector(state => state.cms);
+    const handleCMSPage = (url) => {
+        dispatch(getCMSRequest(url))
+    }
+    
+    useEffect(() => {
+        dispatch(getCMSSocialLinksRequest());
+    }, [])
     return (
         <div className='footercontainer'>
             <Subscribe />
@@ -17,7 +30,7 @@ const Footer = () => {
                             <div className="list">
                                 <h4>Company info</h4>
                                 <ul>
-                                    <li><Link to="/about">About us</Link></li>
+                                    <li><Link to="/about" onClick={() => handleCMSPage(ABOUT_US)}>About us</Link></li>
                                     <li><Link to="/blog">Blog</Link></li>
                                     <li><Link to="/contact">Contact us</Link></li>
                                 </ul>
@@ -27,14 +40,14 @@ const Footer = () => {
                             <div className="list">
                                 <h4>Customer service</h4>
                                 <ul>
-                                    <li><Link to="/faq">FAQ's</Link></li>
-                                    <li><Link to="/terms-condition">Term & Condition</Link></li>
-                                    <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-                                    <li><Link to="/disclaimer">Disclaimer</Link></li>
-                                    <li><Link to="/refund-policy">Refund Policy</Link></li>
-                                    <li><Link to="/return-and-refund">Return & Refunds</Link></li>
-                                    <li><Link to="/shipping-and-delivery">Shipping & Delivery</Link></li>
-                                    <li><Link to="/order-cancellation">Order Cancellation</Link></li>
+                                    <li><Link to="/faq" onClick={() => handleCMSPage(FAQS)}>FAQ's</Link></li>
+                                    <li><Link to="/terms-condition" onClick={() => handleCMSPage(TERMS_CONDITION)}>Term & Condition</Link></li>
+                                    <li><Link to="/privacy-policy" onClick={() => handleCMSPage(PRIVACY_POICY)}>Privacy Policy</Link></li>
+                                    <li><Link to="/disclaimer" onClick={() => handleCMSPage(DISCLAIMER)}>Disclaimer</Link></li>
+                                    <li><Link to="/refund-policy" onClick={() => handleCMSPage(REFUND_POLICY)}>Refund Policy</Link></li>
+                                    <li><Link to="/return-and-refund" onClick={() => handleCMSPage(RETURN_REFUND)}>Return & Refunds</Link></li>
+                                    <li><Link to="/shipping-and-delivery" onClick={() => handleCMSPage(SHIPPING_DELIVERY)}>Shipping & Delivery</Link></li>
+                                    <li><Link to="/order-cancellation" onClick={() => handleCMSPage(ORDER_CANCELLATION)}>Order Cancellation</Link></li>
                                 </ul>
                             </div>
                         </Grid>
@@ -42,10 +55,10 @@ const Footer = () => {
                             <div className="list connect">
                                 <h4>Connect with FikFis</h4>
                                 <ul>
-                                    <li><Link href="#"><img src="/images/icons/Youtube.svg" alt='Youtube' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Twitter.svg" alt='Twitter' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Instagram.svg" alt='Instagram' /> <span>@fikfis</span></Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Facebook.svg" alt='Facebook' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.youtube_url)} target='_blank'><img src="/images/icons/Youtube.svg" alt='Youtube' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.twitter_url)} target='_blank'><img src="/images/icons/Twitter.svg" alt='Twitter' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.instagram_url)} target='_blank'><img src="/images/icons/Instagram.svg" alt='Instagram' /> <span>@fikfis</span></Link></li>
+                                    <li><Link to={getAbsoluteUrl(cmsSocialLinks?.facebook_url)} target='_blank'><img src="/images/icons/Facebook.svg" alt='Facebook' /> <span>@fikfis</span></Link></li>
                                 </ul>
                             </div>
                         </Grid>

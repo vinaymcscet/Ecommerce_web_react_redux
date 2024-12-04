@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import './StarRating.css';
 
-const StarRating = ({ userrating }) => {
+const StarRating = ({ userrating = 0, onRatingChange }) => {
     const [rating, setRating] = useState(userrating ? userrating : 0);
     // const [hover, setHover] = useState(null);
     // const [totalStars, setTotalStars] = useState(5);
     const [totalStars] = useState(5);
+    const handleRatingSelect = (currentRating) => {
+        setRating(currentRating); // Update local rating state
+        if (onRatingChange) {
+            onRatingChange(currentRating); // Notify parent of the change
+        }
+    };
 
     return (
         <div className="starRating">
@@ -18,7 +24,8 @@ const StarRating = ({ userrating }) => {
                             type="radio"
                             name="rating"
                             value={currentRating}
-                            onChange={() => setRating(currentRating)}
+                            onChange={() => handleRatingSelect(currentRating)}
+                            userrating = {rating}
                         />
                         <span
                             className="star"

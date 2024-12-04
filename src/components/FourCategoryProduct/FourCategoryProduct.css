@@ -22,7 +22,7 @@
 }
 
 .categoryBoxes {
-  width: 29%;
+  width: 31%;
   margin: 1% 1%;
 }
 
@@ -54,7 +54,7 @@
 .fourCategoryProduct {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   width: 90%;
   margin: auto;
   margin: auto;

@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Contact.css";
 import Button from "../../components/Button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { getCMSContactUsRequest } from "../../store/slice/api_integration";
 
 const Contact = () => {
+  const { cmsSocialLinks } = useSelector(state => state.cms);
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -63,7 +68,15 @@ const Contact = () => {
     } else {
       setErrors({});
       // Process the form data (e.g., submit to server)
-      console.log("Form submitted:", formData);
+      const responseObj = {
+        type: 'support/contact',
+        name : formData.fullName,
+        email : formData.email,
+        mobile :  formData.phone,
+        subject :  formData.subject,
+        description : formData.message,
+      };
+      dispatch(getCMSContactUsRequest(responseObj));
     }
   };
   return (
@@ -73,16 +86,15 @@ const Contact = () => {
         <h6>Leave A Message</h6>
       </div>
       <p className="leaveText">
-        {" "}
         If You Have Any Questions Please Send Us A Message Using The Adjacent
         Form And We Will Get Back To You As Soon As Possible
       </p>
       <div className="contactMessage">
         <h6>
-          Email: <a href="mailto:abc@xyz.com">abc@xyz.com</a>
+          Email: <a href={`mailto:${cmsSocialLinks?.email_support}`}>{cmsSocialLinks?.email_support}</a>
         </h6>
         <h6>
-          Customer Care Number: <a href="tel:0000-0000-0000">0000-0000-0000</a>
+          Customer Care Number: <a href={`tel:${cmsSocialLinks?.mobile_fikfis}`}>{cmsSocialLinks?.mobile_fikfis}</a>
         </h6>
       </div>
       <div className="contactForm">

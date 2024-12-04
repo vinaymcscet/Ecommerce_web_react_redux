@@ -1,248 +1,251 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { useNavigate } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 
-import {
-  colors,
-  mainProductFilterList,
-  priceOptions,
-  ratingOptions,
-  sizeOptions,
-} from "../../utils/CommonUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts, getHomeData, getProductOnSubCategory, productDetailData, totalFilterData } from "../../store/slice/api_integration";
 import "./ProductList.css";
-import { useSelector } from "react-redux";
+import ReactPaginate from "react-paginate";
+import { DEFAULT_OPTIONS } from "../../utils/Constants";
+import { parsePriceRange, parseRating } from "../../utils/PriceRange";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
-  const [expandedChild, setExpandedChild] = useState({});
-  const [activeIndex, setActiveIndex] = useState(null);
+  // const [expandedChild, setExpandedChild] = useState({});
+  // const [activeIndex, setActiveIndex] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  const handleClick = (index) => {
-    setActiveIndex(index);
-  };
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
+  const [page, setPage] = useState(0);  // Default page 0 (first page)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  
+  console.log("subCategoryList", subCategoryList);
+  const searchParams = new URLSearchParams(location.search);
+  const subcategory_id = searchParams.get('subcategory_id');
+  console.log("subcategory_id", subcategory_id);
+  
+  
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const subcategory_id = searchParams.get('subcategory_id');
+    const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+    setPage(pageParam - 1); // Set initial page based on URL
+    
+    const fetchProducts = async () => {
+      setLoading(true);  // Show loader
+      if (subcategory_id) {
+        const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+        handleClearFilters();
+        await dispatch(totalFilterData(responseObj));
+        await dispatch(getProductOnSubCategory(responseObj));
+      } else {
+        await dispatch(getAllProducts());
+      }
+      setLoading(false);  // Hide loader
+    };
+    fetchProducts();
+  }, [location.search, itemsPerPage, dispatch]);
+  
 
   const handleParentAccordionChange = (panel) => (event, isExpanded) => {
     setExpandedParent(isExpanded ? panel : false);
   };
 
-  const handleChildAccordionChange =
-    (parentId, subPanel) => (event, isExpanded) => {
-      setExpandedChild((prevState) => ({
-        ...prevState,
-        [parentId]: isExpanded ? subPanel : false,
-      }));
+  const handleProductClick = (item) => {
+    const responseObj = { 
+      product_id: item.product_id,
+    }
+    dispatch(productDetailData(responseObj))
+    navigate(`/product/${item.product_id}`, { state: { product: item } });
+  };
+
+  // Generate dropdown options based on total results
+  const itemsPerPageOptions = DEFAULT_OPTIONS
+      .filter(option => option <= totalProductListCount);
+
+    const handleItemsPerPageChange = (e) => {
+      const newItemsPerPage = parseInt(e.target.value, 10);
+      setItemsPerPage(newItemsPerPage);
+      setPage(0); // Reset to the first page
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set('page', 1);
+      searchParams.set('itemsPerPage', newItemsPerPage);
+      navigate(`?${searchParams.toString()}`);
     };
 
-  const renderIcon = (isExpanded) => {
-    return isExpanded ? <RemoveIcon /> : <AddIcon />;
-  };
+    // Handle page change event (when user clicks next/previous)
+    const handlePageChange = (data) => {
+      const { selected } = data;
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set('page', selected + 1); // `react-paginate` uses 0-based index, we set to 1-based index in URL
+      navigate(`?${searchParams.toString()}`); // Update the URL with the new page
+    };
 
-  const handleProductClick = (item) => {
-    navigate(`/product/${item.id}`, { state: { product: item } });
-  };
+    // Calculate total pages based on total results
+    const totalPages = Math.max(Math.ceil(totalProductListCount / itemsPerPage), 1);
 
-  const { productList } = useSelector((state) => state.product);
+    function convertToLowercase(text) {
+      return text.toLowerCase();
+    }
+    // Apply Filter
+    const handleFilterChange = async (e, filterLabel) => {
+      let filterValue = e.target.value;
+      // filterLabel = filterLabel.toLowerCase();
+      // const updatedLabel = convertToLowercase(filterLabel);
+      const updatedFilters = { ...selectedFilters, [filterLabel]: filterValue };
+      setSelectedFilters(updatedFilters);
+      
+      const filters = {};
+      if (updatedFilters.Color) filters.color = updatedFilters.Color;
+      if (updatedFilters['Shoe Size']) filters.size = updatedFilters['Shoe Size'];;
+      if (updatedFilters.Price) filters.price = parsePriceRange(updatedFilters.Price);
+      if (updatedFilters.Rating) filters.rating = parseRating(updatedFilters.Rating);
+      
+      const searchParams = new URLSearchParams(location.search);
+      const subcategory_id = searchParams.get('subcategory_id');
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
 
+      const responseObj = {
+        sub_category_id: subcategory_id,
+        offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        limit: itemsPerPage,
+        filters
+      }
+      setLoading(true);
+      await dispatch(totalFilterData(responseObj));
+      await dispatch(getProductOnSubCategory(responseObj));
+      setLoading(false);
+    }
+    const handleClearFilters = async () => {
+      setLoading(true);
+      setSelectedFilters({});  // Reset selected filters
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.delete('Color');
+      searchParams.delete('Show Size');
+      searchParams.delete('Rrice');
+      searchParams.delete('Rating');
+      navigate(`?${searchParams.toString()}`);
+
+      const subcategory_id = searchParams.get('subcategory_id');
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      setPage(pageParam - 1);
+      const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+      await dispatch(getProductOnSubCategory(responseObj));
+      setLoading(false);
+    };
+    
+    useEffect(() => {
+      // if (subCategoryList?.length === 0) {
+        dispatch(getHomeData()); // Fetch home data, which includes `subCategoryList`
+      // }
+    }, [dispatch, subCategoryList])
   return (
     <div className="productListing">
       <ProductSlider title={false} tile={7} />
-      <CategorySlider />
+      <div className="listPageCategoryItems">
+        <CategorySlider subCategoryId={subcategory_id} />
+      </div>
       <div className="prdWrapper">
-        <div className="prdLeft">
+      {totalFilterList && <div className="prdLeft">
           <div className="filterHeader">
             <h3>Filter</h3>
-            <span>clear Filter</span>
+            <span onClick={handleClearFilters} className="clearFilterButton">clear Filter</span>
           </div>
           <div className="filterList">
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${"01"}-content`}
-                id={`panel-${"01"}-header`}
-              >
-                Category
-              </AccordionSummary>
-              <AccordionDetails>
-                {mainProductFilterList.map((category) => (
-                  <Accordion
-                    key={category.id}
-                    expanded={expandedParent === `panel-${category.id}`}
-                    onChange={handleParentAccordionChange(
-                      `panel-${category.id}`
-                    )}
-                  >
-                    <AccordionSummary
-                      expandIcon={renderIcon(
-                        expandedParent === `panel-${category.id}`
-                      )}
-                      aria-controls={`panel-${category.id}-content`}
-                      id={`panel-${category.id}-header`}
-                    >
-                      <p>{category.name}</p>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {category.subProduct.map((subProduct) => (
-                        <Accordion
-                          key={subProduct.id}
-                          expanded={
-                            expandedChild[category.id] ===
-                            `subpanel-${subProduct.id}`
-                          }
-                          onChange={handleChildAccordionChange(
-                            category.id,
-                            `subpanel-${subProduct.id}`
-                          )} // Maintain child accordion state separately
-                        >
-                          <AccordionSummary
-                            expandIcon={renderIcon(
-                              expandedChild[category.id] ===
-                                `subpanel-${subProduct.id}`
-                            )}
-                            aria-controls={`subpanel-${subProduct.id}-content`}
-                            className="subpanel"
-                            id={`subpanel-${subProduct.id}-header`}
-                          >
-                            <p>{subProduct.name}</p>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <ul>
-                              {subProduct.innerProduct.map((inner) => (
-                                <li key={inner.id}>{inner.name}</li>
-                              ))}
-                            </ul>
-                          </AccordionDetails>
-                        </Accordion>
+            {totalFilterList && totalFilterList?.map((filter, index) => (
+                <Accordion key={index} expanded={expandedParent === `panel-${index}`} onChange={handleParentAccordionChange(`panel-${index}`)}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel-${index}-content`} id={`panel-${index}-header`}>
+                    <p>{filter.label}</p>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <ul className="sizeFilter">
+                      {filter.values.map((value, valueIndex) => (
+                        <li key={valueIndex}>
+                          <label className="round">
+                            <input 
+                                type="radio" 
+                                name={filter.label} 
+                                value={value} 
+                                checked={selectedFilters[filter.label] === value}
+                                onChange={(e) => handleFilterChange(e, filter.label)}  />
+                            <span>{value}</span>
+                          </label>
+                        </li>
                       ))}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${"02"}-content`}
-                id={`panel-${"02"}-header`}
-              >
-                Size
-              </AccordionSummary>
-              <AccordionDetails>
-                <ul className="sizeFilter">
-                  {sizeOptions.map((size) => (
-                    <li key={size.id}>
-                      <label className="round">
-                        <input type="radio" name="size" value={size.label} />
-                        <span>{size.label}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${"03"}-content`}
-                id={`panel-${"03"}-header`}
-              >
-                Price
-              </AccordionSummary>
-              <AccordionDetails>
-                <ul className="sizeFilter price">
-                  {priceOptions.map((size) => (
-                    <li key={size.id}>
-                      <label className="round">
-                        <input type="radio" name="size" value={size.label} />
-                        <span>{size.label}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-                <div className="customPrice">
-                  <input type="text" placeholder="$ Min." name="min" />
-                  <input type="text" placeholder="$ Max." name="max" />
-                  <button type="button">Go</button>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${"04"}-content`}
-                id={`panel-${"04"}-header`}
-              >
-                Customer Rating
-              </AccordionSummary>
-              <AccordionDetails>
-                <ul className="sizeFilter price">
-                  {ratingOptions.map((size) => (
-                    <li key={size.id}>
-                      <label className="round">
-                        <input type="radio" name="size" value={size.label} />
-                        <span>{size.label}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${"05"}-content`}
-                id={`panel-${"05"}-header`}
-              >
-                Color
-              </AccordionSummary>
-              <AccordionDetails>
-                <ul className="colorPalette">
-                  {colors.map((color, index) => (
-                    <li
-                      key={index}
-                      className={index === activeIndex ? "active" : ""}
-                      onClick={() => handleClick(index)}
-                    >
-                      <img src={color} alt={`color-palette-${index + 1}`} />
-                    </li>
-                  ))}
-                </ul>
-              </AccordionDetails>
-            </Accordion>
+                    </ul>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
           </div>
-        </div>
-        {<div className="prdRight">
+        </div>}
+        {productList && <div className={totalFilterList ? 'prdRight ' : 'prdRight noFilter'}>
+          {productList.length > 0 && <div className='paginationBox'>
+              <div className="itemsPerPageDropdown">
+                  <label>Items per page: </label>
+                  <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                      {itemsPerPageOptions.map(option => (
+                          <option key={option} value={option}>
+                              {option}
+                          </option>
+                      ))}
+                  </select>
+              </div>
+              {/* Pagination component */}
+              <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={totalPages}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={3}
+                  onPageChange={(ev) => handlePageChange(ev)}
+                  containerClassName={"pagination"}
+                  activeClassName={"active"}
+                  forcePage={page}  // Sync current page with URL
+                  disabled={totalProductListCount === 0} 
+              />
+          </div>}
           <div className="productList">
-            {productList && productList.length > 0 ? (
-              productList[0].map((item, index) => (
-                <div key={index} onClick={() => handleProductClick(item)}>
-                  <ProductListCard
-                    id={item.id}
-                    image={item.image ? item.image : ""}
-                    name={item.name ? item.name : ""}
-                    userrating={item.rating ? item.rating : ""}
-                    discountPrice={item.discount ? item.discount : ""}
-                    originalPrice={item.original ? item.original : ""}
-                    save={item.save ? item.save : ""}
-                    coupenCode={item.coupen ? item.coupen : ""}
-                    deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                    freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                    bestSeller={item.bestseller ? item.bestseller : ""}
-                    time={item.time ? item.time : ""}
-                    discountLabel={item.discountlabel ? item.discountlabel : ""}
-                  />
-                </div>
-              ))
+            {loading ? (
+              <div className="loadingContainer">
+                <CircularProgress /> {/* Show loader */}
+              </div>
             ) : (
-              <p className="noProductAvailable">No product history available</p>
+              productList && productList.length > 0 ? (
+                productList.map((item, index) => (
+                  <div key={index} onClick={() => handleProductClick(item)}>
+                    <ProductListCard
+                      id={item.id}
+                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
+                      name={item.name || ""}
+                      userrating={item.rating || ""}
+                      discountPrice={item.discountedPrice || ""}
+                      originalPrice={item.price || ""}
+                      save={item.save || ""}
+                      coupenCode={item.coupen || ""}
+                      deliveryTime={item.deliverytime || ""}
+                      freeDelivery={item.freedelivery || ""}
+                      bestSeller={item.bestseller || ""}
+                      time={item.time || ""}
+                      discountLabel={item.discountlabel || ""}
+                      wishlistStatus={item.wishlistStatus || ''}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="noProductAvailable">No product available</p>
+              )
             )}
           </div>
         </div>}

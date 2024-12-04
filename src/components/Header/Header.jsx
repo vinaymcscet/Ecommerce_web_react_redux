@@ -6,23 +6,26 @@ import Box from "@mui/material/Box";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import "./Header.css";
 import Hamburger from "../Hamburger/Hamburger";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
-import { setLogout } from '../../store/slice/userSlice';
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
+import { getItemsInCartData, getUserRequest, logoutRequest, searchProductData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { device_token } from "../../utils/Constants";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
-  const { cartItems } = useSelector((state) => state.cart);
+  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
   
-
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
-  const [toggleModalState, setToggleModalState] = useState(false)
+  const [toggleModalState, setToggleModalState] = useState(true)
+  const [searchValue, setSearchValue] = useState("")
+  
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
   };
@@ -32,12 +35,13 @@ const Header = () => {
     dispatch(toggleModal(toggleModalState));
   };
   const redirectToCart = () => {
+    dispatch(viewItemsInCartData());
     navigate("/cart");
   };
   const redirectToSupport = () => {
     navigate("/contact");
   };
-
+  
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
   const toggleUserMenu = (e) => {
     e.stopPropagation();
@@ -45,10 +49,47 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    dispatch(setLogout()); // Clear the user array in Redux
-    navigate("/"); // Redirect after logout
+    const responseObj = {
+      device_token: device_token
+    }
+    dispatch(logoutRequest(responseObj));
   };
 
+  const handleProfile = () => {
+    dispatch(getUserRequest());
+  };
+
+  const getFname = () => {
+    const[fName, ...lName] = user[0]?.fullname.split(" ");
+    return fName;
+  }
+  useEffect(() => {
+    // Clear search value whenever location changes
+    if(location.pathname !== '/search') setSearchValue('');
+  }, [location]);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get('query');
+    if (query) {
+      setSearchValue(query);
+    }
+  }, [location.search]);
+
+  const handleSearch = () => {
+    if(searchValue) {
+      const responseObj = {
+        keyword: searchValue,
+        offset: 0,
+        limit: 10,
+      }
+      dispatch(searchProductData(responseObj));
+      navigate(`/search?query=${encodeURIComponent(searchValue)}`);
+    }   
+  }
+  useEffect(() => {
+    dispatch(getUserRequest());
+    dispatch(viewItemsInCartData());
+  }, [])
   return (
     <div>
       <HeaderPin />
@@ -59,7 +100,7 @@ const Header = () => {
               <ul className="leftHeaderMenu">
                 <li>
                   <Link to="/">
-                    <img src="/images/icons/LOGO.png" alt="Logo" />
+                    <img src="/images/icons/LOGO1.png" alt="Logo" />
                   </Link>
                 </li>
                 <li>
@@ -74,18 +115,23 @@ const Header = () => {
             </Grid>
             <Grid item xs={6} md={4} lg={4}>
               <div className="searchPanel">
-                <select name="select category" className="selectCategory">
+                {/* <select name="select category" className="selectCategory">
                   <option>Categories</option>
                   <option>Categories 1</option>
                   <option>Categories 2</option>
                   <option>Categories 3</option>
-                </select>
+                </select> */}
                 <div className="inputBox">
                   <input
                     type="text"
+                    name="search"
                     placeholder="Search all categories products"
+                    value={searchValue}
+                    onChange={(ev) => setSearchValue(ev.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <SearchRoundedIcon />
+                  <SearchRoundedIcon 
+                    onClick={handleSearch} />
                 </div>
               </div>
             </Grid>
@@ -104,15 +150,23 @@ const Header = () => {
                 {user && user.length > 0 && (
                   <div className="menu-container">
                     <li onClick={toggleUserMenu}>
-                      <img src={user[0]?.image} alt={user[0]?.name} />
-                      <p>{user[0]?.name}</p>
+                      <img 
+                          src={user[0]?.profile_pic || user[0]?.data?.profile_pic || '/images/icons/avtar.png'} 
+                          alt={user[0]?.fullname || user[0]?.data?.first_name || 'User'} 
+                      />
+                      {user[0]?.fullname && !user[0].fullname.toLowerCase().includes("undefined") && (
+                        <p>{getFname()}</p>
+                      )}
+                      {user[0].fullname.toLowerCase().includes("undefined") && (
+                        <p>{user[0]?.data?.first_name || 'User'}</p>
+                      )}
                       <nav
                         ref={dropdownRef}
                         className={`menu ${isActive ? "active" : "inactive"}`}
                       >
                         <ul>
                           <li>
-                            <Link to="/userprofile">
+                            <Link to="/userprofile" onClick={handleProfile}>
                               <img
                                 src="/images/icons/login.png"
                                 alt="Profile"
@@ -121,10 +175,10 @@ const Header = () => {
                             </Link>
                           </li>
                           <li>
-                            <a onClick={handleLogout}>
+                            <Link to="/" onClick={handleLogout}>
                               <img src="/images/icons/login.png" alt="Logout" />
                               <span>Logout</span>
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </nav>
@@ -133,7 +187,7 @@ const Header = () => {
                 )}
                 <li onClick={() => redirectToCart()} className="cartItem">
                   <img src="/images/icons/cart.png" alt="Cart" />
-                  {cartItems.length > 0 && <span className="cartCount">{cartItems.length}</span>}
+                  {viewCartItems?.cartItems != undefined && <span className="cartCount">{viewCartItems?.cartItems.length}</span>}
                   <p>Cart</p>
                 </li>
               </ul>

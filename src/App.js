@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
@@ -14,8 +14,14 @@ import ShippingAndDelivery from "./pages/ShippingAndDelivery/ShippingAndDelivery
 import OrderCancellation from "./pages/OrderCancellation/OrderCancellation";
 import Modal from "./components/Modal/Modal";
 import CategoryModal from "./components/CategoryModal/CategoryModal";
+import { ToastContainer, toast } from "react-toastify";
 
 import "./App.css";
+import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
+import { setUser } from "./store/slice/userSlice";
+import { getTokensFromLocalStorage } from "./utils/StorageTokens";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import CancelOrderModal from "./components/CancelOrderModal/CancelOrderModal";
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -26,27 +32,89 @@ const Contact = React.lazy(() => import("./pages/Contact/Contact"));
 const Category = React.lazy(() => import("./pages/Category/Category"));
 const ProductList = React.lazy(() => import("./pages/ProductList/ProductList"));
 const ProductDetail = React.lazy(() =>
-  import("./pages/ProductDetail/ProductDetail")
-);
+  import("./pages/ProductDetail/ProductDetail"));
+const SectionDetail = React.lazy(() =>
+  import("./pages/SectionDetail/SectionDetail"));
+
 const Cart = React.lazy(() => import("./pages/Cart/Cart"));
 const OrderComplete = React.lazy(() =>
   import("./pages/OrderComplete/OrderComplete")
 );
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
+const Search = React.lazy(() => import("./pages/Search/Search"));
+const Offline = React.lazy(() => import("./pages/Offline/Offline"));
+
 const AddressModal = React.lazy(() =>
   import("./components/AddressModal/AddressModal")
 );
 
 function App() {
-  const { isAddressModelOpen } = useSelector((state) => state.modal);
+  const { isAddressModelOpen, error, success } = useSelector(
+    (state) => state.modal
+  );
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Clean up the event listeners
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        toast.success(success);
+        setSuccess("");
+      }, 1000);
+    }
+    if (error) {
+      setTimeout(() => {
+        toast.error(error);
+        setError("");
+      }, 1000);
+    }
+  }, [success, error]);
+
+  useEffect(() => {
+    // Load tokens from localStorage when the app starts
+    dispatch(loadTokensFromStorage());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const tokens = getTokensFromLocalStorage();
+    if(tokens) {
+      dispatch(setUser(tokens));
+    }
+  }, []);
+
+  if (!isOnline) {
+    return <Offline />;
+  }
+
   return (
     <div className="App">
       <Header />
       <ScrollToTop />
-      <Suspense fallback={<div className="loading"><img src="/images/icons/LOGO.png" alt="Logo" /></div>}>
+      <Suspense
+        fallback={
+          <div className="loading">
+            <img src="/images/icons/LOGO.png" alt="Logo" />
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
+          <Route path="sectionDetail/:id" element={<SectionDetail />} />
           <Route path="about" element={<About />} />
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:id" element={<BlogDetail />} />
@@ -67,18 +135,26 @@ function App() {
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
           <Route path="order-complete" element={<OrderComplete />} />
-          <Route path="userprofile" element={<Profile />} />
+          {/* <Route path="userprofile" element={<Profile />} /> */}
+          <Route path="userprofile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="search" element={<Search />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
       <Footer />
       <Modal />
       <CategoryModal />
+      <CancelOrderModal />
       {isAddressModelOpen && (
         <Suspense fallback={<div>Loading Address Modal...</div>}>
           <AddressModal />
         </Suspense>
-      )}+
+      )}
+      <ToastContainer />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductSlider from "../../components/ProductSlider/ProductSlider";
 import ImageGallery from "react-image-gallery";
@@ -8,27 +8,72 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedSize, addToCart } from "../../store/slice/cartSlice";
-import { ToastContainer, toast } from "react-toastify";
+import { addProductOnWhistList, addReviewProductData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData } from "../../store/slice/api_integration";
+import CircularProgress from '@mui/material/CircularProgress';
 import "./ProductDetail.css";
-import { setUser } from "../../store/slice/userSlice";
+// import { gaurnteeMessage } from "../../utils/CommonUtils";
+import { DEFAULT_OPTIONS } from "../../utils/Constants";
+import ReactPaginate from "react-paginate";
+import { ShareProduct } from "../../utils/ShareProduct";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
-  const { productHistory } = useSelector((state) => state.product);
+  const navigate = useNavigate();
+  const { 
+    productDetailResponse, 
+    getReview, 
+    getReviewCount = 0, 
+    similarProductListResponse, 
+    similarProductCount = 0,
+    recentView,
+    totalRecentView = 0 } = useSelector((state) => state.product);
+  const { user } = useSelector((state) => state.user);
   
-
+  
+  
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
   const [sizeError, setSizeError] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [rating, setRating] = useState(0);
   const [whistListBox, setWhistListBox] = useState({
     whistlist: "/images/product/whistlist.svg",
     whistlistFill: "/images/product/whistlist-fill.svg",
     share: "/images/product/share.svg",
   });
+  const [userLoggedOnWishLists, setUserLoggedOnWishList] = useState("");
+  const [userLoggedOnCart, setUserLoggedOnCart] = useState("");
+  const [userLoggedOnReview, setUserLoggedOnReview] = useState("");
+  const [userLoggedOnBuyNow, setUserLoggedOnBuyNow] = useState("");
+
+  const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
+  const [handleCartButtonOnLoad, setHandleCartButtonOnLoad] = useState(0);
+  const [imageData, setImageData] = useState([
+    { preview: "", file: null },
+    { preview: "", file: null },
+    { preview: "", file: null },
+    { preview: "", file: null },
+    { preview: "", file: null },
+  ]);
+  const [selected, setSelected] = useState({
+    sku_id: '',
+    color: '', 
+    size: '',
+    currentPrice: 0,
+    originalPrice: 0,
+    discount: ''
+  });
+  const [errorFileType, setErrorFileType] = useState("");
+  const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
+  const [reviewPerPage, setReviewPerPage] = useState(10);
+  const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
+  const [recentViewPerPage, setRecentViewPerPage] = useState(1);
+  
+  const [similarProductPage, setSimilarProductPage] = useState(1);  // Default page 0 (first page)
+  const [similarProductPerPage, setSimilarProductPerPage] = useState(1);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -39,29 +84,70 @@ const ProductDetail = () => {
     email: "",
     review: "",
   });
-  const { user } = useSelector((state) => state.user);
-
-  const [wishlist, setWishlist] = useState(user[0]?.wishlist || []);
+  const [loading, setLoading] = useState(false);
+  const [similarProductLoading, setSimilarProductLoading] = useState(false);
+  const [recentlyViewLoading, setRecentlyViewLoading] = useState(false);
 
   const location = useLocation();
-  const { product } = location.state;
+  const pathSegments = location.pathname.split("/"); // Split URL by `/`
+  const product_id = pathSegments[pathSegments.length - 1];
+
   useEffect(() => {
-    console.log("product---", product);
+    setLoading(true);
+    dispatch(getHomeData())
+    if(product_id === undefined) {
+      return
+    } else {
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj)).finally(() => {
+        setLoading(false); // Set loading to false after fetching data
+        setTimeout(() => {
+          if (location.state?.scrollToBottom) {
+            handleActiveTabs(2);
+            window.scrollTo({
+              top: 800,
+              behavior: "smooth", // For smooth scrolling
+            });
+          }
+        }, 1000);
+      });
+    }
+    
   }, [])
 
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
 
-  const images = product.small.map((item) => ({
-    original: item.image,
-    thumbnail: item.image,
-  }));
+  const images = productDetailResponse?.data?.images?.length
+  ? productDetailResponse?.data?.images.map((item) => ({
+    original: item || '/images/no-product-available.png',
+    thumbnail: item || '/images/no-product-available.png',
+  }))
+  : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
 
   const handleIncrease = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
+    const responseObj = {
+      sku_id: productDetailResponse?.data?.sku_id,
+      type: 'increase'
+    }
+    dispatch(addToCartData(responseObj))
   };
 
   const handleDecrease = () => {
-    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+    setQuantity((prevQuantity) => {
+      if(prevQuantity > 1) {
+        prevQuantity -= 1
+        const responseObj = {
+          sku_id: productDetailResponse?.data?.sku_id,
+          type: 'decrease'
+        }
+        dispatch(addToCartData(responseObj))
+      } else {
+        prevQuantity = 1;
+      }
+    });
   };
 
   const handleChange = (e) => {
@@ -71,12 +157,6 @@ const ProductDetail = () => {
     } else {
       setQuantity(1); // Reset to 1 if invalid input
     }
-  };
-
-  const handleSizeChange = (index) => {
-    setActiveIndex(index);
-    setSizeError("");
-    dispatch(setSelectedSize(product.sizeList[index]?.name));
   };
 
   useEffect(() => {
@@ -146,520 +226,892 @@ const ProductDetail = () => {
     return isValid;
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle Review form submission
+  const handleReviewSubmit = (e) => {
     e.preventDefault();
-
+    const uploadedImages = imageData
+      .filter((data) => data.file !== null) // Exclude empty slots
+      .map((data) => data.file); // Extract the file objects
+    
     if (validate()) {
+      const responseObj = {
+        product_id: productDetailResponse?.data?.product_id ,
+        name: formData.fullName,
+        email: formData.email,
+        ratings: rating,
+        review_text: formData.review,
+        images: uploadedImages,
+      }
+      dispatch(addReviewProductData(responseObj))
+      const reponseReviewObj = {
+        product_id: productDetailResponse?.data?.product_id,
+        offset: 1,
+        limit: 10
+      }
+      dispatch(getReviewProductData(reponseReviewObj))
       setFormData({
         fullName: "",
         email: "",
         review: "",
       });
+      setImageData([
+        { preview: "", file: null },
+        { preview: "", file: null },
+        { preview: "", file: null },
+        { preview: "", file: null },
+        { preview: "", file: null },
+      ]);
       setShowReviewForm(false);
     }
   };
 
   const toggleReviewForm = () => {
+    if(user.length === 0) {
+      setUserLoggedOnReview("Please login to add review.")
+      return;
+    }
     setShowReviewForm(!showReviewForm);
+    setUserLoggedOnReview("");
   };
 
+  // handle item on cart
   const handleAddToCart = () => {
-    if (activeIndex === null) {
+    if(user.length === 0) {
+      setUserLoggedOnCart("Please login to add items to cart.")
+      return;
+    }
+    setHandleCartOnLoad(1);
+    setHandleCartButtonOnLoad(1);
+    if (selected.color_code === null) {
       setSizeError("Please select a size.");
-      return; // Prevent dispatch if size is not selected
+      return;
     }
-
-    // Dispatch product details and quantity to Redux
-    const productData = {
-      ...product,
-      quantity,
-      selectedSize: product.sizeList[activeIndex]?.name,
-    };
-
-    dispatch(addToCart(productData));
-    toast.success("Item added to Cart successfully");
+   
+    const responseObj = {
+      sku_id: productDetailResponse?.data.variants[0]?.sku_id,
+      type: 'increase',
+    }
+    dispatch(addToCartData(responseObj))
+    setUserLoggedOnCart("")
   };
 
+  // Add Item on cart and redirection to cart page on But Now button click
+  const handleBuyNowProduct = () => {
+    if(user.length === 0) {
+      setUserLoggedOnBuyNow("Please login to add items to cart.")
+      return;
+    }
+    const responseObj = {
+      sku_id: productDetailResponse?.data.variants[0]?.sku_id,
+      type: 'increase'
+    }
+    dispatch(addToCartData(responseObj)).finally(() => {
+      setUserLoggedOnBuyNow("")
+      navigate("/cart");
+    });
+  }
+
+  // Adding Product on whistlist
   const handleWishlistToggle = (productData) => {
-    const isWishlisted = wishlist.some((item) => item.id === productData.id);
-
-    let updatedWishlist;
-    if (isWishlisted) {
-      // Remove from wishlist
-      updatedWishlist = wishlist.filter((item) => item.id !== productData.id);
-    } else {
-      // Add to wishlist
-      updatedWishlist = [...wishlist, productData];
+    if(user.length === 0) {
+      setUserLoggedOnWishList("Please login to add items to wishlist.")
+      return;
     }
 
-    setWishlist(updatedWishlist);
-
-    // Now append the updated wishlist to the user object in Redux
-    dispatch(setUser({ ...user[0], wishlist: updatedWishlist }));
+    const responseObj = { sku_id: Number(productData.variants[0].sku_id) }
+    if(productData?.wishlist_status?.toLowerCase() === 'no') {
+      dispatch(addProductOnWhistList(responseObj)).finally(() => {
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+      })
+    } else {
+        dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+          const responseObj = { 
+            product_id: product_id ,
+          }
+          dispatch(productDetailData(responseObj))
+        })
+    }
+    setUserLoggedOnWishList("")
   };
 
-  return (
-    <div className="prdDetail">
-      <ProductSlider title={false} tile={10} />
-      <CategorySlider />
-      <div className="productDetailInfo">
-        <div className="leftDetailInfo">
-          <ImageGallery items={images} />
-        </div>
-        <div className="rightDetailInfo">
-          <div className="leftBar">
-            <div className="bestOption">
-              <div className="ribbon">#Best Seller</div>
-              <div className="whislistBox">
-                <div
-                  onClick={() => handleWishlistToggle(product)}
-                  className="wishlist-btn"
-                >
-                  {wishlist.some((item) => item.id === product.id) ? (
-                    <img
-                      src={whistListBox.whistlistFill}
-                      alt="Whistlist Product"
-                    />
-                  ) : (
-                    <img src={whistListBox.whistlist} alt="Whistlist Product" />
-                  )}
-                </div>
-                <img src={whistListBox.share} alt="Share Product" />
-              </div>
-            </div>
-            <h1>{product.name}</h1>
-            <div className="ratingBox">
-              <span>{product.rating}</span>
-              {product.rating && <StarRating userrating={product.rating} />}
-              <div className="reviews">
-                {product.review ? product.review : 0} reviews
-              </div>
-            </div>
-            <div className="priceSection">
-              <div className="priceList">
-                <p className="discount">$ {product.discount}</p>
-                <p className="original">$ {product.original}</p>
-              </div>
-              {product.discountLabel && (
-                <p className="discount">$ {product.discountLabel}</p>
-              )}
-            </div>
-            <div className="cartSection">
-              <div className="cartInputBox">
-                <div className="increase" onClick={handleIncrease}>
-                  +
-                </div>
-                <input
-                  type="number"
-                  name="cart"
-                  value={quantity}
-                  onChange={handleChange}
-                  min="1"
-                />
-                <div className="decrease" onClick={handleDecrease}>
-                  -
-                </div>
-              </div>
-              <button
-                type="button"
-                className="addToCart"
-                onClick={handleAddToCart}
-              >
-                Add to cart
-              </button>
-              {sizeError && <p className="cartError error">{sizeError}</p>}
-            </div>
-            <div className="productColor">
-              Color: <span>Black</span>
-            </div>
-            <div className="ProductColorBoxes">
-              {product.small &&
-                product.small.map((item) => (
-                  <img key={item.id} src={item.image} alt="Product Color" />
-                ))}
-            </div>
-            <p className="sizeTest">Size</p>
-            <div className="sizeChart">
-              <ul className="sizeList">
-                {product.sizeList.map((size, index) => (
-                  <li
-                    key={index}
-                    className={index === activeIndex ? "active" : ""}
-                    onClick={() => handleSizeChange(index)}
-                  >
-                    {size.name}
-                  </li>
-                ))}
-              </ul>
-              <div className="sizeChart">
-                <p>Size Chart</p>
-                <img src="/images/product/ruler.svg" alt="ruler" />
-              </div>
-            </div>
-            <div className="gaurnteeMessage">
-              <ul>
-                {product.gaurnteeMessage.map((item, index) => (
-                  <li key={index}>
-                    <img src={item.image} alt={item.name} />
-                    <p>{item.name}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="detailBtn">
-              <button type="button">Buy Now</button>
-            </div>
-          </div>
-          <div className="rightBar">
-            <div className="estimatedDelivery">
-              <h4>Estimated Delivery</h4>
-              <p>{product.deliverytime}</p>
-              <span>{product.freedelivery}</span>
-            </div>
-            <div className="commitment">
-              <h4>FikFis Commitments</h4>
-              <ul>
-                {product.commitment.map((data, index) => (
-                  <li key={index}>{data.name}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="availableOffers">
-              <h4>Available Offers</h4>
-              <ul>
-                {product.availableOffers.map((data, index) => (
-                  <li key={index}>{data.name}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="stockItemLeft">
-              Hurry! Only {product.stocksLeft} Items Left In Stock
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="productDetailReview">
-        <div className="tabs-container">
-          <div className="tabs-buttons">
-            <button
-              className={activeTab === 0 ? "active" : ""}
-              onClick={() => setActiveTab(0)}
-            >
-              Product Description
-            </button>
-            <button
-              className={activeTab === 1 ? "active" : ""}
-              onClick={() => setActiveTab(1)}
-            >
-              Additional Information
-            </button>
-            <button
-              className={activeTab === 2 ? "active" : ""}
-              onClick={() => setActiveTab(2)}
-            >
-              FikFis Verified Reviews
-            </button>
-          </div>
+  // select size and color of product
+  useEffect(() => {
+    if (productDetailResponse?.data?.variants && productDetailResponse?.data?.variants.length > 0) {
+      // Filter unique color_code entries
+      const uniqueVariants = Array.from(
+        new Map(
+          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
+        ).values()
+      )
+      .sort((a, b) => b.quantity - a.quantity);
+      // Automatically select the first item
+      const firstItem = uniqueVariants[0];
+      
+      setSelected({
+        sku_id: firstItem.sku_id,
+        color: firstItem.color,
+        size: firstItem.size,
+        currentPrice: firstItem.sku_price?.current,
+        originalPrice: firstItem.sku_price?.original,
+        discount: firstItem.sku_price?.discount_percentage,
+      });
+    }
+  }, [productDetailResponse]); 
+  const handleColorClick = (item) => {
+    setSelected({ 
+      sku_id: item?.sku_id,
+      color: item?.color, 
+      size: item?.size, 
+      currentPrice: item?.sku_price?.current,
+      discount: item?.sku_price?.discount_percentage,
+      originalPrice: item?.sku_price?.original,
+    });
+  };
 
-          <div className="tabs-content">
-            <div
-              className="tab-content productDescription"
-              ref={tabRefs[0]}
-              style={{ display: activeTab === 0 ? "block" : "none" }}
-            >
-              <p>{product.prdDetailDescription}</p>
-            </div>
-            <div
-              className="tab-content"
-              ref={tabRefs[1]}
-              style={{ display: activeTab === 1 ? "block" : "none" }}
-            >
-              <div className="additionalInfo">
-                <div className="technical info">
-                  <h5>Technical Details</h5>
-                  <table>
-                    <tbody>
-                      {Object.entries(product.technical_details).map(
-                        ([key, value], index) => (
-                          <tr key={index}>
-                            <td>
-                              {capitalizeFirstLetter(key.replace(/_/g, " "))}
-                            </td>
-                            <td>{value}</td>
-                          </tr>
-                        )
+   // Function to handle image upload and preview
+   const handleImageUpload = (e, index) => {
+    const file = e.target.files[0]; // Get the uploaded file
+    if (file && file.type.startsWith("image/")) {
+      const imageUrl = URL.createObjectURL(file);
+      setImageData((prev) =>
+        prev.map((img, i) =>
+          i === index
+            ? { preview: imageUrl, file } // Update the corresponding index
+            : img
+        )
+      );
+    } else {
+      setErrorFileType("Please upload a valid image file");
+    }
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handleActiveTabs = (value) => {
+    if(activeTab == 2) {
+      const repoonseReviewObj = {
+        product_id: productDetailResponse?.data?.product_id 
+      }
+      dispatch(getReviewProductData(repoonseReviewObj))
+    }
+    setActiveTab(value); 
+  }
+  
+  // Handle dropdown change for Review itemsPerPage
+  const handleReviewPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setReviewPerPage(newItemsPerPage);
+    setReviewPage(0); // Reset to the first page
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", 1);
+    searchParams.set("itemsPerPage", newItemsPerPage);
+    navigate(`?${searchParams.toString()}`);
+  };
+  
+  // Handle page change for Review pagination
+  const handleReviewPageChange = (data) => {
+    const { selected } = data; // `react-paginate` provides 0-based page index
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", selected + 1); // Convert to 1-based indexing
+    navigate(`?${searchParams.toString()}`); // Update URL
+  };
+
+  // Dropdown options for Review itemsPerPage
+  const reviewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= getReviewCount);
+
+  const handleProductClick = (product) => {
+      const responseObj = { product_id: product.product_id };
+      dispatch(productDetailData(responseObj));
+      navigate(`/product/${product.product_id}`, { state: { product } });
+  };
+
+  // pagination with API call for recently viewed Items
+  const searchParams = new URLSearchParams(location.search); 
+  useEffect(() => {
+      const pageParam = parseInt(searchParams.get("recentViewPage"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("RecentViewPerPage"), 10) || recentViewPerPage;
+
+      setRecentViewPage(pageParam - 1); // Adjust for 0-based indexing
+      setRecentViewPerPage(itemsPerPageParam);
+
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+
+      setRecentlyViewLoading(true);
+      const responseObj = {
+        offset,
+        limit
+      }
+      dispatch(getAllRecentViewData(responseObj)).finally(() => {
+        setRecentlyViewLoading(false);
+      });
+  }, [
+    searchParams.get("recentViewPage"), 
+    searchParams.get("RecentViewPerPage"),
+    dispatch]);  // Trigger this effect when the URL's query or page changes
+
+  // Handle page change event (when user clicks next/previous)
+  const handleRecentViewPageChange = (data) => {
+    const { selected } = data;
+    searchParams.set("recentViewPage", selected + 1); // Convert to 1-based indexing
+    navigate(`?${searchParams.toString()}`);
+  };
+
+  // Handle dropdown change for itemsPerPage
+  const handleRecentViewItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    searchParams.set("recentViewPage", 1);
+    searchParams.set("RecentViewPerPage", newItemsPerPage);
+    navigate(`?${searchParams.toString()}`);
+  };
+
+  // Calculate total pages based on total results
+  const recentViewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalRecentView);
+
+  // pagination with API call for Similar product Items
+  const similarProductParams = new URLSearchParams(location.search); 
+  useEffect(() => {
+      if(product_id === undefined) {
+        return
+      }
+      const pageParam = parseInt(similarProductParams.get("SimilarViewPage"), 10) || 1;
+      const itemsPerPageParam = parseInt(similarProductParams.get("SimilarViewPerPage"), 10) || similarProductPerPage;
+
+      setSimilarProductPage(pageParam - 1); // Adjust for 0-based indexing
+      setSimilarProductPerPage(itemsPerPageParam);
+
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
+
+      setSimilarProductLoading(true);
+      const similarProductPayload = {
+        product_id: product_id,
+        offset,
+        limit
+      }
+      dispatch(similarProductData(similarProductPayload)).finally(() => {
+        setSimilarProductLoading(false);
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+      });
+  }, [
+    similarProductParams.get("SimilarViewPage"), 
+    similarProductParams.get("SimilarViewPerPage"), 
+    product_id, 
+    dispatch]);  // Trigger this effect when the URL's query or page changes
+
+  // Handle page change event (when user clicks next/previous)
+  const handleSimilarViewPageChange = (data) => {
+    const { selected } = data;
+    similarProductParams.set("SimilarViewPage", selected + 1); // Convert to 1-based indexing
+    navigate(`?${similarProductParams.toString()}`);
+  };
+
+  // Handle dropdown change for itemsPerPage
+  const handleSimilarViewItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    similarProductParams.set("SimilarViewPage", 1);
+    similarProductParams.set("SimilarViewPerPage", newItemsPerPage);
+    navigate(`?${similarProductParams.toString()}`);
+  };
+
+  // Calculate total pages based on total results
+  const similarViewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= similarProductCount);
+  
+  return (
+      <div>
+        {loading ? (
+          <div className="loadingContainer">
+            <CircularProgress />
+          </div>
+          ) : (product_id === "undefined") || (productDetailResponse === null) ? (
+            <p className="prdDetailNotFound">No Product found</p>
+          ) : (
+          <div className="prdDetail">
+            <ProductSlider title={false} tile={10} />
+            {/* <div className="listPageCategoryItems">
+              <CategorySlider />
+            </div> */}
+            <div className="productDetailInfo">
+              <div className="leftDetailInfo">
+                <ImageGallery items={images} />
+              </div>
+              <div className="rightDetailInfo">
+                <div className="leftBar">
+                  <div className="bestOption">
+                    {productDetailResponse?.data?.seller?.ratings && 
+                    !isNaN(parseFloat(productDetailResponse?.data?.seller.ratings)) && (
+                        <div className="ribbon">
+                          {parseFloat(productDetailResponse?.data?.seller.ratings) >= 4.5
+                            ? '#Best Seller'
+                            : `Seller rating: ${productDetailResponse?.data?.seller.ratings}`
+                          }
+                        </div>
                       )}
-                    </tbody>
-                  </table>
+                    <div className="whislistBox">
+                      <div
+                        onClick={() => handleWishlistToggle(productDetailResponse?.data)}
+                        className="wishlist-btn"
+                      >
+                        {productDetailResponse?.data?.wishlist_status?.toLowerCase() === 'yes' ? (
+                          <img
+                            src={whistListBox.whistlistFill}
+                            alt="Whistlist Product"
+                          />
+                        ) : (
+                          <img src={whistListBox.whistlist} alt="Whistlist Product" />
+                        )}
+                      </div>
+                      <img src={whistListBox.share} alt="Share Product" onClick={() => ShareProduct(productDetailResponse?.data?.product_id)} />
+                    </div>
+                  </div>
+                  {user.length == 0 && <p className="cartError error">{userLoggedOnWishLists}</p>}
+                  <h1>{productDetailResponse?.data?.name}</h1>
+                  {productDetailResponse?.data?.ratings && <div className="ratingBox">
+                    <span>{productDetailResponse?.data?.ratings?.average}</span>
+                    {productDetailResponse?.data?.ratings && <StarRating userrating={productDetailResponse?.data?.ratings?.average} />}
+                    <div className="reviews">
+                      {productDetailResponse?.data?.ratings?.total_reviews || 0} reviews
+                    </div>
+                  </div>}
+                  <div className="priceSection">
+                    <div className="priceList">
+                      <p className="discount">£ {Number(selected.currentPrice).toFixed(2)}</p>
+                      <p className="original">£ {Number(selected.originalPrice).toFixed(2)}</p>
+                    </div>
+                    {selected && (
+                      <p className="discountLabel"> {selected.discount + " Off"}</p>
+                    )}
+                  </div>
+                  <div className="cartSection">
+                    <div className={`cartInputBox ${handleCartOnLoad === 0 ? 'disabled' : ''}`} >
+                      <div className="increase" onClick={handleIncrease}>
+                        +
+                      </div>
+                      <input
+                        type="number"
+                        name="cart"
+                        value={quantity}
+                        onChange={handleChange}
+                        min="1"
+                      />
+                      <div className="decrease" onClick={handleDecrease}>
+                        -
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className={`addToCart ${handleCartButtonOnLoad == 0 ? '' : 'disabled'}`}
+                      onClick={handleAddToCart}
+                    >
+                      Add to cart
+                    </button>
+                    {selected.size == '' && <p className="cartError error">{sizeError}</p>}
+                    {user.length == 0 && <p className="cartError error">{userLoggedOnCart}</p>}
+                  </div>
+                  <div className="productColor">
+                    Color & Size: <span>{selected?.color} , {selected?.size}</span>
+                  </div>
+                  <div className="ProductColorBoxes">
+                    {productDetailResponse?.data?.variants &&
+                      // Filter unique color_code entries
+                      Array.from(
+                        new Map(
+                          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
+                        ).values()
+                      )
+                      .sort((a, b) => b.quantity - a.quantity)
+                      .map((item, index) => (
+                        // productDetailResponse?.data?.variants.map((item) => (
+                        <div
+                          onClick={() => handleColorClick(item)} // Update color on click
+                          className={`${selected.color === item.color ? 'selected' : ''}`}
+                          key={index}>
+                            <img
+                              key={item.sku_id}
+                              src={item.color_image}
+                              alt={item.color}
+                              className="colorImage"
+                            />
+                            <p>{item.size}</p>
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* <div className="gaurnteeMessage">
+                    <ul>
+                      {gaurnteeMessage?.map((item, index) => (
+                        <li key={index}>
+                          <img src={item.image} alt={item.name} />
+                          <p>{item.name}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div> */}
+                  <div className="detailBtn">
+                    <button type="button" onClick={() => handleBuyNowProduct()}>Buy Now</button>
+                  </div>
+                  {user.length == 0 && <p className="cartError error">{userLoggedOnBuyNow}</p>}
                 </div>
-                <div className="additional info">
-                  <h5>Additional Information</h5>
-                  <table>
-                    <tbody>
-                      {Object.entries(product.additional_info).map(
-                        ([key, value], index) => (
-                          <tr key={index}>
-                            <td>
-                              {capitalizeFirstLetter(key.replace(/_/g, " "))}
-                            </td>
-                            <td>{value}</td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                <div className="rightBar">
+                  <div className="estimatedDelivery">
+                    <h4>Estimated Delivery</h4>
+                    <p>{"Delivered in " + productDetailResponse?.data?.estimated_delivery_time}</p>
+                    {/* <span>{product.freedelivery}</span> */}
+                  </div>
+                  <div className="commitment">
+                    <h4>FikFis Commitments</h4>
+                    <ul>
+                      {productDetailResponse?.fikfisCommitment?.map((data, index) => (
+                        <li key={index}>{data}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="availableOffers">
+                    <h4>Available Offers</h4>
+                    {productDetailResponse?.availableOffers?.length > 0 ? (
+                      <ul>
+                        {productDetailResponse?.availableOffers.map((data, index) => (
+                          <li key={index}>{data}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No offers available at the moment.</p>
+                    )}
+                  </div>
+                  <div className="stockItemLeft">
+                    Hurry! Only {productDetailResponse?.data?.availability?.stock_count} Items Left In Stock
+                  </div>
                 </div>
               </div>
             </div>
-            <div
-              className="tab-content"
-              ref={tabRefs[2]}
-              style={{ display: activeTab === 2 ? "block" : "none" }}
-            >
-              <div className="reviewSection">
-                <div className="leftReviewPart">
-                  <h4>Customer reviews</h4>
-                  {product.rating && <StarRating userrating={product.rating} />}
-                  <div className="detailLinearRivewProgress">
-                    {product.detail_rating.map((item, index) => (
-                      <div className="reviewProgress" key={index}>
-                        <span>{item.name}</span>
-                        <div className="progressBar">
-                          <LinearProgressWithLabel
-                            value={parseFloat(item.rate)}
-                          />
-                        </div>
-                      </div>
+            <div className="productDetailReview">
+              <div className="tabs-container">
+                <div className="tabs-buttons">
+                  <button
+                    className={activeTab === 0 ? "active" : ""}
+                    onClick={() => handleActiveTabs(0)}
+                  >
+                    Product Description
+                  </button>
+                  <button
+                    className={activeTab === 1 ? "active" : ""}
+                    onClick={() => handleActiveTabs(1)}
+                  >
+                    Additional Information
+                  </button>
+                  <button
+                    className={activeTab === 2 ? "active" : ""}
+                    onClick={() => handleActiveTabs(2)}
+                  >
+                    FikFis Verified Reviews
+                  </button>
+                </div>
+                <div className="tabs-content">
+                  <div
+                    className="tab-content productDescription"
+                    ref={tabRefs[0]}
+                    style={{ display: activeTab === 0 ? "block" : "none" }}
+                  >
+                    {productDetailResponse?.data?.description && 
+                      productDetailResponse?.data?.description.content.map((item, index) => (
+                      <p key={index}>
+                        {item}
+                      </p>
+                    ))}
+                    {productDetailResponse?.data?.description && 
+                      productDetailResponse?.data?.description.image.map((item, index) => (
+                      <img key={index} src={item} alt={'Image_' + index} />
                     ))}
                   </div>
-                  <div className="ratingCalculateInfo">
-                    <h4>How are ratings calculated?</h4>
-                    <p>
-                      To calculate the overall star rating and percentage
-                      breakdown by star, we don’t use a simple average. Instead,
-                      our system considers things like how recent a review is
-                      and if the reviewer bought the item on Amazon. It also
-                      analyses reviews to verify trustworthiness.
-                    </p>
-                  </div>
-                  {!showReviewForm && (
-                    <div className="productReviewBtn">
-                      <button type="button" onClick={toggleReviewForm}>
-                        Write Review
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="rightCommentPart">
-                  {!showReviewForm && (
-                    <>
-                      <div className="reviewCommentHeader">
-                        <h4>Customer say</h4>
-                        <div className="commentSelect">
-                          <select>
-                            <option>Most Recent</option>
-                            <option>Category 1</option>
-                            <option>Category 2</option>
-                            <option>Category 3</option>
-                          </select>
-                        </div>
+                  <div
+                    className="tab-content"
+                    ref={tabRefs[1]}
+                    style={{ display: activeTab === 1 ? "block" : "none" }}
+                  >
+                    <div className="additionalInfo">
+                      <div className="technical info">
+                        <h5>Technical Details</h5>
+                        <table>
+                          <tbody>
+                            {productDetailResponse?.data?.additional_info?.map(
+                              (item, index) => (
+                                <tr key={index}>
+                                  <td>
+                                    {capitalizeFirstLetter(item?.title.replace(/_/g, " "))}
+                                  </td>
+                                  <td>{item.value}</td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
                       </div>
-                      <div className="productReviewList">
-                        {product.customer_review.map((item, index) => (
-                          <div className="reviewComments" key={index}>
-                            <div className="userImage">
-                              <img
-                                src={item.profile_image}
-                                alt={item.rate_name}
+                    </div>
+                  </div>
+                  <div
+                    className="tab-content"
+                    ref={tabRefs[2]}
+                    style={{ display: activeTab === 2 ? "block" : "none" }}
+                  >
+                    <div className="reviewSection">
+                      <div className="leftReviewPart">
+                        <h4>Customer reviews</h4>
+                        {productDetailResponse?.data?.ratings && <StarRating userrating={productDetailResponse?.data?.ratings?.average} />}
+                          <div className="detailLinearRivewProgress">
+                            <div className="reviewProgress">
+                              <span>{'5 star'}</span>
+                              <div className="progressBar">
+                                <LinearProgressWithLabel
+                                  value={parseFloat(productDetailResponse?.data?.ratings?.review_count['5Star'])}
+                                />
+                              </div>
+                            </div>
+                            <div className="reviewProgress">
+                              <span>{'4 star'}</span>
+                              <div className="progressBar">
+                                <LinearProgressWithLabel
+                                  value={parseFloat(productDetailResponse?.data?.ratings?.review_count['4Star'])}
+                                />
+                              </div>
+                            </div>
+                            <div className="reviewProgress">
+                              <span>{'3 star'}</span>
+                              <div className="progressBar">
+                                <LinearProgressWithLabel
+                                  value={parseFloat(productDetailResponse?.data?.ratings?.review_count['3Star'])}
+                                />
+                              </div>
+                            </div>
+                            <div className="reviewProgress">
+                              <span>{'2 star'}</span>
+                              <div className="progressBar">
+                                <LinearProgressWithLabel
+                                  value={parseFloat(productDetailResponse?.data?.ratings?.review_count['2Star'])}
+                                />
+                              </div>
+                            </div>
+                            <div className="reviewProgress">
+                              <span>{'1 star'}</span>
+                              <div className="progressBar">
+                                <LinearProgressWithLabel
+                                  value={parseFloat(productDetailResponse?.data?.ratings?.review_count['1Star'])}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="ratingCalculateInfo">
+                            <h4>How are ratings calculated?</h4>
+                            <p>
+                              To calculate the overall star rating and percentage
+                              breakdown by star, we don’t use a simple average. Instead,
+                              our system considers things like how recent a review is
+                              and if the reviewer bought the item on Amazon. It also
+                              analyses reviews to verify trustworthiness.
+                            </p>
+                          </div>
+                        {!showReviewForm && (
+                          <div className="productReviewBtn">
+                            <button type="button" onClick={toggleReviewForm}>
+                              Write Review
+                            </button>
+                            {user.length == 0 && <p className="cartError error">{userLoggedOnReview}</p>}
+                          </div>
+                        )}
+                      </div>
+                      <div className="rightCommentPart">
+                        {!showReviewForm && (
+                          <>
+                            <div className="productReviewList">
+                              <h4>Customer say..</h4>
+                            {getReview?.length > 0 && <div className='paginationBox'>
+                              <div className="itemsPerPageDropdown">
+                                  <label>Items per page: </label>
+                                  <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                                      {reviewItemsPerPageOptions.map(option => (
+                                          <option key={option} value={option}>
+                                              {option}
+                                          </option>
+                                      ))}
+                                  </select>
+                              </div>
+                              {/* Pagination component */}
+                              <ReactPaginate
+                                  previousLabel={"Previous"}
+                                  nextLabel={"Next"}
+                                  breakLabel={"..."}
+                                  breakClassName={"break-me"}
+                                  pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
+                                  marginPagesDisplayed={2}
+                                  pageRangeDisplayed={3}
+                                  onPageChange={(ev) => handleReviewPageChange(ev)}
+                                  containerClassName={"pagination"}
+                                  activeClassName={"active"}
+                                  forcePage={reviewPage}  // Sync current page with URL
+                                  disabled={getReviewCount === 0} 
                               />
                             </div>
-                            <div className="reviewRightomments">
-                              <div className="userName">{item.name}</div>
-                              <div className="ratingBox">
-                                {item.rating && (
-                                  <StarRating userrating={item.rating} />
-                                )}
-                                <div className="rateusername">
-                                  {item.rate_name}
+                          }
+                              {getReview?.map((item, index) => (
+                                <div className="reviewComments" key={index}>
+                                  <div className="userImage">
+                                    <img
+                                      src={item.profile_image}
+                                      alt={item.rate_name}
+                                    />
+                                  </div>
+                                  <div className="reviewRightomments">
+                                    <div className="userName">{item.name}</div>
+                                    <div className="ratingBox">
+                                      {item?.rating && (
+                                        <StarRating userrating={item.rating} />
+                                      )}
+                                      <div className="rateusername">
+                                        {item.review_text}
+                                      </div>
+                                    </div>
+                                    {item.description && <p>{item.description}</p>}
+                                    <div className="reviewed_image">
+                                      {item?.images &&
+                                        item?.images.map(
+                                          (review_image, index) => (
+                                            <img
+                                              key={index}
+                                              src={review_image}
+                                              alt={"Product Image"}
+                                            />
+                                          )
+                                        )}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                              {!getReview && <p>Reviews not found.</p>}
+                            </div>
+                          </>
+                        )}
+                        {showReviewForm && (
+                          <div className="product_review_form">
+                            <h4>Customer say</h4>
+                            <form onSubmit={handleReviewSubmit}>
+                              <div className="box">
+                                <div className="form-control">
+                                  <label for="fullname">Full Name(First and Last name)</label>
+                                  <input
+                                    type="text"
+                                    name="fullName"
+                                    placeholder="Full Name"
+                                    value={formData.fullName}
+                                    onChange={handleReviewChange}
+                                  />
+                                  {errors.fullName && (
+                                    <p className="error">{errors.fullName}</p>
+                                  )}
+                                </div>
+                                <div className="form-control">
+                                <label for="email">Email</label>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email"
+                                    value={formData.email}
+                                    onChange={handleReviewChange}
+                                  />
+                                  {errors.email && (
+                                    <p className="error">{errors.email}</p>
+                                  )}
                                 </div>
                               </div>
-                              {item.description && <p>{item.description}</p>}
-                              <div className="reviewed_image">
-                                {item.product_review_image &&
-                                  item.product_review_image.map(
-                                    (review_image, index) => (
-                                      <img
-                                        key={index}
-                                        src={review_image}
-                                        alt={"Product Image"}
-                                      />
-                                    )
+                              <div className="box full">
+                                <div className="form-control">
+                                  <label for="review">Write your review</label>
+                                  <textarea
+                                    cols="10"
+                                    name="review"
+                                    placeholder="Write Your Review"
+                                    value={formData.review}
+                                    onChange={handleReviewChange}
+                                  ></textarea>
+                                  {errors.review && (
+                                    <p className="error">{errors.review}</p>
                                   )}
+                                </div>
                               </div>
-                            </div>
+                              <div className="box full images">
+                                {/* <label for="Upload Images">Add Photo</label> */}
+                                <div className="form-control select">
+                                  {imageData.map((data, index) => (
+                                    <div className="selectFileBox" key={index}>
+                                      {data.preview ? (
+                                        <img src={data.preview} alt={`Preview ${index + 1}`} />
+                                      ) : (
+                                        <img src="/images/add-file.svg" alt="Select File" />
+                                      )}
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, index)}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="box full rating">
+                                <label for="ratings">Add Rating</label>
+                                <StarRating userrating={rating} onRatingChange={handleRatingChange} />
+                              </div>
+                              <Button
+                                type={"submit"}
+                                value={"submit"}
+                                varient="explore review"
+                                space="sp-10"
+                              />
+                            </form>
                           </div>
-                        ))}
-                        <button type="button" className="all_reviews">
-                          See all reviews
-                        </button>
+                        )}
                       </div>
-                    </>
-                  )}
-                  {showReviewForm && (
-                    <div className="product_review_form">
-                      <form onSubmit={handleSubmit}>
-                        <div className="box">
-                          <div className="form-control">
-                            <input
-                              type="text"
-                              name="fullName"
-                              placeholder="Full Name"
-                              value={formData.fullName}
-                              onChange={handleReviewChange}
-                            />
-                            {errors.fullName && (
-                              <p className="error">{errors.fullName}</p>
-                            )}
-                          </div>
-                          <div className="form-control">
-                            <input
-                              type="email"
-                              name="email"
-                              placeholder="Email"
-                              value={formData.email}
-                              onChange={handleReviewChange}
-                            />
-                            {errors.email && (
-                              <p className="error">{errors.email}</p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="box full">
-                          <div className="form-control">
-                            <textarea
-                              cols="10"
-                              name="review"
-                              placeholder="Write Your Review"
-                              value={formData.review}
-                              onChange={handleReviewChange}
-                            ></textarea>
-                            {errors.review && (
-                              <p className="error">{errors.review}</p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="box full">
-                          <div className="form-control select">
-                            <div className="selectFileBox">
-                              <img
-                                src="/images/add-file.svg"
-                                alt="Select File"
-                              />
-                              <input type="file" />
-                            </div>
-                            <div className="selectFileBox">
-                              <img
-                                src="/images/add-file.svg"
-                                alt="Select File"
-                              />
-                              <input type="file" />
-                            </div>
-                            <div className="selectFileBox">
-                              <img
-                                src="/images/add-file.svg"
-                                alt="Select File"
-                              />
-                              <input type="file" />
-                            </div>
-                            <div className="selectFileBox">
-                              <img
-                                src="/images/add-file.svg"
-                                alt="Select File"
-                              />
-                              <input type="file" />
-                            </div>
-                          </div>
-                        </div>
-                        <Button
-                          type={"submit"}
-                          value={"submit"}
-                          varient="explore review"
-                          space="sp-10"
-                        />
-                      </form>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
+            <div className="productHistory allcategory">
+              {recentView && recentView.length > 0 && 
+                <div className="baseAlignItems">
+                  <h3>Recently Viewed</h3>
+                  <div className="paginationBox">
+                    <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
+                            {recentViewItemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handleRecentViewPageChange}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={recentViewPage}
+                        disabled={totalRecentView === 0}
+                    />
+                  </div>
+                </div>
+              }
+                {recentlyViewLoading ? (
+                  <div className="loadingContainer">
+                    <CircularProgress />
+                  </div>
+                  ):(
+                  <div className="productList">
+                    {recentView && recentView.length > 0 ? (
+                        recentView.map((item, index) => (
+                          <div key={index} onClick={() => handleProductClick(item)}>
+                            <ProductListCard
+                              id={item.product_id}
+                              image={item.imageUrl ? item.imageUrl : ""}
+                              name={item.name ? item.name : ""}
+                              userrating={item.rating ? item.rating : ""}
+                              discountPrice={item.discount ? item.discount : ""}
+                              originalPrice={item.price ? item.price : ""}
+                              save={item.save ? item.save : ""}
+                              coupenCode={item.coupen ? item.coupen : ""}
+                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                              bestSeller={item.bestseller ? item.bestseller : ""}
+                              time={item.time ? item.time : ""}
+                              discountLabel={item.Offerprice ? item.Offerprice : ""}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <p>No product history available</p>
+                      )}
+                  </div>
+                )}
+            </div>
+            <div className="productHistory allcategory">
+              {productDetailResponse?.data?.similar_products && 
+                productDetailResponse?.data?.similar_products.length > 0 &&  
+                <div className="baseAlignItems">
+                  <h3>Frequently bought</h3>
+                  <div className="paginationBox">
+                      <div className="itemsPerPageDropdown">
+                          <label>Items per page: </label>
+                          <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
+                              {similarViewItemsPerPageOptions.map(option => (
+                                  <option key={option} value={option}>
+                                      {option}
+                                  </option>
+                              ))}
+                          </select>
+                      </div>
+                      <ReactPaginate
+                          previousLabel={"Previous"}
+                          nextLabel={"Next"}
+                          breakLabel={"..."}
+                          pageCount={Math.max(Math.ceil(similarProductCount / similarProductPerPage), 1)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={handleSimilarViewPageChange}
+                          containerClassName={"pagination"}
+                          activeClassName={"active"}
+                          forcePage={similarProductPage}
+                          disabled={similarProductCount === 0}
+                      />
+                  </div>
+                </div>
+              }
+              {similarProductLoading ? (
+                <div className="loadingContainer">
+                  <CircularProgress />
+                </div>
+                ): (
+                    <div className="productList">
+                      {similarProductListResponse && similarProductListResponse.length > 0 ? (
+                        similarProductListResponse.map((item, index) => (
+                          <div key={index} onClick={() => handleProductClick(item)}>
+                            <ProductListCard
+                              id={item.product_id}
+                              image={item.image ? item.image : ""}
+                              name={item.name ? item.name : ""}
+                              userrating={item.rating ? item.rating : ""}
+                              discountPrice={item.discount ? item.discount : ""}
+                              originalPrice={item.price ? item.price : ""}
+                              save={item.save ? item.save : ""}
+                              coupenCode={item.coupen ? item.coupen : ""}
+                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
+                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
+                              bestSeller={item.bestseller ? item.bestseller : ""}
+                              time={item.time ? item.time : ""}
+                              discountLabel={item.Offerprice ? item.Offerprice : ""}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <p>No product history available</p>
+                      )}
+                    </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      <div className="productHistory allcategory">
-        <h3>Frequently bought</h3>
-        <div className="productList">
-          {productHistory && productHistory.length > 0 ? (
-            productHistory[0].map((item, index) => (
-              <div key={index}>
-                <ProductListCard
-                  id={item.id}
-                  image={item.image ? item.image : ""}
-                  name={item.name ? item.name : ""}
-                  userrating={item.rating ? item.rating : ""}
-                  discountPrice={item.discount ? item.discount : ""}
-                  originalPrice={item.original ? item.original : ""}
-                  save={item.save ? item.save : ""}
-                  coupenCode={item.coupen ? item.coupen : ""}
-                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                  bestSeller={item.bestseller ? item.bestseller : ""}
-                  time={item.time ? item.time : ""}
-                  discountLabel={item.discountlabel ? item.discountlabel : ""}
-                />
-              </div>
-            ))
-          ) : (
-            <p>No product history available</p>
-          )}
-        </div>
-      </div>
-      <div className="productHistory allcategory">
-        <h3>Inspired by your browsing history</h3>
-        <div className="productList">
-          {productHistory && productHistory.length > 0 ? (
-            productHistory[0].map((item, index) => (
-              <div key={index}>
-                <ProductListCard
-                  id={item.id}
-                  image={item.image ? item.image : ""}
-                  name={item.name ? item.name : ""}
-                  userrating={item.rating ? item.rating : ""}
-                  discountPrice={item.discount ? item.discount : ""}
-                  originalPrice={item.original ? item.original : ""}
-                  save={item.save ? item.save : ""}
-                  coupenCode={item.coupen ? item.coupen : ""}
-                  deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                  freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                  bestSeller={item.bestseller ? item.bestseller : ""}
-                  time={item.time ? item.time : ""}
-                  discountLabel={item.discountlabel ? item.discountlabel : ""}
-                />
-              </div>
-            ))
-          ) : (
-            <p>No product history available</p>
-          )}
-        </div>
-      </div>
-      <div className="detailProductContent">
-        {product.detailProductContent &&
-          product.detailProductContent.map((item) => (
-            <img src={item.name} alt="Product detail" className={item.type === 'small' ? 'prd-small': ''} />
-          ))}
-      </div>
-      <ToastContainer />
-    </div>
   );
 };
 

@@ -58,10 +58,10 @@ export const slides = [
 ];
 
 export const bannerList = [
-  {id:1, name: '/images/banner/web_banner.jpg', alt: "banner 1"},
-  {id:2, name: '/images/banner/web_banner - 2.jpg', alt: "banner 2"},
-  {id:3, name: '/images/banner/web_banner - 3.jpg', alt: "banner 3"},
-  {id:4, name: '/images/banner/web_banner - 4.jpg', alt: "banner 4"},
+  {id:1, banner_image: '/images/banner/web_banner.jpg', name: "banner 1"},
+  {id:2, banner_image: '/images/banner/web_banner - 2.jpg', name: "banner 2"},
+  {id:3, banner_image: '/images/banner/web_banner - 3.jpg', name: "banner 3"},
+  {id:4, banner_image: '/images/banner/web_banner - 4.jpg', name: "banner 4"},
 ]
 
 export const slick_banner_settings = {
@@ -80,6 +80,13 @@ export const slick_settings = {
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
+    // {
+    //   breakpoint: 1500,
+    //   settings: {
+    //     slidesToShow: 7,
+    //     slidesToScroll: 1,
+    //   },
+    // },
     {
       breakpoint: 1200,
       settings: {
@@ -142,6 +149,13 @@ export const slick_product_settings = {
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
+    // {
+    //   breakpoint: 1500,
+    //   settings: {
+    //     slidesToShow: 7,
+    //     slidesToScroll: 1,
+    //   },
+    // },
     {
       breakpoint: 1200,
       settings: {
@@ -2788,13 +2802,6 @@ export const productBulkList = [
       {id: 4, name: "/images/product/prd-detail4.svg", type: 'small'},
       {id: 5, name: "/images/product/prd-detail1.svg", type: 'full'},
     ],
-    detailProductContent: [
-      {id: 1, name: "/images/product/prd-detail1.svg", type: 'full'},
-      {id: 2, name: "/images/product/prd-detail2.svg", type: 'small'},
-      {id: 3, name: "/images/product/prd-detail3.svg", type: 'small'},
-      {id: 4, name: "/images/product/prd-detail4.svg", type: 'small'},
-      {id: 5, name: "/images/product/prd-detail1.svg", type: 'full'},
-    ]
   },
   {
     id: 17,

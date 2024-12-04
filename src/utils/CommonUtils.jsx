@@ -484,7 +484,7 @@ export const colors = [
 ];
 
 export const paymentOptions = [
-  { id: "1", label: "Cash On Delivery" },
+  // { id: "1", label: "Cash On Delivery" },
   { id: "2", label: "Pay Online" },
 ];
 
@@ -2290,3 +2290,22 @@ export const User = {
     }
   ]
 };
+
+export const gaurnteeMessage = [
+  {
+    id: 1,
+    name: "Pay on Delivery",
+    image: "/images/product/pay-delivery.svg",
+  },
+  {
+    id: 2,
+    name: "Free Delivery",
+    image: "/images/product/free-delivery.svg",
+  },
+  {
+    id: 3,
+    name: "Return & Exchange",
+    image: "/images/product/return-exchange.svg",
+  },
+  { id: 4, name: "Guaranteed", image: "/images/product/gaurntee.svg" },
+];

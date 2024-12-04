@@ -2,8 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   cartItems: [],
+  viewCartItems: null,
   selectedSize: null,
   quantity: 1, // Default quantity
+  createOrderResponse: null,
+  confirmOrderResponse: null,
+  orderList: null,
+  activeOrderListCount: 0,
+  orderDetail: null,
+  reasonList: null,
+  selectedReasonCancelProduct: null,
+  isCancelModalOpen: false,
 };
 
 export const cartSlice = createSlice({
@@ -14,9 +23,12 @@ export const cartSlice = createSlice({
       const product = action.payload;
       state.cartItems.push(product);
     },
+    setViewCartItems: (state, action) => {
+      state.viewCartItems = action.payload;
+    },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
-      const item = state.cartItems.find((item) => item.id === id);
+      const item = state.viewCartItems.cartItems.find((item) => item.id === id);
       if (item) {
         item.quantity = quantity;
       }
@@ -34,8 +46,50 @@ export const cartSlice = createSlice({
     clearCart: (state) => {
       state.cartItems = [];
     },
+    setCreateOrderResponse: (state, action) => {
+      state.createOrderResponse = action.payload;
+    },
+    setConfirmOrderResponse: (state, action) => {
+      state.confirmOrderResponse = action.payload;
+    },
+    setOrderListResponse: (state, action) => {
+      state.orderList = action.payload;
+    },
+    setActiveOrderListCountResponse: (state, action) => {
+      state.activeOrderListCount = action.payload;
+    },
+    setOrderDetailResponse: (state, action) => {
+      state.orderDetail = action.payload;
+    },
+    setReasonListResponse: (state, action) => {
+      state.reasonList = action.payload;
+    },
+    setSelectedReasonCancelProductResponse: (state, action) => {
+      state.selectedReasonCancelProduct = action.payload;
+    },
+    setCancelOrderModal: (state, action) => {
+      state.isCancelModalOpen = action.payload.isOpen;
+      state.orderId = action.payload.orderId;
+      state.skuId = action.payload.skuId;
+    },
   },
 });
 
-export const { addToCart, setSelectedSize, setQuantity, clearCart, updateQuantity, removeItem } = cartSlice.actions;
+export const { 
+  addToCart, 
+  setViewCartItems, 
+  setSelectedSize, 
+  setQuantity, 
+  clearCart, 
+  updateQuantity, 
+  removeItem,
+  setCreateOrderResponse,
+  setConfirmOrderResponse,
+  setOrderListResponse,
+  setOrderDetailResponse,
+  setReasonListResponse,
+  setSelectedReasonCancelProductResponse,
+  setActiveOrderListCountResponse,
+  setCancelOrderModal,
+} = cartSlice.actions;
 export default cartSlice.reducer;

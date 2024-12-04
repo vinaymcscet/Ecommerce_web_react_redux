@@ -2,6 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: [],
+  changePassword: { oldPassword: "", newPassword: "", confirmPassword: "" },
+  blogList: null,
+  blogCategoryList: null,
+  blogDetail: null,
+  blogReview: null,
+  notifications: null,
+  notificationCount: 0,
+  newsletter: null,
 };
 
 export const userSlice = createSlice({
@@ -17,7 +25,6 @@ export const userSlice = createSlice({
         // If no user exists, add the new data as a fresh entry
         state.user.push(userdetails);
       }
-      console.log("userdetails", userdetails);
     },
     setLogout: (state) => {
       state.user = [];
@@ -39,9 +46,53 @@ export const userSlice = createSlice({
         })),
       }));
     },
+    setChangePassword: (state, action) => {
+      state.changePassword = {
+        ...state.changePassword,
+        ...action.payload,
+      };
+    },
+    setBlogList: (state, action) => {
+      state.blogList = action.payload;
+    },
+    setBlogCategoryList: (state, action) => {
+      state.blogCategoryList = action.payload;
+    },
+    setBlogDetailList: (state, action) => {
+      state.blogDetail = action.payload;
+    },
+    setBlogReviewList: (state, action) => {
+      state.blogReview = action.payload;
+    },
+    setNotificationsList: (state, action) => {
+      state.notifications = action.payload;
+    },
+    setNotificationsCount: (state, action) => {
+      state.notificationCount = action.payload;
+    },
+    setNewsLetter: (state, action) => {
+      state.newsletter = action.payload;
+    },
+    setClearNewsletterMessage: (state) => {
+      state.newsletter = null;
+    },
   },
 });
 
-export const { setUser, setLogout, removeAddress, setDefaultAddress } =
+export const { 
+  setUser, 
+  setLogout, 
+  removeAddress, 
+  setDefaultAddress, 
+  setChangePassword, 
+  setBlogList,
+  setBlogCategoryList,
+  setBlogDetailList,
+  setBlogReviewList,
+  setNotificationsList,
+  setNotificationsCount,
+  setNewsLetter,
+  setClearNewsletterMessage,
+ } =
   userSlice.actions;
 export default userSlice.reducer;

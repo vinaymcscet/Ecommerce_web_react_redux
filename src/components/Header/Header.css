@@ -30,11 +30,21 @@ li img {
     width: 30px;
 }
 
+.menu-container li img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
 li p {
     margin: 0;
     color: #fff;
     font-size: 13px;
     padding-left: 10px;
+}
+
+li:hover p {
+    color: #FFB545;
 }
 
 li:not(:last-child) {
@@ -45,6 +55,8 @@ li:not(:last-child) {
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    position: relative;
+    top: 5px;
 }
 
 .selectCategory {
@@ -71,8 +83,7 @@ li:not(:last-child) {
     width: 100%;
     font-family: 'Poppins';
     height: 36px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-radius: 3px;
 }
 
 .inputBox input:focus,
@@ -95,7 +106,7 @@ li:not(:last-child) {
     background: #1f1f1f;
     border-radius: 0;
     position: absolute;
-    top: 112px;
+    top: 100px;
     right: 90px;
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
     opacity: 0;
@@ -148,6 +159,12 @@ li:not(:last-child) {
   .menu li a span {
     margin-left: 10px;
     color: #fff;
+    font-size: 14px;
+  }
+
+  .menu li a img{
+    width: 25px;
+    height: auto;
   }
 
   .menu li a:hover {
@@ -199,9 +216,13 @@ li:not(:last-child) {
         margin-right: 0px;
         width: 30%;
     }
+    header  nav.menu li {
+        width: 100%;
+    }
     
     .menu-container li {
         width: 100%;
+        margin-right: 10px;
     }
     .menu-container {
         margin: 0;
@@ -271,6 +292,10 @@ li:not(:last-child) {
 }
 
 @media screen and (max-width: 767px) {
+    header .leftHeaderMenu li:not(:first-child) {
+        width: auto;
+        margin: 0 10px;
+    }
     .leftHeaderMenu li p {
         display: none;
     }

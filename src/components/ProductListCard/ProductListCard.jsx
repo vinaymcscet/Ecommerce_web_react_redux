@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import StarRating from '../StarRating/StarRating';
 import './ProductListCard.css';
 
@@ -15,17 +15,34 @@ const ProductListCard = ({
   coupenCode,
   deliveryTime,
   freeDelivery,
-  bestSeller
+  bestSeller,
+  wishlistStatus,
 }) => {
+  const [whistListBox, setWhistListBox] = useState({
+    whistlist: "/images/product/whistlist.svg",
+    whistlistFill: "/images/product/whistlist-fill.svg",
+  });
   return (
     <div className='productBoxes' key={id}>
+      <div className="whislistBox">
+        <div className="wishlist-btn">
+          {wishlistStatus?.toLowerCase() === 'yes' ? (
+            <img
+              src={whistListBox.whistlistFill}
+              alt="Whistlist Product"
+            />
+          ) : (
+            <img src={whistListBox.whistlist} alt="Whistlist Product" />
+          )}
+        </div>
+      </div>
       {image && <img src={image} alt={name} />}
-      {name && <h2>{name}</h2>}
+      {name && <h2>{name.length > 50 ? `${name.slice(0, 50)}...` : name}</h2>}
       {userrating && <StarRating userrating={userrating} />}
       
       <div className='priceList'>
-        {discountPrice && <p className='discount'>$ {discountPrice}</p>}
-        {originalPrice && <p className='original'>$ {originalPrice}</p>}
+        {discountPrice && <p className='discount'>£ {discountPrice}</p>}
+        {originalPrice && <p className='original'>£ {originalPrice}</p>}
       </div>
 
       {(discountLabel || time || save || coupenCode) && (

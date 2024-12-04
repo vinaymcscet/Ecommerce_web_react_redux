@@ -30,6 +30,7 @@
   border-radius: 10px;
   width: 35%;
   min-height: 70vh;
+  max-height: 87vh;
   padding: 20px;
   display: flex;
   align-items: flex-start;
@@ -38,14 +39,14 @@
 }
 
 .left h4 {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 600;
   text-align: left;
   color: #3F3F3F;
 }
 
 .left p {
-  font-size: 20px;
+  font-size: 17px;
   line-height: 30px;
   font-weight: 400;
   color: #3F3F3F;
@@ -98,7 +99,11 @@ button {
   font-size: 20px;
 }
 
-button:hover {
+.modalContent form button span {
+  color: #000;
+}
+
+.modalContent form button:hover {
   background-color: #e5a23c;
 }
 
@@ -114,10 +119,10 @@ button:focus {
   line-height: 20px;
   margin-top: 20px;
 }
-.status ul {
+ul.status {
   flex-flow: wrap column;
 }
-.status ul li {
+.status li {
   position: relative;
   margin-bottom: 20px;
   font-size: 14px;
@@ -127,7 +132,7 @@ button:focus {
   padding-left: 10px;
 }
 
-.status ul li:before {
+.status li:before {
   content: '';
   position: absolute;
   left: 0;
@@ -142,12 +147,19 @@ button:focus {
   margin-bottom: auto;
   width: 100%;
 }
+.right form[name="forgotPasswordAssist"] {
+  margin-bottom: 0;
+}
 
 .right .name {
   margin-top: auto;
   text-align: center;
   width: 100%;
   font-weight: 400;
+}
+
+.right.forgot-password .name {
+  margin-top: 20px;
 }
 
 .right .name a {
@@ -289,7 +301,20 @@ button:focus {
   right: 10px;
   cursor: pointer;
   outline: none;
-  color: #d1d1d1;
+  color: #000000;
+}
+
+.error-message {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #ef6e6e;
+  margin: 5px 0 0 15px;
+}
+
+.forgot-link.error-message {
+  position: relative;
+  top: -20px;
 }
 
 @media only screen and (max-width: 1200px) {

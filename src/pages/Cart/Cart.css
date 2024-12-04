@@ -87,12 +87,25 @@
     font-size: 18px;
     margin: 0px;
 }
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .priceSection {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
 
 .cartProductList .rightcartListItem .rightCartInnerLeftItems .priceSection p {
     margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    padding: 0;
 }
 
 .cartProductList .rightcartListItem .rightCartInnerLeftItems .priceSection p.original {
+    text-decoration: line-through;
+}
+
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .priceSection p.discount {
     margin-right: 10px;
 }
 
@@ -122,19 +135,140 @@
     align-items: center;
     justify-content: center;
     margin: 0 10px;
+    padding: 7px;
 }
 
 .rightCartInnerRightItems .cartInputBox {
-    margin: 10px 0 0 0;
     width: 135px;
+    border: 1px solid #e4e4e4;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 20px;
     min-height: 35px;
-}
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  
+  .rightCartInnerRightItems .cartInputBox.disabled {
+    display: none;
+  }
+  
+  .rightCartInnerRightItems .cartInputBox input {
+    border: 0;
+    width: 50px;
+    text-align: center;
+  }
+  
+  .rightCartInnerRightItems .cartInputBox input::-webkit-outer-spin-button,
+  .rightCartInnerRightItems .cartInputBox input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .rightCartInnerRightItems .cartInputBox input:focus {
+    outline: none;
+  }
+  
+.rightCartInnerRightItems .cartInputBox .increase,
+.rightCartInnerRightItems .cartInputBox .decrease {
+    cursor: pointer;
+    outline: none;
+    font-size: 22px;
+    font-weight: 500;
+    width: 20px;
+    text-align: center;
+  }
+  
 
 .rightCartItems h3 {
     font-size: 30px;
     font-weight: 500;
     margin: 0;
 }
+
+
+.commitment {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(252 202 127 / 21%);
+    width: 100%;
+  }
+  
+  .commitment h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .commitment ul {
+    flex-flow: wrap column;
+    justify-content: flex-start;
+  }
+  
+  .commitment ul li {
+    font-size: 13px;
+    font-weight: 400;
+    color: #515151;
+    position: relative;
+    width: 100%;
+    padding-left: 20px;
+    margin: 0;
+  }
+  
+  .commitment ul li:before {
+    content: "";
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: #515151;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
+  
+  .availableOffers {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    width: 100%;
+  }
+  
+  .availableOffers h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .availableOffers ul {
+    flex-flow: wrap column;
+    justify-content: flex-start;
+  }
+  
+  .availableOffers ul li {
+    font-size: 13px;
+    font-weight: 400;
+    color: #515151;
+    position: relative;
+    width: 100%;
+    padding-left: 20px;
+    margin: 0;
+  }
+  
+  .availableOffers ul li:before {
+    content: "";
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: #515151;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
+  
 
 .orderPriceBox {
     width: 100%;
@@ -259,8 +393,30 @@
     background-color: #ede9e9;
 }
 
-.userAddresses .addressList ul li .action p:last-child {
+.userAddresses .addressList ul li .action p.default {
     color: #ffb545;
+}
+
+.ManageAllAddress {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap row;
+}
+
+.ManageAllAddress .addressList {
+    width: 48%;
+    margin-right: 2%;
+}
+
+.ManageAllAddress .addressList li {
+    width: 100%;
+    margin-right: 0;
+}
+
+.userAddresses .active,
+.addressList .active {
+    border: 1px solid #ffb545;
 }
 
 .cartWrapper .leftCartItems .tabs-buttons {
@@ -268,7 +424,7 @@
     display: flex;
 }
 
-.tabs-buttons button:disabled {
+.cartWrapper .tabs-buttons button:disabled {
     cursor: not-allowed;
 }
 
@@ -329,8 +485,155 @@
     position: relative;
 }
 
+/* Active tab button styling */
+.tabs-buttons button:before {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    width: 90%;
+    height: 3px;
+    margin: 0 auto;
+    left: 15px;
+}  
+
+.cartWrapper .tabs-buttons button.active:before {
+    background-color: #fbb540;
+}
+
 .cartWrapper .tabs-content {
     margin: 20px 0;
+}
+
+.addressList {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 10px 0 20px 0;
+}
+
+.addressList ul {
+    width: 100%;
+    align-items: flex-start;
+    flex-flow: wrap row;
+}
+.addressList ul li {
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    width: 47%;
+    padding: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap column;
+    margin: 0 20px 15px 0;
+}
+
+.addressList ul li h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+}
+
+.addressList ul li p {
+    color: #000;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+    padding: 0;
+    margin: 5px 0;
+}
+.addressList ul li p:last-child {
+    margin-bottom: 10px;
+}
+
+.action {
+    margin-top: 0px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.addressList ul li .action p {
+    margin-right: 10px;
+    color: #848484;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    margin-bottom: 5px;
+}
+
+
+/* radio */
+
+.round {
+    font-weight: bold;
+    line-height: 1.1;
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .round + .round {
+    margin-top: 1em;
+  }
+  
+  .round input[type="radio"] {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    /* Remove most all native input styles */
+    -moz-appearance: none;
+    appearance: none;
+    /* For iOS < 15 */
+    background-color: var(--form-background);
+    /* Not removed via appearance */
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.05em;
+    height: 1.05em;
+    border: 0.05em solid currentColor;
+    border-radius: 50%;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+  }
+  
+  .round input[type="radio"]::before {
+    content: "";
+    /* width: 0.65em;
+      height: 0.65em;
+      -webkit-clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); */
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em #fff;
+    /* Windows High Contrast Mode */
+    background-color: #fff;
+  }
+  
+  .round input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+  
+  .round input[type="radio"]:checked {
+    background-color: #ffb545;
+    border: 0.05em solid #ffb545;
+  }
+  
+  .round span {
+    font-size: 14px;
+    font-weight: 400;
+    color: #2a2a2a;
+  }
+  /* End */
+  
+
+.addressList ul li .actions p:not(:first-child) {
+    margin-left: 10px;
 }
 
 @media only screen and (max-width: 1600px) {

@@ -1,5 +1,8 @@
 .categoryModal .modalContent {
     flex-flow: wrap column;
+    width: 700px;
+    height: auto;
+    min-height: auto;
 }
 
 .categoryModal .allCategory {
@@ -8,24 +11,53 @@
 }
 
 .categoryModal .allCategory {
-    width: 100%;
+    width: 98%;
 }
 
 .categoryModal .allCategory h3 {
     text-align: left;
+    font-size: 22px;
+    margin: 0 0 15px 0;
 }
 
 .categoryModal .allCategory h3:before {
-    width: 15%;
+    width: 30%;
 }
 
 .categoryModal .categoryList {
-    height: 63vh;
+    /* height: 63vh; */
+    height: 50vh;
     overflow: auto;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap row;
 }
 
 .categoryModal .categoryList > div {
     margin-bottom: 20px;
-    width: 14%;
-    margin-right: 5%;
+    width: 20%;
+    margin-right: 0%;
+}
+
+.categoryModal .categoryList .product img {
+    width: 80%;
+    min-height: 80px;
+}
+
+@media screen and (max-width: 767px) {
+    .categoryModal .categoryList > div {
+        margin-bottom: 20px;
+        width: 28%;
+        margin-right: 5%;
+    }
+}
+
+@media screen and (max-width: 567px) {
+    .categoryModal .categoryList > div {
+        margin-bottom: 20px;
+        width: 44%;
+        margin-right: 5%;
+    }
 }

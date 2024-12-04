@@ -10,6 +10,7 @@ import {
 } from "../../store/slice/modalSlice";
 import "./AddressModal.css";
 import Button from "../Button/Button";
+import { addListAddress, defaultListAddress, deleteListAddress, getListAddress, updateListAddress } from "../../store/slice/api_integration";
 
 const AddressModal = () => {
   const dispatch = useDispatch();
@@ -18,95 +19,155 @@ const AddressModal = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editAddressId, setEditAddressId] = useState(null);
   const [formData, setFormData] = useState({
+    id: "",
     fullName: "",
     email: "",
     mobile: "",
+    house_no: "",
     address: "",
     country: "",
     city: "",
-    state: "",
     pincode: "",
+    isDefault: false,
   });
   const [errors, setErrors] = useState({});
 
   const { addresses, defaultAddressId, selectedAddress, isAddressModelOpen } = useSelector(
     (state) => state.modal
   );
-
+  const { user } = useSelector((state) => state.user);
+  
   const closeModal = () => {
     dispatch(toggleAddressModal(false));
   };
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+  };
+  
+  const validateAddressFields = () => {
+    const newErrors = {};
+    if (!formData.address.trim())
+      newErrors.address = "Address is required.";
+    if (!formData.country.trim())
+      newErrors.country = "Country is required.";
+    if (!formData.city.trim()) newErrors.city = "City is required.";
+    if (!formData.house_no.trim()) newErrors.house_no = "House Number is required.";
+    if (!/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(formData.pincode))
+      newErrors.pincode = "Invalid UK postal code.";
+    return newErrors;
   };
 
   // Validate form inputs
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName) newErrors.fullName = "Full Name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.mobile) newErrors.mobile = "Mobile Number is required";
-    if (!formData.address) newErrors.address = "Address is required";
-    if (!formData.country) newErrors.country = "Country is required";
-    if (!formData.city) newErrors.city = "City is required";
-    if (!formData.state) newErrors.state = "State is required";
-    if (!formData.pincode) newErrors.pincode = "Pincode is required";
-    return newErrors;
+    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
+    if (
+      !formData.email.trim() ||
+      !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email address.";
+    if (
+      !formData.mobile.trim() ||
+      !/^\+44\d{10}$/.test(formData.mobile)
+    ) newErrors.mobile = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
+    const addressErrors = validateAddressFields();
+    return { ...newErrors, ...addressErrors };
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      if (isEditMode) {
-        dispatch(editAddress({ id: editAddressId, updatedData: formData }));
+    const responseObj = {
+      full_name: formData.fullName,
+      mobile: formData.mobile,
+      email: formData.email,
+      house_number: formData.house_no,
+      street: formData.address,
+      locality: formData.city,
+      postcode: formData.pincode,
+      country: formData.country,
+      ...(isEditMode && { id: formData.id }) // Add id only if editing
+    };
+    const responsePayload = {
+      offset: 0,
+      limit: 20
+    }
+    if (Object.keys(validationErrors).length === 0) {
+      if(isEditMode) {
+        dispatch(updateListAddress(responseObj));
+        dispatch(getListAddress(responsePayload));
       } else {
-        dispatch(saveAddress(formData));
+        dispatch(addListAddress(responseObj));
+        dispatch(getListAddress(responsePayload));
       }
+      // Clear form after successful submission
       setFormData({
+        id: "",
         fullName: "",
         email: "",
         mobile: "",
         address: "",
         country: "",
         city: "",
-        state: "",
         pincode: "",
+        house_no: "",
+        isDefault: false,
       });
       setIsEditMode(false);
       setActiveTab(1); // Switch to the "Save Address" tab
+    } else {
+      setErrors(validationErrors);
     }
   };
 
   const handleEdit = (address) => {
-    setFormData(address);
-    setEditAddressId(address.id);
-    setIsEditMode(true);
+    const editAddressObj = {
+      id: address.id,
+      fullName: address?.full_name?.trim(),
+      phone: address?.mobile?.trim(),
+      email: address?.email?.trim(),
+      house_no: address?.house_number?.trim(),
+      address: address?.street?.trim(),
+      city: address?.locality?.trim(),
+      pincode: address?.postcode?.trim(),
+      country: address?.country?.trim(),
+      isDefault: false,
+    }
+    setFormData({ ...editAddressObj }); // Populate form with selected address
+    setIsEditMode(true); 
     setActiveTab(0);
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeAddress(id));
+  const handleRemove = (addressId) => {
+    const responseObj = { id: addressId }
+    dispatch(deleteListAddress(responseObj));
+    // dispatch(removeAddress(id));
   };
 
-  const handleSetDefault = (id) => {
-    dispatch(setDefaultAddress(id));
+  const handleSetDefault = (addressId) => {
+    const responseObj = { id: addressId }
+    dispatch(defaultListAddress(responseObj));
   };
 
   useEffect(() => {
+    const responseObj = {
+      offset: 0,
+      limit: 20
+    }
+    dispatch(getListAddress(responseObj));
     if (selectedAddress && isAddressModelOpen) {
       setFormData({
-        fullName: selectedAddress.fullName,
+        id: selectedAddress.id,
+        fullName: selectedAddress.full_name,
         email: selectedAddress.email,
-        address: selectedAddress.address,
+        address: selectedAddress.street,
         country: selectedAddress.country,
-        city: selectedAddress.city,
-        state: selectedAddress.state,
-        pincode: selectedAddress.pincode,
+        city: selectedAddress.locality,
+        pincode: selectedAddress.postcode,
         mobile: selectedAddress.mobile,
+        house_no: selectedAddress.house_number,
+        isDefault: false,
       });
       setIsEditMode(true);
       setEditAddressId(selectedAddress.id);
@@ -144,9 +205,9 @@ const AddressModal = () => {
                 >
                   <div className="addressForm">
                     <form onSubmit={handleSubmit}>
-                      <div className="box full">
+                      <div className="box">
                         <div className="form-control">
-                          <label>Full Name</label>
+                          <label>Full Name(First and Last name)</label>
                           <input
                             type="text"
                             name="fullName"
@@ -157,22 +218,6 @@ const AddressModal = () => {
                             <p className="error">{errors.fullName}</p>
                           )}
                         </div>
-                      </div>
-                      <div className="box full">
-                        <div className="form-control">
-                          <label>Email</label>
-                          <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                          />
-                          {errors.email && (
-                            <p className="error">{errors.email}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="box full">
                         <div className="form-control">
                           <label>Mobile Number</label>
                           <input
@@ -186,7 +231,33 @@ const AddressModal = () => {
                           )}
                         </div>
                       </div>
-                      <div className="box full">
+                      <div className="box">
+                        <div className="form-control">
+                          <label>Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                          />
+                          {errors.email && (
+                            <p className="error">{errors.email}</p>
+                          )}
+                        </div>
+                        <div className="form-control">
+                          <label>House Number</label>
+                          <input
+                            type="text"
+                            name="house_no"
+                            value={formData.house_no}
+                            onChange={handleInputChange}
+                          />
+                          {errors.house_no && (
+                            <p className="error">{errors.house_no}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="box">
                         <div className="form-control">
                           <label>Full Address</label>
                           <input
@@ -199,22 +270,8 @@ const AddressModal = () => {
                             <p className="error">{errors.address}</p>
                           )}
                         </div>
-                      </div>
-                      <div className="box">
                         <div className="form-control">
-                          <label>Country</label>
-                          <input
-                            type="text"
-                            name="country"
-                            value={formData.country}
-                            onChange={handleInputChange}
-                          />
-                          {errors.country && (
-                            <p className="error">{errors.country}</p>
-                          )}
-                        </div>
-                        <div className="form-control">
-                          <label>City</label>
+                          <label>Town/City</label>
                           <input
                             type="text"
                             name="city"
@@ -227,19 +284,7 @@ const AddressModal = () => {
                         </div>
                       </div>
                       <div className="box">
-                        <div className="form-control">
-                          <label>State</label>
-                          <input
-                            type="text"
-                            name="state"
-                            value={formData.state}
-                            onChange={handleInputChange}
-                          />
-                          {errors.state && (
-                            <p className="error">{errors.state}</p>
-                          )}
-                        </div>
-                        <div className="form-control">
+                      <div className="form-control">
                           <label>Pincode</label>
                           <input
                             type="text"
@@ -249,6 +294,18 @@ const AddressModal = () => {
                           />
                           {errors.pincode && (
                             <p className="error">{errors.pincode}</p>
+                          )}
+                        </div>
+                        <div className="form-control">
+                          <label>Country/Region</label>
+                          <input
+                            type="text"
+                            name="country"
+                            value={formData.country}
+                            onChange={handleInputChange}
+                          />
+                          {errors.country && (
+                            <p className="error">{errors.country}</p>
                           )}
                         </div>
                       </div>
@@ -267,23 +324,24 @@ const AddressModal = () => {
                   style={{ display: activeTab === 1 ? "block" : "none" }}
                 >
                   <div className="addressList">
-                    {addresses.length > 0 ? (
+                    {user[0].addresses.length > 0 ? (
                       <ul>
-                        {addresses.map((address) => (
+                        {user[0].addresses.map((address) => (
                           <li key={address.id}>
                             <h4>{address.fullName}</h4>
                             <p>
-                              Full Address: {address.address}, {address.city},
-                              {address.state}, {address.pincode}
+                              Full Address: {address.house_number}, {address.street},
+                              {address.locality}, {address.postcode}
                             </p>
                             <p>Phone Number: {address.mobile}</p>
+                            <p>Email: {address.email}</p>
                             <div className="action">
                               <p onClick={() => handleEdit(address)}>Edit |</p>
                               <p onClick={() => handleRemove(address.id)}>
                                 Remove |
                               </p>
                               <p onClick={() => handleSetDefault(address.id)}>
-                                {defaultAddressId === address.id
+                                {address.isDefault.toLowerCase() === 'true'
                                   ? "Default"
                                   : "Set as Default"}
                               </p>
