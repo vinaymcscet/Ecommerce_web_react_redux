@@ -10,7 +10,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useDispatch, useSelector } from "react-redux";
 import { addBlogReviewData, getAllBlogsCategory, getBlogDetailData } from "../../store/slice/api_integration";
 import "./BlogDetail.css";
-import { FormatDateTime } from "../../utils/FormatDateTime";
+import { FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 
 // import Button from '@mui/material/Button';
 
@@ -117,7 +117,7 @@ const BlogDetail = () => {
             <h6>{blogDetail[0].slug}</h6>
             <p>Category: <span>{blogDetail[0].parent_category_name}</span></p>
             <p>Sub-category: <span>{blogDetail[0].category_name}</span></p>
-            <div className="date">{FormatDateTime(blogDetail[0].blog_created_at)}</div>
+            <div className="date">{formatDateTimeProduct(blogDetail[0].blog_created_at).formattedDate} {formatDateTimeProduct(blogDetail[0].blog_created_at).time}</div>
           
             <div className="blogReviewForm">
               <h4>Write Your Review</h4>
