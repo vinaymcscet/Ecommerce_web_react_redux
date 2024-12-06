@@ -8,7 +8,7 @@ export const ShareProduct = async (productId) => {
             url: productURL,
           });
         } catch (error) {
-          console.error("Error sharing product:", error);
+          // console.error("Error sharing product:", error);
         }
       } else {
         navigator.clipboard.writeText(productURL);

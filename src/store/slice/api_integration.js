@@ -109,7 +109,7 @@ import {
   setUserReview,
   setUserReviewCount
 } from "./productSlice";
-import { addToCart, clearCart, setActiveOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setSelectedReasonCancelProductResponse, setViewCartItems } from "./cartSlice";
+import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -396,9 +396,9 @@ export const generateExpiredToken = (userData) => async (dispatch) => {
     }, 0);
     dispatch(clearAuthTokens())
     // dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1151,6 +1151,7 @@ export const viewItemsInCartData = (userData = null) => async (dispatch) => {
 
     dispatch(setLoading(false));
     dispatch(setError(error.message));
+    dispatch(setViewCartItems(null));
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);
@@ -1241,7 +1242,11 @@ export const OrderListData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setOrderListResponse(response.data));
-    dispatch(setActiveOrderListCountResponse(response.totalCount));
+    if(userData.status == 1) dispatch(setActiveOrderListCountResponse(response.totalCount));
+    if(userData.status == 3) dispatch(setCancelledOrderListCountResponse(response.totalCount));
+    if(userData.status == 6) dispatch(setReturnOrderListCountResponse(response.totalCount));
+    if(userData.status == 5) dispatch(setDeliveredListCountResponse(response.totalCount));
+    
     dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
     setTimeout(() => {

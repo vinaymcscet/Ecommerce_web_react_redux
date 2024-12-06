@@ -9,6 +9,9 @@ const initialState = {
   confirmOrderResponse: null,
   orderList: null,
   activeOrderListCount: 0,
+  returnOrderListCount: 0,
+  deliveredOrderListCount: 0,
+  cancelledOrderListCount: 0,
   orderDetail: null,
   reasonList: null,
   selectedReasonCancelProduct: null,
@@ -58,6 +61,15 @@ export const cartSlice = createSlice({
     setActiveOrderListCountResponse: (state, action) => {
       state.activeOrderListCount = action.payload;
     },
+    setReturnOrderListCountResponse: (state, action) => {
+      state.returnOrderListCount = action.payload;
+    },
+    setCancelledOrderListCountResponse: (state, action) => {
+      state.cancelledOrderListCount = action.payload;
+    },
+    setDeliveredListCountResponse: (state, action) => {
+      state.deliveredOrderListCount = action.payload;
+    },
     setOrderDetailResponse: (state, action) => {
       state.orderDetail = action.payload;
     },
@@ -90,6 +102,9 @@ export const {
   setReasonListResponse,
   setSelectedReasonCancelProductResponse,
   setActiveOrderListCountResponse,
+  setDeliveredListCountResponse,
+  setCancelledOrderListCountResponse,
+  setReturnOrderListCountResponse,
   setCancelOrderModal,
 } = cartSlice.actions;
 export default cartSlice.reducer;

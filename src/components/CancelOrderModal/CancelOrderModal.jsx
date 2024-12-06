@@ -5,13 +5,16 @@ import "./CancelOrderModal.css";
 import { setCancelOrderModal } from "../../store/slice/cartSlice";
 import { OrderListData, ReasonListData, selectedCancelProduct } from "../../store/slice/api_integration";
 import { selectReason } from "../../utils/Constants";
+import { CircularProgress } from "@mui/material";
 
 const CancelOrderModal = () => {
   const dispatch = useDispatch();
   const modalRef = useRef(null); // Reference for modal content
   const [selectedReason, setSelectedReason] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]); 
+  const [additionalComments, setAdditionalComments] = useState(""); 
   const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(false); 
   
   const { isCancelModalOpen, reasonList, orderId, skuId } = useSelector(
     (state) => state.cart
@@ -38,24 +41,14 @@ const CancelOrderModal = () => {
 
   if (!isCancelModalOpen) return null;
 
-  // const handleClick = (item) => {
-  //   const responseObj = {
-  //     sub_category_id: item.id, 
-  //     offset: 1, 
-  //     limit: 10
-  //   }
-  //   dispatch(getProductOnSubCategory(responseObj));
-  //   // const filterResponse = {sub_category_id: item.id}
-  //   navigate(`/productlist?subcategory_id=${item.id}`);
-  // }
-
   const handleReasonChange = (e) => {
+    setLoading(true);
     const selectedValue = e.target.value;
     setSelectedReason(selectedValue); // Update state with the selected value
-    console.log("Selected Reason:", selectedValue); // Log selected value
     const responseObj = { type: selectedValue };
     dispatch(ReasonListData(responseObj)).finally(() => {
       setSelectedOptions([]);
+      setLoading(false);
     });
   };
 
@@ -71,9 +64,7 @@ const CancelOrderModal = () => {
       }
     });
   };
-  console.log("selected reason", selectedOptions);
 
-  console.log("reasonList", reasonList);
   const handleCancelReasonModal = () => {
     setSelectedOptions([]);
     setSelectedReason("");
@@ -97,7 +88,8 @@ const CancelOrderModal = () => {
       type: selectedReason.toLocaleLowerCase() === 'cancel' ? 3 : 6,  // 3 for 'cancel' or 6 for 'return'
       order_id: orderId,
       sku_id: skuId,
-      reason_id: reasonIds // [1,2,3]
+      reason_id: reasonIds, // [1,2,3]
+      comment: additionalComments || ''
     }
     dispatch(selectedCancelProduct(responseObj)).finally(() => {
       dispatch(setCancelOrderModal(false));
@@ -133,27 +125,43 @@ const CancelOrderModal = () => {
                     ))}
                 </select>
               </div>
-              {selectedReason && <div className="reasonListDiv">
-                <label>Select below Reasons</label>
-                <div className="reasonFormControl">
-                  { reasonList && reasonList.length > 0 ? (
-                    reasonList.map((item) => (
-                        <label className="round" key={item.id}>
-                          <input 
-                            type="checkbox" 
-                            name="Reason" 
-                            checked={selectedOptions.some(selected => selected.key === item.id)}
-                            onChange={() => handleCheckboxChange(item.id)} 
-                          />
-                          <span>{item.reasons}</span>
-                        </label>
-                    ))
-                  ) : (
-                    <p>No reasons available</p>
-                  )}
-                  
+              {loading ? (
+                <div className="loadingContainer">
+                    <CircularProgress />
                 </div>
-              </div>}
+            ) : (
+              <>
+                    {selectedReason && (
+                      <>
+                        <div className="reasonListDiv">
+                          <label>Select below Reasons</label>
+                          <div className="reasonFormControl">
+                            { reasonList && reasonList.length > 0 ? (
+                              reasonList.map((item) => (
+                                  <label className="round" key={item.id}>
+                                    <input 
+                                      type="checkbox" 
+                                      name="Reason" 
+                                      checked={selectedOptions.some(selected => selected.key === item.id)}
+                                      onChange={() => handleCheckboxChange(item.id)} 
+                                    />
+                                    <span>{item.reasons}</span>
+                                  </label>
+                              ))
+                            ) : (
+                              <p>No reasons available</p>
+                            )}
+                            
+                          </div>
+                        </div>
+                        <div className="additionalReason">
+                          <label htmlFor="additional Comment">Additional Comment</label>
+                          <textarea onChange={(e) => setAdditionalComments(e.target.value)}></textarea>
+                        </div>
+                      </>  
+                  )}
+                </>
+            )}
               <div className="reasonButton">
                 <button type="button" onClick={handleCancelReasonModal}>Cancel</button>
                 <button type="submit">Submit</button>

@@ -10,7 +10,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
-import { getItemsInCartData, getUserRequest, logoutRequest, searchProductData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { 
+  getItemsInCartData, 
+  getUserRequest, 
+  logoutRequest, 
+  searchProductData, 
+  viewItemsInCartData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
 
 const Header = () => {

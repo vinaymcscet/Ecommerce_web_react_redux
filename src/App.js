@@ -113,35 +113,35 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="home" element={<Home />} />
-          <Route path="sectionDetail/:id" element={<SectionDetail />} />
-          <Route path="about" element={<About />} />
-          <Route path="blog" element={<Blog />} />
-          <Route path="blog/:id" element={<BlogDetail />} />
-          <Route path="terms-condition" element={<Terms />} />
-          <Route path="privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="disclaimer" element={<Disclaimer />} />
-          <Route path="refund-policy" element={<RefundPolicy />} />
-          <Route path="return-and-refund" element={<ReturnAndRefund />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/sectionDetail/:id" element={<SectionDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
+          <Route path="/terms-condition" element={<Terms />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/return-and-refund" element={<ReturnAndRefund />} />
           <Route
-            path="shipping-and-delivery"
+            path="/shipping-and-delivery"
             element={<ShippingAndDelivery />}
           />
-          <Route path="order-cancellation" element={<OrderCancellation />} />
-          <Route path="allcategory" element={<Category />} />
-          <Route path="faq" element={<Faq />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="productlist" element={<ProductList />} />
-          <Route path="product/:id" element={<ProductDetail />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="order-complete" element={<OrderComplete />} />
+          <Route path="/order-cancellation" element={<OrderCancellation />} />
+          <Route path="/allcategory" element={<Category />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/productlist" element={<ProductList />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/order-complete" element={<OrderComplete />} />
           {/* <Route path="userprofile" element={<Profile />} /> */}
-          <Route path="userprofile" element={
+          <Route path="/userprofile" element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
           } />
-          <Route path="search" element={<Search />} />
+          <Route path="/search" element={<Search />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>

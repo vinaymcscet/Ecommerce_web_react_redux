@@ -16,7 +16,6 @@ const Subscribe = () => {
 
   const handleNewsLetter = (e) => {
     const { name, value } = e.target;
-    console.log("value", value, name);
     setNewsLetter({
       ...newsLetter,
       [name]: value

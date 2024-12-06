@@ -362,7 +362,7 @@ button.contact {
     font-size: 13px;
     font-weight: 400;
     text-align: left;
-    margin: 5px 0;
+    margin: 0;
 }
 
 .user_order_list .orderList .orderDetail .rightOrder {
@@ -410,6 +410,7 @@ button.contact {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    margin-top: 20px;
 }
 
 .user_order_list .orderList .openOrderDetails {
@@ -544,12 +545,38 @@ button.contact {
     background-color: #008224;
 }
 
-.tracking_order_status .order.started.retrun:after {
+.tracking_order_status .order.started.return:after {
     background-color: #FBB540;
 }
 
 .tracking_order_status .order.started.cancel:after {
     background-color: #DD3333;
+}
+
+/* .orderColor {
+    color: #b3adad;
+} */
+
+.expectedDelivery {
+    padding: 10px;
+    background: #f6f6f6;
+    border: 1px solid #EAEAEA;
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+.expectedDelivery h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.expectedDelivery p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: left;
 }
 
 .addressBox {
@@ -661,6 +688,8 @@ button.contact {
 
 .addressForm button {
     text-transform: uppercase;
+    width: auto;
+    padding: 0 30px;
 }
 
 .addressList {

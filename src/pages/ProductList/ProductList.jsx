@@ -29,10 +29,8 @@ const ProductList = () => {
   const [page, setPage] = useState(0);  // Default page 0 (first page)
   const [itemsPerPage, setItemsPerPage] = useState(10);
   
-  console.log("subCategoryList", subCategoryList);
   const searchParams = new URLSearchParams(location.search);
   const subcategory_id = searchParams.get('subcategory_id');
-  console.log("subcategory_id", subcategory_id);
   
   
   useEffect(() => {

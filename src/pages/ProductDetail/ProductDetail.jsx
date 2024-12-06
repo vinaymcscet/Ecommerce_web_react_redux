@@ -288,7 +288,7 @@ const ProductDetail = () => {
     }
    
     const responseObj = {
-      sku_id: productDetailResponse?.data.variants[0]?.sku_id,
+      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
       type: 'increase',
     }
     dispatch(addToCartData(responseObj))

@@ -14,6 +14,7 @@ const HeaderPin = () => {
         const responseObj = { group_key: 'notice'};
         dispatch(getCMSGroupItemRequest(responseObj));
     }, [])
+    
     const sliderData = [
         cmsGroupItem?.title_1, 
         cmsGroupItem?.title_1, 
