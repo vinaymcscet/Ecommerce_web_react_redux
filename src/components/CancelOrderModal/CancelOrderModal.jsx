@@ -16,7 +16,7 @@ const CancelOrderModal = () => {
   const [error, setError] = useState(""); 
   const [loading, setLoading] = useState(false); 
   
-  const { isCancelModalOpen, reasonList, orderId, skuId } = useSelector(
+  const { isCancelModalOpen, reasonList, orderId, skuId, returnStatus, status } = useSelector(
     (state) => state.cart
   );
   
@@ -46,6 +46,7 @@ const CancelOrderModal = () => {
     const selectedValue = e.target.value;
     setSelectedReason(selectedValue); // Update state with the selected value
     const responseObj = { type: selectedValue };
+    
     dispatch(ReasonListData(responseObj)).finally(() => {
       setSelectedOptions([]);
       setLoading(false);
@@ -92,9 +93,12 @@ const CancelOrderModal = () => {
       comment: additionalComments || ''
     }
     dispatch(selectedCancelProduct(responseObj)).finally(() => {
+      setSelectedOptions([]);
+      setSelectedReason("");
+      setError("");
       dispatch(setCancelOrderModal(false));
       const responseObj = {
-        status: 1
+        status
       }
       dispatch(OrderListData(responseObj))
     });
@@ -114,11 +118,22 @@ const CancelOrderModal = () => {
             <div className="reasonForm">
               <div className="reasonDiv">
                 <label htmlFor="Select a reason">Type:</label>
-                <select value={selectedReason} onChange={handleReasonChange}>
+                <select defaultValue={selectedReason} onChange={handleReasonChange}>
                     <option value="" disabled selected>
                       Select a reason
                     </option>
-                    {selectReason.map(option => (
+                    {returnStatus && 
+                      selectReason
+                        .filter(item => item.value.toLocaleLowerCase() === 'return')
+                        .map(option => (
+                        <option key={option.id} value={option.value}>
+                            {option.type}
+                        </option>
+                    ))}
+                    {!returnStatus && 
+                      selectReason
+                        .filter(item => item.value.toLocaleLowerCase() !== 'return')
+                        .map(option => (
                         <option key={option.id} value={option.value}>
                             {option.type}
                         </option>
@@ -175,4 +190,4 @@ const CancelOrderModal = () => {
   );
 };
 
-export default CancelOrderModal;
+export default React.memo(CancelOrderModal);

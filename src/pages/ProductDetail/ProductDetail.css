@@ -262,6 +262,7 @@
 }
 .cartError.error {
   margin-left: 0;
+  text-align: left;
 }
 
 .cartInputBox {

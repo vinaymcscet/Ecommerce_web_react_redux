@@ -10,7 +10,6 @@ const ReturnOrders = () => {
   const [returnPage, setReturnPage] = useState(0);  // Default page 0 (first page)
   const [returnItemsPerPage, setReturnItemsPerPage] = useState(1);
   const [returnOrderIndex, setReturnOrderIndex] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState({ returned: true });
   const { 
     orderList, 
@@ -210,8 +209,8 @@ const ReturnOrders = () => {
                         {
                         orderDetail?.statusDetails?.map(order => (
                             <>
-                            <h4>{order?.status}</h4>
-                            <p>{order?.date}</p>
+                                <h4>{order?.status}</h4>
+                                <p>{order?.date}</p>
                             </>
                         ))
                         }

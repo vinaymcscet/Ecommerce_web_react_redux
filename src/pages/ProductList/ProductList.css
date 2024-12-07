@@ -7,9 +7,17 @@
   margin-top: 30px;
 }
 
+.productListing .listPageCategoryItems .catProduct:nth-child(1) {
+  margin-top: 10px;
+}
+
 .productListing .catProduct .product img {
-  width: 110px;
-  height: 110px;
+  width: 140px;
+  height: 140px;
+}
+
+.productListing .slick-slide {
+  padding-right: 20px;
 }
 
 .productListing .catProduct .product p {
@@ -37,7 +45,8 @@
 
 .listPageCategoryItems .slick-slide {
   width: auto !important;
-  margin: 0 auto;
+  margin: 0 15px;
+  padding: 0;
 }
 
 .prdWrapper {

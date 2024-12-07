@@ -10,7 +10,6 @@ const CancelledOrders = () => {
     const [cancelPage, setCancelPage] = useState(0);  // Default page 0 (first page)
     const [cancelItemsPerPage, setCancelItemsPerPage] = useState(1);
     const [cancelOrderIndex, setCancelOrderIndex] = useState(null);
-    const [isOpen, setIsOpen] = useState(true);
     const [isInitialLoad, setIsInitialLoad] = useState({ cancelled: true });
     const { 
       orderList, 
@@ -27,10 +26,11 @@ const CancelledOrders = () => {
         if(isInitialLoad.cancelled) {
           setIsInitialLoad((prev) => ({
             ...prev,
-            returned: false,
+            cancelled: false,
           }));
           return;
         }
+
         // Extract parameters from the URL
         const searchParams = new URLSearchParams(location.search);
         const pageParam = parseInt(searchParams.get("page"), 10) || 1;
@@ -51,7 +51,7 @@ const CancelledOrders = () => {
           limit
         }
         dispatch(OrderListData(responseObj));
-      }, [location.search, cancelItemsPerPage ,dispatch]);
+      }, [location.search, cancelItemsPerPage ,dispatch]);  
       
       // Handle dropdown change for itemsPerPage
       const handleCancelItemsPerPageChange = (e) => {

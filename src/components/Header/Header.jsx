@@ -25,7 +25,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
-  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  const { viewCartItems } = useSelector((state) => state.cart);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)

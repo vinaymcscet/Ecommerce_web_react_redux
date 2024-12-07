@@ -77,6 +77,9 @@ function App() {
       }, 1000);
     }
     if (error) {
+      if(error.toLowerCase().includes('accesstoken')) {
+        return;
+      }
       setTimeout(() => {
         toast.error(error);
         setError("");
@@ -84,10 +87,10 @@ function App() {
     }
   }, [success, error]);
 
-  useEffect(() => {
-    // Load tokens from localStorage when the app starts
-    dispatch(loadTokensFromStorage());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   // Load tokens from localStorage when the app starts
+  //   dispatch(loadTokensFromStorage());
+  // }, [dispatch]);
 
   useEffect(() => {
     const tokens = getTokensFromLocalStorage();

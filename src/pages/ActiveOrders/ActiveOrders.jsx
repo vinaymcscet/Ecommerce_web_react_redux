@@ -117,11 +117,13 @@ const ActiveOrders = () => {
       const redirectToSupport = () => {
         navigate("/contact");
       };
-      const handleCancelOrder = (e, item) => {
+      const handleCancelOrder = (e, item, returnStatus) => {
         const cancelOrderPayload = { 
           isOpen: isOpen,
           orderId: item.order_id,
           skuId: item.sku_id,
+          returnStatus,
+          status: 1,
         };
         // dispatch(toggleCategoryModal(cancelOrderPayload));
         dispatch(setCancelOrderModal(cancelOrderPayload))
@@ -203,7 +205,7 @@ const ActiveOrders = () => {
                     <div onClick={() => redirectToSupport()}>Get product support</div>
                     <div 
                         className={activeOrderIndex === index ? "active" : "disabled"}
-                        onClick={(e) => handleCancelOrder(e, item)}
+                        onClick={(e) => handleCancelOrder(e, item, orderDetail.returnStatus)}
                     >
                         {"Cancel Order"}
                     </div>
@@ -282,4 +284,4 @@ const ActiveOrders = () => {
   )
 }
 
-export default ActiveOrders
+export default React.memo(ActiveOrders)

@@ -16,6 +16,10 @@ const initialState = {
   reasonList: null,
   selectedReasonCancelProduct: null,
   isCancelModalOpen: false,
+  orderId: '',
+  skuId: '',
+  returnStatus: false,
+  status: 0,
 };
 
 export const cartSlice = createSlice({
@@ -83,6 +87,8 @@ export const cartSlice = createSlice({
       state.isCancelModalOpen = action.payload.isOpen;
       state.orderId = action.payload.orderId;
       state.skuId = action.payload.skuId;
+      state.returnStatus = action.payload.returnStatus;
+      state.status = action.payload.status;
     },
   },
 });

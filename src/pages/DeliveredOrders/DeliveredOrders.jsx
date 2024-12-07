@@ -18,6 +18,8 @@ const DeliveredOrders = () => {
         orderList, 
         deliveredOrderListCount = 0,
         orderDetail,
+        returnStatus,
+        status
       } = useSelector((state) => state.cart);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -119,11 +121,13 @@ const DeliveredOrders = () => {
   const redirectToSupport = () => {
     navigate("/contact");
   };
-  const handleCancelOrder = (e, item) => {
+  const handleCancelOrder = (e, item, returnStatus) => {
     const cancelOrderPayload = { 
       isOpen: isOpen,
       orderId: item.order_id,
       skuId: item.sku_id,
+      returnStatus,
+      status: 5,
     };
     // dispatch(toggleCategoryModal(cancelOrderPayload));
     dispatch(setCancelOrderModal(cancelOrderPayload))
@@ -203,7 +207,7 @@ const DeliveredOrders = () => {
                         <div onClick={() => redirectToSupport()}>Get product support</div>
                         <div 
                             className={deliveredOrderIndex === index ? "active" : "disabled"}
-                            onClick={(e) => handleCancelOrder(e, item)}
+                            onClick={(e) => handleCancelOrder(e, item, orderDetail?.returnStatus)}
                         >
                             {"Cancel Order"}
                         </div>

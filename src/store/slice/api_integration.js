@@ -370,9 +370,9 @@ export const getUserRequest = () => async (dispatch) => {
     }
     dispatch(generateExpiredToken(responseObj))
     // dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -384,16 +384,16 @@ export const generateExpiredToken = (userData) => async (dispatch) => {
     const response = await POST(JWT_TOKEN_CONSTANT, userData);
     
     dispatch(setLoading(false));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
 
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 0);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 0);
     dispatch(clearAuthTokens())
     // dispatch(setError(error.message));
     // setTimeout(() => {
@@ -919,10 +919,10 @@ export const similarProductData = (userData) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
