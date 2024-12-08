@@ -82,6 +82,7 @@ import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList,
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 import { setCmsContactUs, setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
 import {
+  setAddToCartStatusCount,
   setAddWishList,
   setAllCategoryList, 
   setAllOffersList, 
@@ -109,7 +110,7 @@ import {
   setUserReview,
   setUserReviewCount
 } from "./productSlice";
-import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems } from "./cartSlice";
+import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems, setViewCartOnCoupen } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -1097,6 +1098,7 @@ export const addToCartData = (userData) => async (dispatch) => {
     dispatch(setLoading(false));
     // dispatch(setAddToCart(response.data));
     dispatch(setSuccess(response.message));
+    dispatch(setAddToCartStatusCount(response.status));
     dispatch(viewItemsInCartData());
     setTimeout(() => {
       dispatch(resetSuccess());
@@ -1151,7 +1153,7 @@ export const viewItemsInCartData = (userData = null) => async (dispatch) => {
 
     dispatch(setLoading(false));
     dispatch(setError(error.message));
-    dispatch(setViewCartItems(null));
+    // dispatch(setViewCartItems(null));
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);

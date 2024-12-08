@@ -26,14 +26,13 @@ const ProductDetail = () => {
     similarProductListResponse, 
     similarProductCount = 0,
     recentView,
-    totalRecentView = 0 } = useSelector((state) => state.product);
+    totalRecentView = 0,
+    addToCartStatusCount,
+   } = useSelector((state) => state.product);
   const { user } = useSelector((state) => state.user);
-  
-  
-  
+    
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
   const [sizeError, setSizeError] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -280,8 +279,6 @@ const ProductDetail = () => {
       setUserLoggedOnCart("Please login to add items to cart.")
       return;
     }
-    setHandleCartOnLoad(1);
-    setHandleCartButtonOnLoad(1);
     if (selected.color_code === null) {
       setSizeError("Please select a size.");
       return;
@@ -291,7 +288,16 @@ const ProductDetail = () => {
       sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
       type: 'increase',
     }
-    dispatch(addToCartData(responseObj))
+    dispatch(addToCartData(responseObj)).finally(() =>{
+      if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+        setHandleCartOnLoad(1);
+        setHandleCartButtonOnLoad(1);
+      } else {
+        setHandleCartOnLoad(0);
+        setHandleCartButtonOnLoad(0);
+      }
+    })
+   
     setUserLoggedOnCart("")
   };
 
@@ -306,9 +312,13 @@ const ProductDetail = () => {
       type: 'increase'
     }
     dispatch(addToCartData(responseObj)).finally(() => {
-      setUserLoggedOnBuyNow("")
-      navigate("/cart");
-    });
+      if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+        setUserLoggedOnBuyNow("")
+        navigate("/cart");
+      } else {
+        return;
+      }
+    })
   }
 
   // Adding Product on whistlist

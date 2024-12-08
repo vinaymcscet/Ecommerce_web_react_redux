@@ -80,6 +80,9 @@ function App() {
       if(error.toLowerCase().includes('accesstoken')) {
         return;
       }
+      if(error.toLowerCase().includes('no cartitems found.')) {
+        return;
+      }
       setTimeout(() => {
         toast.error(error);
         setError("");

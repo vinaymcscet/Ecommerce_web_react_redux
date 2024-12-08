@@ -30,6 +30,7 @@ const initialState = {
   getReview: null,
   getReviewCount: 0,
   allOffersList: null,
+  addToCartStatusCount: null,
 };
 
 export const cartSlice = createSlice({
@@ -127,6 +128,9 @@ export const cartSlice = createSlice({
     setAllOffersList: (state, action) => {
       state.allOffersList = action.payload;
     },
+    setAddToCartStatusCount: (state, action) => {
+      state.addToCartStatusCount = action.payload;
+    },
   },
 });
 
@@ -160,5 +164,6 @@ export const {
   setGetAnReviewCount,
   setProductSectionCount,
   setAllOffersList,
+  setAddToCartStatusCount,
 } = cartSlice.actions;
 export default cartSlice.reducer;
