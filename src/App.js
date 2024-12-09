@@ -31,22 +31,15 @@ const Faq = React.lazy(() => import("./pages/Faq/Faq"));
 const Contact = React.lazy(() => import("./pages/Contact/Contact"));
 const Category = React.lazy(() => import("./pages/Category/Category"));
 const ProductList = React.lazy(() => import("./pages/ProductList/ProductList"));
-const ProductDetail = React.lazy(() =>
-  import("./pages/ProductDetail/ProductDetail"));
-const SectionDetail = React.lazy(() =>
-  import("./pages/SectionDetail/SectionDetail"));
-
+const ProductDetail = React.lazy(() => import("./pages/ProductDetail/ProductDetail"));
+const SectionDetail = React.lazy(() => import("./pages/SectionDetail/SectionDetail"));
 const Cart = React.lazy(() => import("./pages/Cart/Cart"));
-const OrderComplete = React.lazy(() =>
-  import("./pages/OrderComplete/OrderComplete")
-);
+const OrderComplete = React.lazy(() => import("./pages/OrderComplete/OrderComplete"));
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
 const Search = React.lazy(() => import("./pages/Search/Search"));
 const Offline = React.lazy(() => import("./pages/Offline/Offline"));
 
-const AddressModal = React.lazy(() =>
-  import("./components/AddressModal/AddressModal")
-);
+const AddressModal = React.lazy(() => import("./components/AddressModal/AddressModal"));
 
 function App() {
   const { isAddressModelOpen, error, success } = useSelector(
@@ -89,11 +82,6 @@ function App() {
       }, 1000);
     }
   }, [success, error]);
-
-  // useEffect(() => {
-  //   // Load tokens from localStorage when the app starts
-  //   dispatch(loadTokensFromStorage());
-  // }, [dispatch]);
 
   useEffect(() => {
     const tokens = getTokensFromLocalStorage();

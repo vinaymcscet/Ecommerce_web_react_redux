@@ -17,18 +17,49 @@ const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
+  const [page, setPage] = useState(1);
+  const [dataLoading, setDataLoading] = useState(false);
+
+  const handleScroll = () => {
+    if (
+      document.body.scrollHeight - 630 <
+      window.scrollY + window.innerHeight
+    ) {
+      setDataLoading(true);
+    }
+  };
+
+  function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  }
+
+  window.addEventListener("scroll", debounce(handleScroll, 500));
+  useEffect(() => {
+    if (dataLoading == true) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [dataLoading]);
 
   useEffect(() => {
     setLoading(true)
     dispatch(getHomeData())
     const responseObj = {
-      offset: 1,
-      limit: 100
+      offset: page,
+      limit: 10
     }
     dispatch(getHomeSection(responseObj)).finally(() => {
       setLoading(false);
+      setDataLoading(false);
     })
-  }, [dispatch]);
+  }, [dispatch, dataLoading]);
   
   const handleProductClick = (item) => {
     navigate(`/product/${item.product_id}`, { state: { product: item } });
@@ -73,6 +104,9 @@ const Home = () => {
               </div>
             ))}
           </div>
+        <div className="groupBanner">
+            <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
+          </div>
           <div className="productHistory">
               {homeProductSection && homeProductSection.length > 0 ? (
                   homeProductSection.map((item, index) => (
@@ -109,9 +143,11 @@ const Home = () => {
                   <p>No products available</p>
                 )}
           </div>
-          <div className="groupBanner">
-            <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
-          </div>
+          {dataLoading && (
+            <div className="loadingContainer">
+                <CircularProgress />
+            </div>
+          )}
           {homeProductData?.RecentViewed.length > 0 && <div className="browisingHistory">
             <h3>Inspired by your browsing history</h3>
           </div>}
