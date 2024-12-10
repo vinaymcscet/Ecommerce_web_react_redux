@@ -8,7 +8,7 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addReviewProductData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData } from "../../store/slice/api_integration";
 import CircularProgress from '@mui/material/CircularProgress';
 import "./ProductDetail.css";
 // import { gaurnteeMessage } from "../../utils/CommonUtils";
@@ -23,6 +23,7 @@ const ProductDetail = () => {
     productDetailResponse, 
     getReview, 
     getReviewCount = 0, 
+    getReviewImage,
     similarProductListResponse, 
     similarProductCount = 0,
     recentView,
@@ -50,11 +51,11 @@ const ProductDetail = () => {
   const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
   const [handleCartButtonOnLoad, setHandleCartButtonOnLoad] = useState(0);
   const [imageData, setImageData] = useState([
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
   ]);
   const [selected, setSelected] = useState({
     sku_id: '',
@@ -66,7 +67,7 @@ const ProductDetail = () => {
   });
   const [errorFileType, setErrorFileType] = useState("");
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
-  const [reviewPerPage, setReviewPerPage] = useState(10);
+  const [reviewPerPage, setReviewPerPage] = useState(1);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
   const [recentViewPerPage, setRecentViewPerPage] = useState(1);
   
@@ -82,8 +83,10 @@ const ProductDetail = () => {
     fullName: "",
     email: "",
     review: "",
+    rating: "",
   });
   const [loading, setLoading] = useState(false);
+  const [reviewLoading, setreviewLoading] = useState(false);
   const [similarProductLoading, setSimilarProductLoading] = useState(false);
   const [recentlyViewLoading, setRecentlyViewLoading] = useState(false);
 
@@ -221,6 +224,11 @@ const ProductDetail = () => {
       isValid = false;
     }
 
+    if(rating === "" || rating === 0) {
+      newErrors.rating = "Rating is required"
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -229,8 +237,8 @@ const ProductDetail = () => {
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     const uploadedImages = imageData
-      .filter((data) => data.file !== null) // Exclude empty slots
-      .map((data) => data.file); // Extract the file objects
+      .filter((data) => data.imageId !== "") // Exclude empty slots
+      .map((data) => data.imageId); // Extract the file objects
     
     if (validate()) {
       const responseObj = {
@@ -239,13 +247,23 @@ const ProductDetail = () => {
         email: formData.email,
         ratings: rating,
         review_text: formData.review,
-        images: uploadedImages,
+        image_id: uploadedImages,
       }
       dispatch(addReviewProductData(responseObj))
+
+       const searchParams = new URLSearchParams(location.search); 
+       const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+       const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+ 
+       setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+       setReviewPerPage(itemsPerPageParam);
+ 
+       const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+       const limit = itemsPerPageParam;
       const reponseReviewObj = {
-        product_id: productDetailResponse?.data?.product_id,
-        offset: 1,
-        limit: 10
+        product_id: productDetailResponse?.data?.product_id || product_id,
+        offset,
+        limit
       }
       dispatch(getReviewProductData(reponseReviewObj))
       setFormData({
@@ -253,12 +271,13 @@ const ProductDetail = () => {
         email: "",
         review: "",
       });
+      setRating(0);
       setImageData([
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
       ]);
       setShowReviewForm(false);
     }
@@ -370,6 +389,7 @@ const ProductDetail = () => {
       });
     }
   }, [productDetailResponse]); 
+  
   const handleColorClick = (item) => {
     setSelected({ 
       sku_id: item?.sku_id,
@@ -383,20 +403,35 @@ const ProductDetail = () => {
 
    // Function to handle image upload and preview
    const handleImageUpload = (e, index) => {
-    const file = e.target.files[0]; // Get the uploaded file
+    const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      const imageUrl = URL.createObjectURL(file);
-      setImageData((prev) =>
-        prev.map((img, i) =>
-          i === index
-            ? { preview: imageUrl, file } // Update the corresponding index
-            : img
-        )
-      );
+      const responseObj = {
+        product_id,
+        images: file,
+      };
+  
+      // Dispatch the API call to upload the image
+      dispatch(addReviewProductImageData(responseObj)).finally(() => {
+        // After API call, update the specific index in the imageData array
+        const { imageId, imageUrl } = getReviewImage || {};
+        if (imageId && imageUrl) {
+          setImageData((prev) => {
+            const updatedImageData = [...prev];
+            updatedImageData[index] = {
+              imageId,
+              imageUrl,
+              preview: imageUrl, // Update preview with the uploaded image
+            };
+            return updatedImageData;
+          });
+        } else {
+          console.error("Image upload response not found in state.");
+        }
+      });
     } else {
       setErrorFileType("Please upload a valid image file");
     }
-  };
+  };  
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -404,15 +439,49 @@ const ProductDetail = () => {
 
   const handleActiveTabs = (value) => {
     if(activeTab == 2) {
+      const searchParams = new URLSearchParams(location.search); 
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+
+      setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+      setReviewPerPage(itemsPerPageParam);
+
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
       const repoonseReviewObj = {
-        product_id: productDetailResponse?.data?.product_id 
+        product_id: productDetailResponse?.data?.product_id,
+        offset,
+        limit, 
       }
       dispatch(getReviewProductData(repoonseReviewObj))
     }
     setActiveTab(value); 
   }
   
-  // Handle dropdown change for Review itemsPerPage
+   // pagination with API call for recently viewed Items
+   useEffect(() => {
+      const searchParams = new URLSearchParams(location.search); 
+       const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+       const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+ 
+       setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+       setReviewPerPage(itemsPerPageParam);
+ 
+       const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+       const limit = itemsPerPageParam;
+ 
+       setreviewLoading(true);
+       const reponseReviewObj = {
+        product_id: productDetailResponse?.data?.product_id || product_id,
+        offset,
+        limit,
+      }
+      dispatch(getReviewProductData(reponseReviewObj)).finally(() => {
+        setreviewLoading(false);
+       });
+   }, [location.search, reviewPerPage, dispatch]);  // Trigger this effect when the URL's query or page changes
+  
+   // Handle dropdown change for Review itemsPerPage
   const handleReviewPerPageChange = (e) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setReviewPerPage(newItemsPerPage);
@@ -841,34 +910,34 @@ const ProductDetail = () => {
                           <>
                             <div className="productReviewList">
                               <h4>Customer say..</h4>
-                            {getReview?.length > 0 && <div className='paginationBox'>
-                              <div className="itemsPerPageDropdown">
-                                  <label>Items per page: </label>
-                                  <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                                      {reviewItemsPerPageOptions.map(option => (
-                                          <option key={option} value={option}>
-                                              {option}
-                                          </option>
-                                      ))}
-                                  </select>
-                              </div>
-                              {/* Pagination component */}
-                              <ReactPaginate
-                                  previousLabel={"Previous"}
-                                  nextLabel={"Next"}
-                                  breakLabel={"..."}
-                                  breakClassName={"break-me"}
-                                  pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={(ev) => handleReviewPageChange(ev)}
-                                  containerClassName={"pagination"}
-                                  activeClassName={"active"}
-                                  forcePage={reviewPage}  // Sync current page with URL
-                                  disabled={getReviewCount === 0} 
-                              />
-                            </div>
-                          }
+                              {getReview?.length > 0 && <div className='paginationBox'>
+                                <div className="itemsPerPageDropdown">
+                                    <label>Items per page: </label>
+                                    <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                                        {reviewItemsPerPageOptions.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* Pagination component */}
+                                <ReactPaginate
+                                    previousLabel={"Previous"}
+                                    nextLabel={"Next"}
+                                    breakLabel={"..."}
+                                    breakClassName={"break-me"}
+                                    pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={(ev) => handleReviewPageChange(ev)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                    forcePage={reviewPage}  // Sync current page with URL
+                                    disabled={getReviewCount === 0} 
+                                />
+                                </div>
+                              }
                               {getReview?.map((item, index) => (
                                 <div className="reviewComments" key={index}>
                                   <div className="userImage">
@@ -959,8 +1028,8 @@ const ProductDetail = () => {
                                 <div className="form-control select">
                                   {imageData.map((data, index) => (
                                     <div className="selectFileBox" key={index}>
-                                      {data.preview ? (
-                                        <img src={data.preview} alt={`Preview ${index + 1}`} />
+                                      {data.imageUrl ? (
+                                        <img src={data.imageUrl} alt={`Preview ${index + 1}`} />
                                       ) : (
                                         <img src="/images/add-file.svg" alt="Select File" />
                                       )}
@@ -976,6 +1045,9 @@ const ProductDetail = () => {
                               <div className="box full rating">
                                 <label for="ratings">Add Rating</label>
                                 <StarRating userrating={rating} onRatingChange={handleRatingChange} />
+                                {errors.rating && (
+                                  <p className="error">{errors.rating}</p>
+                                )}
                               </div>
                               <Button
                                 type={"submit"}

@@ -57,6 +57,7 @@ import {
   CMS_GROUP_ITEM_CONSTANT,
   REASON_LIST_CONSTANT,
   SELECTED_REASON_PRODUCT_CONSTANT,
+  ADD_REVIEW_IMAGE_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -87,6 +88,7 @@ import {
   setAllCategoryList, 
   setAllOffersList, 
   setGetAnReviewCount, 
+  setGetAnReviewImage, 
   setHomeProductData, 
   setHomeProductSection, 
   setListWishList, 
@@ -1016,6 +1018,29 @@ export const getOfferList = () => async (dispatch) => {
   }
 };
 
+// Thunk to handle add Review Product Image API call
+export const addReviewProductImageData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_REVIEW_IMAGE_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    // dispatch(setSuccess(response.message));
+    dispatch(setGetAnReviewImage(response.data));
+
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
 // Thunk to handle add Review Product API call
 export const addReviewProductData = (userData) => async (dispatch) => {
   try {
@@ -1073,18 +1098,18 @@ export const getReviewProductData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setReviewCount(response.data));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
     dispatch(setGetAnReviewCount(response.totalCount));
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 

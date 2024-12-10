@@ -3,8 +3,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import "./QuoteSlider.css";
 
-const QuoteSlider = ({ slides }) => {
-    
+const QuoteSlider = ({ key, slides }) => {
     const [current, setCurrent] = useState(0);
     const length = slides?.length;
 
