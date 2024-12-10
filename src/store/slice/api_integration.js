@@ -57,6 +57,7 @@ import {
   CMS_GROUP_ITEM_CONSTANT,
   REASON_LIST_CONSTANT,
   SELECTED_REASON_PRODUCT_CONSTANT,
+  ADD_REVIEW_IMAGE_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -82,10 +83,12 @@ import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList,
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 import { setCmsContactUs, setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
 import {
+  setAddToCartStatusCount,
   setAddWishList,
   setAllCategoryList, 
   setAllOffersList, 
   setGetAnReviewCount, 
+  setGetAnReviewImage, 
   setHomeProductData, 
   setHomeProductSection, 
   setListWishList, 
@@ -109,7 +112,7 @@ import {
   setUserReview,
   setUserReviewCount
 } from "./productSlice";
-import { addToCart, clearCart, setActiveOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setSelectedReasonCancelProductResponse, setViewCartItems } from "./cartSlice";
+import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems, setViewCartOnCoupen } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -370,9 +373,9 @@ export const getUserRequest = () => async (dispatch) => {
     }
     dispatch(generateExpiredToken(responseObj))
     // dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -384,21 +387,21 @@ export const generateExpiredToken = (userData) => async (dispatch) => {
     const response = await POST(JWT_TOKEN_CONSTANT, userData);
     
     dispatch(setLoading(false));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
 
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 0);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 0);
     dispatch(clearAuthTokens())
     // dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -697,10 +700,10 @@ export const getHomeSection = (userData) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -919,10 +922,10 @@ export const similarProductData = (userData) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1015,6 +1018,29 @@ export const getOfferList = () => async (dispatch) => {
   }
 };
 
+// Thunk to handle add Review Product Image API call
+export const addReviewProductImageData = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(ADD_REVIEW_IMAGE_CONSTANT, userData);
+    
+    dispatch(setLoading(false));
+    // dispatch(setSuccess(response.message));
+    dispatch(setGetAnReviewImage(response.data));
+
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+};
 // Thunk to handle add Review Product API call
 export const addReviewProductData = (userData) => async (dispatch) => {
   try {
@@ -1072,18 +1098,18 @@ export const getReviewProductData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setReviewCount(response.data));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
     dispatch(setGetAnReviewCount(response.totalCount));
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1097,6 +1123,7 @@ export const addToCartData = (userData) => async (dispatch) => {
     dispatch(setLoading(false));
     // dispatch(setAddToCart(response.data));
     dispatch(setSuccess(response.message));
+    dispatch(setAddToCartStatusCount(response.status));
     dispatch(viewItemsInCartData());
     setTimeout(() => {
       dispatch(resetSuccess());
@@ -1151,6 +1178,7 @@ export const viewItemsInCartData = (userData = null) => async (dispatch) => {
 
     dispatch(setLoading(false));
     dispatch(setError(error.message));
+    // dispatch(setViewCartItems(null));
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);
@@ -1241,7 +1269,11 @@ export const OrderListData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setOrderListResponse(response.data));
-    dispatch(setActiveOrderListCountResponse(response.totalCount));
+    if(userData.status == 1) dispatch(setActiveOrderListCountResponse(response.totalCount));
+    if(userData.status == 3) dispatch(setCancelledOrderListCountResponse(response.totalCount));
+    if(userData.status == 6) dispatch(setReturnOrderListCountResponse(response.totalCount));
+    if(userData.status == 5) dispatch(setDeliveredListCountResponse(response.totalCount));
+    
     dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
     setTimeout(() => {

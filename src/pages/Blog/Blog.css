@@ -29,7 +29,7 @@
 
 .blogsList {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     flex-flow: wrap row;
 }

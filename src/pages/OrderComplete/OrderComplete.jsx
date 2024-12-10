@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { confirmOrderData, viewItemsInCartData } from "../../store/slice/api_integration";
 import { CircularProgress } from "@mui/material";
-import { clearCart } from "../../store/slice/cartSlice";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const OrderComplete = () => {
     const dispatch = useDispatch();
@@ -19,6 +19,7 @@ const OrderComplete = () => {
         }
         dispatch(confirmOrderData(responseObj)).finally(() => {
             setLoading(false);
+            dispatch(setViewCartItems(null));
         });
     }, [])
     const navigate = useNavigate();

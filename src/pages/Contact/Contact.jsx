@@ -171,7 +171,16 @@ const Contact = () => {
         </form>
       </div>
       <div className="contactLocation">
-        <img src="/images/map.svg" alt="Contact Location" />
+        {/* <img src="/images/map.svg" alt="Contact Location" /> */}
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.2336141435003!2d-0.09139782337872945!3d51.527274871817795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761ca671d5df0b%3A0x368e18d29207f698!2s128%20City%20Rd%2C%20London%20EC1V%202NX%2C%20UK!5e0!3m2!1sen!2sin!4v1733487116804!5m2!1sen!2sin" 
+          width="100%" 
+          height="450" 
+          style={{"border":0}} 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
       </div>
     </div>
   );

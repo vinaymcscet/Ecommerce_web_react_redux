@@ -21,7 +21,7 @@
 
 @media screen and (max-width: 1600px) {
     .copyright {
-        padding: 20px 5%;
+        padding: 20px 5% 0 0;
     }
 }
 @media screen and (max-width: 576px) {

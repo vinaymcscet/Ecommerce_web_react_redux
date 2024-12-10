@@ -37,6 +37,7 @@ export const EDIT_ADDRESS_CONSTANT = 'editAddress';
 export const DELETE_ADDRESS_CONSTANT = 'deleteAddress';
 export const DEFAULT_ADDRESS_CONSTANT = 'setDefaultAddress';
 export const OFFER_LIST_CONSTANT = 'offerList';
+export const ADD_REVIEW_IMAGE_CONSTANT = 'addReviewImage';
 export const ADD_REVIEW_CONSTANT = 'addReview';
 export const GET_USER_REVIEW_CONSTANT = 'userReviews';
 export const GET_REVIEW_CONSTANT = 'getReview';

@@ -10,7 +10,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
-import { getItemsInCartData, getUserRequest, logoutRequest, searchProductData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { 
+  getItemsInCartData, 
+  getUserRequest, 
+  logoutRequest, 
+  searchProductData, 
+  viewItemsInCartData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
 
 const Header = () => {
@@ -20,7 +25,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
-  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  const { viewCartItems } = useSelector((state) => state.cart);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)

@@ -25,6 +25,7 @@ export const formatDate = (dateString) => {
   const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'short' });
   const weekDay = date.toLocaleString('default', { weekday: 'long' });
+  const year = date.getFullYear();
   let hour = date.getHours();
   
   // Determine AM or PM and adjust hour for 12-hour format
@@ -40,7 +41,7 @@ export const formatDate = (dateString) => {
     day === 3 || day === 23 ? "rd" : "th";
 
   return {
-    formattedDate: `${day}${daySuffix} ${month}`,
+    formattedDate: `${day}${daySuffix} ${month} ${year}`,
     fullDay: weekDay,
     time: `${hour}:${minute} ${period}`,
     components: { day, month, weekDay, hour, minute, period },

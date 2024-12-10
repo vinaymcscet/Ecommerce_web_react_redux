@@ -190,6 +190,10 @@ button.review {
   margin: 0;
 }
 
+.blogCategoryList > div:not(:last-child) {
+  border-bottom: 1px solid #cfcfcf ;
+}
+
 .blogCategoryList ul {
   flex-flow: wrap column;
   justify-content: flex-start;

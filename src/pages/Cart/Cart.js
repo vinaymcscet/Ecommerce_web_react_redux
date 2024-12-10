@@ -11,7 +11,7 @@ import {
 import { paymentOptions } from "../../utils/CommonUtils";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData, viewItemsInCartWithCoupen } from "../../store/slice/api_integration";
 import "./Cart.css";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { Elements } from "@stripe/react-stripe-js";
@@ -32,7 +32,8 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems, viewCartItems } = useSelector((state) => state.cart);
-  const { addresses, defaultAddressId } = useSelector((state) => state.modal);
+  
+  // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const Cart = () => {
   const handleApplyPromoCode = () => {
     const responseObj = { coupon_code: coupenCode }
     dispatch(viewItemsInCartData(responseObj))
+    // dispatch(viewItemsInCartWithCoupen(responseObj))
   }
   
   // Function to remove an item

@@ -24,7 +24,6 @@ const CheckoutForm = ({ amount }) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
-      console.error("Stripe has not loaded properly.");
       return;
     }
 
@@ -45,13 +44,12 @@ const CheckoutForm = ({ amount }) => {
       );
 
       if (error) {
-        console.error("Payment failed:", error.message);
       } else if (paymentIntent.status === "succeeded") {
         // Payment is successful
         navigate("/order-complete"); // Redirect to the order complete page
       }
     } catch (err) {
-      console.error("Error during payment:", err);
+      // console.error("Error during payment:", err);
     }
   };
 

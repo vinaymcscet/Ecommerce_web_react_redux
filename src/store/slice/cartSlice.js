@@ -9,10 +9,17 @@ const initialState = {
   confirmOrderResponse: null,
   orderList: null,
   activeOrderListCount: 0,
+  returnOrderListCount: 0,
+  deliveredOrderListCount: 0,
+  cancelledOrderListCount: 0,
   orderDetail: null,
   reasonList: null,
   selectedReasonCancelProduct: null,
   isCancelModalOpen: false,
+  orderId: '',
+  skuId: '',
+  returnStatus: false,
+  status: 0,
 };
 
 export const cartSlice = createSlice({
@@ -58,6 +65,15 @@ export const cartSlice = createSlice({
     setActiveOrderListCountResponse: (state, action) => {
       state.activeOrderListCount = action.payload;
     },
+    setReturnOrderListCountResponse: (state, action) => {
+      state.returnOrderListCount = action.payload;
+    },
+    setCancelledOrderListCountResponse: (state, action) => {
+      state.cancelledOrderListCount = action.payload;
+    },
+    setDeliveredListCountResponse: (state, action) => {
+      state.deliveredOrderListCount = action.payload;
+    },
     setOrderDetailResponse: (state, action) => {
       state.orderDetail = action.payload;
     },
@@ -71,6 +87,8 @@ export const cartSlice = createSlice({
       state.isCancelModalOpen = action.payload.isOpen;
       state.orderId = action.payload.orderId;
       state.skuId = action.payload.skuId;
+      state.returnStatus = action.payload.returnStatus;
+      state.status = action.payload.status;
     },
   },
 });
@@ -90,6 +108,9 @@ export const {
   setReasonListResponse,
   setSelectedReasonCancelProductResponse,
   setActiveOrderListCountResponse,
+  setDeliveredListCountResponse,
+  setCancelledOrderListCountResponse,
+  setReturnOrderListCountResponse,
   setCancelOrderModal,
 } = cartSlice.actions;
 export default cartSlice.reducer;
