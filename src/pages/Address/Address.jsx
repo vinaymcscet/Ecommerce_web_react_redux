@@ -38,7 +38,13 @@ const Address = () => {
 
   const handleAddressInputChange = (e) => {
     const { name, value } = e.target;
-    setAddressFormData({ ...addressFormData, [name]: value });
+    let updatedValue = value;
+    if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+      updatedValue = `+44${value}`;
+      setAddressFormData({ ...addressFormData, [name]: updatedValue });
+    } else {
+      setAddressFormData({ ...addressFormData, [name]: value });
+    }
     setFormErrors({ ...formErrors, [name]: "" }); // Clear error on input change
   };
 

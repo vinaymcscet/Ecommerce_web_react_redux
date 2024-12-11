@@ -76,7 +76,15 @@ const Contact = () => {
         subject :  formData.subject,
         description : formData.message,
       };
-      dispatch(getCMSContactUsRequest(responseObj));
+      dispatch(getCMSContactUsRequest(responseObj)).finally(() => {
+        setFormData({
+          fullName: "",
+          email: "",
+          subject: "",
+          phone: "",
+          message: "",
+        })
+      });
     }
   };
   return (
@@ -177,9 +185,9 @@ const Contact = () => {
           width="100%" 
           height="450" 
           style={{"border":0}} 
-          allowfullscreen="" 
+          allowFullScreen="" 
           loading="lazy" 
-          referrerpolicy="no-referrer-when-downgrade"
+          referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
     </div>

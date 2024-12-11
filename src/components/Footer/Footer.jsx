@@ -48,6 +48,7 @@ const Footer = () => {
                                     <li><Link to="/return-and-refund" onClick={() => handleCMSPage(RETURN_REFUND)}>Return & Refunds</Link></li>
                                     <li><Link to="/shipping-and-delivery" onClick={() => handleCMSPage(SHIPPING_DELIVERY)}>Shipping & Delivery</Link></li>
                                     <li><Link to="/order-cancellation" onClick={() => handleCMSPage(ORDER_CANCELLATION)}>Order Cancellation</Link></li>
+                                    <li><Link to="/" onClick={() => handleCMSPage(ORDER_CANCELLATION)}>Cookies</Link></li>
                                 </ul>
                             </div>
                         </Grid>

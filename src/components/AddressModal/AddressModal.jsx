@@ -43,7 +43,13 @@ const AddressModal = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    let updatedValue = value;
+    if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+      updatedValue = `+44${value}`;
+      setFormData({ ...formData, [name]: updatedValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
     setErrors({ ...errors, [name]: "" });
   };
   

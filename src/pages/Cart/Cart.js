@@ -665,17 +665,21 @@ const Cart = () => {
                 <h4>Total: </h4> <span>£ {viewCartItems?.cartPrice?.totalAmount || 0.00}</span>
               </div>
             </div>
-            {activeTab === 2 && <div className="applyPromoSection">
-              <input
-                type="text"
-                placeholder="Apply Promo Code"
-                name="Promo Code"
-                onChange={(e) => setCoupenCode(e.target.value)}
-              />
-              <button type="button" className="promocode" onClick={handleApplyPromoCode}>
-                Apply
-              </button>
-            </div>}
+            {activeTab === 2 && 
+            <>
+              <div className="applyPromoSection">
+                <input
+                  type="text"
+                  placeholder="Apply Promo Code"
+                  name="Promo Code"
+                  onChange={(e) => setCoupenCode(e.target.value)}
+                />
+                <button type="button" className="promocode" onClick={handleApplyPromoCode}>
+                  Apply
+                </button>
+              </div>
+              <p className="availablePromo">check available promocode on your profile.</p>
+            </>}
             {isSecondLastTab && (
               <ul className="paymentOption">
                 {paymentOptions.map((size) => (

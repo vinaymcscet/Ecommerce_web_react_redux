@@ -14,6 +14,14 @@
     margin: auto;
 }
 
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 100%;
+}
+
 .Blogs select {
     border: 1px solid #888888;
     border-radius: 20px;

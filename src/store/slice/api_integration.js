@@ -501,7 +501,6 @@ export const getCMSContactUsRequest = (userData) => async (dispatch) => {
     const response = await POST(CMS_CONTACT_US_CONSTANT, userData);
     
     dispatch(setLoading(false));
-    dispatch(setCmsContactUs(response.data));
     dispatch(setSuccess(response.message));
     setTimeout(() => {
       dispatch(resetSuccess());
@@ -1368,11 +1367,11 @@ export const getAllBlogs = () => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setBlogList(response.data));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
     dispatch(setError(error.message));
@@ -1391,11 +1390,11 @@ export const getAllBlogsCategory = () => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setBlogCategoryList(response.data));
-    dispatch(setSuccess(response.message));
+    // dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
     dispatch(setError(error.message));
@@ -1414,10 +1413,10 @@ export const getBlogDetailData = (id) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setBlogDetailList(response.data));
-    dispatch(setSuccess(response.message));
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // dispatch(setSuccess(response.message));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
     dispatch(setError(error.message));

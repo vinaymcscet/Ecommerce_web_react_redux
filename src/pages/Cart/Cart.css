@@ -343,6 +343,14 @@
     padding: 0;
 }
 
+.cartWrapper .rightCartItems .rightCartUpItems .availablePromo {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: left;
+    margin: 5px 0 0 0;
+    color: green;
+}
+
 .rightCartItems .continue {
     margin: 20px 0;
 }
