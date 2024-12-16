@@ -1,3 +1,10 @@
+.offerModal .modalContent {
+    flex-flow: wrap column;
+    width: 700px;
+    height: 450px;
+    min-height: auto;
+    overflow: auto;
+}
 
 .coupens {
     width: 100%;
@@ -46,6 +53,7 @@
     font-weight: 500;
     margin: 0;
     width: 100%;
+    text-align: left;
 }
 
 .coupens .coupensList .availableCoupen p {
@@ -88,6 +96,7 @@
     font-weight: 400;
     color: #008224;
     margin: 10px 0 0 0;
+    text-align: left;
 }
 
 .coupens .coupensList .availableCoupen p.selectedCopiedMessage {

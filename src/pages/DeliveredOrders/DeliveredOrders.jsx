@@ -6,7 +6,7 @@ import { CircularProgress } from '@mui/material';
 import ReactPaginate from 'react-paginate';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import { setCancelOrderModal } from '../../store/slice/cartSlice';
-import { formatDateTimeProduct } from '../../utils/FormatDateTime';
+import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/FormatDateTime';
 
 const DeliveredOrders = () => {
     const [deliveredPage, setDeliveredPage] = useState(0);  // Default page 0 (first page)
@@ -173,7 +173,7 @@ const DeliveredOrders = () => {
                         <img src={item.product_image} alt={item.product_name} />
                         <div>
                         <h3>{item.product_name}</h3>
-                        <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                        <p className="openReturnWindow">{`Return window open on ${formatDateTimeFormatProduct(item.return_date)}`}</p>
                         <p>{`Order # ${item.order_number}`}</p>
                         </div>
                     </div>
@@ -232,7 +232,7 @@ const DeliveredOrders = () => {
                             orderDetail?.statusDetails?.map(order => (
                             <>
                                 <h4>{order?.status}</h4>
-                                <p>{order?.date}</p>
+                                <p>{formatDateTimeFormatProduct(order?.date)}</p>
                             </>
                             ))
                         }

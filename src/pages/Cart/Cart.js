@@ -1,7 +1,7 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import StarRating from "../../components/StarRating/StarRating";
-import { updateQuantity, removeItem } from "../../store/slice/cartSlice";
+import { updateQuantity, removeItem, setViewCartItems, setAllOffetList } from "../../store/slice/cartSlice";
 import {
   toggleAddressModal,
   editAddress,
@@ -28,10 +28,12 @@ const Cart = () => {
   // const [clientSecret, setClientSecret] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+  // const [clientSecret, setClientSecret] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  const { cartItems, viewCartItems, clientSecret, createOrderResponse, dpmCheckerLink } = useSelector((state) => state.cart);
   
   // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.user);
@@ -58,29 +60,12 @@ const Cart = () => {
   // Function to remove an item
   const handleRemoveItem = (id) => {
     const responseObj = { cart_id: id }
-    dispatch(deleteItemsInCartData(responseObj))
+    dispatch(deleteItemsInCartData(responseObj)).finally(() => {
+      dispatch(viewItemsInCartData());
+      if(viewCartItems?.cartItems.length === 1) dispatch(setViewCartItems(null));
+    })
     // dispatch(removeItem(id));
   };
-
-  // const calculateTotals = () => {
-  //   const itemTotal = cartItems.reduce(
-  //     (acc, item) => acc + item.original * item.quantity,
-  //     0
-  //   );
-  //   const itemDiscount = cartItems.reduce(
-  //     (acc, item) =>
-  //       acc +
-  //       (item.discount ? (item.original - item.discount) * item.quantity : 0),
-  //     0
-  //   );
-  //   const delivery = 10; // Static delivery charge
-  //   const tax = 10; // Static tax
-  //   const total = itemTotal - itemDiscount + delivery + tax;
-
-  //   return { itemTotal, itemDiscount, delivery, tax, total };
-  // };
-
-  // const { itemTotal, itemDiscount, delivery, tax, total } = calculateTotals();
 
   const handleAddress = () => {
     startTransition(() => {
@@ -89,7 +74,6 @@ const Cart = () => {
   };
 
   const handleAddressModal = (address = null) => {
-    
     startTransition(() => {
       dispatch(toggleAddressModal({ isOpen: true, address }));
       if (address) {
@@ -172,6 +156,17 @@ const Cart = () => {
   const handleSelectedAddress = (address) => {
     setSelectedAddress(address);
   }
+
+  const handleAllOfferList = () => {
+    const payload = {isOpen: isOpen};
+    dispatch(setAllOffetList(payload))
+  }
+
+  const appearance = {
+    theme: 'stripe',
+  };
+  // Enable the skeleton loader UI for optimal loading.
+  const loader = 'auto';
   return (
     <div className="staticContent">
       <h4>Cart Your Items</h4>
@@ -635,9 +630,9 @@ const Cart = () => {
                 >
                   <div className="checkout-form">
                     <h4>Checkout</h4>
-                    <Elements stripe={stripePromise}>
-                      <CheckoutForm amount={viewCartItems?.cartPrice?.totalAmount} />
-                    </Elements>
+                    {createOrderResponse && <Elements options={{clientSecret, appearance, loader}} stripe={stripePromise}>
+                      <CheckoutForm amount={viewCartItems?.cartPrice?.totalAmount} dpmCheckerLink={dpmCheckerLink} />
+                    </Elements>}
                   </div>
                 </div>
               </div>
@@ -678,7 +673,7 @@ const Cart = () => {
                   Apply
                 </button>
               </div>
-              <p className="availablePromo">check available promocode on your profile.</p>
+              <p className="availablePromo" onClick={() => handleAllOfferList()}>Check Offers</p>
             </>}
             {isSecondLastTab && (
               <ul className="paymentOption">

@@ -108,14 +108,14 @@ const Header = () => {
                     <img src="/images/icons/LOGO1.png" alt="Logo" />
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <img src="/images/icons/deals.png" alt="Hot Deals" />
                   <p>Hot Deals</p>
                 </li>
                 <li>
                   <img src="/images/icons/stock.png" alt="Hot Deals" />
                   <p>Clear Stock</p>
-                </li>
+                </li> */}
               </ul>
             </Grid>
             <Grid item xs={6} md={4} lg={4}>

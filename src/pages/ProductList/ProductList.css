@@ -363,6 +363,10 @@ span {
   overflow: hidden;
 }
 
+.productListing .slick-list {
+  margin-bottom: 0;
+}
+
 @media only screen and (max-width: 992px) {
   .prdWrapper .prdRight .productList > div {
     width: 44%;

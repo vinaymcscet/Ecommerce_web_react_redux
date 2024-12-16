@@ -5,7 +5,7 @@ import { OrderDetailData, OrderListData } from '../../store/slice/api_integratio
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import { setCancelOrderModal } from '../../store/slice/cartSlice';
 import ReactPaginate from 'react-paginate';
-import { formatDateTimeProduct } from '../../utils/FormatDateTime';
+import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/FormatDateTime';
 
 const ActiveOrders = () => {
     const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
@@ -129,7 +129,10 @@ const ActiveOrders = () => {
         dispatch(setCancelOrderModal(cancelOrderPayload))
         setActiveOrderIndex(null);
       }
-      const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
+      if(orderDetail) {
+          const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
+      }
+      
   return (
     <>
         <div className="orderListWrapper">
@@ -169,7 +172,7 @@ const ActiveOrders = () => {
                     <img src={item.product_image} alt={item.product_name} />
                     <div>
                         <h3>{item.product_name}</h3>
-                        <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                        <p className="openReturnWindow">{`Return window open on ${formatDateTimeFormatProduct(item.return_date)}`}</p>
                         <p>{`Order # ${item.order_number}`}</p>
                     </div>
                     </div>
@@ -214,10 +217,12 @@ const ActiveOrders = () => {
                 {orderDetail && <div className={`openOrderDetails ${
                     activeOrderIndex === index ? "show" : "hide"
                     }`}>
-                    <div className="expectedDelivery">
-                    <h4>Expected Delivery</h4>
-                    <p>{`${formattedActiveEstDeliveryDate.fullDay}, ${formattedActiveEstDeliveryDate.formattedDate}`}</p>
-                    </div>
+                    {orderDetail && <div className="expectedDelivery">
+                        <h4>Expected Delivery</h4>
+                        <p>{formatDateTimeProduct(orderDetail?.estimatedDeliveryDate) 
+                                ? `${formatDateTimeProduct(orderDetail?.estimatedDeliveryDate).fullDay}, 
+                                    ${formatDateTimeProduct(orderDetail?.estimatedDeliveryDate).formattedDate}`: ''}</p>
+                    </div>}
                     <div className="userDetails">
                     <div className="userAddress">
                         <h6>
@@ -231,7 +236,7 @@ const ActiveOrders = () => {
                     </div>
                     <div className="user_order_details">
                         <h4>{orderDetail?.statusDetails[0]?.status}</h4>
-                        <p>{orderDetail?.statusDetails[0]?.date}</p>
+                        <p>{formatDateTimeFormatProduct(orderDetail?.statusDetails[0]?.date)}</p>
                         <h4>Expected Delivery Date</h4>
                         <p>{orderDetail?.estimatedDeliveryDate}</p>
                         <h4>TOTAL Quantity</h4>

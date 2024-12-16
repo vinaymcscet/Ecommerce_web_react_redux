@@ -1,20 +1,49 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-import './ShippingAndDelivery.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { getCMSRequest } from '../../store/slice/api_integration';
-import { SHIPPING_DELIVERY } from '../../utils/Constants';
-import { FormatDateTime } from '../../utils/FormatDateTime';
-import { Helmet } from 'react-helmet';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import "./CookiesPolicy.css";
+import { Helmet } from "react-helmet";
+import { FormatDateTime } from "../../utils/FormatDateTime";
+import { getCMSRequest } from "../../store/slice/api_integration";
+import { COOKIES_POLICY } from "../../utils/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const ShippingAndDelivery = () => {
-    const dispatch = useDispatch();
+const CookiesPolicy = () => {
+  // const [expanded, setExpanded] = useState(faqList[0].id);
+  // const handleChange = (panel) => (event, isExpanded) => {
+  //   setExpanded(isExpanded ? panel : false);
+  // };
+  // return (
+  //   <div className="staticContent">
+  //     <h4>FAQ</h4>
+  //     <div className="faqList">
+  //       {faqList.map((faq) => (
+  //         <Accordion
+  //           key={faq.id}
+  //           expanded={expanded === faq.id}
+  //           onChange={handleChange(faq.id)}
+  //         >
+  //           <AccordionSummary
+  //             expandIcon={<ArrowDownwardIcon />}
+  //             aria-controls={`panel-${faq.id}-content`}
+  //             id={`panel-${faq.id}-header`}
+  //           >
+  //             {faq.name}
+  //           </AccordionSummary>
+  //           <AccordionDetails>
+  //             <p>{faq.description}</p>
+  //           </AccordionDetails>
+  //         </Accordion>
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
+  const dispatch = useDispatch();
     const navigate = useNavigate();
     const { cmsContentType } = useSelector(state => state.cms);
     const { loading } = useSelector((state) => state.modal);
 
     const fetchCMSContent = useCallback(() => {
-        dispatch(getCMSRequest(SHIPPING_DELIVERY));
+        dispatch(getCMSRequest(COOKIES_POLICY));
     }, [dispatch]);
 
     useEffect(() => {
@@ -26,7 +55,7 @@ const ShippingAndDelivery = () => {
     if (loading) return (<div className="loading">
         <img src="/images/icons/LOGO.png" alt="Logo" />
     </div>);
-
+    
     const handleInvalidPage = () => {
         navigate("/");
     }
@@ -35,9 +64,9 @@ const ShippingAndDelivery = () => {
         <div className='staticContent'>
             {/* SEO Meta Tags */}
             <Helmet>
-                <title>{cmsContentType?.meta_title || 'Shipping and Delivery'}</title>
-                <meta name="description" content={cmsContentType?.meta_desc || 'Read our Shipping and delivery policy'} />
-                <meta name="keywords" content={cmsContentType?.meta_keywords || 'Shipping and delivery policy'} />
+                <title>{cmsContentType?.meta_title || 'Cookie Policy'}</title>
+                <meta name="description" content={cmsContentType?.meta_desc || 'Read our cookie policies'} />
+                <meta name="keywords" content={cmsContentType?.meta_keywords || 'cookie policy'} />
             </Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>
@@ -222,11 +251,11 @@ const ShippingAndDelivery = () => {
 						</defs>
 					</svg>
                     <p>The stuff you were looking for doesn't exist</p>
-				<button type="button" onClick={() => handleInvalidPage()}>Retry</button>
+					<button type="button" onClick={() => handleInvalidPage()}>Retry</button>
                 </div>
             )}
         </div>
     )
-}
+};
 
-export default ShippingAndDelivery
+export default CookiesPolicy;

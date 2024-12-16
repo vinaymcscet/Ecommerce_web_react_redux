@@ -112,7 +112,7 @@ import {
   setUserReview,
   setUserReviewCount
 } from "./productSlice";
-import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems, setViewCartOnCoupen } from "./cartSlice";
+import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setClientSecret, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setDpmCheckerLink, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems, setViewCartOnCoupen } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -1217,6 +1217,8 @@ export const createOrderData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setCreateOrderResponse(response.data));
+    dispatch(setClientSecret(response.data.clientSecret));
+    dispatch(setDpmCheckerLink(response.data.dpmCheckerLink));
     dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
     setTimeout(() => {
@@ -1305,10 +1307,10 @@ export const OrderDetailData = (userData) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 

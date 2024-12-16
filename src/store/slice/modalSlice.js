@@ -12,6 +12,7 @@ const initialState = {
   forgotPassword: { newPassword: "", confirmPassword: "" },
   forgotPasswordAssist: { userPhoneOrEmail: "" },
   isCategoryModalOpen: false,
+  category_id: false,
   selectedCategory: null,
   category_name: '',
   isAddressModelOpen: false,
@@ -69,6 +70,7 @@ export const modalSlice = createSlice({
       state.isCategoryModalOpen = action.payload.isOpen;
       state.selectedCategory = action.payload.category || null;
       state.category_name = action.payload.category_name;
+      state.category_id = action.payload.category_id;
     },
     toggleAddressModal: (state, action) => {
       state.isAddressModelOpen = action.payload.isOpen;

@@ -9,11 +9,12 @@ import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts, getHomeData, getProductOnSubCategory, productDetailData, totalFilterData } from "../../store/slice/api_integration";
+import { addToCartData, getAllProducts, getHomeData, getProductOnSubCategory, getSubCategoryData, productDetailData, totalFilterData, viewItemsInCartData } from "../../store/slice/api_integration";
 import "./ProductList.css";
 import ReactPaginate from "react-paginate";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import { parsePriceRange, parseRating } from "../../utils/PriceRange";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
@@ -21,6 +22,7 @@ const ProductList = () => {
   // const [activeIndex, setActiveIndex] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState({});
   const [loading, setLoading] = useState(false);
+  const [onLoadSubCategory, setOnLoadSubCategory] = useState(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,6 +30,7 @@ const ProductList = () => {
   const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [triggerSkuId, setTriggerSkuId] = useState(null);
   
   const searchParams = new URLSearchParams(location.search);
   const subcategory_id = searchParams.get('subcategory_id');
@@ -35,6 +38,7 @@ const ProductList = () => {
   
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+    const categoryId = searchParams.get('category');
     const subcategory_id = searchParams.get('subcategory_id');
     const pageParam = parseInt(searchParams.get('page'), 10) || 1;
     setPage(pageParam - 1); // Set initial page based on URL
@@ -51,10 +55,16 @@ const ProductList = () => {
       }
       setLoading(false);  // Hide loader
     };
+    const fetchCategory = () => {
+      const responseObj = { category_id: categoryId };
+      dispatch(getSubCategoryData(responseObj))
+      const filteredSubCategory = subCategoryList?.filter(item => parseInt(item?.id, 10) === parseInt(subcategory_id, 10));
+      setOnLoadSubCategory(filteredSubCategory)
+    } 
     fetchProducts();
+    fetchCategory();
   }, [location.search, itemsPerPage, dispatch]);
   
-
   const handleParentAccordionChange = (panel) => (event, isExpanded) => {
     setExpandedParent(isExpanded ? panel : false);
   };
@@ -147,11 +157,50 @@ const ProductList = () => {
         dispatch(getHomeData()); // Fetch home data, which includes `subCategoryList`
       // }
     }, [dispatch, subCategoryList])
+
+    const handleAddToCartClick = (sku_id) => {
+        setTriggerSkuId(sku_id);
+        const responseObj = {
+          sku_id,
+          type: "increase",
+        };
+        dispatch(addToCartData(responseObj)).finally(() => {
+          fetchUpdatedProductList();
+        })
+    };
+    const handleIncrement = (sku_id) => {
+      const responseObj = { sku_id, type: "increase" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+    
+    const handleDecrement = (sku_id) => {
+      const responseObj = { sku_id, type: "decrease" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+
+    const fetchUpdatedProductList = () => {
+      const searchParams = new URLSearchParams(location.search);
+      const subcategory_id = searchParams.get('subcategory_id');
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      const responseListObj = { 
+        sub_category_id: subcategory_id, 
+        offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        limit: itemsPerPage 
+      };
+      dispatch(getProductOnSubCategory(responseListObj));
+      dispatch(viewItemsInCartData());
+      dispatch(setViewCartItems(null));
+    };
+    
   return (
     <div className="productListing">
       <ProductSlider title={false} tile={7} />
       <div className="listPageCategoryItems">
-        <CategorySlider subCategoryId={subcategory_id} />
+        <CategorySlider subCategoryId={subcategory_id || onLoadSubCategory} />
       </div>
       <div className="prdWrapper">
       {totalFilterList && <div className="prdLeft">
@@ -222,12 +271,12 @@ const ProductList = () => {
             ) : (
               productList && productList.length > 0 ? (
                 productList.map((item, index) => (
-                  <div key={index} onClick={() => handleProductClick(item)}>
+                  <div key={index}>
                     <ProductListCard
                       id={item.id}
                       image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
                       name={item.name || ""}
-                      userrating={item.rating || ""}
+                      userrating={item.rating || "0.0"}
                       discountPrice={item.discountedPrice || ""}
                       originalPrice={item.price || ""}
                       save={item.save || ""}
@@ -238,6 +287,12 @@ const ProductList = () => {
                       time={item.time || ""}
                       discountLabel={item.discountlabel || ""}
                       wishlistStatus={item.wishlistStatus || ''}
+                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      cartQuantity={Number(item.cartQuantity)}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                      onProductClick={() => handleProductClick(item)}
                     />
                   </div>
                 ))

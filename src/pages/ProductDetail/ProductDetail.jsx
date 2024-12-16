@@ -8,13 +8,14 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData, viewItemsInCartData } from "../../store/slice/api_integration";
 import CircularProgress from '@mui/material/CircularProgress';
 import "./ProductDetail.css";
 // import { gaurnteeMessage } from "../../utils/CommonUtils";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,6 @@ const ProductDetail = () => {
    } = useSelector((state) => state.product);
   const { user } = useSelector((state) => state.user);
     
-  const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [progress, setProgress] = React.useState(0);
   const [sizeError, setSizeError] = useState("");
@@ -47,8 +47,9 @@ const ProductDetail = () => {
   const [userLoggedOnCart, setUserLoggedOnCart] = useState("");
   const [userLoggedOnReview, setUserLoggedOnReview] = useState("");
   const [userLoggedOnBuyNow, setUserLoggedOnBuyNow] = useState("");
+  const [triggerSkuId, setTriggerSkuId] = useState(null);
 
-  const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
+  // const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
   const [handleCartButtonOnLoad, setHandleCartButtonOnLoad] = useState(0);
   const [imageData, setImageData] = useState([
     { imageId: '', imageUrl: '', preview: '' },
@@ -67,7 +68,7 @@ const ProductDetail = () => {
   });
   const [errorFileType, setErrorFileType] = useState("");
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
-  const [reviewPerPage, setReviewPerPage] = useState(1);
+  const [reviewPerPage, setReviewPerPage] = useState(10);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
   const [recentViewPerPage, setRecentViewPerPage] = useState(1);
   
@@ -129,36 +130,47 @@ const ProductDetail = () => {
   : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
 
   const handleIncrease = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+    if(user.length === 0) {
+      setUserLoggedOnCart("Please login to add items to cart.")
+      setTimeout(() => {
+        setUserLoggedOnCart("")
+      }, 1000);
+      return;
+    }
     const responseObj = {
-      sku_id: productDetailResponse?.data?.sku_id,
+      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
       type: 'increase'
     }
-    dispatch(addToCartData(responseObj))
+    dispatch(addToCartData(responseObj)).finally(() => {
+      dispatch(viewItemsInCartData());
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj))
+      dispatch(setViewCartItems(null));
+    })
   };
 
   const handleDecrease = () => {
-    setQuantity((prevQuantity) => {
-      if(prevQuantity > 1) {
-        prevQuantity -= 1
-        const responseObj = {
-          sku_id: productDetailResponse?.data?.sku_id,
-          type: 'decrease'
-        }
-        dispatch(addToCartData(responseObj))
-      } else {
-        prevQuantity = 1;
-      }
-    });
-  };
-
-  const handleChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value) && value > 0) {
-      setQuantity(value);
-    } else {
-      setQuantity(1); // Reset to 1 if invalid input
+    if(user.length === 0) {
+      setUserLoggedOnCart("Please login to add items to cart.")
+      setTimeout(() => {
+        setUserLoggedOnCart("")
+      }, 1000);
+      return;
     }
+    const responseObj = {
+      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
+      type: 'decrease'
+    }
+    dispatch(addToCartData(responseObj)).finally(() => {
+      dispatch(viewItemsInCartData());
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj))
+      dispatch(setViewCartItems(null));
+    })
   };
 
   useEffect(() => {
@@ -293,32 +305,32 @@ const ProductDetail = () => {
   };
 
   // handle item on cart
-  const handleAddToCart = () => {
-    if(user.length === 0) {
-      setUserLoggedOnCart("Please login to add items to cart.")
-      return;
-    }
-    if (selected.color_code === null) {
-      setSizeError("Please select a size.");
-      return;
-    }
+  // const handleAddToCart = () => {
+  //   if(user.length === 0) {
+  //     setUserLoggedOnCart("Please login to add items to cart.")
+  //     return;
+  //   }
+  //   if (selected.color_code === null) {
+  //     setSizeError("Please select a size.");
+  //     return;
+  //   }
    
-    const responseObj = {
-      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
-      type: 'increase',
-    }
-    dispatch(addToCartData(responseObj)).finally(() =>{
-      if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
-        setHandleCartOnLoad(1);
-        setHandleCartButtonOnLoad(1);
-      } else {
-        setHandleCartOnLoad(0);
-        setHandleCartButtonOnLoad(0);
-      }
-    })
+  //   const responseObj = {
+  //     sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
+  //     type: 'increase',
+  //   }
+  //   dispatch(addToCartData(responseObj)).finally(() =>{
+  //     if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+  //       // setHandleCartOnLoad(1);
+  //       setHandleCartButtonOnLoad(1);
+  //     } else {
+  //       // setHandleCartOnLoad(0);
+  //       setHandleCartButtonOnLoad(0);
+  //     }
+  //   })
    
-    setUserLoggedOnCart("")
-  };
+  //   setUserLoggedOnCart("")
+  // };
 
   // Add Item on cart and redirection to cart page on But Now button click
   const handleBuyNowProduct = () => {
@@ -331,14 +343,68 @@ const ProductDetail = () => {
       type: 'increase'
     }
     dispatch(addToCartData(responseObj)).finally(() => {
-      if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+      // if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
         setUserLoggedOnBuyNow("")
+        dispatch(viewItemsInCartData());
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+        dispatch(setViewCartItems(null));
         navigate("/cart");
-      } else {
-        return;
-      }
+
+      // } else {
+      //   return;
+      // }
     })
   }
+
+  const handleAddToCartClick = (sku_id) => {
+      setTriggerSkuId(sku_id);
+      const responseObj = {
+        sku_id,
+        type: "increase",
+      };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      })
+  };
+  const handleIncrement = (sku_id) => {
+    const responseObj = { sku_id, type: "increase" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const handleDecrement = (sku_id) => {
+    const responseObj = { sku_id, type: "decrease" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const fetchUpdatedProductList = () => {
+    const pageParam = parseInt(searchParams.get("recentViewPage"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("RecentViewPerPage"), 10) || recentViewPerPage;
+
+    setRecentViewPage(pageParam - 1); // Adjust for 0-based indexing
+    setRecentViewPerPage(itemsPerPageParam);
+
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+
+    setRecentlyViewLoading(true);
+    const responseObj = {
+      offset,
+      limit
+    }
+    dispatch(getAllRecentViewData(responseObj)).finally(() => {
+      setRecentlyViewLoading(false);
+    });
+    dispatch(viewItemsInCartData());
+    dispatch(setViewCartItems(null));
+  };
+
 
   // Adding Product on whistlist
   const handleWishlistToggle = (productData) => {
@@ -400,7 +466,7 @@ const ProductDetail = () => {
       originalPrice: item?.sku_price?.original,
     });
   };
-
+  
    // Function to handle image upload and preview
    const handleImageUpload = (e, index) => {
     const file = e.target.files[0];
@@ -411,22 +477,24 @@ const ProductDetail = () => {
       };
   
       // Dispatch the API call to upload the image
-      dispatch(addReviewProductImageData(responseObj)).finally(() => {
+      dispatch(addReviewProductImageData(responseObj))
+      .then(() => {
         // After API call, update the specific index in the imageData array
-        const { imageId, imageUrl } = getReviewImage || {};
-        if (imageId && imageUrl) {
-          setImageData((prev) => {
-            const updatedImageData = [...prev];
-            updatedImageData[index] = {
-              imageId,
-              imageUrl,
-              preview: imageUrl, // Update preview with the uploaded image
-            };
-            return updatedImageData;
-          });
-        } else {
-          console.error("Image upload response not found in state.");
-        }
+          const updatedImage = getReviewImage;
+          // const { imageId, imageUrl } = getReviewImage || {};
+          if (updatedImage?.imageId && updatedImage?.imageUrl) {
+            setImageData((prev) => {
+              const updatedImageData = [...prev];
+              updatedImageData[index] = {
+                imageId: updatedImage.imageId,
+                imageUrl: updatedImage.imageUrl,
+                preview: updatedImage.imageUrl, // Update preview with the uploaded image
+              };
+              return updatedImageData;
+            });
+          } else {
+            console.error("Image upload response not found in state.");
+          }
       });
     } else {
       setErrorFileType("Please upload a valid image file");
@@ -458,9 +526,9 @@ const ProductDetail = () => {
     setActiveTab(value); 
   }
   
-   // pagination with API call for recently viewed Items
+   // pagination with API call for Review Items
    useEffect(() => {
-      const searchParams = new URLSearchParams(location.search); 
+       const searchParams = new URLSearchParams(location.search); 
        const pageParam = parseInt(searchParams.get("page"), 10) || 1;
        const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
  
@@ -603,7 +671,56 @@ const ProductDetail = () => {
 
   // Calculate total pages based on total results
   const similarViewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= similarProductCount);
-  
+  const handleAddToSimilarCartClick = (sku_id) => {
+    setTriggerSkuId(sku_id);
+    const responseObj = {
+      sku_id,
+      type: "increase",
+    };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedSimilarProductList();
+    })
+};
+const handleSimilarIncrement = (sku_id) => {
+  const responseObj = { sku_id, type: "increase" };
+  dispatch(addToCartData(responseObj)).finally(() => {
+    fetchUpdatedSimilarProductList();
+  });
+};
+
+const handleSimilarDecrement = (sku_id) => {
+  const responseObj = { sku_id, type: "decrease" };
+  dispatch(addToCartData(responseObj)).finally(() => {
+    fetchUpdatedSimilarProductList();
+  });
+};
+
+const fetchUpdatedSimilarProductList = () => {
+  const pageParam = parseInt(similarProductParams.get("SimilarViewPage"), 10) || 1;
+  const itemsPerPageParam = parseInt(similarProductParams.get("SimilarViewPerPage"), 10) || similarProductPerPage;
+
+  setSimilarProductPage(pageParam - 1); // Adjust for 0-based indexing
+  setSimilarProductPerPage(itemsPerPageParam);
+
+  const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+  const limit = itemsPerPageParam;
+
+  setSimilarProductLoading(true);
+  const similarProductPayload = {
+    product_id: product_id,
+    offset,
+    limit
+  }
+  dispatch(similarProductData(similarProductPayload)).finally(() => {
+    setSimilarProductLoading(false);
+    const responseObj = { 
+      product_id: product_id ,
+    }
+    dispatch(productDetailData(responseObj))
+  });
+  dispatch(viewItemsInCartData());
+  dispatch(setViewCartItems(null));
+}
   return (
       <div>
         {loading ? (
@@ -670,28 +787,28 @@ const ProductDetail = () => {
                     )}
                   </div>
                   <div className="cartSection">
-                    <div className={`cartInputBox ${handleCartOnLoad === 0 ? 'disabled' : ''}`} >
+                    <div className={`cartInputBox`} >
                       <div className="increase" onClick={handleIncrease}>
                         +
                       </div>
                       <input
                         type="number"
                         name="cart"
-                        value={quantity}
-                        onChange={handleChange}
+                        value={productDetailResponse?.data?.variants[0]?.quantity}
                         min="1"
+                        disabled
                       />
                       <div className="decrease" onClick={handleDecrease}>
                         -
                       </div>
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       className={`addToCart ${handleCartButtonOnLoad == 0 ? '' : 'disabled'}`}
                       onClick={handleAddToCart}
                     >
                       Add to cart
-                    </button>
+                    </button> */}
                     {selected.size == '' && <p className="cartError error">{sizeError}</p>}
                     {user.length == 0 && <p className="cartError error">{userLoggedOnCart}</p>}
                   </div>
@@ -938,41 +1055,43 @@ const ProductDetail = () => {
                                 />
                                 </div>
                               }
-                              {getReview?.map((item, index) => (
-                                <div className="reviewComments" key={index}>
-                                  <div className="userImage">
-                                    <img
-                                      src={item.profile_image}
-                                      alt={item.rate_name}
-                                    />
-                                  </div>
-                                  <div className="reviewRightomments">
-                                    <div className="userName">{item.name}</div>
-                                    <div className="ratingBox">
-                                      {item?.rating && (
-                                        <StarRating userrating={item.rating} />
-                                      )}
-                                      <div className="rateusername">
-                                        {item.review_text}
+                              <div className="reviewHeight">
+                                {getReview?.map((item, index) => (
+                                  <div className="reviewComments" key={index}>
+                                    <div className="userImage">
+                                      <img
+                                        src={item.profile_image}
+                                        alt={item.rate_name}
+                                      />
+                                    </div>
+                                    <div className="reviewRightomments">
+                                      <div className="userName">{item.name}</div>
+                                      <div className="ratingBox">
+                                        {item?.rating && (
+                                          <StarRating userrating={item.rating} />
+                                        )}
+                                        <div className="rateusername">
+                                          {item.review_text}
+                                        </div>
+                                      </div>
+                                      {item.description && <p>{item.description}</p>}
+                                      <div className="reviewed_image">
+                                        {item?.images &&
+                                          item?.images.map(
+                                            (review_image, index) => (
+                                              <img
+                                                key={index}
+                                                src={review_image}
+                                                alt={"Product Image"}
+                                              />
+                                            )
+                                          )}
                                       </div>
                                     </div>
-                                    {item.description && <p>{item.description}</p>}
-                                    <div className="reviewed_image">
-                                      {item?.images &&
-                                        item?.images.map(
-                                          (review_image, index) => (
-                                            <img
-                                              key={index}
-                                              src={review_image}
-                                              alt={"Product Image"}
-                                            />
-                                          )
-                                        )}
-                                    </div>
                                   </div>
-                                </div>
-                              ))}
-                              {!getReview && <p>Reviews not found.</p>}
+                                ))}
+                                {!getReview && <p>Reviews not found.</p>}
+                              </div>
                             </div>
                           </>
                         )}
@@ -1101,28 +1220,33 @@ const ProductDetail = () => {
                   </div>
                   ):(
                   <div className="productList">
-                    {recentView && recentView.length > 0 ? (
+                    {recentView && recentView.length > 0 && (
                         recentView.map((item, index) => (
-                          <div key={index} onClick={() => handleProductClick(item)}>
+                          <div key={index}>
                             <ProductListCard
                               id={item.product_id}
-                              image={item.imageUrl ? item.imageUrl : ""}
-                              name={item.name ? item.name : ""}
-                              userrating={item.rating ? item.rating : ""}
-                              discountPrice={item.discount ? item.discount : ""}
-                              originalPrice={item.price ? item.price : ""}
-                              save={item.save ? item.save : ""}
-                              coupenCode={item.coupen ? item.coupen : ""}
-                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                              bestSeller={item.bestseller ? item.bestseller : ""}
-                              time={item.time ? item.time : ""}
-                              discountLabel={item.Offerprice ? item.Offerprice : ""}
+                              image={item.imageUrl || "/images/no-product-available.png"}
+                              name={item.name || ""}
+                              userrating={item.rating || "0.0"}
+                              discountPrice={item.discount || ""}
+                              originalPrice={item.price || ""}
+                              save={item.save || ""}
+                              coupenCode={item.coupen || ""}
+                              deliveryTime={item.deliverytime || ""}
+                              freeDelivery={item.freedelivery || ""}
+                              bestSeller={item.bestseller || ""}
+                              time={item.time || ""}
+                              discountLabel={item.Offerprice || ""}
+                              wishlistStatus={item.wishlistStatus || ''}
+                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                              onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              cartQuantity={Number(item.cartQuantity)}
+                              onIncrement={handleIncrement}
+                              onDecrement={handleDecrement}
+                              onProductClick={() => handleProductClick(item)}
                             />
                           </div>
                         ))
-                      ) : (
-                        <p>No product history available</p>
                       )}
                   </div>
                 )}
@@ -1165,28 +1289,33 @@ const ProductDetail = () => {
                 </div>
                 ): (
                     <div className="productList">
-                      {similarProductListResponse && similarProductListResponse.length > 0 ? (
+                      {similarProductListResponse && similarProductListResponse.length > 0 && (
                         similarProductListResponse.map((item, index) => (
-                          <div key={index} onClick={() => handleProductClick(item)}>
+                          <div key={index}>
                             <ProductListCard
                               id={item.product_id}
-                              image={item.image ? item.image : ""}
-                              name={item.name ? item.name : ""}
-                              userrating={item.rating ? item.rating : ""}
-                              discountPrice={item.discount ? item.discount : ""}
-                              originalPrice={item.price ? item.price : ""}
-                              save={item.save ? item.save : ""}
-                              coupenCode={item.coupen ? item.coupen : ""}
-                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                              bestSeller={item.bestseller ? item.bestseller : ""}
-                              time={item.time ? item.time : ""}
-                              discountLabel={item.Offerprice ? item.Offerprice : ""}
+                              image={item.imageUrl || "/images/no-product-available.png"}
+                              name={item.name || ""}
+                              userrating={item.rating || "0.0"}
+                              discountPrice={item.discount || ""}
+                              originalPrice={item.price || ""}
+                              save={item.save || ""}
+                              coupenCode={item.coupen || ""}
+                              deliveryTime={item.deliverytime || ""}
+                              freeDelivery={item.freedelivery || ""}
+                              bestSeller={item.bestseller || ""}
+                              time={item.time || ""}
+                              discountLabel={item.Offerprice || ""}
+                              wishlistStatus={item.wishlistStatus || ''}
+                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                              onAddToCart={() => handleAddToSimilarCartClick(item.sku_id)}
+                              cartQuantity={Number(item.cart_quantity)}
+                              onIncrement={handleSimilarIncrement}
+                              onDecrement={handleSimilarDecrement}
+                              onProductClick={() => handleProductClick(item)}
                             />
                           </div>
                         ))
-                      ) : (
-                        <p>No product history available</p>
                       )}
                     </div>
               )}

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './SectionDetail.css';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllOffersData, getProductSection, productDetailData } from '../../store/slice/api_integration';
+import { addToCartData, getAllOffersData, getProductSection, productDetailData, viewItemsInCartData } from '../../store/slice/api_integration';
 import ProductListCard from '../../components/ProductListCard/ProductListCard';
 import { CircularProgress } from '@mui/material';
 import ReactPaginate from 'react-paginate';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import { formatDate } from '../../utils/FormatDateTime';
+import { setViewCartItems } from '../../store/slice/cartSlice';
 
 const SectionDetail = () => {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const SectionDetail = () => {
     const [loading, setLoading] = useState(false);
     const { productSectionData, productSectionCount = 0, allOffersList } = useSelector(state => state.product);
     const { id } = useParams();
+    const [triggerSkuId, setTriggerSkuId] = useState(null);
 
     const queryParams = new URLSearchParams(location.search); // Initialize queryParams here
     const title = queryParams.get("title");
@@ -69,6 +71,43 @@ const SectionDetail = () => {
 
     const sectionItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= productSectionCount);
 
+    const handleAddToCartClick = (sku_id) => {
+        setTriggerSkuId(sku_id);
+        const responseObj = {
+          sku_id,
+          type: "increase",
+        };
+        dispatch(addToCartData(responseObj)).finally(() => {
+          fetchUpdatedProductList();
+        })
+    };
+    const handleIncrement = (sku_id) => {
+      const responseObj = { sku_id, type: "increase" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+    
+    const handleDecrement = (sku_id) => {
+      const responseObj = { sku_id, type: "decrease" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+
+    const fetchUpdatedProductList = () => {
+        const pageParam = parseInt(queryParams.get("sectionPage"), 10) || 1;
+        const itemsPerPageParam = parseInt(queryParams.get("sectionItemsPerPage"), 10) || itemsPerPage;
+        setPage(pageParam - 1); // Adjust for 0-based indexing
+        setItemsPerPage(itemsPerPageParam);
+
+        const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+        const limit = itemsPerPageParam;
+        const responseObj = { group_id: id, offset, limit };
+        dispatch(getProductSection(responseObj));
+        dispatch(viewItemsInCartData());
+        dispatch(setViewCartItems(null));
+    };
     return (
         <div className="sectionDetail">
             {loading ? (
@@ -115,6 +154,7 @@ const SectionDetail = () => {
                                     discountLabel={item?.title}
                                     time={`valid till ${formatDate(item.validTill)}`}
                                     wishlistStatus={item.wishlistStatus || 'no'}
+                                    offer={"true"}
                                 />
                             </div>
                         ))}
@@ -152,12 +192,12 @@ const SectionDetail = () => {
                     </div>
                     <div className="productList">
                         {productSectionData.map((product, index) => (
-                            <div key={index} onClick={() => handleProductClick(product)}>
+                            <div key={index}>
                                 <ProductListCard
                                     id={product?.group_id}
                                     image={product.imageUrl || "/images/no-product-available.png"}
                                     name={product.name || ""}
-                                    userrating={product.rating || ""}
+                                    userrating={product.rating || "0.0"}
                                     discountPrice={product.discountedPrice || ""}
                                     originalPrice={product.price || ""}
                                     save={product.offer || ""}
@@ -168,6 +208,12 @@ const SectionDetail = () => {
                                     time={product.time || ""}
                                     discountLabel={product.offer || ""}
                                     wishlistStatus={product.wishlistStatus || 'no'}
+                                    sku_id={product.sku_id} // Pass SKU ID for Add to Cart
+                                    onAddToCart={() => handleAddToCartClick(product.sku_id)}
+                                    cartQuantity={Number(product.cartQuantity)}
+                                    onIncrement={handleIncrement}
+                                    onDecrement={handleDecrement}
+                                    onProductClick={() => handleProductClick(product)}
                                 />
                             </div>
                         ))}

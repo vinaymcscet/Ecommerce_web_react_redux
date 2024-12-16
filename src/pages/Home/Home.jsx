@@ -5,10 +5,11 @@ import ProductSlider from "../../components/ProductSlider/ProductSlider";
 
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getHomeData, getHomeSection } from "../../store/slice/api_integration";
+import { addToCartData, getHomeData, getHomeSection, viewItemsInCartData } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,50 +17,51 @@ const Home = () => {
   const [productTile] = useState(true);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [triggerSkuId, setTriggerSkuId] = useState(null);
   
   const [page, setPage] = useState(1);
-  const [dataLoading, setDataLoading] = useState(false);
+  // const [dataLoading, setDataLoading] = useState(false);
 
-  const handleScroll = () => {
-    if (
-      document.body.scrollHeight - 630 <
-      window.scrollY + window.innerHeight
-    ) {
-      setDataLoading(true);
-    }
-  };
+  // const handleScroll = () => {
+  //   if (
+  //     document.body.scrollHeight - 630 <
+  //     window.scrollY + window.innerHeight
+  //   ) {
+  //     setDataLoading(true);
+  //   }
+  // };
 
-  function debounce(func, delay) {
-    let timeoutId;
-    return function (...args) {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  }
+  // function debounce(func, delay) {
+  //   let timeoutId;
+  //   return function (...args) {
+  //     if (timeoutId) {
+  //       clearTimeout(timeoutId);
+  //     }
+  //     timeoutId = setTimeout(() => {
+  //       func(...args);
+  //     }, delay);
+  //   };
+  // }
 
-  window.addEventListener("scroll", debounce(handleScroll, 500));
-  useEffect(() => {
-    if (dataLoading == true) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  }, [dataLoading]);
+  // window.addEventListener("scroll", debounce(handleScroll, 500));
+  // useEffect(() => {
+  //   if (dataLoading == true) {
+  //     setPage((prevPage) => prevPage + 1);
+  //   }
+  // }, [dataLoading]);
 
   useEffect(() => {
     setLoading(true)
     dispatch(getHomeData())
     const responseObj = {
       offset: page,
-      limit: 10
+      limit: 1000
     }
     dispatch(getHomeSection(responseObj)).finally(() => {
       setLoading(false);
-      setDataLoading(false);
+      // setDataLoading(false);
     })
-  }, [dispatch, dataLoading]);
+  }, [dispatch]);
   
   const handleProductClick = (item) => {
     navigate(`/product/${item.product_id}`, { state: { product: item } });
@@ -68,6 +70,45 @@ const Home = () => {
   const handleSectionPage = (title, group_id = 0) => {
     navigate(`/sectionDetail/${group_id}?title=${encodeURIComponent(title)}`)
   }
+
+  const handleAddToCartClick = (sku_id) => {
+      setTriggerSkuId(sku_id);
+      const responseObj = {
+        sku_id,
+        type: "increase",
+      };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      })
+  };
+  const handleIncrement = (sku_id) => {
+    const responseObj = { sku_id, type: "increase" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const handleDecrement = (sku_id) => {
+    const responseObj = { sku_id, type: "decrease" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const fetchUpdatedProductList = () => {
+    setLoading(true);
+    dispatch(getHomeData())
+    const responseObj = {
+      offset: page,
+      limit: 1000
+    }
+    dispatch(getHomeSection(responseObj)).finally(() => {
+      setLoading(false);
+      // setDataLoading(false);
+    })
+    dispatch(viewItemsInCartData());
+    dispatch(setViewCartItems(null));
+  };
 
   return (
     <div>
@@ -100,6 +141,7 @@ const Home = () => {
                   discountLabel={item?.title}
                   time={`valid till ${formatDate(item.validTill)}`}
                   wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                  offer={"true"}
                 />
               </div>
             ))}
@@ -117,22 +159,28 @@ const Home = () => {
                       </div>
                         <div className="productList">
                         {item?.products.map((product, index) => (
-                          <div key={index} onClick={() => handleProductClick(product)}>
+                          <div key={index}>
                             <ProductListCard
-                              id={product?.group_id}
-                              image={product.imageUrl ? product.imageUrl : "/images/no-product-available.png"}
-                              name={product.name ? product.name : ""}
-                              userrating={product.rating ? product.rating : ""}
-                              discountPrice={product.discountedPrice ? product.discountedPrice : ""}
-                              originalPrice={product.price ? product.price : ""}
-                              save={product.offer ? product.offer : ""}
-                              coupenCode={product.coupen ? product.coupen : ""}
-                              deliveryTime={product.deliverytime ? product.deliverytime : ""}
-                              freeDelivery={product.freedelivery ? item.freedelivery : ""}
-                              bestSeller={item.bestseller ? product.bestseller : ""}
-                              time={product.time ? product.time : ""}
-                              discountLabel={product.offer ? product.offer : ""}
-                              wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                              id={product?.product_id}
+                              image={product?.imageUrl ? product?.imageUrl : "/images/no-product-available.png"}
+                              name={product.name || ""}
+                              userrating={product.rating || "0.0"}
+                              discountPrice={product?.discountedPrice || ""}
+                              originalPrice={product?.price || ""}
+                              save={product?.offer || ""}
+                              coupenCode={product?.coupen || ""}
+                              deliveryTime={product?.deliverytime || ""}
+                              freeDelivery={product?.freedelivery || ""}
+                              bestSeller={product?.bestseller || ""}
+                              time={product?.time || ""}
+                              discountLabel={product?.offer || ""}
+                              wishlistStatus={product?.wishlistStatus || 'no'}
+                              sku_id={product?.sku_id} // Pass SKU ID for Add to Cart
+                              onAddToCart={() => handleAddToCartClick(product.sku_id)}
+                              cartQuantity={Number(product.cartQuantity)}
+                              onIncrement={handleIncrement}
+                              onDecrement={handleDecrement}
+                              onProductClick={() => handleProductClick(product)}
                             />
                           </div>
                         ))}
@@ -143,11 +191,11 @@ const Home = () => {
                   <p>No products available</p>
                 )}
           </div>
-          {dataLoading && (
+          {/* {dataLoading && (
             <div className="loadingContainer">
                 <CircularProgress />
             </div>
-          )}
+          )} */}
           {homeProductData?.RecentViewed.length > 0 && <div className="browisingHistory">
             <h3>Inspired by your browsing history</h3>
           </div>}
@@ -155,22 +203,28 @@ const Home = () => {
             <div className="productList">
               {homeProductData?.RecentViewed && homeProductData?.RecentViewed.length > 0 ? (
                 homeProductData?.RecentViewed.map((item, index) => (
-                  <div key={index} onClick={() => handleProductClick(item)}>
+                  <div key={index}>
                     <ProductListCard
                       id={index}
                       image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
-                      name={item.name ? item.name : ""}
-                      userrating={item.rating ? item.rating : ""}
-                      discountPrice={item.discountedPrice ? item.discountedPrice : ""}
-                      originalPrice={item.price ? item.price : ""}
+                      name={item.name || ""}
+                      userrating={item.rating || "0.0"}
+                      discountPrice={item.discountedPrice || ""}
+                      originalPrice={item.price || ""}
                       save={item.offer ? item.offer : ""}
-                      coupenCode={item.coupen ? item.coupen : ""}
-                      deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                      freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                      bestSeller={item.bestseller ? item.bestseller : ""}
-                      time={item.time ? item.time : ""}
-                      discountLabel={item.offer ? item.offer : ""}
-                      wishlistStatus={item.wishlistStatus ? item.wishlistStatus : 'no'}
+                      coupenCode={item.coupen || ""}
+                      deliveryTime={item.deliverytime || ""}
+                      freeDelivery={item.freedelivery || ""}
+                      bestSeller={item.bestseller || ""}
+                      time={item.time || ""}
+                      discountLabel={item.offer || ""}
+                      wishlistStatus={item.wishlistStatus || 'no'}
+                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      cartQuantity={Number(item.cartQuantity)}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                      onProductClick={() => handleProductClick(item)}
                     />
                   </div>
                 ))

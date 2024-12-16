@@ -20,6 +20,9 @@ const initialState = {
   skuId: '',
   returnStatus: false,
   status: 0,
+  isAllOfferList: false,
+  clientSecret: "",
+  dpmCheckerLink: "",
 };
 
 export const cartSlice = createSlice({
@@ -56,6 +59,12 @@ export const cartSlice = createSlice({
     setCreateOrderResponse: (state, action) => {
       state.createOrderResponse = action.payload;
     },
+    setDpmCheckerLink: (state, action) => {
+      state.dpmCheckerLink = action.payload;
+    },
+    setClientSecret: (state, action) => {
+      state.clientSecret = action.payload;
+    },
     setConfirmOrderResponse: (state, action) => {
       state.confirmOrderResponse = action.payload;
     },
@@ -90,6 +99,9 @@ export const cartSlice = createSlice({
       state.returnStatus = action.payload.returnStatus;
       state.status = action.payload.status;
     },
+    setAllOffetList: (state, action) => {
+      state.isAllOfferList = action.payload.isOpen;
+    }
   },
 });
 
@@ -112,5 +124,8 @@ export const {
   setCancelledOrderListCountResponse,
   setReturnOrderListCountResponse,
   setCancelOrderModal,
+  setAllOffetList,
+  setClientSecret,
+  setDpmCheckerLink,
 } = cartSlice.actions;
 export default cartSlice.reducer;

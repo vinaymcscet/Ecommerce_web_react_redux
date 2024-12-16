@@ -11,7 +11,7 @@ const CategoryModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const modalRef = useRef(null); // Reference for modal content
-  const { isCategoryModalOpen, category_name } = useSelector(
+  const { isCategoryModalOpen, category_name, category_id } = useSelector(
     (state) => state.modal
   );
   const { subCategoryList } = useSelector(
@@ -43,11 +43,11 @@ const CategoryModal = () => {
     const responseObj = {
       sub_category_id: item.id, 
       offset: 1, 
-      limit: 10
+      limit: 1
     }
     dispatch(getProductOnSubCategory(responseObj));
     // const filterResponse = {sub_category_id: item.id}
-    navigate(`/productlist?subcategory_id=${item.id}`);
+    navigate(`/productlist?category=${category_id}&&subcategory_id=${item.id}`);
   }
 
   return (

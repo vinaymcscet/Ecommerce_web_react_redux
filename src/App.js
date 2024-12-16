@@ -17,11 +17,13 @@ import CategoryModal from "./components/CategoryModal/CategoryModal";
 import { ToastContainer, toast } from "react-toastify";
 
 import "./App.css";
-import { loadTokensFromStorage, setError, setSuccess } from "./store/slice/modalSlice";
+import { setError, setSuccess } from "./store/slice/modalSlice";
 import { setUser } from "./store/slice/userSlice";
 import { getTokensFromLocalStorage } from "./utils/StorageTokens";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import CancelOrderModal from "./components/CancelOrderModal/CancelOrderModal";
+import CoupensModal from "./components/CoupensModal/CoupensModal";
+const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy/CookiesPolicy"));
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
 const About = React.lazy(() => import("./pages/About/About"));
@@ -117,6 +119,7 @@ function App() {
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/return-and-refund" element={<ReturnAndRefund />} />
+          <Route path="/cookies-policy" element={<CookiesPolicy />} />
           <Route
             path="/shipping-and-delivery"
             element={<ShippingAndDelivery />}
@@ -143,6 +146,7 @@ function App() {
       <Modal />
       <CategoryModal />
       <CancelOrderModal />
+      <CoupensModal />
       {isAddressModelOpen && (
         <Suspense fallback={<div>Loading Address Modal...</div>}>
           <AddressModal />

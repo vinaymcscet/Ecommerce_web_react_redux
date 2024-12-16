@@ -349,6 +349,8 @@
     text-align: left;
     margin: 5px 0 0 0;
     color: green;
+    cursor: pointer;
+    outline: none;
 }
 
 .rightCartItems .continue {
@@ -535,6 +537,7 @@
     justify-content: flex-start;
     flex-flow: wrap column;
     margin: 0 20px 15px 0;
+    background-color: #fff;
 }
 
 .addressList ul li h4 {

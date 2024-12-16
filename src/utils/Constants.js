@@ -70,6 +70,7 @@ export const REFUND_POLICY = 'refund-policy';
 export const RETURN_REFUND = 'returns--refunds';
 export const SHIPPING_DELIVERY = 'shipping--delivery';
 export const ORDER_CANCELLATION = 'order-cancellation';
+export const COOKIES_POLICY = 'cookies-policy';
 export const ABOUT_US = 'about-us';
 export const FAQS = 'faqs';
 

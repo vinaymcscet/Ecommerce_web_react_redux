@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { OrderDetailData, OrderListData } from '../../store/slice/api_integration';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import ReactPaginate from 'react-paginate';
-import { formatDateTimeProduct } from '../../utils/FormatDateTime';
+import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/FormatDateTime';
 
 const CancelledOrders = () => {
     const [cancelPage, setCancelPage] = useState(0);  // Default page 0 (first page)
@@ -158,7 +158,7 @@ const CancelledOrders = () => {
                         <img src={item.product_image} alt={item.product_name} />
                         <div>
                         <h3>{item.product_name}</h3>
-                        <p className="openReturnWindow">{`Return window open on ${item.return_date}`}</p>
+                        <p className="openReturnWindow">{`Return window open on ${formatDateTimeProduct(item?.order_status?.Cancelled).formattedDate}`}</p>
                         <p>{`Order # ${item.order_number}`}</p>
                         </div>
                     </div>
@@ -211,7 +211,7 @@ const CancelledOrders = () => {
                             orderDetail?.statusDetails?.map(order => (
                             <>
                                 <h4>{order?.status}</h4>
-                                <p>{order?.date}</p>
+                                <p>{formatDateTimeFormatProduct(order?.date)}</p>
                             </>
                             ))
                         }

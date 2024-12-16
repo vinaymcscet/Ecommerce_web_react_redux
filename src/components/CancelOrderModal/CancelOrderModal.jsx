@@ -52,6 +52,7 @@ const CancelOrderModal = () => {
       setLoading(false);
     });
   };
+  
 
   const handleCheckboxChange = (id) => {
     setSelectedOptions((prev) => {
@@ -132,7 +133,7 @@ const CancelOrderModal = () => {
                     ))}
                     {!returnStatus && 
                       selectReason
-                        .filter(item => item.value.toLocaleLowerCase() !== 'return')
+                        .filter(item => item.value.toLocaleLowerCase() === 'cancel')
                         .map(option => (
                         <option key={option.id} value={option.value}>
                             {option.type}
