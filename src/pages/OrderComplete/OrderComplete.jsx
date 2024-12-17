@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './OrderComplete.css'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { confirmOrderData, viewItemsInCartData } from "../../store/slice/api_integration";
 import { CircularProgress } from "@mui/material";
@@ -8,14 +8,18 @@ import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const OrderComplete = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const [loading, setLoading] = useState(false);
 
     const { createOrderResponse, confirmOrderResponse } = useSelector((state) => state.cart);
+    const params = new URLSearchParams(location.search);
+  
+    const paymentIntentId = params.get("payment_intent");
     
     useEffect(() => {
         setLoading(true)
         const responseObj = {
-            payment_intent: createOrderResponse?.paymentIntentId,
+            payment_intent: createOrderResponse?.paymentIntentId || paymentIntentId,
         }
         dispatch(confirmOrderData(responseObj)).finally(() => {
             setLoading(false);

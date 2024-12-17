@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement, 
-  CardElement, 
+import {
   useElements, 
-  useStripe 
+  useStripe ,
+  PaymentElement,
+  LinkAuthenticationElement,
 } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import './CheckoutForm.css';
@@ -14,19 +13,16 @@ const CheckoutForm = ({ amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const [cardType, setCardType] = useState("");
+  const [message, setMessage] = useState(null);
 
   const { createOrderResponse } = useSelector((state) => state.cart);
 
-  const formatAmount = (amount) => {
-    return new Intl.NumberFormat("en-IE", {
+  const formatAmount = (amount) =>
+    new Intl.NumberFormat("en-IE", {
       style: "currency",
       currency: "EUR",
-    // }).format(amount / 100); // Stripe amount is in cents, so divide by 100
-    }).format(amount); // Stripe amount is in cents, so divide by 100
-  };
-
-
+  }).format(amount);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -34,83 +30,59 @@ const CheckoutForm = ({ amount }) => {
       return;
     }
 
-    // const cardElement = elements.getElement(CardElement);
-    const cardNumberElement = elements.getElement(CardNumberElement);
-    try {
-      // Example payment intent creation (replace with your backend call)
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        createOrderResponse?.clientSecret, // Replace with actual client secret from your server
-        {
-          payment_method: {
-            card: cardNumberElement,
-            billing_details: {
-              name: createOrderResponse?.customer, // Replace with actual data
-            },
-          },
-        }
-      );
-      
-      if (error) {
-      } else if (paymentIntent.status === "succeeded") {
-        // Payment is successful
-        navigate("/order-complete"); // Redirect to the order complete page
+    // Call elements.submit() to validate the PaymentElement before proceeding
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setMessage(submitError.message);
+      return;
+    }
+
+    const clientSecret = createOrderResponse?.clientSecret;
+    console.log("clientSecret", clientSecret);
+    
+    if (!clientSecret) {
+      setMessage("Missing clientSecret. Please contact support.");
+      return;
+    }
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+        clientSecret,
+        elements,
+        confirmParams: {
+        return_url: `${window.location.origin}/order-complete`,
+      },
+    });
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message);
+      } else {
+        setMessage("An unexpected error occurred.");
       }
-    } catch (err) {
-      // console.error("Error during payment:", err);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      navigate("/order-complete");
     }
   };
 
-  const paymentElementOptions = {
-    layout: "accordion",
-    hidePostalCode: true,
-  }
-  const handleCardNumberChange = (event) => {
-    if (event.brand) {
-      setCardType(event.brand); // Update card brand dynamically
-    }
-  };
-  const getCardBrandIcon = (brand) => {
-    const cardBrandIcons = {
-      visa: "https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png",
-      mastercard: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg",
-      amex: "https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282019%29.svg",
-      discover: "https://upload.wikimedia.org/wikipedia/commons/5/50/Discover_Card_logo.svg",
-      diners: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Diners_Club_Logo5.svg",
-      jcb: "https://upload.wikimedia.org/wikipedia/commons/1/1f/JCB_logo.svg",
-      unionpay: "https://upload.wikimedia.org/wikipedia/commons/8/8c/UnionPay_logo.svg",
-    };
-    return cardBrandIcons[brand] || "https://img.icons8.com/ios-filled/50/000000/bank-card-back-side.png";
-  };
 
   return (
-    <form onSubmit={handleSubmit} className="checkout-form">
-      <h3>Total Amount: {formatAmount(amount)}</h3> {/* Example amount display */}
-      <div className="formElement">
-        <div className="form-group">
-          <label>Card Number</label>
-          <CardNumberElement className="stripe-input" onChange={handleCardNumberChange} />
-          {cardType && (
-            <img
-              src={getCardBrandIcon(cardType)}
-              alt={cardType}
-              className="card-brand-icon"
-            />
-          )}
-        </div>
-        <div className="form-group">
-          <label>Expiration Date</label>
-          <CardExpiryElement className="stripe-input" />
-        </div>
-        <div className="form-group">
-          <label>CVC</label>
-          <CardCvcElement className="stripe-input" />
-        </div>
-      </div>
-      {/* <CardElement id="payment-element" options={paymentElementOptions}  /> */}
-      <button type="submit" disabled={!stripe}>
-        {`Pay ${formatAmount(amount)}` }
-      </button>
-    </form>
+      <form id="payment-form" onSubmit={handleSubmit}>
+        <LinkAuthenticationElement id="link-authentication-element"
+          // Access the email value like so:
+          // onChange={(event) => {
+          //  setEmail(event.value.email);
+          // }}
+          //
+          // Prefill the email field like so:
+          // options={{defaultValues: {email: 'foo@bar.com'}}}
+          />
+        <PaymentElement id="payment-element" />
+        <button disabled={!stripe || !elements} id="submit">
+          <span id="button-text">
+            {`Pay ${formatAmount(amount)}`}
+          </span>
+        </button>
+        {message && <div id="payment-message">{message}</div>}
+      </form>
   );
 };
 

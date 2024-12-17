@@ -1,12 +1,10 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import StarRating from "../../components/StarRating/StarRating";
-import { updateQuantity, removeItem, setViewCartItems, setAllOffetList } from "../../store/slice/cartSlice";
+import { setViewCartItems, setAllOffetList, setCheckOutFormModal } from "../../store/slice/cartSlice";
 import {
   toggleAddressModal,
   editAddress,
-  setDefaultAddress,
-  removeAddress,
 } from "../../store/slice/modalSlice";
 import { paymentOptions } from "../../utils/CommonUtils";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
@@ -14,11 +12,9 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData, viewItemsInCartWithCoupen } from "../../store/slice/api_integration";
 import "./Cart.css";
 import { ShareProduct } from "../../utils/ShareProduct";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { STRIPE_PUBLIC_KEY } from "../../utils/Constants";
-import CheckoutForm from "../CheckoutForm/CheckoutForm";
+
 import { getDeviceType } from "../../utils/CheckDevice";
+import { CircularProgress } from "@mui/material";
 
 const Cart = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -30,10 +26,11 @@ const Cart = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
   // const [clientSecret, setClientSecret] = useState("");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems, viewCartItems, clientSecret, createOrderResponse, dpmCheckerLink } = useSelector((state) => state.cart);
+  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
   
   // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.user);
@@ -121,7 +118,7 @@ const Cart = () => {
         dispatch(getListAddress(responseObj));
     }
     if (activeTab === 2) { // Replace with your Publishable Key
-      // navigate("/order-complete");
+      setCheckoutLoading(true);
       const responseObj = {
         address_id : viewCartItems?.address?.id,
         cart_amount : viewCartItems?.cartPrice?.totalAmount,
@@ -133,7 +130,10 @@ const Cart = () => {
         device_type : getDeviceType()
       }
       dispatch(createOrderData(responseObj)).finally(() => {
-        setActiveTab(activeTab + 1);
+        // setActiveTab(activeTab + 1);
+        const payload = {isOpen: isOpen};
+        dispatch(setCheckOutFormModal(payload))
+        setCheckoutLoading(false);
       })
     }
     else setActiveTab(activeTab + 1);
@@ -146,7 +146,7 @@ const Cart = () => {
     
   }
   
-  const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+  // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
   
   useEffect(() => {
     if(user.length > 0) dispatch(getUserRequest());
@@ -162,13 +162,16 @@ const Cart = () => {
     dispatch(setAllOffetList(payload))
   }
 
-  const appearance = {
-    theme: 'stripe',
-  };
-  // Enable the skeleton loader UI for optimal loading.
-  const loader = 'auto';
+  // const appearance = {
+  //   theme: 'stripe',
+  // };
+  // // Enable the skeleton loader UI for optimal loading.
+  // const loader = 'auto';
   return (
     <div className="staticContent">
+      {checkoutLoading && <div className="loadingContainer loadingPosition">
+          <CircularProgress />
+      </div>}
       <h4>Cart Your Items</h4>
       <div className="cartWrapper">
         <div className="leftCartItems">
@@ -622,18 +625,6 @@ const Cart = () => {
                         </div>
                       </div>
                     ))}
-                </div>
-                <div
-                  className="tab-content"
-                  ref={tabRefs[3]}
-                  style={{ display: activeTab === 3 ? "block" : "none" }}
-                >
-                  <div className="checkout-form">
-                    <h4>Checkout</h4>
-                    {createOrderResponse && <Elements options={{clientSecret, appearance, loader}} stripe={stripePromise}>
-                      <CheckoutForm amount={viewCartItems?.cartPrice?.totalAmount} dpmCheckerLink={dpmCheckerLink} />
-                    </Elements>}
-                  </div>
                 </div>
               </div>
             </div>

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ABOUT_US, COOKIES_POLICY, DISCLAIMER, FAQS, ORDER_CANCELLATION, PRIVACY_POICY, REFUND_POLICY, RETURN_REFUND, SHIPPING_DELIVERY, TERMS_CONDITION } from '../../utils/Constants';
 import { getCMSRequest, getCMSSocialLinksRequest } from '../../store/slice/api_integration';
 import { getAbsoluteUrl } from '../../utils/AbsoluteUrl';
+import CookieNotification from '../CookieNotification/CookieNotification';
 
 const Footer = () => {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Footer = () => {
     }, [])
     return (
         <div className='footercontainer'>
+            <CookieNotification />
             <Subscribe />
             <div className='mainFooter'>
                 <Box sx={{ flexGrow: 1 }}>

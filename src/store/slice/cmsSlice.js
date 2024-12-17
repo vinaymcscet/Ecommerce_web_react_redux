@@ -5,6 +5,7 @@ const initialState = {
   cmsSocialLinks: null,
   cmsContactUs: null,
   cmsGroupItem: null,
+  isManageCookiesModal: false,
 };
 
 export const cmsSlice = createSlice({
@@ -20,7 +21,9 @@ export const cmsSlice = createSlice({
     setCmsGroupItem: (state, action) => {
       state.cmsGroupItem = action.payload;
     },
-     
+    setManageCookiesModal: (state, action) => {
+      state.isManageCookiesModal = action.payload.isOpen;
+    }
   },
 });
 
@@ -29,5 +32,6 @@ export const {
     setCmsSocialLinks,
     setCmsContactUs,
     setCmsGroupItem,
+    setManageCookiesModal,
 } = cmsSlice.actions;
 export default cmsSlice.reducer;

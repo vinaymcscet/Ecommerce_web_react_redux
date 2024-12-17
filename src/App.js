@@ -23,6 +23,8 @@ import { getTokensFromLocalStorage } from "./utils/StorageTokens";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import CancelOrderModal from "./components/CancelOrderModal/CancelOrderModal";
 import CoupensModal from "./components/CoupensModal/CoupensModal";
+import CheckoutModal from "./components/CheckoutModal/CheckoutModal";
+import ManageCookies from "./components/ManageCookies/ManageCookies";
 const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy/CookiesPolicy"));
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
@@ -147,6 +149,8 @@ function App() {
       <CategoryModal />
       <CancelOrderModal />
       <CoupensModal />
+      <CheckoutModal />
+      <ManageCookies />
       {isAddressModelOpen && (
         <Suspense fallback={<div>Loading Address Modal...</div>}>
           <AddressModal />

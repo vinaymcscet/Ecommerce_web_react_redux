@@ -17,6 +17,7 @@ import {
   searchProductData, 
   viewItemsInCartData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
+import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -57,7 +58,9 @@ const Header = () => {
     const responseObj = {
       device_token: device_token
     }
-    dispatch(logoutRequest(responseObj));
+    dispatch(logoutRequest(responseObj)).finally(() => {
+      handleOpenDialog('login');
+    });
   };
 
   const handleProfile = () => {
@@ -94,6 +97,11 @@ const Header = () => {
   useEffect(() => {
     dispatch(getUserRequest());
     dispatch(viewItemsInCartData());
+    // open by default login modal
+    const storageTokens = getTokensFromLocalStorage();
+    console.log("+++", storageTokens);
+
+    if(!storageTokens?.accessToken) handleOpenDialog('login');
   }, [])
   return (
     <div>
@@ -120,12 +128,6 @@ const Header = () => {
             </Grid>
             <Grid item xs={6} md={4} lg={4}>
               <div className="searchPanel">
-                {/* <select name="select category" className="selectCategory">
-                  <option>Categories</option>
-                  <option>Categories 1</option>
-                  <option>Categories 2</option>
-                  <option>Categories 3</option>
-                </select> */}
                 <div className="inputBox">
                   <input
                     type="text"

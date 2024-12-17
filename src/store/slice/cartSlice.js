@@ -21,6 +21,7 @@ const initialState = {
   returnStatus: false,
   status: 0,
   isAllOfferList: false,
+  isCheckoutFormModal: false,
   clientSecret: "",
   dpmCheckerLink: "",
 };
@@ -101,6 +102,9 @@ export const cartSlice = createSlice({
     },
     setAllOffetList: (state, action) => {
       state.isAllOfferList = action.payload.isOpen;
+    },
+    setCheckOutFormModal: (state, action) => {
+      state.isCheckoutFormModal = action.payload.isOpen;
     }
   },
 });
@@ -127,5 +131,6 @@ export const {
   setAllOffetList,
   setClientSecret,
   setDpmCheckerLink,
+  setCheckOutFormModal,
 } = cartSlice.actions;
 export default cartSlice.reducer;

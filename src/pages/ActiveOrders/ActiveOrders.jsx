@@ -127,10 +127,11 @@ const ActiveOrders = () => {
         };
         // dispatch(toggleCategoryModal(cancelOrderPayload));
         dispatch(setCancelOrderModal(cancelOrderPayload))
-        setActiveOrderIndex(null);
+        // setActiveOrderIndex(null);
       }
       if(orderDetail) {
           const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
+          console.log(formattedActiveEstDeliveryDate);
       }
       
   return (

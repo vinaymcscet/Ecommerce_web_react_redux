@@ -131,7 +131,7 @@ const DeliveredOrders = () => {
     };
     // dispatch(toggleCategoryModal(cancelOrderPayload));
     dispatch(setCancelOrderModal(cancelOrderPayload))
-    setDeliveredOrderIndex(null);
+    // setDeliveredOrderIndex(null);
   }
   return (
     <>
