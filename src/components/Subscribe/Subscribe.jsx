@@ -16,7 +16,6 @@ const Subscribe = () => {
 
   const handleNewsLetter = (e) => {
     const { name, value } = e.target;
-    console.log("value", value, name);
     setNewsLetter({
       ...newsLetter,
       [name]: value
@@ -37,17 +36,20 @@ const Subscribe = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true)
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setLoading(false)
     } else {
         setErrors({});
         // Process the form data (e.g., submit to server)
         const responseObj = {
           email : newsLetter.email,
         };
-        dispatch(subscribeNewsLetter(responseObj)).finally(() => {
+        dispatch(subscribeNewsLetter(responseObj))
+        // .then(() => setLoading(true))
+        .finally(() => {
           setLoading(false);
           setNewsLetter({ email: ''})
         });

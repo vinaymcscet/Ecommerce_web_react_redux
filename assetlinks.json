@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.fikfis",
+    "sha256_cert_fingerprints":
+    ["A0:B8:8C:36:33:3B:5F:8F:7B:E0:17:3F:F6:61:6C:6F:44:38:3C:D3:2E:E3:43:B0:49:5A:21:7C:A9:60:17:24"]
+  }
+}]

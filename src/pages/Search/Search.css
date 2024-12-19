@@ -28,6 +28,20 @@
     flex-flow: wrap row;
 }
 
+.searchedItemsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+}
+
 @media screen and (max-width: 767px) {
     .searchProduct .productList > div {
         width: 47%;

@@ -179,14 +179,18 @@
     position: relative;
 }
 
+.addressTabsContainer .tabs-buttons button:not(:last-child) {
+    margin-right: 15px;
+}
+
 .addressTabsContainer .tabs-buttons button:before {
     content: "";
     position: absolute;
     bottom: -3px;
-    width: 90%;
+    width: 100%;
     height: 3px;
     margin: 0 auto;
-    left: 15px;
+    left: 0px;
 }
 
 .addressTabsContainer .tabs-buttons button.active:before {

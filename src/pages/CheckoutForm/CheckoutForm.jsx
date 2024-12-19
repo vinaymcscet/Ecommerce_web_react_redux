@@ -1,5 +1,10 @@
-import React from "react";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import React, { useState } from "react";
+import {
+  useElements, 
+  useStripe ,
+  PaymentElement,
+  LinkAuthenticationElement,
+} from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import './CheckoutForm.css';
 import { useSelector } from "react-redux";
@@ -8,61 +13,93 @@ const CheckoutForm = ({ amount }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const [message, setMessage] = useState(null);
 
   const { createOrderResponse } = useSelector((state) => state.cart);
 
-  const formatAmount = (amount) => {
-    return new Intl.NumberFormat("en-IE", {
+  const formatAmount = (amount) =>
+    new Intl.NumberFormat("en-IE", {
       style: "currency",
       currency: "EUR",
-    // }).format(amount / 100); // Stripe amount is in cents, so divide by 100
-    }).format(amount); // Stripe amount is in cents, so divide by 100
-  };
-
-
+  }).format(amount);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
-      console.error("Stripe has not loaded properly.");
       return;
     }
 
-    const cardElement = elements.getElement(CardElement);
+    // Call elements.submit() to validate the PaymentElement before proceeding
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setMessage(submitError.message);
+      return;
+    }
 
-    try {
-      // Example payment intent creation (replace with your backend call)
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        createOrderResponse?.clientSecret, // Replace with actual client secret from your server
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: createOrderResponse?.customer, // Replace with actual data
+    const clientSecret = createOrderResponse?.clientSecret;
+    
+    if (!clientSecret) {
+      setMessage("Missing clientSecret. Please contact support.");
+      return;
+    }
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+        clientSecret,
+        elements,
+        confirmParams: {
+        return_url: `${window.location.origin}/order-complete`,
+        payment_method_data: {
+          billing_details: {
+            address: {
+              country: "UK", // Provide the country explicitly
             },
           },
-        }
-      );
-
-      if (error) {
-        console.error("Payment failed:", error.message);
-      } else if (paymentIntent.status === "succeeded") {
-        // Payment is successful
-        navigate("/order-complete"); // Redirect to the order complete page
+        },
+      },
+    });
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message);
+      } else {
+        setMessage("An unexpected error occurred.");
       }
-    } catch (err) {
-      console.error("Error during payment:", err);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      navigate("/order-complete");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Total Amount: {formatAmount(amount)}</h3> {/* Example amount display */}
-      <CardElement />
-      <button type="submit" disabled={!stripe}>
-        Pay {formatAmount(amount)}
-      </button>
-    </form>
+      <form id="payment-form" onSubmit={handleSubmit}>
+        {/* <LinkAuthenticationElement id="link-authentication-element"
+          // Access the email value like so:
+          // onChange={(event) => {
+          //  setEmail(event.value.email);
+          // }}
+          //
+          // Prefill the email field like so:
+          // options={{defaultValues: {email: 'foo@bar.com'}}}
+          /> */}
+        <PaymentElement 
+          id="payment-element" 
+          options={{
+            fields: {
+              billingDetails: {
+                address: {
+                  country: "never", // Hides the country field
+                },
+              },
+            },
+          }}
+        />
+        
+        <button disabled={!stripe || !elements} id="submit">
+          <span id="button-text">
+            {`Pay ${formatAmount(amount)}`}
+          </span>
+        </button>
+        {message && <div id="payment-message">{message}</div>}
+      </form>
   );
 };
 

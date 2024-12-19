@@ -8,6 +8,8 @@
 
 .blogCard img {
   width: 100%;
+  min-height: 220px;
+  max-height: 220px;
 }
 
 .blogCard .date {

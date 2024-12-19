@@ -1,24 +1,20 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import StarRating from "../../components/StarRating/StarRating";
-import { updateQuantity, removeItem } from "../../store/slice/cartSlice";
+import { setViewCartItems, setAllOffetList, setCheckOutFormModal } from "../../store/slice/cartSlice";
 import {
   toggleAddressModal,
   editAddress,
-  setDefaultAddress,
-  removeAddress,
 } from "../../store/slice/modalSlice";
 import { paymentOptions } from "../../utils/CommonUtils";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData, viewItemsInCartWithCoupen } from "../../store/slice/api_integration";
 import "./Cart.css";
 import { ShareProduct } from "../../utils/ShareProduct";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { STRIPE_PUBLIC_KEY } from "../../utils/Constants";
-import CheckoutForm from "../CheckoutForm/CheckoutForm";
+
 import { getDeviceType } from "../../utils/CheckDevice";
+import { CircularProgress } from "@mui/material";
 
 const Cart = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -28,11 +24,15 @@ const Cart = () => {
   // const [clientSecret, setClientSecret] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+  // const [clientSecret, setClientSecret] = useState("");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems, viewCartItems } = useSelector((state) => state.cart);
-  const { addresses, defaultAddressId } = useSelector((state) => state.modal);
+  
+  // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -51,34 +51,18 @@ const Cart = () => {
   const handleApplyPromoCode = () => {
     const responseObj = { coupon_code: coupenCode }
     dispatch(viewItemsInCartData(responseObj))
+    // dispatch(viewItemsInCartWithCoupen(responseObj))
   }
   
   // Function to remove an item
   const handleRemoveItem = (id) => {
     const responseObj = { cart_id: id }
-    dispatch(deleteItemsInCartData(responseObj))
+    dispatch(deleteItemsInCartData(responseObj)).finally(() => {
+      dispatch(viewItemsInCartData());
+      if(viewCartItems?.cartItems.length === 1) dispatch(setViewCartItems(null));
+    })
     // dispatch(removeItem(id));
   };
-
-  // const calculateTotals = () => {
-  //   const itemTotal = cartItems.reduce(
-  //     (acc, item) => acc + item.original * item.quantity,
-  //     0
-  //   );
-  //   const itemDiscount = cartItems.reduce(
-  //     (acc, item) =>
-  //       acc +
-  //       (item.discount ? (item.original - item.discount) * item.quantity : 0),
-  //     0
-  //   );
-  //   const delivery = 10; // Static delivery charge
-  //   const tax = 10; // Static tax
-  //   const total = itemTotal - itemDiscount + delivery + tax;
-
-  //   return { itemTotal, itemDiscount, delivery, tax, total };
-  // };
-
-  // const { itemTotal, itemDiscount, delivery, tax, total } = calculateTotals();
 
   const handleAddress = () => {
     startTransition(() => {
@@ -87,7 +71,6 @@ const Cart = () => {
   };
 
   const handleAddressModal = (address = null) => {
-    
     startTransition(() => {
       dispatch(toggleAddressModal({ isOpen: true, address }));
       if (address) {
@@ -135,7 +118,7 @@ const Cart = () => {
         dispatch(getListAddress(responseObj));
     }
     if (activeTab === 2) { // Replace with your Publishable Key
-      // navigate("/order-complete");
+      setCheckoutLoading(true);
       const responseObj = {
         address_id : viewCartItems?.address?.id,
         cart_amount : viewCartItems?.cartPrice?.totalAmount,
@@ -147,7 +130,10 @@ const Cart = () => {
         device_type : getDeviceType()
       }
       dispatch(createOrderData(responseObj)).finally(() => {
-        setActiveTab(activeTab + 1);
+        // setActiveTab(activeTab + 1);
+        const payload = {isOpen: isOpen};
+        dispatch(setCheckOutFormModal(payload))
+        setCheckoutLoading(false);
       })
     }
     else setActiveTab(activeTab + 1);
@@ -160,7 +146,7 @@ const Cart = () => {
     
   }
   
-  const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+  // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
   
   useEffect(() => {
     if(user.length > 0) dispatch(getUserRequest());
@@ -170,8 +156,22 @@ const Cart = () => {
   const handleSelectedAddress = (address) => {
     setSelectedAddress(address);
   }
+
+  const handleAllOfferList = () => {
+    const payload = {isOpen: isOpen};
+    dispatch(setAllOffetList(payload))
+  }
+
+  // const appearance = {
+  //   theme: 'stripe',
+  // };
+  // // Enable the skeleton loader UI for optimal loading.
+  // const loader = 'auto';
   return (
     <div className="staticContent">
+      {checkoutLoading && <div className="loadingContainer loadingPosition">
+          <CircularProgress />
+      </div>}
       <h4>Cart Your Items</h4>
       <div className="cartWrapper">
         <div className="leftCartItems">
@@ -626,18 +626,6 @@ const Cart = () => {
                       </div>
                     ))}
                 </div>
-                <div
-                  className="tab-content"
-                  ref={tabRefs[3]}
-                  style={{ display: activeTab === 3 ? "block" : "none" }}
-                >
-                  <div className="checkout-form">
-                    <h4>Checkout</h4>
-                    <Elements stripe={stripePromise}>
-                      <CheckoutForm amount={viewCartItems?.cartPrice?.totalAmount} />
-                    </Elements>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -663,17 +651,21 @@ const Cart = () => {
                 <h4>Total: </h4> <span>£ {viewCartItems?.cartPrice?.totalAmount || 0.00}</span>
               </div>
             </div>
-            {activeTab === 2 && <div className="applyPromoSection">
-              <input
-                type="text"
-                placeholder="Apply Promo Code"
-                name="Promo Code"
-                onChange={(e) => setCoupenCode(e.target.value)}
-              />
-              <button type="button" className="promocode" onClick={handleApplyPromoCode}>
-                Apply
-              </button>
-            </div>}
+            {activeTab === 2 && 
+            <>
+              <div className="applyPromoSection">
+                <input
+                  type="text"
+                  placeholder="Apply Promo Code"
+                  name="Promo Code"
+                  onChange={(e) => setCoupenCode(e.target.value)}
+                />
+                <button type="button" className="promocode" onClick={handleApplyPromoCode}>
+                  Apply
+                </button>
+              </div>
+              <p className="availablePromo" onClick={() => handleAllOfferList()}>Check Offers</p>
+            </>}
             {isSecondLastTab && (
               <ul className="paymentOption">
                 {paymentOptions.map((size) => (
