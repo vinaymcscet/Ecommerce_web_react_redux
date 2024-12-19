@@ -131,7 +131,6 @@ const ActiveOrders = () => {
       }
       if(orderDetail) {
           const formattedActiveEstDeliveryDate = formatDateTimeProduct(orderDetail?.estimatedDeliveryDate);
-          console.log(formattedActiveEstDeliveryDate);
       }
       
   return (

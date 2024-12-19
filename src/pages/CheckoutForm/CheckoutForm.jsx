@@ -38,7 +38,6 @@ const CheckoutForm = ({ amount }) => {
     }
 
     const clientSecret = createOrderResponse?.clientSecret;
-    console.log("clientSecret", clientSecret);
     
     if (!clientSecret) {
       setMessage("Missing clientSecret. Please contact support.");
@@ -50,6 +49,13 @@ const CheckoutForm = ({ amount }) => {
         elements,
         confirmParams: {
         return_url: `${window.location.origin}/order-complete`,
+        payment_method_data: {
+          billing_details: {
+            address: {
+              country: "UK", // Provide the country explicitly
+            },
+          },
+        },
       },
     });
     if (error) {
@@ -63,10 +69,9 @@ const CheckoutForm = ({ amount }) => {
     }
   };
 
-
   return (
       <form id="payment-form" onSubmit={handleSubmit}>
-        <LinkAuthenticationElement id="link-authentication-element"
+        {/* <LinkAuthenticationElement id="link-authentication-element"
           // Access the email value like so:
           // onChange={(event) => {
           //  setEmail(event.value.email);
@@ -74,8 +79,20 @@ const CheckoutForm = ({ amount }) => {
           //
           // Prefill the email field like so:
           // options={{defaultValues: {email: 'foo@bar.com'}}}
-          />
-        <PaymentElement id="payment-element" />
+          /> */}
+        <PaymentElement 
+          id="payment-element" 
+          options={{
+            fields: {
+              billingDetails: {
+                address: {
+                  country: "never", // Hides the country field
+                },
+              },
+            },
+          }}
+        />
+        
         <button disabled={!stripe || !elements} id="submit">
           <span id="button-text">
             {`Pay ${formatAmount(amount)}`}

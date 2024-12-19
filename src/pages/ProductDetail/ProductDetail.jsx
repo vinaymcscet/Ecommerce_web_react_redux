@@ -16,6 +16,7 @@ import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
+import { setGetAnReviewImage } from "../../store/slice/productSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -23,13 +24,11 @@ const ProductDetail = () => {
   const { 
     productDetailResponse, 
     getReview, 
-    getReviewCount = 0, 
-    getReviewImage,
+    getReviewCount = 0,
     similarProductListResponse, 
     similarProductCount = 0,
     recentView,
     totalRecentView = 0,
-    addToCartStatusCount,
    } = useSelector((state) => state.product);
   const { user } = useSelector((state) => state.user);
     
@@ -90,6 +89,7 @@ const ProductDetail = () => {
   const [reviewLoading, setreviewLoading] = useState(false);
   const [similarProductLoading, setSimilarProductLoading] = useState(false);
   const [recentlyViewLoading, setRecentlyViewLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState([]);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/"); // Split URL by `/`
@@ -213,6 +213,14 @@ const ProductDetail = () => {
       [name]: "",
     });
   };
+
+  const handleOpenReviewBox = () => {
+    handleActiveTabs(2);
+    window.scrollTo({
+      top: 800,
+      behavior: "smooth", // For smooth scrolling
+    });
+  }
 
   const validate = () => {
     const newErrors = {};
@@ -470,36 +478,53 @@ const ProductDetail = () => {
    // Function to handle image upload and preview
    const handleImageUpload = (e, index) => {
     const file = e.target.files[0];
+    
     if (file && file.type.startsWith("image/")) {
       const responseObj = {
         product_id,
         images: file,
       };
+
+      // Set loading state for the specific image index
+      setImageLoading((prev) => {
+        const updatedLoading = [...prev];
+        updatedLoading[index] = true;
+        return updatedLoading;
+      });
   
       // Dispatch the API call to upload the image
+      // dispatch(setGetAnReviewImage(null));
       dispatch(addReviewProductImageData(responseObj))
-      .then(() => {
-        // After API call, update the specific index in the imageData array
-          const updatedImage = getReviewImage;
-          // const { imageId, imageUrl } = getReviewImage || {};
-          if (updatedImage?.imageId && updatedImage?.imageUrl) {
-            setImageData((prev) => {
-              const updatedImageData = [...prev];
-              updatedImageData[index] = {
-                imageId: updatedImage.imageId,
-                imageUrl: updatedImage.imageUrl,
-                preview: updatedImage.imageUrl, // Update preview with the uploaded image
-              };
-              return updatedImageData;
-            });
-          } else {
-            console.error("Image upload response not found in state.");
-          }
+      .then((updatedImage) => {
+        if (updatedImage?.imageId && updatedImage?.imageUrl) {
+          setImageData((prev) => {
+            const updatedImageData = [...prev];
+            updatedImageData[index] = {
+              imageId: updatedImage.imageId,
+              imageUrl: updatedImage.imageUrl,
+              preview: updatedImage.imageUrl,
+            };
+            return updatedImageData;
+          });
+        } else {
+          console.error("Image upload response is invalid.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+      })
+      .finally(() => {
+        // Clear loading state for the specific image index
+        setImageLoading((prev) => {
+          const updatedLoading = [...prev];
+          updatedLoading[index] = false;
+          return updatedLoading;
+        });
       });
     } else {
       setErrorFileType("Please upload a valid image file");
     }
-  };  
+  }
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -773,7 +798,7 @@ const fetchUpdatedSimilarProductList = () => {
                   {productDetailResponse?.data?.ratings && <div className="ratingBox">
                     <span>{productDetailResponse?.data?.ratings?.average}</span>
                     {productDetailResponse?.data?.ratings && <StarRating userrating={productDetailResponse?.data?.ratings?.average} />}
-                    <div className="reviews">
+                    <div className="reviews" onClick={handleOpenReviewBox}>
                       {productDetailResponse?.data?.ratings?.total_reviews || 0} reviews
                     </div>
                   </div>}
@@ -1147,8 +1172,13 @@ const fetchUpdatedSimilarProductList = () => {
                                 <div className="form-control select">
                                   {imageData.map((data, index) => (
                                     <div className="selectFileBox" key={index}>
-                                      {data.imageUrl ? (
+                                      {data.imageUrl && (
                                         <img src={data.imageUrl} alt={`Preview ${index + 1}`} />
+                                      )}
+                                      {imageLoading[index] ? (
+                                        <div className="imageLoader">
+                                          <CircularProgress />
+                                        </div>
                                       ) : (
                                         <img src="/images/add-file.svg" alt="Select File" />
                                       )}

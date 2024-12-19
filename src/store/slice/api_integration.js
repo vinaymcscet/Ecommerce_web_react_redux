@@ -81,7 +81,7 @@ import {
 } from "./modalSlice";
 import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setLogout, setNewsLetter, setNotificationsCount, setNotificationsList, setUser } from "./userSlice";
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
-import { setCmsContactUs, setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
+import { setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
 import {
   setAddToCartStatusCount,
   setAddWishList,
@@ -112,7 +112,7 @@ import {
   setUserReview,
   setUserReviewCount
 } from "./productSlice";
-import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setClientSecret, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setDpmCheckerLink, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems, setViewCartOnCoupen } from "./cartSlice";
+import { addToCart, clearCart, setActiveOrderListCountResponse, setCancelledOrderListCountResponse, setClientSecret, setConfirmOrderResponse, setCreateOrderResponse, setDeliveredListCountResponse, setDpmCheckerLink, setOrderDetailResponse, setOrderListResponse, setReasonListResponse, setReturnOrderListCountResponse, setSelectedReasonCancelProductResponse, setViewCartItems } from "./cartSlice";
 
 // Thunk to handle signup API call without OTP
 export const signupUser = (userData) => async (dispatch) => {
@@ -1026,11 +1026,13 @@ export const addReviewProductImageData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     // dispatch(setSuccess(response.message));
+
     dispatch(setGetAnReviewImage(response.data));
 
     // setTimeout(() => {
     //   dispatch(resetSuccess());
     // }, 1000);
+    return response.data; 
   } catch (error) {
 
     dispatch(setLoading(false));
@@ -1270,10 +1272,10 @@ export const OrderListData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setOrderListResponse(response.data));
-    if(userData.status == 1) dispatch(setActiveOrderListCountResponse(response.totalCount));
-    if(userData.status == 3) dispatch(setCancelledOrderListCountResponse(response.totalCount));
-    if(userData.status == 6) dispatch(setReturnOrderListCountResponse(response.totalCount));
-    if(userData.status == 5) dispatch(setDeliveredListCountResponse(response.totalCount));
+    if(userData.status === 1) dispatch(setActiveOrderListCountResponse(response.totalCount));
+    if(userData.status === 3) dispatch(setCancelledOrderListCountResponse(response.totalCount));
+    if(userData.status === 6) dispatch(setReturnOrderListCountResponse(response.totalCount));
+    if(userData.status === 5) dispatch(setDeliveredListCountResponse(response.totalCount));
     
     dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());

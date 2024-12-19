@@ -99,7 +99,6 @@ const Header = () => {
     dispatch(viewItemsInCartData());
     // open by default login modal
     const storageTokens = getTokensFromLocalStorage();
-    console.log("+++", storageTokens);
 
     if(!storageTokens?.accessToken) handleOpenDialog('login');
   }, [])

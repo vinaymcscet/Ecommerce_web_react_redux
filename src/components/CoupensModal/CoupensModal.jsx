@@ -14,8 +14,6 @@ const CoupensModal = () => {
     const dispatch = useDispatch();
     const modalRef = useRef(null); 
     
-    // console.log("isAllOfferList", isAllOfferList, offerList);
-
     useEffect(() => {
         if (isAllOfferList) {
             setLoading(true);
