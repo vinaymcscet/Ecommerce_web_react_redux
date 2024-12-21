@@ -8,7 +8,6 @@ import InputField from "../../components/InputBox/InputBox";
 import { 
     CONFIRM_PASSWORD, 
     CONFIRM_PASSWORD_LABEL, 
-    DEFAULT_OPTIONS, 
     NEW_PASSWORD, 
     NEW_PASSWORD_ENTER, 
     NEW_PASSWORD_LABEL, 
@@ -27,7 +26,6 @@ import {
     getUserRequest, 
     getUserReviewProductData, 
     OrderListData, 
-    updateListAddress,
     updateProfileRequest, 
 } from "../../store/slice/api_integration";
 import Notifications from "../Notifications/Notifications";
@@ -52,13 +50,13 @@ const Profile = () => {
   const [wishListItemsPerPage, setWishListItemsPerPage] = useState(1);
   const [reviewPage, setReviewPage] = useState(0);  // Default page 0 (first page)
   const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
-  const [activeItemsPerPage, setActiveItemsPerPage] = useState(1);
+  const [activeItemsPerPage, setActiveItemsPerPage] = useState(10);
   const [returnPage, setReturnPage] = useState(0);  // Default page 0 (first page)
-  const [returnItemsPerPage, setReturnItemsPerPage] = useState(1);
+  const [returnItemsPerPage, setReturnItemsPerPage] = useState(10);
   const [cancelPage, setCancelPage] = useState(0);  // Default page 0 (first page)
-  const [cancelItemsPerPage, setCancelItemsPerPage] = useState(1);
+  const [cancelItemsPerPage, setCancelItemsPerPage] = useState(10);
   const [deliveredPage, setDeliveredPage] = useState(0);  // Default page 0 (first page)
-  const [deliveredItemsPerPage, setDeliveredItemsPerPage] = useState(1);
+  const [deliveredItemsPerPage, setDeliveredItemsPerPage] = useState(10);
   
   // const [activeOrderIndex, setActiveOrderIndex] = useState(null);
   // const [returnOrderIndex, setReturnOrderIndex] = useState(null);

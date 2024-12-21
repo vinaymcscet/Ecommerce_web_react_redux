@@ -73,7 +73,7 @@ const CoupensModal = () => {
                 </div>
             ) : (
             <div className="coupens">
-                <h3>Hurry Up!!! </h3>
+                {/* <h3>Hurry Up!!! </h3> */}
                 <div className="coupensList">
                 {offerList && offerList.map((item, index) => (
                     <div className="availableCoupen" key={index}>

@@ -10,7 +10,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const DeliveredOrders = () => {
     const [deliveredPage, setDeliveredPage] = useState(0);  // Default page 0 (first page)
-    const [deliveredItemsPerPage, setDeliveredItemsPerPage] = useState(1);
+    const [deliveredItemsPerPage, setDeliveredItemsPerPage] = useState(10);
     const [deliveredOrderIndex, setDeliveredOrderIndex] = useState(null);
     const [isInitialLoad, setIsInitialLoad] = useState({ delivered: true });
     const [isOpen, setIsOpen] = useState(true);

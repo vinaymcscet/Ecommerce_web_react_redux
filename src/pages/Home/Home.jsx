@@ -176,7 +176,8 @@ const Home = () => {
                               discountLabel={product?.offer || ""}
                               wishlistStatus={product?.wishlistStatus || 'no'}
                               sku_id={product?.sku_id} // Pass SKU ID for Add to Cart
-                              onAddToCart={() => handleAddToCartClick(product.sku_id)}
+                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              onAddToCart={() => handleProductClick(product)}
                               cartQuantity={Number(product.cartQuantity)}
                               onIncrement={handleIncrement}
                               onDecrement={handleDecrement}
@@ -220,7 +221,8 @@ const Home = () => {
                       discountLabel={item.offer || ""}
                       wishlistStatus={item.wishlistStatus || 'no'}
                       sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
                       cartQuantity={Number(item.cartQuantity)}
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}

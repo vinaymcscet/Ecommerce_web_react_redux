@@ -11,7 +11,12 @@ import {
   setOtp,
   setForgotPassword,
   setForgotPasswordAssist,
-  setForgotOtp
+  setForgotOtp,
+  resetSignup,
+  resetLogin,
+  resetOtp,
+  resetForgotPassword,
+  resetForgotPasswordAssist
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
 import { getDeviceType } from "../../utils/CheckDevice";
@@ -228,7 +233,6 @@ const handleConfirmPasswordChange = (e) => {
       };
       
       dispatch(forgetPasswordOtpRequest(responseObj));
-      // dispatch(setModalType('forgot'));
     }
   };
   
@@ -237,7 +241,12 @@ const handleConfirmPasswordChange = (e) => {
     dispatch(toggleModal(true));
   };
   const closeModal = () => {
-    dispatch(toggleModal(false));
+    dispatch(resetSignup());
+    dispatch(resetLogin());
+    dispatch(resetOtp());
+    dispatch(resetForgotPassword());
+    dispatch(resetForgotPasswordAssist());
+    dispatch(toggleModal(false))
   };
   return (
     <div>

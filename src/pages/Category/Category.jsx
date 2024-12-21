@@ -17,7 +17,7 @@ const Category = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage,setItemsPerPage] = useState(1);
+  const [itemsPerPage,setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
 
@@ -218,7 +218,8 @@ const handlePageChange = (data) => {
                       discountLabel={item.discountlabel || ""}
                       wishlistStatus={item.wishlistStatus || 'no'}
                       sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
                       cartQuantity={Number(item.cartQuantity)}
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}
@@ -281,7 +282,8 @@ const handlePageChange = (data) => {
                       discountLabel={item.discountlabel || ""}
                       wishlistStatus={item.wishlistStatus || 'no'}
                       sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
                       cartQuantity={Number(item.cartQuantity)}
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}

@@ -41,9 +41,9 @@ const Disclaimer = () => {
             </Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>
-            <p>{cmsContentType?.long_desc}</p>
+            <p dangerouslySetInnerHTML={{__html: cmsContentType?.long_desc}} />
             <h6>{cmsContentType?.title_2}</h6>
-            <p>{cmsContentType?.short_desc}</p>
+            <p dangerouslySetInnerHTML={{__html: cmsContentType?.short_desc}} />
             <p className='update'>Last Updated: <span>{cmsContentType?.updated_at ? formattedDateTime : 'N/A'}</span></p></>)}
             {!cmsContentType && (
                 <div className='contentNotAvailable'>

@@ -20,14 +20,15 @@ const CookieNotification = () => {
   return (
     <div className={`cookieNotification ${cookieState ? 'active' : ''}`}>
         <div className="left">
-            <h4>Giving you the best experience</h4>
-            <p>we use cookies and similar technologies to personalise content, analyse website performance 
-                and tailor and measure ads. Learn exactly how we do this and manage setting in our <Link>Cookie Policy.</Link>
+            <h4>DELIVERING THE ULTIMATE EXPERIENCE</h4>
+            <p>We use cookies to personalize content, analyze performance, and optimize ads. Learn more or 
+            manage your preferences in our <Link to={'/cookies-policy'}>Cookie Policy.</Link>
             </p>
         </div>
         <div className="right">
-            <button className='manageCookie' onClick={() => handleManageCookie()}>Manage cookies</button>
-            <button className='acceptAllookie' onClick={() => handleAcceptCookie()}>Accept all</button>
+            {/* <button className='manageCookie' onClick={() => handleManageCookie()}>Decline</button> */}
+            <button className='manageCookie' onClick={() => handleAcceptCookie()}>Decline</button>
+            <button className='acceptAllookie' onClick={() => handleAcceptCookie()}>Accept</button>
         </div>
     </div>
   )

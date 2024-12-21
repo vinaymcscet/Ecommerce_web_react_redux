@@ -9,7 +9,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const ActiveOrders = () => {
     const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
-    const [activeItemsPerPage, setActiveItemsPerPage] = useState(1);
+    const [activeItemsPerPage, setActiveItemsPerPage] = useState(10);
     const [activeOrderIndex, setActiveOrderIndex] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
     const [isInitialLoad, setIsInitialLoad] = useState({ active: true });
@@ -177,41 +177,41 @@ const ActiveOrders = () => {
                     </div>
                     </div>
                     <div className="rightOrder">
-                    {orderDetail?.invoice_url && <div
-                        onClick={() => downloadPDF(orderDetail?.invoice_url)}
-                    >
-                        Invoice
-                    </div>}
-                    <div
-                        className={activeOrderIndex === index ? "active" : "disabled"}
-                        onClick={() => {
-                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
-                            order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
-                        );
-                        handleNavigateToDetail(matchingProducts);
-                        }}
-                    >
-                        Buy it again
-                    </div>
-                    <div onClick={(e) => handleActiveViewOrderDetails(e, index, item)}>
-                        {activeOrderIndex === index ? "Hide order details" : "View order details"}
-                    </div>
-                    <div
-                        className={activeOrderIndex === index ? "active" : "disabled"}
-                        onClick={() => {
-                        const matchingProducts = orderDetail?.orderItems?.filter((order) =>
-                            order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
-                        );
-                        handleNavigateToDetail(matchingProducts, true);
-                        }}
-                    >write a product review</div>
-                    <div onClick={() => redirectToSupport()}>Get product support</div>
-                    <div 
-                        className={activeOrderIndex === index ? "active" : "disabled"}
-                        onClick={(e) => handleCancelOrder(e, item, orderDetail.returnStatus)}
-                    >
-                        {"Cancel Order"}
-                    </div>
+                        {orderDetail?.invoice_url && <div
+                            onClick={() => downloadPDF(orderDetail?.invoice_url)}
+                        >
+                            Invoice
+                        </div>}
+                        {orderDetail && <div
+                            className={activeOrderIndex === index ? "active" : "disabled"}
+                            onClick={() => {
+                            const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                            );
+                            handleNavigateToDetail(matchingProducts);
+                            }}
+                        >
+                            Buy it again
+                        </div>}
+                        <div onClick={(e) => handleActiveViewOrderDetails(e, index, item)}>
+                            {activeOrderIndex === index ? "Hide order details" : "View order details"}
+                        </div>
+                        {orderDetail && <div
+                            className={activeOrderIndex === index ? "active" : "disabled"}
+                            onClick={() => {
+                            const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                                order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                            );
+                            handleNavigateToDetail(matchingProducts, true);
+                            }}
+                        >write a product review</div>}
+                        <div onClick={() => redirectToSupport()}>Get product support</div>
+                        {orderDetail && <div 
+                            className={activeOrderIndex === index ? "active" : "disabled"}
+                            onClick={(e) => handleCancelOrder(e, item, orderDetail.returnStatus)}
+                        >
+                            {"Cancel Order"}
+                        </div>}
                     </div>
                 </div>
                 {orderDetail && <div className={`openOrderDetails ${
@@ -247,11 +247,11 @@ const ActiveOrders = () => {
                     <div className="user_order_track">
                         <h4>TRACK ORDER</h4>
                         <p className="track">{orderDetail?.orderNumber}</p>
-                        <h4>TOTAL</h4>
+                        <h4>TOTAL INVOICE</h4>
                         <p className="total">
-                        {orderDetail?.orderItems?.map(order => (
+                        £ {orderDetail?.orderItems?.map(order => (
                         order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
-                        ))} include taxes
+                        ))}
                         </p>
                         {orderDetail?.orderItems[0]?.variants?.Size && <h4>Color</h4>}
                         {orderDetail && <p className="orderColor"> {`${orderDetail?.orderItems?.map(order => (

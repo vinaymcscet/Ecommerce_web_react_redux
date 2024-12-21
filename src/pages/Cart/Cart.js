@@ -9,7 +9,16 @@ import {
 import { paymentOptions } from "../../utils/CommonUtils";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-import { addToCartData, createOrderData, defaultListAddress, deleteItemsInCartData, deleteListAddress, getListAddress, getUserRequest, viewItemsInCartData, viewItemsInCartWithCoupen } from "../../store/slice/api_integration";
+import { 
+  addToCartData, 
+  createOrderData, 
+  defaultListAddress, 
+  deleteItemsInCartData, 
+  deleteListAddress, 
+  getListAddress, 
+  getUserRequest, 
+  viewItemsInCartData
+ } from "../../store/slice/api_integration";
 import "./Cart.css";
 import { ShareProduct } from "../../utils/ShareProduct";
 
@@ -24,6 +33,7 @@ const Cart = () => {
   // const [clientSecret, setClientSecret] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isDefaultSet, setIsDefaultSet] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   // const [clientSecret, setClientSecret] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -149,9 +159,23 @@ const Cart = () => {
   // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
   
   useEffect(() => {
-    if(user.length > 0) dispatch(getUserRequest());
-    else navigate("/");
-  }, [])
+    if (user.length > 0) {
+      dispatch(getUserRequest());
+      
+      if (!isDefaultSet) {
+        // Check if there is a default address and set it as selected
+        const defaultAddress = user[0]?.addresses?.find(
+          (address) => address.isDefault.toLowerCase() === "true"
+        );
+        if (defaultAddress) {
+          setSelectedAddress(defaultAddress);
+          setIsDefaultSet(true);
+        }
+      }
+    } else {
+      navigate("/");
+    }
+  }, [user, dispatch, navigate, isDefaultSet]);
 
   const handleSelectedAddress = (address) => {
     setSelectedAddress(address);
@@ -161,12 +185,6 @@ const Cart = () => {
     const payload = {isOpen: isOpen};
     dispatch(setAllOffetList(payload))
   }
-
-  // const appearance = {
-  //   theme: 'stripe',
-  // };
-  // // Enable the skeleton loader UI for optimal loading.
-  // const loader = 'auto';
   return (
     <div className="staticContent">
       {checkoutLoading && <div className="loadingContainer loadingPosition">
@@ -202,7 +220,7 @@ const Cart = () => {
                 >
                   Payment
                 </button>
-                <button
+                {/* <button
                   className={
                     activeTab === 3 ? "active" : activeTab < 3 ? "disabled" : ""
                   }
@@ -210,7 +228,7 @@ const Cart = () => {
                   disabled={activeTab < 3}
                 >
                   Checkout
-                </button>
+                </button> */}
               </div>
               <div className="tabs-content">
                 <div
@@ -229,6 +247,19 @@ const Cart = () => {
                         <div className="rightcartListItem">
                           <div className="rightCartInnerLeftItems">
                             <h4>{item?.name}</h4>
+                            <div className="productVariants">
+                                {item.variants &&
+                                  Object.entries(item.variants).map(([key, value]) => (
+                                    <div key={key}>
+                                      <h4>{`${key}`}</h4>
+                                      <p>{`: ${value}`}</p>
+                                      {/* {value.split(',').filter(Boolean).map((val, index) => (
+                                        <p key={index}>{val}</p>
+                                      ))} */}
+                                    </div>
+                                  ))
+                                }
+                            </div>
                             {item?.rating && (
                               <StarRating userrating={item?.rating} />
                             )}
@@ -315,120 +346,120 @@ const Cart = () => {
                   ref={tabRefs[1]}
                   style={{ display: activeTab === 1 ? "block" : "none" }}
                 >
-                  <div className="userAddresses">
-                    <h4>Shipping to</h4>
-                    <div className="addressList">
-                      {selectedAddress ? (
-                        <ul>
-                            <li>
-                              <h4>{selectedAddress?.full_name}</h4>
-                              <p>
-                                Full Address: {selectedAddress?.house_number}, 
-                                {selectedAddress?.street},
-                                {selectedAddress?.locality}, {selectedAddress?.country},
-                                {selectedAddress?.postcode}
-                              </p>
-                              <p>Phone Number: {selectedAddress?.mobile}</p>
-                              <p>Email: {selectedAddress?.email}</p>
-                            </li>
-                        </ul>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <h4>Other Addresses</h4>
-                    <div className="ManageAllAddress">
+                    <div className="userAddresses">
+                      <h4>Shipping to</h4>
                       <div className="addressList">
-                        {viewCartItems?.address ? (
+                        {selectedAddress ? (
                           <ul>
-                              <li
-                                onClick={() => handleSelectedAddress(viewCartItems?.address)} 
-                                className={selectedAddress && selectedAddress.id === (viewCartItems?.address?.id) ? 'active': ''}
-                              >
-                                <h4>{viewCartItems?.address?.full_name}</h4>
+                              <li>
+                                <h4>{selectedAddress?.full_name}</h4>
                                 <p>
-                                  Full Address: {viewCartItems?.address?.house_number}, 
-                                  {viewCartItems?.address?.street},
-                                  {viewCartItems?.address?.locality}, {viewCartItems?.address?.country},
-                                  {viewCartItems?.address?.postcode}
+                                  Full Address: {selectedAddress?.house_number}, 
+                                  {selectedAddress?.street},
+                                  {selectedAddress?.locality}, {selectedAddress?.country},
+                                  {selectedAddress?.postcode}
                                 </p>
-                                <p>Phone Number: {viewCartItems?.address?.mobile}</p>
-                                <p>Email: {viewCartItems?.address?.email}</p>
-                                <div className="action">
-                                  {/* <p onClick={() => handleAddressModal(address)}> */}
-                                  <p onClick={() => handleAddressModal(viewCartItems?.address)}>
-                                    Edit |
-                                  </p>
-                                  <p
-                                    onClick={() =>
-                                      // handleRemoveAddress(address.id)
-                                      handleRemoveAddress(viewCartItems?.address?.id)
-                                    }
-                                  >
-                                    Remove |
-                                  </p>
-                                  <p onClick={() => handleAddress()}>Add New |</p>
-                                  <p
-                                    onClick={() =>
-                                      // handleSetDefaultAddress(address.id)
-                                      handleSetDefaultAddress(viewCartItems?.address?.id)
-                                    }
-                                    className={viewCartItems?.address?.isDefault === "True" ? "default" : ""}
-                                  >
-                                    {viewCartItems?.address?.isDefault.toLowerCase() === 'true'
-                                      ? "Default"
-                                      : "Set as Default"}
-                                  </p>
-                                </div>
+                                <p>Phone Number: {selectedAddress?.mobile}</p>
+                                <p>Email: {selectedAddress?.email}</p>
                               </li>
                           </ul>
                         ) : (
                           ""
                         )}
                       </div>
-                      <div className="addressList">
-                        {user[0]?.addresses?.length > 0 && (
-                          <ul>
-                            {user[0]?.addresses
-                            .filter(address => address.id != viewCartItems?.address?.id)
-                            .map((address) => (
-                              <li 
-                                key={address.id} 
-                                onClick={() => handleSelectedAddress(address)} 
-                                className={selectedAddress && selectedAddress.id === address.id ? 'active': ''}
-                              >
-                                <h4>{address.full_name}</h4>
-                                <p>
-                                  Full Address: {address.house_number}, {address.street},
-                                  {address.locality}, {address.postcode}
-                                </p>
-                                <p>Phone Number: {address.mobile}</p>
-                                <p>Email: {address.email}</p>
-                                <div className="action">
-                                  <p onClick={() => handleAddressModal(address)}>Edit |</p>
-                                  <p onClick={() => handleRemoveAddress(address.id)}>
-                                    Remove |
+                      <h4>Other Addresses</h4>
+                      <div className="ManageAllAddress">
+                        <div className="addressList">
+                          {viewCartItems?.address ? (
+                            <ul>
+                                <li
+                                  onClick={() => handleSelectedAddress(viewCartItems?.address)} 
+                                  className={selectedAddress && selectedAddress.id === (viewCartItems?.address?.id) ? 'active': ''}
+                                >
+                                  <h4>{viewCartItems?.address?.full_name}</h4>
+                                  <p>
+                                    Full Address: {viewCartItems?.address?.house_number}, 
+                                    {viewCartItems?.address?.street},
+                                    {viewCartItems?.address?.locality}, {viewCartItems?.address?.country},
+                                    {viewCartItems?.address?.postcode}
                                   </p>
-                                  <p onClick={() => handleAddress()}>Add New |</p>
-                                  <p onClick={() => handleSetDefaultAddress(address.id)}>
-                                    {address.isDefault.toLowerCase() === 'true'
-                                      ? "Default"
-                                      : "Set as Default"}
+                                  <p>Phone Number: {viewCartItems?.address?.mobile}</p>
+                                  <p>Email: {viewCartItems?.address?.email}</p>
+                                  <div className="action">
+                                    {/* <p onClick={() => handleAddressModal(address)}> */}
+                                    <p onClick={() => handleAddressModal(viewCartItems?.address)}>
+                                      Edit |
+                                    </p>
+                                    <p
+                                      onClick={() =>
+                                        // handleRemoveAddress(address.id)
+                                        handleRemoveAddress(viewCartItems?.address?.id)
+                                      }
+                                    >
+                                      Remove |
+                                    </p>
+                                    <p onClick={() => handleAddress()}>Add New |</p>
+                                    <p
+                                      onClick={() =>
+                                        // handleSetDefaultAddress(address.id)
+                                        handleSetDefaultAddress(viewCartItems?.address?.id)
+                                      }
+                                      className={viewCartItems?.address?.isDefault === "True" ? "default" : ""}
+                                    >
+                                      {viewCartItems?.address?.isDefault.toLowerCase() === 'true'
+                                        ? "Default"
+                                        : "Set as Default"}
+                                    </p>
+                                  </div>
+                                </li>
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        <div className="addressList">
+                          {user[0]?.addresses?.length > 0 && (
+                            <ul>
+                              {user[0]?.addresses
+                              .filter(address => address.id != viewCartItems?.address?.id)
+                              .map((address) => (
+                                <li 
+                                  key={address.id} 
+                                  onClick={() => handleSelectedAddress(address)} 
+                                  className={selectedAddress && selectedAddress.id === address.id ? 'active': ''}
+                                >
+                                  <h4>{address.full_name}</h4>
+                                  <p>
+                                    Full Address: {address.house_number}, {address.street},
+                                    {address.locality}, {address.postcode}
                                   </p>
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
+                                  <p>Phone Number: {address.mobile}</p>
+                                  <p>Email: {address.email}</p>
+                                  <div className="action">
+                                    <p onClick={() => handleAddressModal(address)}>Edit |</p>
+                                    <p onClick={() => handleRemoveAddress(address.id)}>
+                                      Remove |
+                                    </p>
+                                    <p onClick={() => handleAddress()}>Add New |</p>
+                                    <p onClick={() => handleSetDefaultAddress(address.id)}>
+                                      {address.isDefault.toLowerCase() === 'true'
+                                        ? "Default"
+                                        : "Set as Default"}
+                                    </p>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                        {viewCartItems?.address === null && (
+                          <div className="addAddress">
+                            <button type="button" onClick={() => handleAddress()}>
+                              Add Address
+                            </button>
+                          </div>
                         )}
                       </div>
-                      {viewCartItems?.address === null && (
-                        <div className="addAddress">
-                          <button type="button" onClick={() => handleAddress()}>
-                            Add Address
-                          </button>
-                        </div>
-                      )}
-                    </div>
                     </div>
                   {cartItems.length > 0 &&
                     cartItems.map((item, index) => (

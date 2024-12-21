@@ -8,7 +8,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const CancelledOrders = () => {
     const [cancelPage, setCancelPage] = useState(0);  // Default page 0 (first page)
-    const [cancelItemsPerPage, setCancelItemsPerPage] = useState(1);
+    const [cancelItemsPerPage, setCancelItemsPerPage] = useState(10);
     const [cancelOrderIndex, setCancelOrderIndex] = useState(null);
     const [isInitialLoad, setIsInitialLoad] = useState({ cancelled: true });
     const { 

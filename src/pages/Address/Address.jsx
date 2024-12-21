@@ -36,7 +36,7 @@ const Address = () => {
   });
   const [formErrors, setFormErrors] = useState({});
 
-  const handleAddressInputChange = (e) => {
+  const handleAddressInputMobileChange = (e) => {
     const { name, value } = e.target;
     let updatedValue = value;
     if (/^\d+$/.test(value) && !value.startsWith("+44")) {
@@ -45,6 +45,11 @@ const Address = () => {
     } else {
       setAddressFormData({ ...addressFormData, [name]: value });
     }
+    setFormErrors({ ...formErrors, [name]: "" });
+  }
+  const handleAddressInputChange = (e) => {
+    const { name, value } = e.target;
+    setAddressFormData({ ...addressFormData, [name]: value });
     setFormErrors({ ...formErrors, [name]: "" }); // Clear error on input change
   };
 
@@ -229,7 +234,7 @@ const Address = () => {
                     type="text"
                     name="phone"
                     value={addressFormData.phone}
-                    onChange={handleAddressInputChange}
+                    onChange={handleAddressInputMobileChange}
                     />
                     {formErrors.phone && (
                     <p className="error">{formErrors.phone}</p>

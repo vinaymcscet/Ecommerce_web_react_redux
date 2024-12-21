@@ -65,12 +65,16 @@ const ProductListCard = ({
               title={user.length === 0 ? 'Please login to add items to cart.' : 'Add to cart'}
               >Add</button>
           ) : (
+            <button type="button" onClick={() => onProductClick()} 
+              disabled={user.length === 0 ? true : false} 
+              title={user.length === 0 ? 'Please login to add items to cart.' : 'Add to cart'}
+              >Add</button>
             // Show Plus/Minus Buttons if quantity is greater than 0
-            <div className="quantityButtons">
-              <button type="button"  onClick={() => onIncrement(sku_id)}>+</button>
-              <span>{cartQuantity}</span>
-              <button type="button" onClick={() => onDecrement(sku_id)}>-</button>
-            </div>
+            // <div className="quantityButtons">
+            //   <button type="button"  onClick={() => onIncrement(sku_id)}>+</button>
+            //   <span>{cartQuantity}</span>
+            //   <button type="button" onClick={() => onDecrement(sku_id)}>-</button>
+            // </div>
           )
         )}
       </div>

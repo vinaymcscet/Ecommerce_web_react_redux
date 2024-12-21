@@ -58,13 +58,16 @@ const ProductDetail = () => {
     { imageId: '', imageUrl: '', preview: '' },
   ]);
   const [selected, setSelected] = useState({
-    sku_id: '',
-    color: '', 
-    size: '',
+    sku_id: null,
+    color: null,
+    size: null,
+    quantity: 0,
     currentPrice: 0,
     originalPrice: 0,
-    discount: ''
+    discount: 0
   });
+  const [isSelectedInitialized, setIsSelectedInitialized] = useState(false);
+  
   const [errorFileType, setErrorFileType] = useState("");
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
   const [reviewPerPage, setReviewPerPage] = useState(10);
@@ -138,10 +141,14 @@ const ProductDetail = () => {
       return;
     }
     const responseObj = {
-      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
+      sku_id: selected?.sku_id,
       type: 'increase'
     }
     dispatch(addToCartData(responseObj)).finally(() => {
+      setSelected((prev) => ({
+        ...prev,
+        quantity: Number(prev.quantity) + 1, // Update quantity locally
+      }));
       dispatch(viewItemsInCartData());
       const responseObj = { 
         product_id: product_id ,
@@ -160,10 +167,14 @@ const ProductDetail = () => {
       return;
     }
     const responseObj = {
-      sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
+      sku_id: selected?.sku_id,
       type: 'decrease'
     }
     dispatch(addToCartData(responseObj)).finally(() => {
+      setSelected((prev) => ({
+        ...prev,
+        quantity: Math.max(Number(prev.quantity) - 1, 0), // Update quantity, min 0
+      }));
       dispatch(viewItemsInCartData());
       const responseObj = { 
         product_id: product_id ,
@@ -312,34 +323,6 @@ const ProductDetail = () => {
     setUserLoggedOnReview("");
   };
 
-  // handle item on cart
-  // const handleAddToCart = () => {
-  //   if(user.length === 0) {
-  //     setUserLoggedOnCart("Please login to add items to cart.")
-  //     return;
-  //   }
-  //   if (selected.color_code === null) {
-  //     setSizeError("Please select a size.");
-  //     return;
-  //   }
-   
-  //   const responseObj = {
-  //     sku_id: productDetailResponse?.data?.variants[0]?.sku_id,
-  //     type: 'increase',
-  //   }
-  //   dispatch(addToCartData(responseObj)).finally(() =>{
-  //     if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
-  //       // setHandleCartOnLoad(1);
-  //       setHandleCartButtonOnLoad(1);
-  //     } else {
-  //       // setHandleCartOnLoad(0);
-  //       setHandleCartButtonOnLoad(0);
-  //     }
-  //   })
-   
-  //   setUserLoggedOnCart("")
-  // };
-
   // Add Item on cart and redirection to cart page on But Now button click
   const handleBuyNowProduct = () => {
     if(user.length === 0) {
@@ -413,7 +396,6 @@ const ProductDetail = () => {
     dispatch(setViewCartItems(null));
   };
 
-
   // Adding Product on whistlist
   const handleWishlistToggle = (productData) => {
     if(user.length === 0) {
@@ -442,33 +424,30 @@ const ProductDetail = () => {
 
   // select size and color of product
   useEffect(() => {
-    if (productDetailResponse?.data?.variants && productDetailResponse?.data?.variants.length > 0) {
-      // Filter unique color_code entries
-      const uniqueVariants = Array.from(
-        new Map(
-          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
-        ).values()
-      )
-      .sort((a, b) => b.quantity - a.quantity);
-      // Automatically select the first item
-      const firstItem = uniqueVariants[0];
-      
+    if (
+        productDetailResponse?.data?.variants && 
+        productDetailResponse?.data?.variants.length > 0 && 
+        !isSelectedInitialized) {
+      const firstItem = productDetailResponse?.data?.variants[0];
       setSelected({
         sku_id: firstItem.sku_id,
         color: firstItem.color,
         size: firstItem.size,
+        quantity: firstItem.quantity,
         currentPrice: firstItem.sku_price?.current,
         originalPrice: firstItem.sku_price?.original,
         discount: firstItem.sku_price?.discount_percentage,
       });
+      setIsSelectedInitialized(true); // Mark selected as initialized
     }
-  }, [productDetailResponse]); 
+  }, [productDetailResponse, isSelectedInitialized]);
   
   const handleColorClick = (item) => {
     setSelected({ 
       sku_id: item?.sku_id,
       color: item?.color, 
       size: item?.size, 
+      quantity: item?.quantity, 
       currentPrice: item?.sku_price?.current,
       discount: item?.sku_price?.discount_percentage,
       originalPrice: item?.sku_price?.original,
@@ -529,7 +508,24 @@ const ProductDetail = () => {
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
+  // get reviews on page load 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search); 
+    const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
 
+    setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+    setReviewPerPage(itemsPerPageParam);
+
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+    const repoonseReviewObj = {
+      product_id: productDetailResponse?.data?.product_id,
+      offset,
+      limit, 
+    }
+    dispatch(getReviewProductData(repoonseReviewObj))
+  }, [])
   const handleActiveTabs = (value) => {
     if(activeTab == 2) {
       const searchParams = new URLSearchParams(location.search); 
@@ -819,7 +815,7 @@ const fetchUpdatedSimilarProductList = () => {
                       <input
                         type="number"
                         name="cart"
-                        value={productDetailResponse?.data?.variants[0]?.quantity}
+                        value={selected.quantity}
                         min="1"
                         disabled
                       />
@@ -842,19 +838,13 @@ const fetchUpdatedSimilarProductList = () => {
                   </div>
                   <div className="ProductColorBoxes">
                     {productDetailResponse?.data?.variants &&
-                      // Filter unique color_code entries
-                      Array.from(
-                        new Map(
-                          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
-                        ).values()
-                      )
-                      .sort((a, b) => b.quantity - a.quantity)
-                      .map((item, index) => (
+                      productDetailResponse?.data?.variants
+                      .map((item) => (
                         // productDetailResponse?.data?.variants.map((item) => (
                         <div
                           onClick={() => handleColorClick(item)} // Update color on click
-                          className={`${selected.color === item.color ? 'selected' : ''}`}
-                          key={index}>
+                          className={`${selected.sku_id === item.sku_id ? 'selected' : ''}`}
+                          key={item.sku_id}>
                             <img
                               key={item.sku_id}
                               src={item.color_image}
@@ -1179,7 +1169,7 @@ const fetchUpdatedSimilarProductList = () => {
                                         <div className="imageLoader">
                                           <CircularProgress />
                                         </div>
-                                      ) : (
+                                      ) :  !data.imageUrl && (
                                         <img src="/images/add-file.svg" alt="Select File" />
                                       )}
                                       <input
@@ -1269,7 +1259,8 @@ const fetchUpdatedSimilarProductList = () => {
                               discountLabel={item.Offerprice || ""}
                               wishlistStatus={item.wishlistStatus || ''}
                               sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                              onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              onAddToCart={() => handleProductClick(item)}
                               cartQuantity={Number(item.cartQuantity)}
                               onIncrement={handleIncrement}
                               onDecrement={handleDecrement}
@@ -1338,7 +1329,8 @@ const fetchUpdatedSimilarProductList = () => {
                               discountLabel={item.Offerprice || ""}
                               wishlistStatus={item.wishlistStatus || ''}
                               sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                              onAddToCart={() => handleAddToSimilarCartClick(item.sku_id)}
+                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              onAddToCart={() => handleProductClick(item)}
                               cartQuantity={Number(item.cart_quantity)}
                               onIncrement={handleSimilarIncrement}
                               onDecrement={handleSimilarDecrement}

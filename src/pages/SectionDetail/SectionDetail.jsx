@@ -146,7 +146,7 @@ const SectionDetail = () => {
                     </div>
                     <div className="productList">
                         {allOffersList.map((item, index) => (
-                            <div key={index} onClick={() => handleProductClick(item)}>
+                            <div key={index}>
                                 <ProductListCard
                                     id={item?.categoryId}
                                     image={item?.categoryImage || "/images/no-product-available.png"}
@@ -209,7 +209,8 @@ const SectionDetail = () => {
                                     discountLabel={product.offer || ""}
                                     wishlistStatus={product.wishlistStatus || 'no'}
                                     sku_id={product.sku_id} // Pass SKU ID for Add to Cart
-                                    onAddToCart={() => handleAddToCartClick(product.sku_id)}
+                                    // onAddToCart={() => handleAddToCartClick(product.sku_id)}
+                                    onAddToCart={() => handleProductClick(product)}
                                     cartQuantity={Number(product.cartQuantity)}
                                     onIncrement={handleIncrement}
                                     onDecrement={handleDecrement}

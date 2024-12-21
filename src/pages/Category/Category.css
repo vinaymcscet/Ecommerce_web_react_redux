@@ -90,7 +90,7 @@
     margin: 0;
 }
 .productHistory .productList > div{
-    margin: 0 2% 0 0;
+    margin: 0 2% 2% 0;
 }
 
 .productHistory .productList > div:last-child {

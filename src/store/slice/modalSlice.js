@@ -48,11 +48,23 @@ export const modalSlice = createSlice({
     setSignup(state, action) {
       state.signup = { ...state.signup, ...action.payload };
     },
+    resetSignup: (state) => {
+      state.signup = { userPhoneOrEmail: '', password: '' };
+    },
+    resetLogin: (state) => {
+      state.login = { email: '', password: '' };
+    },
     setOtp(state, action) {
       state.otp = { ...state.otp, ...action.payload };
     },
+    resetOtp: (state) => {
+      state.otp = { otpCode: '' };
+    },
     setForgotOtp(state, action) {
       state.forgotOtp = { ...state.forgotOtp, ...action.payload };
+    },
+    resetForgotOtp(state, action) {
+      state.forgotOtp = { otpCode: '' };
     },
     setForgotOtpKeyCodeValue(state, action) {
       state.forgotOtpKeyCodeValue = action.payload;
@@ -63,8 +75,14 @@ export const modalSlice = createSlice({
         ...action.payload,
       };
     },
+    resetForgotPassword: (state, action) => {
+      state.forgotPassword = { newPassword: "", confirmPassword: "" };
+    },
     setForgotPasswordAssist: (state, action) => {
       state.forgotPasswordAssist = { ...state.forgotPasswordAssist, ...action.payload };
+    },
+    resetForgotPasswordAssist: (state, action) => {
+      state.forgotPasswordAssist = { userPhoneOrEmail: '' };
     },
     toggleCategoryModal: (state, action) => {
       state.isCategoryModalOpen = action.payload.isOpen;
@@ -161,11 +179,17 @@ export const {
   setModalType,
   setLogin,
   setSignup,
+  resetSignup,
+  resetLogin,
   setOtp,
+  resetOtp,
   setForgotOtp,
+  resetForgotOtp,
   setForgotOtpKeyCodeValue,
   setForgotPassword,
+  resetForgotPassword,
   setForgotPasswordAssist,
+  resetForgotPasswordAssist,
   toggleCategoryModal,
   toggleAddressModal,
   saveAddress,

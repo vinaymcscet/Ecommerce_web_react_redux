@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
-import { addToCartData, deleteSingleWhistListData, getListOfWhistListData } from '../../store/slice/api_integration';
+import { addToCartData, deleteSingleWhistListData, getListOfWhistListData, productDetailData } from '../../store/slice/api_integration';
 import StarRating from '../../components/StarRating/StarRating';
 import { ShareProduct } from '../../utils/ShareProduct';
 import { setListWishList } from '../../store/slice/productSlice';
@@ -45,11 +45,16 @@ const Wishlist = () => {
     // Add to cart from wishlist page
     const handleAddToCart = (item) => {
         // Dispatch product details and quantity to Redux
-        const responseObj = {
-            sku_id: item?.sku_id,
-            type: 'increase'
+        const responseObj = { 
+            product_id: item.product_id,
         }
-        dispatch(addToCartData(responseObj))
+        dispatch(productDetailData(responseObj))
+        navigate(`/product/${item.product_id}`, { state: { product: item } });
+        // const responseObj = {
+        //     sku_id: item?.sku_id,
+        //     type: 'increase'
+        // }
+        // dispatch(addToCartData(responseObj))
     };
 
     // Pagination Code for WishList Items

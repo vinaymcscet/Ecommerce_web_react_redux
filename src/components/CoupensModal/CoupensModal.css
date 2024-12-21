@@ -1,23 +1,19 @@
-.offerModal .modalContent {
-    flex-flow: wrap column;
-    width: 700px;
-    height: 450px;
-    min-height: auto;
-    overflow: auto;
-}
 
 .coupens {
     width: 100%;
 }
 
 .coupens h3 {
-    font-size: 25px;
+    font-size: 23px;
     font-weight: 500;
-    margin: 0;
+    margin: 0 0 20px 0;
 }
 
 .coupens .coupensList {
     width: 100%;
+    height: 400px;
+    overflow: auto;
+    margin: 20px auto 0 auto;
 }
 
 .coupens .coupensList .availableCoupen {
@@ -49,18 +45,18 @@
 }
 
 .coupens .coupensList .availableCoupen h4 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     margin: 0;
     width: 100%;
-    text-align: left;
 }
 
 .coupens .coupensList .availableCoupen p {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     width: 100%;
     color: #333;
+    text-align: left;
 }
 
 .coupens .coupensList .availableCoupen ul {
@@ -88,7 +84,10 @@
     background-color: #000;
     left: 0;
     position: absolute;
+}
 
+.coupens .coupensList .availableCoupen ul li p {
+    font-size: 14px;
 }
 
 .coupens .coupensList .availableCoupen p.validity {
@@ -96,19 +95,18 @@
     font-weight: 400;
     color: #008224;
     margin: 10px 0 0 0;
-    text-align: left;
 }
 
 .coupens .coupensList .availableCoupen p.selectedCopiedMessage {
     position: absolute;
     top: 14px;
-    right: 34px;
+    right: 8%;
     width: auto;
     border-radius: 8px;
     background-color: #FFB545;
     padding: 5px 10px;
     color: #fff;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 400;
     transition: all 0.4s ease-in-out;
     -webkit-transition: all 0.4s ease-in-out;

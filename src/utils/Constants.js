@@ -75,8 +75,8 @@ export const ABOUT_US = 'about-us';
 export const FAQS = 'faqs';
 
 // Message Constant
-export const PASSWORD = "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character."
-export const EMAIL_OR_MOBILE = "Please enter a valid email address or Phone number must be in the format +44XXXXXXXXXX (UK format).";
+export const PASSWORD = "Password must be 8+ characters with uppercase, lowercase, number, and special characters."
+export const EMAIL_OR_MOBILE = "Enter a valid email or +44XXXXXXXXXX.";
 export const PASSWORD_NOT_MATCH_ERROR = "Confirm Password not matched.";
 export const VALID_OTP = "Please enter a valid 6-digit OTP.";
 

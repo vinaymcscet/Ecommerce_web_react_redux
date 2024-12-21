@@ -115,6 +115,10 @@ const Header = () => {
                     <img src="/images/icons/LOGO1.png" alt="Logo" />
                   </Link>
                 </li>
+                <li onClick={() => redirectToSupport()}>
+                  <img src="/images/icons/support.png" alt="Support" />
+                  <p>Support</p>
+                </li>
                 {/* <li>
                   <img src="/images/icons/deals.png" alt="Hot Deals" />
                   <p>Hot Deals</p>
@@ -143,10 +147,6 @@ const Header = () => {
             </Grid>
             <Grid item xs={0} md={4} lg={4} className="rightHead">
               <ul className={hamburgerOpen ? "rightMenu active" : "rightMenu"}>
-                <li onClick={() => redirectToSupport()}>
-                  <img src="/images/icons/support.png" alt="Support" />
-                  <p>Support</p>
-                </li>
                 {user.length === 0 && (
                   <li onClick={() => handleOpenDialog("login")}>
                     <img src="/images/icons/login.png" alt="Login" />

@@ -8,7 +8,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const ReturnOrders = () => {
   const [returnPage, setReturnPage] = useState(0);  // Default page 0 (first page)
-  const [returnItemsPerPage, setReturnItemsPerPage] = useState(1);
+  const [returnItemsPerPage, setReturnItemsPerPage] = useState(10);
   const [returnOrderIndex, setReturnOrderIndex] = useState(null);
   const [isInitialLoad, setIsInitialLoad] = useState({ returned: true });
   const { 

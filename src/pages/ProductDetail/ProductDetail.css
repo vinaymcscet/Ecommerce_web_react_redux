@@ -361,6 +361,9 @@
   align-items: center;
   justify-content: flex-start;
   flex-flow: wrap row;
+  height: 100%;
+  overflow: auto;
+  max-height: 260px;
 }
 
 .ProductColorBoxes > div {
@@ -1109,6 +1112,10 @@ button.review {
   width: 25px !important;
   height: 25px !important;
   color: #f6aa37;
+}
+
+.product_review_form .starRating {
+  pointer-events: auto;
 }
 
 

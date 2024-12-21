@@ -71,35 +71,37 @@ const Reviews = () => {
 
   return (
     <div className="reviewedItems">
-        <h3>Item Reviews</h3>
-        {userReview && <div className='paginationBox'>
-            <div className="itemsPerPageDropdown">
-                <label>Items per page: </label>
-                <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                    {reviewItemsPerPageOptions.map(option => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            {/* Pagination component */}
-            <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={(ev) => handleReviewPageChange(ev)}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={reviewPage}  // Sync current page with URL
-                disabled={userReviewCount === 0} 
-            />
-            </div>
-        }
+        <div className="reviewHeader">
+            <h3>Item Reviews</h3>
+            {userReview && <div className='paginationBox'>
+                <div className="itemsPerPageDropdown">
+                    <label>Items per page: </label>
+                    <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                        {reviewItemsPerPageOptions.map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* Pagination component */}
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={(ev) => handleReviewPageChange(ev)}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    forcePage={reviewPage}  // Sync current page with URL
+                    disabled={userReviewCount === 0} 
+                />
+                </div>
+            }
+        </div>
         {loading ? (
         <div className="loadingContainer">
             <CircularProgress />

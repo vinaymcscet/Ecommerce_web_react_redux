@@ -288,7 +288,8 @@ const ProductList = () => {
                       discountLabel={item.discountlabel || ""}
                       wishlistStatus={item.wishlistStatus || ''}
                       sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                      onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
                       cartQuantity={Number(item.cartQuantity)}
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}

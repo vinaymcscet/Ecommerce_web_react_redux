@@ -21,7 +21,7 @@ const Search = () => {
 
     // Handle product card click
     const handleProductClick = (item) => {
-        navigate(`/product/${item.id}`, { state: { product: item } });
+        navigate(`/product/${item.product_id}`, { state: { product: item } });
     };
     
     // Generate dropdown options based on total results
@@ -179,7 +179,8 @@ const Search = () => {
                                         discountLabel={item.discountlabel || ""}
                                         wishlistStatus={item.wishlistStatus || 'no'}
                                         sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                                        onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                                        // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                                        onAddToCart={() => handleProductClick(item)}
                                         cartQuantity={Number(item.cartQuantity)}
                                         onIncrement={handleIncrement}
                                         onDecrement={handleDecrement}
