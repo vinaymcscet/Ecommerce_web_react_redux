@@ -339,6 +339,7 @@ ul.status {
   }
   .modalContent .right {
     width: 100%;
+    padding: 30px 5% 0 5%;
   }
   .partition {
     margin: 10px 0;

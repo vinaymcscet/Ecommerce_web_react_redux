@@ -16,7 +16,6 @@ import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
-import { setGetAnReviewImage } from "../../store/slice/productSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -93,6 +92,7 @@ const ProductDetail = () => {
   const [similarProductLoading, setSimilarProductLoading] = useState(false);
   const [recentlyViewLoading, setRecentlyViewLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState([]);
+  const [wistlistLoading, setWishlistLoading] = useState(false);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/"); // Split URL by `/`
@@ -133,8 +133,10 @@ const ProductDetail = () => {
   : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
 
   const handleIncrease = () => {
+    setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnCart("Please login to add items to cart.")
+      setWishlistLoading(false);
       setTimeout(() => {
         setUserLoggedOnCart("")
       }, 1000);
@@ -155,12 +157,15 @@ const ProductDetail = () => {
       }
       dispatch(productDetailData(responseObj))
       dispatch(setViewCartItems(null));
+      setWishlistLoading(false);
     })
   };
 
   const handleDecrease = () => {
+    setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnCart("Please login to add items to cart.")
+      setWishlistLoading(false);
       setTimeout(() => {
         setUserLoggedOnCart("")
       }, 1000);
@@ -181,6 +186,7 @@ const ProductDetail = () => {
       }
       dispatch(productDetailData(responseObj))
       dispatch(setViewCartItems(null));
+      setWishlistLoading(false);
     })
   };
 
@@ -398,8 +404,10 @@ const ProductDetail = () => {
 
   // Adding Product on whistlist
   const handleWishlistToggle = (productData) => {
+    setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnWishList("Please login to add items to wishlist.")
+      setWishlistLoading(false);
       return;
     }
 
@@ -410,6 +418,7 @@ const ProductDetail = () => {
           product_id: product_id ,
         }
         dispatch(productDetailData(responseObj))
+        setWishlistLoading(false);
       })
     } else {
         dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
@@ -417,6 +426,7 @@ const ProductDetail = () => {
             product_id: product_id ,
           }
           dispatch(productDetailData(responseObj))
+          setWishlistLoading(false);
         })
     }
     setUserLoggedOnWishList("")
@@ -744,6 +754,11 @@ const fetchUpdatedSimilarProductList = () => {
 }
   return (
       <div>
+        {wistlistLoading && 
+          <div className="wishlistLoadingContainer">
+            <CircularProgress />
+          </div>
+        }
         {loading ? (
           <div className="loadingContainer">
             <CircularProgress />

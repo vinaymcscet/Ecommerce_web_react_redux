@@ -17,7 +17,7 @@ const Wishlist = () => {
 
     const [loading, setLoading] = useState(false);
     const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
-    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(1);
+    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(10);
     const { 
         listWishlist, 
         totalWishlistCount = 0, 

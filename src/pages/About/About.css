@@ -44,6 +44,14 @@
     color: #333;
 }
 
+.staticContent p {
+    color: #333;
+}
+.staticContent ul {
+    flex-flow: wrap row;
+    list-style: circle;
+}
+
 @media only screen and (max-width: 1200px) {
     .About h2 {
         font-size: 25px;

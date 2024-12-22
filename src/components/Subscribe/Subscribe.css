@@ -99,10 +99,7 @@
 
 }
 
-.subscribe .loadingContainer span.MuiCircularProgress-root {
-    width: 20px !important;
-    height: 20px !important;
-}
+
 
 @media screen and (max-width: 1200px) {
     .subscribeMessage { text-align: center; }
@@ -135,5 +132,25 @@
     }
     .subscribe .MuiBox-root {
         width: 90%;
+    }
+}
+@media screen and (max-width: 576px) {
+    .subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:first-child {
+        padding-left: 10px;
+    }
+    .subscribeMessage h2 {
+        font-size: 23px;
+    }
+    .subscribeMessage p {
+        font-size: 14px;
+    }
+    .emailSection input {
+        width: 100%;
+    }
+    .emailSection .emailBtn {
+        right: 0%;
+    }
+    .subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:last-child {
+        padding-right: 0px;
     }
 }

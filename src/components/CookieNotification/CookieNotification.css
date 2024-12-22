@@ -92,3 +92,29 @@
     -ms-transition: all 0.5s ease-in-out;
     -o-transition: all 0.5s ease-in-out;
 }
+
+
+@media only screen and (max-width: 1300px) {
+    .cookieNotification .right button {
+        width: 45%;
+    }
+    .cookieNotification .left {
+        width: 70%;
+    }
+    .cookieNotification .right {
+        width: 30%;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .cookieNotification {
+        flex-flow: wrap row;
+    }
+    .cookieNotification .left {
+        width: 100%;
+    }
+    .cookieNotification .right {
+        width: 100%;
+        padding: 0 10px 10px 0;
+    }
+}

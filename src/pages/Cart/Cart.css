@@ -714,10 +714,13 @@
         width: 65%;
     }
     .addressList ul li {
-        width: 40% !important;
+        width: 100%;
     }
     .rightCartItems h3 {
         font-size: 16px;
+    }
+    .ManageAllAddress .addressList {
+        width: 100%;
     }
 }
 @media only screen and (max-width: 850px) {
@@ -768,5 +771,16 @@
     }
     .rightCartInnerRightItems {
         margin-left: 10%;
+    }
+    .categoryModal.address .addressTabsContainer .tab-content {
+        width: 100%;
+        padding: 20px 0;
+    }
+    .addressForm .box .form-control:first-child {
+        margin-right: 0;
+    }
+    .addressForm .box .form-control {
+        margin-right: 0;
+        width: 100%;
     }
 }

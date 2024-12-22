@@ -18,6 +18,11 @@
     font-size: 16px;
     font-weight: 400;
     margin-bottom: 20px;
+    color: #333;
+}
+.staticContent ul {
+  flex-flow: wrap row;
+  list-style: circle;
 }
 
 .staticContent .MuiAccordion-root.MuiPaper-rounded {

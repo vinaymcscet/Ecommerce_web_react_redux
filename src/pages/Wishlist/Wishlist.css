@@ -114,3 +114,15 @@
 .starRating {
     pointer-events: none;
 }
+@media only screen and (max-width: 767px) {
+    .whistlistBox {
+        flex-flow: wrap row;
+    }
+    .whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 {
+        flex-flow: wrap row;
+    }
+    .whistListWrapper .whistlistMainWrapper .whistlistBox .rightWhistlist h4 span {
+        width: 100%;
+        margin-top: 20px;
+    }
+}

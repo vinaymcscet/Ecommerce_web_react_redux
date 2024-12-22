@@ -202,7 +202,7 @@ const Home = () => {
           </div>}
           {homeProductData?.RecentViewed.length > 0 && <div className="productHistory">
             <div className="productList">
-              {homeProductData?.RecentViewed && homeProductData?.RecentViewed.length > 0 ? (
+              {homeProductData?.RecentViewed && homeProductData?.RecentViewed.length > 0 &&
                 homeProductData?.RecentViewed.map((item, index) => (
                   <div key={index}>
                     <ProductListCard
@@ -230,9 +230,7 @@ const Home = () => {
                     />
                   </div>
                 ))
-              ) : (
-                <p className="noProductAvailable">No product history available</p>
-              )}
+              }
             </div>
           </div>}
         </>

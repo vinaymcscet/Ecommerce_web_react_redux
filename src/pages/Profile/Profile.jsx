@@ -156,7 +156,9 @@ const handlePasswordUpdateSubmit = (e) => {
       new_password: changePassword.newPassword,
       confirm_password: changePassword.confirmPassword,
     }
-    dispatch(changePasswordRequest(responseObj));
+    dispatch(changePasswordRequest(responseObj)).finally(() => {
+      dispatch(getUserRequest())
+    });
     setPassword("");
     setConfirmPassword("");
     dispatch(setChangePassword({ oldPassword: "", newPassword: "", confirmPassword: "" }))
@@ -228,7 +230,9 @@ const handlePasswordUpdateSubmit = (e) => {
         email: formData.email,
         profile_pic: imageFile
       }
-      dispatch(updateProfileRequest(responseObj));
+      dispatch(updateProfileRequest(responseObj)).finally(() => {
+        dispatch(getUserRequest())
+      });
     } else {
       setErrors(newErrors);
     }

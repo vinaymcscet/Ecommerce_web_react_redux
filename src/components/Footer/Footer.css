@@ -126,3 +126,10 @@
         padding-left: 15px;
     }
 }
+
+@media screen and (max-width: 576px) {
+    .mainFooter .MuiBox-root {
+        width: 100%;
+        padding: 30px 30px;
+    }
+}
