@@ -4,8 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Live-url - https://estore-berylvercelapp.vercel.app/
  - https://fikfis.co.uk/
  - 
+![screencapture-fikfis-co-uk-2024-12-26-15_13_19](https://github.com/user-attachments/assets/46db698a-51a4-493b-854d-84b7cb072c5a)
 
-![screencapture-localhost-3000-2024-12-03-22_53_14](https://github.com/user-attachments/assets/f313331e-b6bc-4465-9ad8-ab2831c64763)
 
 ## Available Scripts
 
