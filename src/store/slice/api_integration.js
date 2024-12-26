@@ -58,6 +58,8 @@ import {
   REASON_LIST_CONSTANT,
   SELECTED_REASON_PRODUCT_CONSTANT,
   ADD_REVIEW_IMAGE_CONSTANT,
+  COOKIES_INFO,
+  COOKIES,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -79,7 +81,7 @@ import {
   toggleCategoryModal,
   toggleModal,
 } from "./modalSlice";
-import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setLogout, setNewsLetter, setNotificationsCount, setNotificationsList, setUser } from "./userSlice";
+import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setCookiesInfo, setCookiesStatus, setLogout, setNewsLetter, setNotificationsCount, setNotificationsList, setUser } from "./userSlice";
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 import { setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
 import {
@@ -1507,5 +1509,46 @@ export const subscribeNewsLetter = (userData) => async (dispatch) => {
     setTimeout(() => {
       dispatch(resetError());
     }, 1000);
+  }
+}
+
+// Thunk to get Blog Detail API call
+export const getCookiesInfo = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(COOKIES_INFO);
+    
+    dispatch(setLoading(false));
+    dispatch(setCookiesInfo(response.data.status));
+    // dispatch(setSuccess(response.message));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
+  }
+}
+
+// Thunk to get All Notifications API call
+export const getCooiesStatus = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(COOKIES, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setCookiesStatus(response.data.status));
+    
+  } catch (error) {
+    dispatch(setLoading(false));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 }

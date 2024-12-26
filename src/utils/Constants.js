@@ -58,6 +58,8 @@ export const ADD_BLOG_REVIEW_CONSTANT = 'blog/addBlogReview';
 export const GET_NOTIFICATIONS_CONSTANT = 'notifications';
 export const CLEAR_NOTIFICATIONS_CONSTANT = 'clearNotification';
 export const SUBSCRIBE_NEWS_LETTER_CONSTANT = 'subscribeToNewsLetter';
+export const COOKIES_INFO = 'cookiesInfo';
+export const COOKIES = 'cookies';
 
 export const fcm_token = "AxtyAdkasadad565asd";
 export const device_token = "60f0d009a0d53777";

@@ -10,6 +10,8 @@ const initialState = {
   notifications: null,
   notificationCount: 0,
   newsletter: null,
+  cookiesInfo: null,
+  cookiesStatus: null,
 };
 
 export const userSlice = createSlice({
@@ -76,6 +78,12 @@ export const userSlice = createSlice({
     setClearNewsletterMessage: (state) => {
       state.newsletter = null;
     },
+    setCookiesInfo: (state, action) => {
+      state.cookiesInfo = action.payload;
+    },
+    setCookiesStatus: (state, action) => {
+      state.cookiesStatus = action.payload;
+    },
   },
 });
 
@@ -93,6 +101,8 @@ export const {
   setNotificationsCount,
   setNewsLetter,
   setClearNewsletterMessage,
+  setCookiesInfo,
+  setCookiesStatus,
  } =
   userSlice.actions;
 export default userSlice.reducer;

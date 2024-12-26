@@ -12,7 +12,7 @@ const CategoryModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const modalRef = useRef(null); // Reference for modal content
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const { isCategoryModalOpen, category_name, category_id, selectedCategory } = useSelector(
     (state) => state.modal
   );
@@ -20,10 +20,10 @@ const CategoryModal = () => {
     (state) => state.product
   );
 
-  useEffect(() => {
-    if(!category_id) setLoading(true);
-    else setLoading(false);
-  }, [category_id]);
+  // useEffect(() => {
+  //   if(!category_id) setLoading(true);
+  //   else setLoading(false);
+  // }, [category_id]);
 
   
   const handleClickOutside = (event) => {
@@ -65,11 +65,7 @@ const CategoryModal = () => {
           <div className="close" onClick={() => closeModal()}>
             <CloseIcon />
           </div>
-          {loading ? (
-            <div className="loadingContainer">
-                <CircularProgress />
-            </div>
-          ) :(
+          {(
             <>
               <div className="allCategory">
                 <h3>{category_name}</h3>

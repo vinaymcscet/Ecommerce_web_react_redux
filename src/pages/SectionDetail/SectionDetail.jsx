@@ -160,7 +160,7 @@ const SectionDetail = () => {
                         ))}
                     </div>
                 </div>
-            ) : productSectionData && productSectionData.length > 0 ? (
+            ) : productSectionData && productSectionData.length > 0 && (
                 <div className="productHistory">
                     <div className="browisingHistory">
                         <h3>{title}</h3>
@@ -220,8 +220,6 @@ const SectionDetail = () => {
                         ))}
                     </div>
                 </div>
-            ) : (
-                <p>No products available</p>
             )}
 
         </div>

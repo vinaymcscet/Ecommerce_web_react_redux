@@ -150,7 +150,7 @@ const Home = () => {
             <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
           </div>
           <div className="productHistory">
-              {homeProductSection && homeProductSection.length > 0 ? (
+              {homeProductSection && homeProductSection.length > 0 && (
                   homeProductSection.map((item, index) => (
                     <div key={index}>
                       <div className="browisingHistory">
@@ -188,8 +188,6 @@ const Home = () => {
                         </div>
                     </div>
                   ))
-                ) : (
-                  <p>No products available</p>
                 )}
           </div>
           {/* {dataLoading && (

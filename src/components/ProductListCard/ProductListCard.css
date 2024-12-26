@@ -203,6 +203,9 @@
         width: 30%;
         margin: 0 2% 4% 1%;
     }
+    .productBoxes, .productList.special > div {
+        width: 25%;
+    }
 }
 
 @media screen and (max-width: 767px) {

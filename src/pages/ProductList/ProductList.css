@@ -12,8 +12,10 @@
 }
 
 .productListing .catProduct .product img {
-  width: 140px;
-  height: 140px;
+  width: 130px;
+  height: 130px;
+  border-radius: 9px;
+  border: 1px solid #eaeaea;
 }
 
 .productListing .slick-slide {
@@ -21,7 +23,7 @@
 }
 
 .productListing .catProduct .product p {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .productListing .catProduct .categoryItem {

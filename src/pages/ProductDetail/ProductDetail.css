@@ -25,9 +25,9 @@
   margin-top: 30px;
 }
 
-.prdDetail .catProduct .product img {
+/* .prdDetail .catProduct .product img {
   width: 110px;
-}
+} */
 
 .prdDetail .catProduct .categoryItem {
   width: max-content;
@@ -45,8 +45,10 @@
 }
 
 .prdDetail .catProduct .product img {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
+  border-radius: 9px;
+  border: 1px solid #eaeaea;
 }
 
 .prdDetail .productDetailInfo {

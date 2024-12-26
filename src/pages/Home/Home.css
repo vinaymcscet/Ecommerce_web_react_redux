@@ -31,6 +31,7 @@
     margin: 0 auto;
     display: block;
     max-height: 352px;
+    border-radius: 12px
 }
 
 .browisingHistory{
@@ -94,8 +95,10 @@
 }
 
 .catProduct .slick-slide .product img{
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
+    border-radius: 9px;
+    border: 1px solid #eaeaea;
 }
 
 .catProduct .slick-slide .product {
@@ -109,7 +112,7 @@
     text-align: center;
     width: 100%;
     word-break: break-all;
-    font-size: 14px;
+    font-size: 13px;
     margin-top: 5px;
 }
 

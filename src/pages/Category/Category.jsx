@@ -147,7 +147,7 @@ const handlePageChange = (data) => {
         </div>
         ) : (
         <div className="allCategory">
-          {allCategoryList[0] && allCategoryList[0].length > 0 ? (
+          {allCategoryList[0] && allCategoryList[0].length > 0 && (
             <>
               <h3>Main Category</h3>
               <div className="categoryList">
@@ -163,8 +163,6 @@ const handlePageChange = (data) => {
                 ))}
               </div>
             </>
-          ) : (
-            <p className="notAvailable">No Category available</p>
           )}
           <div className="productHistory">
             <div className="productHeader">
