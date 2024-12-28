@@ -123,7 +123,7 @@ const CancelledOrders = () => {
         <div className="orderListWrapper">
             <div className="orderListWrapper">
             {orderList && <div className='paginationBox'>
-                    <div className="itemsPerPageDropdown">
+                    {/* <div className="itemsPerPageDropdown">
                         <label>Items per page: </label>
                         <select value={cancelItemsPerPage} onChange={handleCancelItemsPerPageChange}>
                             {cancelItemsPerPageOptions.map(option => (
@@ -132,7 +132,7 @@ const CancelledOrders = () => {
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </div> */}
                     {/* Pagination component */}
                     <ReactPaginate
                         previousLabel={"Previous"}

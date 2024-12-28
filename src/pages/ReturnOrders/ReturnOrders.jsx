@@ -121,7 +121,7 @@ const ReturnOrders = () => {
     <>
         <div className="orderListWrapper">
             {orderList && <div className='paginationBox'>
-                <div className="itemsPerPageDropdown">
+                {/* <div className="itemsPerPageDropdown">
                     <label>Items per page: </label>
                     <select value={returnItemsPerPage} onChange={handleReturnItemsPerPageChange}>
                         {returnItemsPerPageOptions.map(option => (
@@ -130,7 +130,7 @@ const ReturnOrders = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
                 {/* Pagination component */}
                 <ReactPaginate
                     previousLabel={"Previous"}

@@ -23,7 +23,7 @@ const SectionDetail = () => {
     const title = queryParams.get("title");
 
     const [page, setPage] = useState(0);
-    const [itemsPerPage, setItemsPerPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(30);
 
     useEffect(() => {
         const pageParam = parseInt(queryParams.get("sectionPage"), 10) || 1;
@@ -118,31 +118,6 @@ const SectionDetail = () => {
                 <div className="productHistory">
                     <div className="browisingHistory">
                         <h3>{title}</h3>
-                        <div className="paginationBox">
-                            <div className="itemsPerPageDropdown">
-                                <label>Items per page: </label>
-                                <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                                    {sectionItemsPerPageOptions.map(option => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <ReactPaginate
-                                previousLabel={"Previous"}
-                                nextLabel={"Next"}
-                                breakLabel={"..."}
-                                pageCount={Math.max(Math.ceil(productSectionCount / itemsPerPage), 1)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={3}
-                                onPageChange={handlePageChange}
-                                containerClassName={"pagination"}
-                                activeClassName={"active"}
-                                forcePage={page}
-                                disabled={productSectionCount === 0}
-                            />
-                        </div>
                     </div>
                     <div className="productList">
                         {allOffersList.map((item, index) => (
@@ -159,36 +134,36 @@ const SectionDetail = () => {
                             </div>
                         ))}
                     </div>
+                    <div className="paginationBox">
+                        {/* <div className="itemsPerPageDropdown">
+                            <label>Items per page: </label>
+                            <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                                {sectionItemsPerPageOptions.map(option => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> */}
+                        <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            breakLabel={"..."}
+                            pageCount={Math.max(Math.ceil(productSectionCount / itemsPerPage), 1)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageChange}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            forcePage={page}
+                            disabled={productSectionCount === 0}
+                        />
+                    </div>
                 </div>
             ) : productSectionData && productSectionData.length > 0 && (
                 <div className="productHistory">
                     <div className="browisingHistory">
                         <h3>{title}</h3>
-                        <div className="paginationBox">
-                            <div className="itemsPerPageDropdown">
-                                <label>Items per page: </label>
-                                <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                                    {sectionItemsPerPageOptions.map(option => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <ReactPaginate
-                                previousLabel={"Previous"}
-                                nextLabel={"Next"}
-                                breakLabel={"..."}
-                                pageCount={Math.max(Math.ceil(productSectionCount / itemsPerPage), 1)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={3}
-                                onPageChange={handlePageChange}
-                                containerClassName={"pagination"}
-                                activeClassName={"active"}
-                                forcePage={page}
-                                disabled={productSectionCount === 0}
-                            />
-                        </div>
                     </div>
                     <div className="productList">
                         {productSectionData.map((product, index) => (
@@ -218,6 +193,31 @@ const SectionDetail = () => {
                                 />
                             </div>
                         ))}
+                    </div>
+                    <div className="paginationBox">
+                        {/* <div className="itemsPerPageDropdown">
+                            <label>Items per page: </label>
+                            <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                                {sectionItemsPerPageOptions.map(option => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> */}
+                        <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            breakLabel={"..."}
+                            pageCount={Math.max(Math.ceil(productSectionCount / itemsPerPage), 1)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageChange}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            forcePage={page}
+                            disabled={productSectionCount === 0}
+                        />
                     </div>
                 </div>
             )}

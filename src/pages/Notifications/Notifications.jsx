@@ -75,7 +75,7 @@ const Notifications = () => {
         <div className='notificationHeader'>
             <h4>Notifications List</h4>
             {notifications?.length > 0 && <div className='paginationBox'>
-                <div className="itemsPerPageDropdown">
+                {/* <div className="itemsPerPageDropdown">
                     <label>Items per page: </label>
                     <select value={perPage} onChange={handleNotificationsPerPageChange}>
                         {notificationsPerPageOptions.map(option => (
@@ -84,7 +84,7 @@ const Notifications = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
                 {/* Pagination component */}
                 <ReactPaginate
                     previousLabel={"Previous"}

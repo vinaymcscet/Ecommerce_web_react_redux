@@ -60,6 +60,10 @@
   overflow: hidden;
 }
 
+.rightNotification {
+  width: calc(100% - 50px);
+}
+
 .rightNotification h4 {
   font-size: 16px;
   font-weight: 500;

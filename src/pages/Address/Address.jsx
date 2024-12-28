@@ -9,7 +9,7 @@ import ReactPaginate from 'react-paginate';
 const Address = () => {
     const [isInitialAddressLoad, setIsInitialAddressLoad] = useState(true);
     const [page, setPage] = useState(0);  // Default page 0 (first page)
-    const [itemsPerPage, setItemsPerPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     
     const { totalAddressCount = 0 } = useSelector((state) => state.product);
     const { user } = useSelector((state) => state.user);
@@ -324,7 +324,7 @@ const Address = () => {
             </div>
             <h3>Edit, Remove and set as default addresses for orders </h3>
             {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
-                <div className="itemsPerPageDropdown">
+                {/* <div className="itemsPerPageDropdown">
                     <label>Items per page: </label>
                     <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                         {itemsPerPageOptions.map(option => (
@@ -333,7 +333,7 @@ const Address = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
                 {/* Pagination component */}
                 <ReactPaginate
                     previousLabel={"Previous"}

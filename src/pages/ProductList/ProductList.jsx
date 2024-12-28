@@ -29,7 +29,7 @@ const ProductList = () => {
   const location = useLocation();
   const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
   
   const searchParams = new URLSearchParams(location.search);
@@ -111,13 +111,21 @@ const ProductList = () => {
       // filterLabel = filterLabel.toLowerCase();
       // const updatedLabel = convertToLowercase(filterLabel);
       const updatedFilters = { ...selectedFilters, [filterLabel]: filterValue };
-      setSelectedFilters(updatedFilters);
       
       const filters = {};
       if (updatedFilters.Color) filters.color = updatedFilters.Color;
-      if (updatedFilters['Shoe Size']) filters.size = updatedFilters['Shoe Size'];;
+      if (updatedFilters['Shoe Size']) filters.size = updatedFilters['Shoe Size'];
       if (updatedFilters.Price) filters.price = parsePriceRange(updatedFilters.Price);
       if (updatedFilters.Rating) filters.rating = parseRating(updatedFilters.Rating);
+
+      // Dynamically handle any other filter keys
+      Object.keys(updatedFilters).forEach((key) => {
+        if (!['Color', 'Shoe Size', 'Price', 'Rating'].includes(key)) {
+          filters[key.toLowerCase()] = updatedFilters[key];
+        }
+      });
+
+      setSelectedFilters(updatedFilters);
       
       const searchParams = new URLSearchParams(location.search);
       const subcategory_id = searchParams.get('subcategory_id');
@@ -236,33 +244,6 @@ const ProductList = () => {
           </div>
         </div>}
         {productList && <div className={totalFilterList ? 'prdRight ' : 'prdRight noFilter'}>
-          {productList.length > 0 && <div className='paginationBox'>
-              <div className="itemsPerPageDropdown">
-                  <label>Items per page: </label>
-                  <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                      {itemsPerPageOptions.map(option => (
-                          <option key={option} value={option}>
-                              {option}
-                          </option>
-                      ))}
-                  </select>
-              </div>
-              {/* Pagination component */}
-              <ReactPaginate
-                  previousLabel={"Previous"}
-                  nextLabel={"Next"}
-                  breakLabel={"..."}
-                  breakClassName={"break-me"}
-                  pageCount={totalPages}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={3}
-                  onPageChange={(ev) => handlePageChange(ev)}
-                  containerClassName={"pagination"}
-                  activeClassName={"active"}
-                  forcePage={page}  // Sync current page with URL
-                  disabled={totalProductListCount === 0} 
-              />
-          </div>}
           <div className="productList">
             {loading ? (
               <div className="loadingContainer">
@@ -302,6 +283,33 @@ const ProductList = () => {
               )
             )}
           </div>
+          {productList.length > 0 && <div className='paginationBox'>
+              {/* <div className="itemsPerPageDropdown">
+                  <label>Items per page: </label>
+                  <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                      {itemsPerPageOptions.map(option => (
+                          <option key={option} value={option}>
+                              {option}
+                          </option>
+                      ))}
+                  </select>
+              </div> */}
+              {/* Pagination component */}
+              <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={totalPages}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={3}
+                  onPageChange={(ev) => handlePageChange(ev)}
+                  containerClassName={"pagination"}
+                  activeClassName={"active"}
+                  forcePage={page}  // Sync current page with URL
+                  disabled={totalProductListCount === 0} 
+              />
+          </div>}
         </div>}
       </div>
     </div>

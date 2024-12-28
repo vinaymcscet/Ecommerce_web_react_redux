@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { slick_product_settings, slick_settings, slides } from "../../utils/ProductData";
@@ -13,8 +13,14 @@ const ProductSlider = ({ title, tile }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isOpen] = useState(true);
-  const { homeProductData, subCategoryList } = useSelector(state => state.product);
+  const sliderRef = useRef(null);
 
+  const { homeProductData, subCategoryList } = useSelector(state => state.product);
+  useEffect(() => {
+    if (sliderRef.current) {
+          sliderRef.current.slickGoTo(0); // Force recalculation
+    }
+  }, []);
   const handleViewAllClick = () => {
     dispatch(getAllCategoryData());
     navigate("allcategory");
@@ -47,7 +53,7 @@ const ProductSlider = ({ title, tile }) => {
             />
           </div>
         )}
-          <Slider {...(tile ? slick_product_settings : slick_settings)}>
+          <Slider  ref={sliderRef} {...(tile ? slick_product_settings : slick_settings)}>
             {homeProductData?.categories.map((slide) => (
               <div key={slide.id}>
                 <ProductCard

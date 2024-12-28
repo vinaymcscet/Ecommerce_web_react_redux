@@ -71,10 +71,10 @@ const ProductDetail = () => {
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
   const [reviewPerPage, setReviewPerPage] = useState(10);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
-  const [recentViewPerPage, setRecentViewPerPage] = useState(1);
+  const [recentViewPerPage, setRecentViewPerPage] = useState(25);
   
   const [similarProductPage, setSimilarProductPage] = useState(1);  // Default page 0 (first page)
-  const [similarProductPerPage, setSimilarProductPerPage] = useState(1);
+  const [similarProductPerPage, setSimilarProductPerPage] = useState(25);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -286,23 +286,24 @@ const ProductDetail = () => {
         review_text: formData.review,
         image_id: uploadedImages,
       }
-      dispatch(addReviewProductData(responseObj))
+      dispatch(addReviewProductData(responseObj)).finally(() => {
+        const searchParams = new URLSearchParams(location.search); 
+        const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+        const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+  
+        setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+        setReviewPerPage(itemsPerPageParam);
+  
+        const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+        const limit = itemsPerPageParam;
+       const reponseReviewObj = {
+         product_id: productDetailResponse?.data?.product_id || product_id,
+         offset,
+         limit
+       }
+       dispatch(getReviewProductData(reponseReviewObj))
+      })
 
-       const searchParams = new URLSearchParams(location.search); 
-       const pageParam = parseInt(searchParams.get("page"), 10) || 1;
-       const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
- 
-       setReviewPage(pageParam - 1); // Adjust for 0-based indexing
-       setReviewPerPage(itemsPerPageParam);
- 
-       const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
-       const limit = itemsPerPageParam;
-      const reponseReviewObj = {
-        product_id: productDetailResponse?.data?.product_id || product_id,
-        offset,
-        limit
-      }
-      dispatch(getReviewProductData(reponseReviewObj))
       setFormData({
         fullName: "",
         email: "",
@@ -535,7 +536,7 @@ const ProductDetail = () => {
       limit, 
     }
     dispatch(getReviewProductData(repoonseReviewObj))
-  }, [])
+  }, [dispatch, location.search, productDetailResponse?.data?.product_id, reviewPerPage])
   const handleActiveTabs = (value) => {
     if(activeTab == 2) {
       const searchParams = new URLSearchParams(location.search); 
@@ -1056,35 +1057,37 @@ const fetchUpdatedSimilarProductList = () => {
                         {!showReviewForm && (
                           <>
                             <div className="productReviewList">
-                              <h4>Customer say..</h4>
-                              {getReview?.length > 0 && <div className='paginationBox'>
-                                <div className="itemsPerPageDropdown">
-                                    <label>Items per page: </label>
-                                    <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                                        {reviewItemsPerPageOptions.map(option => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {/* Pagination component */}
-                                <ReactPaginate
-                                    previousLabel={"Previous"}
-                                    nextLabel={"Next"}
-                                    breakLabel={"..."}
-                                    breakClassName={"break-me"}
-                                    pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
-                                    marginPagesDisplayed={2}
-                                    pageRangeDisplayed={3}
-                                    onPageChange={(ev) => handleReviewPageChange(ev)}
-                                    containerClassName={"pagination"}
-                                    activeClassName={"active"}
-                                    forcePage={reviewPage}  // Sync current page with URL
-                                    disabled={getReviewCount === 0} 
-                                />
-                                </div>
-                              }
+                              <div className="reviewHeader">
+                                <h4>Customer say..</h4>
+                                {getReview?.length > 0 && <div className='paginationBox'>
+                                  {/* <div className="itemsPerPageDropdown">
+                                      <label>Items per page: </label>
+                                      <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                                          {reviewItemsPerPageOptions.map(option => (
+                                              <option key={option} value={option}>
+                                                  {option}
+                                              </option>
+                                          ))}
+                                      </select>
+                                  </div> */}
+                                  {/* Pagination component */}
+                                  <ReactPaginate
+                                      previousLabel={"Previous"}
+                                      nextLabel={"Next"}
+                                      breakLabel={"..."}
+                                      breakClassName={"break-me"}
+                                      pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
+                                      marginPagesDisplayed={2}
+                                      pageRangeDisplayed={3}
+                                      onPageChange={(ev) => handleReviewPageChange(ev)}
+                                      containerClassName={"pagination"}
+                                      activeClassName={"active"}
+                                      forcePage={reviewPage}  // Sync current page with URL
+                                      disabled={getReviewCount === 0} 
+                                  />
+                                  </div>
+                                }
+                              </div>
                               <div className="reviewHeight">
                                 {getReview?.map((item, index) => (
                                   <div className="reviewComments" key={index}>
@@ -1222,31 +1225,6 @@ const fetchUpdatedSimilarProductList = () => {
               {recentView && recentView.length > 0 && 
                 <div className="baseAlignItems">
                   <h3>Recently Viewed</h3>
-                  <div className="paginationBox">
-                    <div className="itemsPerPageDropdown">
-                        <label>Items per page: </label>
-                        <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
-                            {recentViewItemsPerPageOptions.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        breakLabel={"..."}
-                        pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={handleRecentViewPageChange}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        forcePage={recentViewPage}
-                        disabled={totalRecentView === 0}
-                    />
-                  </div>
                 </div>
               }
                 {recentlyViewLoading ? (
@@ -1254,37 +1232,65 @@ const fetchUpdatedSimilarProductList = () => {
                     <CircularProgress />
                   </div>
                   ):(
-                  <div className="productList">
-                    {recentView && recentView.length > 0 && (
-                        recentView.map((item, index) => (
-                          <div key={index}>
-                            <ProductListCard
-                              id={item.product_id}
-                              image={item.imageUrl || "/images/no-product-available.png"}
-                              name={item.name || ""}
-                              userrating={item.rating || "0.0"}
-                              discountPrice={item.discount || ""}
-                              originalPrice={item.price || ""}
-                              save={item.save || ""}
-                              coupenCode={item.coupen || ""}
-                              deliveryTime={item.deliverytime || ""}
-                              freeDelivery={item.freedelivery || ""}
-                              bestSeller={item.bestseller || ""}
-                              time={item.time || ""}
-                              discountLabel={item.Offerprice || ""}
-                              wishlistStatus={item.wishlistStatus || ''}
-                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
-                              onAddToCart={() => handleProductClick(item)}
-                              cartQuantity={Number(item.cartQuantity)}
-                              onIncrement={handleIncrement}
-                              onDecrement={handleDecrement}
-                              onProductClick={() => handleProductClick(item)}
-                            />
-                          </div>
-                        ))
-                      )}
-                  </div>
+                    <>
+                      <div className="productList">
+                        {recentView && recentView.length > 0 && (
+                            recentView.map((item, index) => (
+                              <div key={index}>
+                                <ProductListCard
+                                  id={item.product_id}
+                                  image={item.imageUrl || "/images/no-product-available.png"}
+                                  name={item.name || ""}
+                                  userrating={item.rating || "0.0"}
+                                  discountPrice={item.discount || ""}
+                                  originalPrice={item.price || ""}
+                                  save={item.save || ""}
+                                  coupenCode={item.coupen || ""}
+                                  deliveryTime={item.deliverytime || ""}
+                                  freeDelivery={item.freedelivery || ""}
+                                  bestSeller={item.bestseller || ""}
+                                  time={item.time || ""}
+                                  discountLabel={item.Offerprice || ""}
+                                  wishlistStatus={item.wishlistStatus || ''}
+                                  sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                                  // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                                  onAddToCart={() => handleProductClick(item)}
+                                  cartQuantity={Number(item.cartQuantity)}
+                                  onIncrement={handleIncrement}
+                                  onDecrement={handleDecrement}
+                                  onProductClick={() => handleProductClick(item)}
+                                />
+                              </div>
+                            ))
+                          )}
+                      </div>
+                      <div className="paginationBox">
+                        {/* <div className="itemsPerPageDropdown">
+                            <label>Items per page: </label>
+                            <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
+                                {recentViewItemsPerPageOptions.map(option => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> */}
+                        <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            breakLabel={"..."}
+                            pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handleRecentViewPageChange}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            forcePage={recentViewPage}
+                            disabled={totalRecentView === 0}
+                        />
+                      </div>
+                    </>
+                  
                 )}
             </div>
             <div className="productHistory allcategory">
@@ -1292,31 +1298,6 @@ const fetchUpdatedSimilarProductList = () => {
                 productDetailResponse?.data?.similar_products.length > 0 &&  
                 <div className="baseAlignItems">
                   <h3>Frequently bought</h3>
-                  <div className="paginationBox">
-                      <div className="itemsPerPageDropdown">
-                          <label>Items per page: </label>
-                          <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
-                              {similarViewItemsPerPageOptions.map(option => (
-                                  <option key={option} value={option}>
-                                      {option}
-                                  </option>
-                              ))}
-                          </select>
-                      </div>
-                      <ReactPaginate
-                          previousLabel={"Previous"}
-                          nextLabel={"Next"}
-                          breakLabel={"..."}
-                          pageCount={Math.max(Math.ceil(similarProductCount / similarProductPerPage), 1)}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={handleSimilarViewPageChange}
-                          containerClassName={"pagination"}
-                          activeClassName={"active"}
-                          forcePage={similarProductPage}
-                          disabled={similarProductCount === 0}
-                      />
-                  </div>
                 </div>
               }
               {similarProductLoading ? (
@@ -1324,6 +1305,7 @@ const fetchUpdatedSimilarProductList = () => {
                   <CircularProgress />
                 </div>
                 ): (
+                  <>
                     <div className="productList">
                       {similarProductListResponse && similarProductListResponse.length > 0 && (
                         similarProductListResponse.map((item, index) => (
@@ -1355,6 +1337,32 @@ const fetchUpdatedSimilarProductList = () => {
                         ))
                       )}
                     </div>
+                    <div className="paginationBox">
+                      {/* <div className="itemsPerPageDropdown">
+                          <label>Items per page: </label>
+                          <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
+                              {similarViewItemsPerPageOptions.map(option => (
+                                  <option key={option} value={option}>
+                                      {option}
+                                  </option>
+                              ))}
+                          </select>
+                      </div> */}
+                      <ReactPaginate
+                          previousLabel={"Previous"}
+                          nextLabel={"Next"}
+                          breakLabel={"..."}
+                          pageCount={Math.max(Math.ceil(similarProductCount / similarProductPerPage), 1)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={handleSimilarViewPageChange}
+                          containerClassName={"pagination"}
+                          activeClassName={"active"}
+                          forcePage={similarProductPage}
+                          disabled={similarProductCount === 0}
+                      />
+                    </div>
+                  </>
               )}
             </div>
           </div>

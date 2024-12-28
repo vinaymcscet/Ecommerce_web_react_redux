@@ -367,6 +367,7 @@ span {
 
 .productListing .slick-list {
   margin-bottom: 0;
+  position: relative;
 }
 
 @media only screen and (max-width: 992px) {

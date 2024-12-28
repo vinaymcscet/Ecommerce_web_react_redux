@@ -37,10 +37,12 @@ const Cart = () => {
   const [isOpen, setIsOpen] = useState(true);
   // const [clientSecret, setClientSecret] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [filteredCoupenId, setFilteredCoupenId] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  const { offerList } = useSelector((state) => state.product);
   
   // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user } = useSelector((state) => state.user);
@@ -60,6 +62,8 @@ const Cart = () => {
 
   const handleApplyPromoCode = () => {
     const responseObj = { coupon_code: coupenCode }
+    let filteredCoupen = offerList.filter(offer => offer?.coupon_code === coupenCode);
+    setFilteredCoupenId(filteredCoupen[0]?.id);
     dispatch(viewItemsInCartData(responseObj))
     // dispatch(viewItemsInCartWithCoupen(responseObj))
   }
@@ -131,13 +135,14 @@ const Cart = () => {
       setCheckoutLoading(true);
       const responseObj = {
         address_id : viewCartItems?.address?.id,
-        cart_amount : viewCartItems?.cartPrice?.totalAmount,
-        subtotal_amount : viewCartItems?.cartPrice?.totalAmount,
-        coupon_code: coupenCode,
-        discount: viewCartItems?.cartPrice?.discount,
-        total_delivery_charge: viewCartItems?.cartPrice?.deliveryCharge,
-        tax: viewCartItems?.cartPrice?.tax,
-        device_type : getDeviceType()
+        // cart_amount : viewCartItems?.cartPrice?.totalAmount,
+        // subtotal_amount : viewCartItems?.cartPrice?.totalAmount,
+        // coupon_code: coupenCode,
+        // discount: viewCartItems?.cartPrice?.discount,
+        // total_delivery_charge: viewCartItems?.cartPrice?.deliveryCharge,
+        // tax: viewCartItems?.cartPrice?.tax,
+        device_type : getDeviceType(),
+        offer_id: filteredCoupenId
       }
       dispatch(createOrderData(responseObj)).finally(() => {
         // setActiveTab(activeTab + 1);
@@ -175,6 +180,7 @@ const Cart = () => {
     } else {
       navigate("/");
     }
+  // }, [user.length > 0, dispatch, navigate, isDefaultSet]);
   }, [user, dispatch, navigate, isDefaultSet]);
 
   const handleSelectedAddress = (address) => {

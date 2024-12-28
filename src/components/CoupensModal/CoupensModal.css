@@ -74,6 +74,10 @@
     margin: 0;
     position: relative;
     padding-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-flow: wrap row;
 }
 
 .coupens .coupensList .availableCoupen ul li:before {

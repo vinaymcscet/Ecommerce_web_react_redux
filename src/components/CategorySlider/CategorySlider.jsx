@@ -22,6 +22,8 @@ const CategorySlider = ({ subCategoryId }) => {
     dispatch(getProductOnSubCategory(responseObj));
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("subcategory_id", item.id);
+    // Remove the page parameter if it exists
+    searchParams.delete("page");
     navigate(`?${searchParams.toString()}`);
   };
 

@@ -76,17 +76,10 @@ export const slick_settings = {
   dots: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 8,
+  slidesToShow: 7,
   slidesToScroll: 1,
   initialSlide: 1,
   responsive: [
-    {
-      breakpoint: 1500,
-      settings: {
-        slidesToShow: 7,
-        slidesToScroll: 1,
-      },
-    },
     {
       breakpoint: 1200,
       settings: {

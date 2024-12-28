@@ -822,12 +822,12 @@ export const getProductOnSubCategory = (userdata) => async (dispatch) => {
     dispatch(setTotalProductListCount(response.totalCount));
   } catch (error) {
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
+    // dispatch(setError(error.message));
     dispatch(toggleCategoryModal(false));
     dispatch(setProductList());
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1279,19 +1279,19 @@ export const OrderListData = (userData) => async (dispatch) => {
     if(userData.status === 6) dispatch(setReturnOrderListCountResponse(response.totalCount));
     if(userData.status === 5) dispatch(setDeliveredListCountResponse(response.totalCount));
     
-    dispatch(setSuccess(response.message));
-    // dispatch(viewItemsInCartData());
-    setTimeout(() => {
-      dispatch(resetSuccess());
-    }, 1000);
+    // dispatch(setSuccess(response.message));
+    // // dispatch(viewItemsInCartData());
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
   } catch (error) {
 
     dispatch(setLoading(false));
     dispatch(setOrderListResponse());
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1467,10 +1467,11 @@ export const getNotificationsData = (userData) => async (dispatch) => {
     
   } catch (error) {
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    dispatch(setNotificationsList(null));
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 }
 
@@ -1487,10 +1488,10 @@ export const clearNotificationsData = () => async (dispatch) => {
     
   } catch (error) {
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 }
 

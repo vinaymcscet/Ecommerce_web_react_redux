@@ -138,7 +138,7 @@ const DeliveredOrders = () => {
         <div className="orderListWrapper">
             <div className="orderListWrapper">
                 {orderList && <div className='paginationBox'>
-                    <div className="itemsPerPageDropdown">
+                    {/* <div className="itemsPerPageDropdown">
                         <label>Items per page: </label>
                         <select value={deliveredItemsPerPage} onChange={handleDeliveredItemsPerPageChange}>
                             {deliveredItemsPerPageOptions.map(option => (
@@ -147,7 +147,7 @@ const DeliveredOrders = () => {
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </div> */}
                     {/* Pagination component */}
                     <ReactPaginate
                         previousLabel={"Previous"}

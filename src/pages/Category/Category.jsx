@@ -17,7 +17,7 @@ const Category = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage,setItemsPerPage] = useState(10);
+  const [itemsPerPage,setItemsPerPage] = useState(25);
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
 
@@ -167,8 +167,40 @@ const handlePageChange = (data) => {
           <div className="productHistory">
             <div className="productHeader">
               {recentView && recentView.length > 0 && <h3>Frequently bought</h3>}
+            </div>
+            <div className="productList">
+              {recentView && recentView.length > 0 && (
+                recentView.map((item, index) => (
+                  <div key={index}>
+                    <ProductListCard
+                      id={item.id}
+                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
+                      name={item.name || ""}
+                      userrating={item.rating || "0.0"}
+                      discountPrice={item.discountedPrice || ""}
+                      originalPrice={item.price || ""}
+                      save={item.offer || ""}
+                      coupenCode={item.coupen || ""}
+                      deliveryTime={item.deliverytime || ""}
+                      freeDelivery={item.freedelivery || ""}
+                      bestSeller={item.bestseller || ""}
+                      time={item.time || ""}
+                      discountLabel={item.discountlabel || ""}
+                      wishlistStatus={item.wishlistStatus || 'no'}
+                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
+                      cartQuantity={Number(item.cartQuantity)}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                      onProductClick={() => handleProductClick(item)}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
               {recentView?.length > 0 && <div className='paginationBox'>
-                  <div className="itemsPerPageDropdown">
+                  {/* <div className="itemsPerPageDropdown">
                       <label>Items per page: </label>
                       <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                           {itemsPerPageOptions.map(option => (
@@ -177,7 +209,7 @@ const handlePageChange = (data) => {
                               </option>
                           ))}
                       </select>
-                  </div>
+                  </div> */}
                   {/* Pagination component */}
                   <ReactPaginate
                       previousLabel={"Previous"}
@@ -195,6 +227,11 @@ const handlePageChange = (data) => {
                   />
                 </div>
               }
+          </div>
+          <div className="productHistory">
+            <div className="productHeader">
+              {recentView && recentView.length > 0 && <h3>Inspired by your browsing history</h3>}
+              
             </div>
             <div className="productList">
               {recentView && recentView.length > 0 && (
@@ -227,12 +264,8 @@ const handlePageChange = (data) => {
                 ))
               )}
             </div>
-          </div>
-          <div className="productHistory">
-            <div className="productHeader">
-              {recentView && recentView.length > 0 && <h3>Inspired by your browsing history</h3>}
               {recentView?.length > 0 && <div className='paginationBox'>
-                  <div className="itemsPerPageDropdown">
+                  {/* <div className="itemsPerPageDropdown">
                       <label>Items per page: </label>
                       <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                           {itemsPerPageOptions.map(option => (
@@ -241,7 +274,7 @@ const handlePageChange = (data) => {
                               </option>
                           ))}
                       </select>
-                  </div>
+                  </div> */}
                   {/* Pagination component */}
                   <ReactPaginate
                       previousLabel={"Previous"}
@@ -259,38 +292,6 @@ const handlePageChange = (data) => {
                   />
                 </div>
               }
-            </div>
-            <div className="productList">
-              {recentView && recentView.length > 0 && (
-                recentView.map((item, index) => (
-                  <div key={index}>
-                    <ProductListCard
-                      id={item.id}
-                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
-                      name={item.name || ""}
-                      userrating={item.rating || "0.0"}
-                      discountPrice={item.discountedPrice || ""}
-                      originalPrice={item.price || ""}
-                      save={item.offer || ""}
-                      coupenCode={item.coupen || ""}
-                      deliveryTime={item.deliverytime || ""}
-                      freeDelivery={item.freedelivery || ""}
-                      bestSeller={item.bestseller || ""}
-                      time={item.time || ""}
-                      discountLabel={item.discountlabel || ""}
-                      wishlistStatus={item.wishlistStatus || 'no'}
-                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
-                      onAddToCart={() => handleProductClick(item)}
-                      cartQuantity={Number(item.cartQuantity)}
-                      onIncrement={handleIncrement}
-                      onDecrement={handleDecrement}
-                      onProductClick={() => handleProductClick(item)}
-                    />
-                  </div>
-                ))
-              )}
-            </div>
           </div>
         </div>
       )}

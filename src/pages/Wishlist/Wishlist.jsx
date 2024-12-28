@@ -112,7 +112,7 @@ const Wishlist = () => {
           <div className="wishlistContent">
               {listWishlist && (
                   <div className='paginationBox'>
-                      <div className="itemsPerPageDropdown">
+                      {/* <div className="itemsPerPageDropdown">
                           <label>Items per page: </label>
                           <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
                               {wishListItemsPerPageOptions.map(option => (
@@ -121,7 +121,7 @@ const Wishlist = () => {
                                   </option>
                               ))}
                           </select>
-                      </div>
+                      </div> */}
                       <ReactPaginate
                           previousLabel={"Previous"}
                           nextLabel={"Next"}

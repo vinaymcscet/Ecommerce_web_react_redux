@@ -74,7 +74,7 @@ const Reviews = () => {
         <div className="reviewHeader">
             <h3>Item Reviews</h3>
             {userReview && <div className='paginationBox'>
-                <div className="itemsPerPageDropdown">
+                {/* <div className="itemsPerPageDropdown">
                     <label>Items per page: </label>
                     <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
                         {reviewItemsPerPageOptions.map(option => (
@@ -83,7 +83,7 @@ const Reviews = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
                 {/* Pagination component */}
                 <ReactPaginate
                     previousLabel={"Previous"}

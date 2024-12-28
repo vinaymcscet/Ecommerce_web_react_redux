@@ -10,6 +10,7 @@ import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
+import { shuffleProduct } from "../../utils/ShuffleProduct";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
+  const [randomProducts, setRandomProducts] = useState([]);
   
   const [page, setPage] = useState(1);
   // const [dataLoading, setDataLoading] = useState(false);
@@ -110,6 +112,16 @@ const Home = () => {
     dispatch(setViewCartItems(null));
   };
 
+  useEffect(() => {
+    if (homeProductSection && homeProductSection.length > 0) {
+      const updatedSections = homeProductSection.map((section) => ({
+        ...section,
+        products: shuffleProduct(section.products).slice(0, 5),
+      }));
+      setRandomProducts(updatedSections);
+    }
+  }, [homeProductSection]);
+
   return (
     <div>
       {loading ? (
@@ -120,7 +132,7 @@ const Home = () => {
         <>
           <Banner />
           <ProductSlider title={productTile} />
-          <div className="productHistory">
+          {/* <div className="productHistory">
             <div>
               <div className="browisingHistory">
                 <h3>{homeProductData?.offerTitle}</h3>
@@ -128,8 +140,9 @@ const Home = () => {
                   onClick={() => handleSectionPage(homeProductData.offerTitle)}><img src="/images/icons/right_arrow.svg" /></div>
               </div>
             </div>
-          </div>
-          <div className="productList special">
+          </div> */}
+          {/* Home Page Offer */}
+          {/* <div className="productList special">
             {homeProductData?.offers && homeProductData?.offers.map((item, index) => (
               <div key={index} onClick={() => handleProductClick(item)}>
                 <ProductListCard
@@ -145,13 +158,11 @@ const Home = () => {
                 />
               </div>
             ))}
-          </div>
-        <div className="groupBanner">
-            <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
-          </div>
+          </div> */}
+          {/* group Banner */}
           <div className="productHistory">
-              {homeProductSection && homeProductSection.length > 0 && (
-                  homeProductSection.map((item, index) => (
+              {randomProducts && randomProducts.length > 0 && (
+                  randomProducts.map((item, index) => (
                     <div key={index}>
                       <div className="browisingHistory">
                         <h3>{item.title}</h3>
@@ -189,6 +200,9 @@ const Home = () => {
                     </div>
                   ))
                 )}
+          </div>
+          <div className="groupBanner">
+            <img src={homeProductData?.bottomBanner[0]?.banner_image} alt={homeProductData?.bottomBanner[0]?.name} />
           </div>
           {/* {dataLoading && (
             <div className="loadingContainer">
