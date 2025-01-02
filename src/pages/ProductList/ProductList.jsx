@@ -46,7 +46,8 @@ const ProductList = () => {
     const fetchProducts = async () => {
       setLoading(true);  // Show loader
       if (subcategory_id) {
-        const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+        // const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+        const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1)) + 1, limit: itemsPerPage };
         handleClearFilters();
         await dispatch(totalFilterData(responseObj));
         await dispatch(getProductOnSubCategory(responseObj));
@@ -94,6 +95,7 @@ const ProductList = () => {
     // Handle page change event (when user clicks next/previous)
     const handlePageChange = (data) => {
       const { selected } = data;
+      // setPage(selected);
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('page', selected + 1); // `react-paginate` uses 0-based index, we set to 1-based index in URL
       navigate(`?${searchParams.toString()}`); // Update the URL with the new page
@@ -133,7 +135,8 @@ const ProductList = () => {
 
       const responseObj = {
         sub_category_id: subcategory_id,
-        offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        // offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        offset: ((pageParam - 1)) + 1, 
         limit: itemsPerPage,
         filters
       }
@@ -150,12 +153,14 @@ const ProductList = () => {
       searchParams.delete('Show Size');
       searchParams.delete('Rrice');
       searchParams.delete('Rating');
+      // searchParams.delete("page");
       navigate(`?${searchParams.toString()}`);
 
       const subcategory_id = searchParams.get('subcategory_id');
       const pageParam = parseInt(searchParams.get('page'), 10) || 1;
       setPage(pageParam - 1);
-      const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+      // const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+      const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1)) + 1, limit: itemsPerPage };
       await dispatch(getProductOnSubCategory(responseObj));
       setLoading(false);
     };
@@ -196,7 +201,8 @@ const ProductList = () => {
       const pageParam = parseInt(searchParams.get('page'), 10) || 1;
       const responseListObj = { 
         sub_category_id: subcategory_id, 
-        offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        // offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        offset: ((pageParam - 1)) + 1, 
         limit: itemsPerPage 
       };
       dispatch(getProductOnSubCategory(responseListObj));

@@ -24,6 +24,7 @@ const CategorySlider = ({ subCategoryId }) => {
     searchParams.set("subcategory_id", item.id);
     // Remove the page parameter if it exists
     searchParams.delete("page");
+    searchParams.delete("itemsPerPage");
     navigate(`?${searchParams.toString()}`);
   };
 

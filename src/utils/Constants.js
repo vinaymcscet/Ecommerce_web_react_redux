@@ -101,7 +101,7 @@ export const OTP_NAME = "otpCode";
 export const OTP_ERROR = "Please enter a valid 6-digit OTP";
 
 // Stripe Payment Gateway - constants - keys
-export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 50, 100];
+export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500];
 export const STRIPE_PUBLIC_KEY = 'pk_test_51PiK0KG1GaqCQm17TPkUzvgbYGadO9htgyI4GsN2DMleueorVJfbgEYW86l5mIJpjGmST75eZCGlXxwW7cUDPdm800MOjzVQQJ';
 
 // Reason to cancel/return constants

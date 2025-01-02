@@ -56,7 +56,8 @@
 
 .categoryModal .categoryList .product img {
     width: 100%;
-    min-height: 103px;
+    min-height: 107px;
+    max-height: 107px;
 }
 
 @media screen and (max-width: 767px) {

@@ -24,6 +24,7 @@ import { ShareProduct } from "../../utils/ShareProduct";
 
 import { getDeviceType } from "../../utils/CheckDevice";
 import { CircularProgress } from "@mui/material";
+import { setDefaultUserAddress } from "../../store/slice/userSlice";
 
 const Cart = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -45,7 +46,7 @@ const Cart = () => {
   const { offerList } = useSelector((state) => state.product);
   
   // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
-  const { user } = useSelector((state) => state.user);
+  const { user, defaultUserAddress } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(viewItemsInCartData());
@@ -162,26 +163,41 @@ const Cart = () => {
   }
   
   // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-  
   useEffect(() => {
-    if (user.length > 0) {
+    if (!user || user.length === 0) {
       dispatch(getUserRequest());
-      
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user[0]?.addresses && !defaultUserAddress) {
       if (!isDefaultSet) {
-        // Check if there is a default address and set it as selected
-        const defaultAddress = user[0]?.addresses?.find(
-          (address) => address.isDefault.toLowerCase() === "true"
-        );
-        if (defaultAddress) {
-          setSelectedAddress(defaultAddress);
+        const defaultAddr = user[0]?.addresses?.find((addr) => addr.isDefault.toLowerCase() === "true");
+        if (defaultAddr) {
+          dispatch(setDefaultUserAddress(defaultAddr));
+          setSelectedAddress(defaultAddr);
           setIsDefaultSet(true);
         }
+      } else {
+        navigate("/");
       }
-    } else {
-      navigate("/");
+      
+    //   if (!isDefaultSet) {
+    //     // Check if there is a default address and set it as selected
+    //     const defaultAddress = user[0]?.addresses?.find(
+    //       (address) => address.isDefault.toLowerCase() === "true"
+    //     );
+    //     if (defaultAddress) {
+    //       setSelectedAddress(defaultAddress);
+    //       setIsDefaultSet(true);
+    //     }
+    //   }
+    // } else {
+    //   navigate("/");
     }
   // }, [user.length > 0, dispatch, navigate, isDefaultSet]);
-  }, [user, dispatch, navigate, isDefaultSet]);
+  // }, [user, dispatch, navigate, isDefaultSet]);
+  }, [dispatch, user, defaultUserAddress]);
 
   const handleSelectedAddress = (address) => {
     setSelectedAddress(address);
