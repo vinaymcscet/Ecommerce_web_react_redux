@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
@@ -25,6 +25,8 @@ import CancelOrderModal from "./components/CancelOrderModal/CancelOrderModal";
 import CoupensModal from "./components/CoupensModal/CoupensModal";
 import CheckoutModal from "./components/CheckoutModal/CheckoutModal";
 import ManageCookies from "./components/ManageCookies/ManageCookies";
+import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import DeleteHeader from "./components/DeleteHeader/DeleteHeader";
 const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy/CookiesPolicy"));
 // import Home from './pages/Home/Home';
 const Home = React.lazy(() => import("./pages/Home/Home"));
@@ -46,6 +48,7 @@ const Offline = React.lazy(() => import("./pages/Offline/Offline"));
 const AddressModal = React.lazy(() => import("./components/AddressModal/AddressModal"));
 
 function App() {
+  const location = useLocation();
   const { isAddressModelOpen, error, success } = useSelector(
     (state) => state.modal
   );
@@ -100,7 +103,11 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      {location.pathname === "/delete-account" ? (
+        <DeleteHeader />
+      ) : (
+        <Header />
+      )}
       <ScrollToTop />
       <Suspense
         fallback={
@@ -122,10 +129,7 @@ function App() {
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/return-and-refund" element={<ReturnAndRefund />} />
           <Route path="/cookies-policy" element={<CookiesPolicy />} />
-          <Route
-            path="/shipping-and-delivery"
-            element={<ShippingAndDelivery />}
-          />
+          <Route path="/shipping-and-delivery" element={<ShippingAndDelivery />} />
           <Route path="/order-cancellation" element={<OrderCancellation />} />
           <Route path="/allcategory" element={<Category />} />
           <Route path="/faq" element={<Faq />} />
@@ -134,6 +138,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order-complete" element={<OrderComplete />} />
+          <Route path="delete-account" element={<DeleteAccount />} />
           {/* <Route path="userprofile" element={<Profile />} /> */}
           <Route path="/userprofile" element={
             <ProtectedRoute>

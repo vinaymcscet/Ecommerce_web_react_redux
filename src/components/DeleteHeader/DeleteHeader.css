@@ -1,0 +1,47 @@
+.deleteHeaderBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    margin: 20px auto 0 auto;
+}
+
+.rightHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.rightHeader button {
+    font-size: 16px;
+    font-weight: 400;
+    width: auto;
+    margin: 0 10px;
+    min-height: auto;
+    padding: 5px 15px;
+    cursor: pointer;
+    outline: none;
+}
+
+.rightHeader button.support {
+    border:1px solid #FFB545;
+    background-color: #fff;
+}
+
+.rightHeader button.support,
+.rightHeader button.headerContact {
+    transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+}
+.rightHeader button.support:hover,
+.rightHeader button.support:focus {
+    background-color: #FFB545;
+}
+
+.rightHeader button.headerContact:hover,
+.rightHeader button.headerContact:focus {
+    background-color: #fff;
+}

@@ -108,4 +108,12 @@ export const STRIPE_PUBLIC_KEY = 'pk_test_51PiK0KG1GaqCQm17TPkUzvgbYGadO9htgyI4G
 export const selectReason = [
     { id: 1, value: 'cancel', type: 'Cancel'},
     { id: 2, value: 'return', type: 'Return'},
+];
+
+export const deleteAccountReason = [
+    { id: 1, value: 'No longer using the app or interested in keeping the account.'},
+    { id: 2, value: 'Concerned about privacyand prefer to delete personal information.'},
+    { id: 3, value: 'The app does not meet my needs or expectations.'},
+    { id: 4, value: 'Experiencing technical issues, so i want to delete my account.'},
+    { id: 5, value: 'Found a better alternative and no longer wish to use the app.'}
 ]
