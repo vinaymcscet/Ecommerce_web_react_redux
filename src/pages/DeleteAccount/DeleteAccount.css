@@ -129,7 +129,7 @@ button.contact {
   margin-bottom: 10px;
 }
 
-.authentication {
+.deleteAccount .contactForm .box .authentication {
   display: flex;
   align-items: center;
   justify-content: space-between;

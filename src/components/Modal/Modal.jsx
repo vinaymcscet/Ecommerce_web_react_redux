@@ -240,21 +240,21 @@ const handleConfirmPasswordChange = (e) => {
     dispatch(setModalType(type));
     dispatch(toggleModal(true));
   };
-  // const closeModal = () => {
-  //   dispatch(resetSignup());
-  //   dispatch(resetLogin());
-  //   dispatch(resetOtp());
-  //   dispatch(resetForgotPassword());
-  //   dispatch(resetForgotPasswordAssist());
-  //   dispatch(toggleModal(false))
-  // };
+  const closeModal = () => {
+    dispatch(resetSignup());
+    dispatch(resetLogin());
+    dispatch(resetOtp());
+    dispatch(resetForgotPassword());
+    dispatch(resetForgotPasswordAssist());
+    dispatch(toggleModal(false))
+  };
   return (
     <div>
       <div className="modalBackdrop">
         <div className="modalContent">
-          {/* <div className="close" onClick={() => closeModal()}>
+          <div className="close" onClick={() => closeModal()}>
             <CloseIcon />
-          </div> */}
+          </div>
           {modalType === "signup" && (
             <>
               <div className="left">

@@ -295,7 +295,7 @@ const Address = () => {
                 </div>
                 <div className="box">
                 <div className="form-control">
-                    <label>Pincode</label>
+                    <label>Postal code</label>
                     <input
                     type="text"
                     name="pincode"
