@@ -1,0 +1,222 @@
+.deleteAccount {
+  margin: 20px auto;
+  width: 90%;
+}
+
+.deleteAccount h6 {
+  font-size: 25px;
+  line-height: 20px;
+  font-weight: 500;
+  margin: 20px 0 10px 0;
+  position: relative;
+  display: inline;
+}
+
+.deleteAccount h6:before {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0px;
+  width: 30%;
+  height: 3px;
+  background: #ffb545;
+}
+
+.deleteAccount .contactForm {
+  margin: 20px 0 30px 0;
+}
+
+.deleteAccount .contactForm .box .form-control {
+  max-width: 100%;
+  width: 85%;
+  margin-bottom: 20px;
+}
+
+.deleteAccount .contactForm .box .form-control label {
+  width: 100%;
+  display: block;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.deleteAccount .contactForm .box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.deleteAccount .contactForm .box input {
+  border-radius: 30px;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 2px 20px;
+  background-color: #fff;
+  width: inherit;
+}
+
+.deleteAccount .contactForm .box input {
+  border-radius: 30px;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 2px 20px;
+  background-color: #fff;
+  width: inherit;
+}
+
+.deleteAccount .contactForm .box select {
+  border-radius: 30px;
+  border: 1px solid #d1d1d1;
+  height: 50px;
+  padding: 2px 20px 2px 20px;
+  background-color: #fff;
+  width: inherit;
+  background: url("../../../public/images/icons/down-arrow.svg") no-repeat 95%
+    16px;
+  background-size: 15px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.deleteAccount .contactForm .box input:focus,
+.deleteAccount .contactForm .box input:focus-visible,
+.deleteAccount .contactForm .box input:focus-within,
+.deleteAccount .contactForm .box.full .form-control textarea:focus {
+  outline: none;
+}
+
+.deleteAccount .contactForm .box.full .form-control {
+  width: 100%;
+}
+
+.deleteAccount .contactForm p.error {
+  margin: 5px 0 0 20px;
+  font-size: 12px;
+  color: #d52424;
+  text-align: left;
+}
+
+.deleteAccount .contactForm .authentication p.error {
+    display: block;
+    width: 100%;
+}
+
+button.contact {
+  max-width: 200px;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.notefrm {
+  border-radius: 4px;
+  background: #fff3cf;
+  padding: 15px;
+  margin: 20px 0;
+  width: 93%;
+}
+
+.notefrm p:last-child {
+  margin: 0;
+}
+
+.notefrm p {
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.deleteAccount .contactForm .box .authentication {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 0 20px 0;
+  flex-flow: wrap column;
+}
+
+.deleteAccount .contactForm .box .round {
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+  cursor: pointer;
+  outline: none;
+}
+
+.round + .round {
+  margin-top: 1em;
+}
+
+.deleteAccount .contactForm .box .round input[type="checkbox"] {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  -moz-appearance: none;
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.05em;
+  height: 1.05em;
+  border: 0.05em solid currentColor;
+  border-radius: 5px;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  padding: 0;
+}
+
+.deleteAccount .contactForm .box .round input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  -webkit-clip-path: polygon(
+    14% 44%,
+    0 65%,
+    50% 100%,
+    100% 16%,
+    80% 0%,
+    43% 62%
+  );
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #fff;
+  /* Windows High Contrast Mode */
+  background-color: #fff;
+}
+
+.deleteAccount .contactForm .box .round input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.deleteAccount .contactForm .box .round input[type="checkbox"]:checked {
+  background-color: #ffb545;
+  border: 0.05em solid #ffb545;
+}
+
+.deleteAccount .contactForm .box .round span {
+  font-size: 14px;
+  font-weight: 400;
+  color: #2a2a2a;
+}
+
+@media screen and (max-width: 767px) {
+  .deleteAccount .contactForm .box {
+    flex-flow: wrap column;
+  }
+  .deleteAccount .contactForm .box .form-control {
+    width: 100%;
+  }
+  .deleteAccount .contactForm .box input {
+    width: 90%;
+  }
+}

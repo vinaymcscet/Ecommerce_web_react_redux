@@ -1,7 +1,7 @@
 import React from 'react'
 import './BlogCard.css';
 import { Link } from 'react-router-dom';
-import { FormatDateTime } from '../../utils/FormatDateTime';
+import { formatDateTimeProduct } from '../../utils/FormatDateTime';
 
 const BlogCard = ({ card }) => {
 
@@ -11,7 +11,7 @@ const BlogCard = ({ card }) => {
                 card?.map((data, index) => (
                     <div className='blogCard' key={index}>
                         <img src={data.blog_image} alt={data.blog_title} />
-                        <div className="date">{FormatDateTime(data.created_at)}</div>
+                        <div className="date">{formatDateTimeProduct(data.created_at).formattedDate}</div>
                         <h3>{data.blog_title}</h3>
                         <p className='description'>{data.blog_description}</p>
                         <p>Category: <span>{data.parent_category_name}</span></p>

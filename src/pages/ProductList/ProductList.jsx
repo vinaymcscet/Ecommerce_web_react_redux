@@ -9,11 +9,12 @@ import CategorySlider from "../../components/CategorySlider/CategorySlider";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts, getHomeData, getProductOnSubCategory, productDetailData, totalFilterData } from "../../store/slice/api_integration";
+import { addToCartData, getAllProducts, getHomeData, getProductOnSubCategory, getSubCategoryData, productDetailData, totalFilterData, viewItemsInCartData } from "../../store/slice/api_integration";
 import "./ProductList.css";
 import ReactPaginate from "react-paginate";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import { parsePriceRange, parseRating } from "../../utils/PriceRange";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
@@ -21,22 +22,23 @@ const ProductList = () => {
   // const [activeIndex, setActiveIndex] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState({});
   const [loading, setLoading] = useState(false);
+  const [onLoadSubCategory, setOnLoadSubCategory] = useState(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [triggerSkuId, setTriggerSkuId] = useState(null);
   
-  console.log("subCategoryList", subCategoryList);
   const searchParams = new URLSearchParams(location.search);
   const subcategory_id = searchParams.get('subcategory_id');
-  console.log("subcategory_id", subcategory_id);
   
   
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+    const categoryId = searchParams.get('category');
     const subcategory_id = searchParams.get('subcategory_id');
     const pageParam = parseInt(searchParams.get('page'), 10) || 1;
     setPage(pageParam - 1); // Set initial page based on URL
@@ -44,7 +46,8 @@ const ProductList = () => {
     const fetchProducts = async () => {
       setLoading(true);  // Show loader
       if (subcategory_id) {
-        const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+        // const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+        const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1)) + 1, limit: itemsPerPage };
         handleClearFilters();
         await dispatch(totalFilterData(responseObj));
         await dispatch(getProductOnSubCategory(responseObj));
@@ -53,10 +56,16 @@ const ProductList = () => {
       }
       setLoading(false);  // Hide loader
     };
+    const fetchCategory = () => {
+      const responseObj = { category_id: categoryId };
+      dispatch(getSubCategoryData(responseObj))
+      const filteredSubCategory = subCategoryList?.filter(item => parseInt(item?.id, 10) === parseInt(subcategory_id, 10));
+      setOnLoadSubCategory(filteredSubCategory)
+    } 
     fetchProducts();
+    fetchCategory();
   }, [location.search, itemsPerPage, dispatch]);
   
-
   const handleParentAccordionChange = (panel) => (event, isExpanded) => {
     setExpandedParent(isExpanded ? panel : false);
   };
@@ -86,6 +95,7 @@ const ProductList = () => {
     // Handle page change event (when user clicks next/previous)
     const handlePageChange = (data) => {
       const { selected } = data;
+      // setPage(selected);
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('page', selected + 1); // `react-paginate` uses 0-based index, we set to 1-based index in URL
       navigate(`?${searchParams.toString()}`); // Update the URL with the new page
@@ -103,13 +113,21 @@ const ProductList = () => {
       // filterLabel = filterLabel.toLowerCase();
       // const updatedLabel = convertToLowercase(filterLabel);
       const updatedFilters = { ...selectedFilters, [filterLabel]: filterValue };
-      setSelectedFilters(updatedFilters);
       
       const filters = {};
       if (updatedFilters.Color) filters.color = updatedFilters.Color;
-      if (updatedFilters['Shoe Size']) filters.size = updatedFilters['Shoe Size'];;
+      if (updatedFilters['Shoe Size']) filters.size = updatedFilters['Shoe Size'];
       if (updatedFilters.Price) filters.price = parsePriceRange(updatedFilters.Price);
       if (updatedFilters.Rating) filters.rating = parseRating(updatedFilters.Rating);
+
+      // Dynamically handle any other filter keys
+      Object.keys(updatedFilters).forEach((key) => {
+        if (!['Color', 'Shoe Size', 'Price', 'Rating'].includes(key)) {
+          filters[key.toLowerCase()] = updatedFilters[key];
+        }
+      });
+
+      setSelectedFilters(updatedFilters);
       
       const searchParams = new URLSearchParams(location.search);
       const subcategory_id = searchParams.get('subcategory_id');
@@ -117,7 +135,8 @@ const ProductList = () => {
 
       const responseObj = {
         sub_category_id: subcategory_id,
-        offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        // offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        offset: ((pageParam - 1)) + 1, 
         limit: itemsPerPage,
         filters
       }
@@ -134,12 +153,14 @@ const ProductList = () => {
       searchParams.delete('Show Size');
       searchParams.delete('Rrice');
       searchParams.delete('Rating');
+      // searchParams.delete("page");
       navigate(`?${searchParams.toString()}`);
 
       const subcategory_id = searchParams.get('subcategory_id');
       const pageParam = parseInt(searchParams.get('page'), 10) || 1;
       setPage(pageParam - 1);
-      const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+      // const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1) * itemsPerPage) + 1, limit: itemsPerPage };
+      const responseObj = { sub_category_id: subcategory_id, offset: ((pageParam - 1)) + 1, limit: itemsPerPage };
       await dispatch(getProductOnSubCategory(responseObj));
       setLoading(false);
     };
@@ -149,11 +170,51 @@ const ProductList = () => {
         dispatch(getHomeData()); // Fetch home data, which includes `subCategoryList`
       // }
     }, [dispatch, subCategoryList])
+
+    const handleAddToCartClick = (sku_id) => {
+        setTriggerSkuId(sku_id);
+        const responseObj = {
+          sku_id,
+          type: "increase",
+        };
+        dispatch(addToCartData(responseObj)).finally(() => {
+          fetchUpdatedProductList();
+        })
+    };
+    const handleIncrement = (sku_id) => {
+      const responseObj = { sku_id, type: "increase" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+    
+    const handleDecrement = (sku_id) => {
+      const responseObj = { sku_id, type: "decrease" };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      });
+    };
+
+    const fetchUpdatedProductList = () => {
+      const searchParams = new URLSearchParams(location.search);
+      const subcategory_id = searchParams.get('subcategory_id');
+      const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+      const responseListObj = { 
+        sub_category_id: subcategory_id, 
+        // offset: ((pageParam - 1) * itemsPerPage) + 1, 
+        offset: ((pageParam - 1)) + 1, 
+        limit: itemsPerPage 
+      };
+      dispatch(getProductOnSubCategory(responseListObj));
+      dispatch(viewItemsInCartData());
+      dispatch(setViewCartItems(null));
+    };
+    
   return (
     <div className="productListing">
       <ProductSlider title={false} tile={7} />
       <div className="listPageCategoryItems">
-        <CategorySlider subCategoryId={subcategory_id} />
+        <CategorySlider subCategoryId={subcategory_id || onLoadSubCategory} />
       </div>
       <div className="prdWrapper">
       {totalFilterList && <div className="prdLeft">
@@ -189,8 +250,47 @@ const ProductList = () => {
           </div>
         </div>}
         {productList && <div className={totalFilterList ? 'prdRight ' : 'prdRight noFilter'}>
+          <div className="productList">
+            {loading ? (
+              <div className="loadingContainer">
+                <CircularProgress /> {/* Show loader */}
+              </div>
+            ) : (
+              productList && productList.length > 0 ? (
+                productList.map((item, index) => (
+                  <div key={index}>
+                    <ProductListCard
+                      id={item.id}
+                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
+                      name={item.name || ""}
+                      userrating={item.rating || "0.0"}
+                      discountPrice={item.discountedPrice || ""}
+                      originalPrice={item.price || ""}
+                      save={item.save || ""}
+                      coupenCode={item.coupen || ""}
+                      deliveryTime={item.deliverytime || ""}
+                      freeDelivery={item.freedelivery || ""}
+                      bestSeller={item.bestseller || ""}
+                      time={item.time || ""}
+                      discountLabel={item.discountlabel || ""}
+                      wishlistStatus={item.wishlistStatus || ''}
+                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
+                      cartQuantity={Number(item.cartQuantity)}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                      onProductClick={() => handleProductClick(item)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="noProductAvailable">No product available</p>
+              )
+            )}
+          </div>
           {productList.length > 0 && <div className='paginationBox'>
-              <div className="itemsPerPageDropdown">
+              {/* <div className="itemsPerPageDropdown">
                   <label>Items per page: </label>
                   <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                       {itemsPerPageOptions.map(option => (
@@ -199,7 +299,7 @@ const ProductList = () => {
                           </option>
                       ))}
                   </select>
-              </div>
+              </div> */}
               {/* Pagination component */}
               <ReactPaginate
                   previousLabel={"Previous"}
@@ -216,38 +316,6 @@ const ProductList = () => {
                   disabled={totalProductListCount === 0} 
               />
           </div>}
-          <div className="productList">
-            {loading ? (
-              <div className="loadingContainer">
-                <CircularProgress /> {/* Show loader */}
-              </div>
-            ) : (
-              productList && productList.length > 0 ? (
-                productList.map((item, index) => (
-                  <div key={index} onClick={() => handleProductClick(item)}>
-                    <ProductListCard
-                      id={item.id}
-                      image={item.imageUrl ? item.imageUrl : "/images/no-product-available.png"}
-                      name={item.name || ""}
-                      userrating={item.rating || ""}
-                      discountPrice={item.discountedPrice || ""}
-                      originalPrice={item.price || ""}
-                      save={item.save || ""}
-                      coupenCode={item.coupen || ""}
-                      deliveryTime={item.deliverytime || ""}
-                      freeDelivery={item.freedelivery || ""}
-                      bestSeller={item.bestseller || ""}
-                      time={item.time || ""}
-                      discountLabel={item.discountlabel || ""}
-                      wishlistStatus={item.wishlistStatus || ''}
-                    />
-                  </div>
-                ))
-              ) : (
-                <p className="noProductAvailable">No product available</p>
-              )
-            )}
-          </div>
         </div>}
       </div>
     </div>

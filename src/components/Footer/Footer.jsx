@@ -6,9 +6,10 @@ import Box from '@mui/material/Box';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ABOUT_US, DISCLAIMER, FAQS, ORDER_CANCELLATION, PRIVACY_POICY, REFUND_POLICY, RETURN_REFUND, SHIPPING_DELIVERY, TERMS_CONDITION } from '../../utils/Constants';
+import { ABOUT_US, COOKIES_POLICY, DISCLAIMER, FAQS, ORDER_CANCELLATION, PRIVACY_POICY, REFUND_POLICY, RETURN_REFUND, SHIPPING_DELIVERY, TERMS_CONDITION } from '../../utils/Constants';
 import { getCMSRequest, getCMSSocialLinksRequest } from '../../store/slice/api_integration';
 import { getAbsoluteUrl } from '../../utils/AbsoluteUrl';
+import CookieNotification from '../CookieNotification/CookieNotification';
 
 const Footer = () => {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Footer = () => {
     }, [])
     return (
         <div className='footercontainer'>
+            <CookieNotification />
             <Subscribe />
             <div className='mainFooter'>
                 <Box sx={{ flexGrow: 1 }}>
@@ -48,6 +50,7 @@ const Footer = () => {
                                     <li><Link to="/return-and-refund" onClick={() => handleCMSPage(RETURN_REFUND)}>Return & Refunds</Link></li>
                                     <li><Link to="/shipping-and-delivery" onClick={() => handleCMSPage(SHIPPING_DELIVERY)}>Shipping & Delivery</Link></li>
                                     <li><Link to="/order-cancellation" onClick={() => handleCMSPage(ORDER_CANCELLATION)}>Order Cancellation</Link></li>
+                                    <li><Link to="/cookies-policy" onClick={() => handleCMSPage(COOKIES_POLICY)}>Cookies</Link></li>
                                 </ul>
                             </div>
                         </Grid>

@@ -43,7 +43,9 @@ li {
 
 select {
   font-family: 'Poppins';
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 400;
+  color: #525252;
 }
 
 .font-18 {

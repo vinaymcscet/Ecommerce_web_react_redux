@@ -29,7 +29,9 @@ const initialState = {
   userReviewCount: 0,
   getReview: null,
   getReviewCount: 0,
+  getReviewImage: null,
   allOffersList: null,
+  addToCartStatusCount: null,
 };
 
 export const cartSlice = createSlice({
@@ -124,8 +126,14 @@ export const cartSlice = createSlice({
     setGetAnReviewCount: (state, action) => {
       state.getReviewCount = action.payload;
     },
+    setGetAnReviewImage: (state, action) => {
+      state.getReviewImage = action.payload;
+    },
     setAllOffersList: (state, action) => {
       state.allOffersList = action.payload;
+    },
+    setAddToCartStatusCount: (state, action) => {
+      state.addToCartStatusCount = action.payload;
     },
   },
 });
@@ -158,7 +166,9 @@ export const {
   setUserReviewCount,
   setReviewCount,
   setGetAnReviewCount,
+  setGetAnReviewImage,
   setProductSectionCount,
   setAllOffersList,
+  setAddToCartStatusCount,
 } = cartSlice.actions;
 export default cartSlice.reducer;

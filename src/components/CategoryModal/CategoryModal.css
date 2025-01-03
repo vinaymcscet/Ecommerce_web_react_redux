@@ -37,13 +37,27 @@
 
 .categoryModal .categoryList > div {
     margin-bottom: 20px;
-    width: 20%;
-    margin-right: 0%;
+    width: 18%;
+    margin-right: 2%;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.categoryModal .categoryList > div p {
+    display: flex;
+    font-size: 12px;
+    padding: 5px;
+    word-break: break-word;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
 }
 
 .categoryModal .categoryList .product img {
-    width: 80%;
-    min-height: 80px;
+    width: 100%;
+    min-height: 107px;
+    max-height: 107px;
 }
 
 @media screen and (max-width: 767px) {

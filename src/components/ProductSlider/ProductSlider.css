@@ -32,10 +32,10 @@
   max-width: 1800px;
   margin: 0 auto;
 }
-
+/* 
 .slick-slide {
   padding-right: 10px;
-}
+} */
 
 .slick-slide:last-child {
   padding-right: 0;

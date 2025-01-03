@@ -74,12 +74,33 @@
     align-items: center;
     justify-content: flex-end;
 }
-
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .productVariants {
+    margin-top: 5px;
+}
 .cartProductList .rightcartListItem .rightCartInnerLeftItems h4 {
     font-size: 16px;
     font-weight: 400;
     margin: 0;
-    width: 70%;
+    min-width: 50px;
+    width: 100%;
+}
+
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .productVariants h4 {
+    font-size: 13px;
+    font-weight: 600;
+    width: auto;
+    margin: 0;
+}
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .productVariants p {
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+}
+.cartProductList .rightcartListItem .rightCartInnerLeftItems .productVariants > div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .cartProductList .rightcartListItem .rightCartInnerLeftItems .star {
@@ -343,6 +364,16 @@
     padding: 0;
 }
 
+.cartWrapper .rightCartItems .rightCartUpItems .availablePromo {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: left;
+    margin: 5px 0 0 0;
+    color: green;
+    cursor: pointer;
+    outline: none;
+}
+
 .rightCartItems .continue {
     margin: 20px 0;
 }
@@ -453,7 +484,7 @@
 }
 
 .productDetailReview .tab-content.productDescription {
-    width: 97%;
+    width: 100%;
     padding: 0;
     border: 0;
 }
@@ -527,6 +558,7 @@
     justify-content: flex-start;
     flex-flow: wrap column;
     margin: 0 20px 15px 0;
+    background-color: #fff;
 }
 
 .addressList ul li h4 {
@@ -635,6 +667,22 @@
 .addressList ul li .actions p:not(:first-child) {
     margin-left: 10px;
 }
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loadingContainer.loadingPosition {
+    position: fixed;
+    background: #33333342;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    cursor: default;
+    user-select: none;
+}
 
 @media only screen and (max-width: 1600px) {
     .rightCartItems h3 {
@@ -666,10 +714,13 @@
         width: 65%;
     }
     .addressList ul li {
-        width: 40% !important;
+        width: 100%;
     }
     .rightCartItems h3 {
         font-size: 16px;
+    }
+    .ManageAllAddress .addressList {
+        width: 100%;
     }
 }
 @media only screen and (max-width: 850px) {
@@ -720,5 +771,16 @@
     }
     .rightCartInnerRightItems {
         margin-left: 10%;
+    }
+    .categoryModal.address .addressTabsContainer .tab-content {
+        width: 100%;
+        padding: 20px 0;
+    }
+    .addressForm .box .form-control:first-child {
+        margin-right: 0;
+    }
+    .addressForm .box .form-control {
+        margin-right: 0;
+        width: 100%;
     }
 }

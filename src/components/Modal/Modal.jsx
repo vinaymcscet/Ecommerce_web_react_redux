@@ -11,7 +11,12 @@ import {
   setOtp,
   setForgotPassword,
   setForgotPasswordAssist,
-  setForgotOtp
+  setForgotOtp,
+  resetSignup,
+  resetLogin,
+  resetOtp,
+  resetForgotPassword,
+  resetForgotPasswordAssist
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
 import { getDeviceType } from "../../utils/CheckDevice";
@@ -30,7 +35,6 @@ import {
       NEW_PASSWORD,
       CONFIRM_PASSWORD_LABEL,
       CONFIRM_PASSWORD,
-      PASSWORD_NOT_MATCH_MESSAGE,
       NEW_PASSWORD_ENTER,
       TEMP_CODE_LABEL,
       OTP_NAME,
@@ -109,13 +113,25 @@ const handleConfirmPasswordChange = (e) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (modalType === "login") {
-      dispatch(setLogin({ ...login, [name]: value }));
+      let updatedValue = value;
+      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+        updatedValue = `+44${value}`;
+      }
+      dispatch(setLogin({ ...login, [name]: updatedValue }));
     } else if (modalType === "signup") {
-      dispatch(setSignup({ ...signup, [name]: value }));
+      let updatedValue = value;
+      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+        updatedValue = `+44${value}`;
+      }
+      dispatch(setSignup({ ...signup, [name]: updatedValue }));
     } else if (modalType === "otp") {
       dispatch(setOtp({ otpCode: value }));
     } else if(modalType === 'forgotPasswordAssist') {
-      dispatch(setForgotPasswordAssist({ ...forgotPasswordAssist, [name]: value}))
+      let updatedValue = value;
+      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+        updatedValue = `+44${value}`;
+      }
+      dispatch(setForgotPasswordAssist({ ...forgotPasswordAssist, [name]: updatedValue}))
     } else if (modalType === "forgotOtp") {
       dispatch(setForgotOtp({ otpCode: value }));
     }
@@ -142,7 +158,6 @@ const handleConfirmPasswordChange = (e) => {
     if (!emailPattern.test(value) && !mobilePattern.test(value)) {
       return EMAIL_OR_MOBILE;
     }
-
     return "";
   };
 
@@ -218,7 +233,6 @@ const handleConfirmPasswordChange = (e) => {
       };
       
       dispatch(forgetPasswordOtpRequest(responseObj));
-      // dispatch(setModalType('forgot'));
     }
   };
   
@@ -227,7 +241,12 @@ const handleConfirmPasswordChange = (e) => {
     dispatch(toggleModal(true));
   };
   const closeModal = () => {
-    dispatch(toggleModal(false));
+    dispatch(resetSignup());
+    dispatch(resetLogin());
+    dispatch(resetOtp());
+    dispatch(resetForgotPassword());
+    dispatch(resetForgotPasswordAssist());
+    dispatch(toggleModal(false))
   };
   return (
     <div>

@@ -30,6 +30,15 @@
     line-height: 40px;
 }
 
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+}
+
 .order-complete button {
     margin: 100px 0;
 }

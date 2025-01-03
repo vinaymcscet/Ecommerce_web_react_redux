@@ -7,13 +7,23 @@
   margin-top: 30px;
 }
 
+.productListing .listPageCategoryItems .catProduct:nth-child(1) {
+  margin-top: 10px;
+}
+
 .productListing .catProduct .product img {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
+  border-radius: 9px;
+  border: 1px solid #eaeaea;
+}
+
+.productListing .slick-slide {
+  padding-right: 20px;
 }
 
 .productListing .catProduct .product p {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .productListing .catProduct .categoryItem {
@@ -37,7 +47,8 @@
 
 .listPageCategoryItems .slick-slide {
   width: auto !important;
-  margin: 0 auto;
+  margin: 0 15px;
+  padding: 0;
 }
 
 .prdWrapper {
@@ -354,6 +365,11 @@ span {
   overflow: hidden;
 }
 
+.productListing .slick-list {
+  margin-bottom: 0;
+  position: relative;
+}
+
 @media only screen and (max-width: 992px) {
   .prdWrapper .prdRight .productList > div {
     width: 44%;
@@ -362,6 +378,17 @@ span {
   .customPrice input {
     max-width: 40px;
     padding: 5px 10px;
+  }
+  .prdWrapper .prdRight {
+    margin-left: 2%;
+  }
+  .prdWrapper .paginationBox {
+    margin-bottom: 20px;
+    flex-flow: wrap row;
+    justify-content: flex-start;
+  }
+  .prdWrapper .itemsPerPageDropdown {
+    margin-bottom: 10px;
   }
 }
 @media only screen and (max-width: 767px) {
@@ -396,11 +423,17 @@ span {
   .prdWrapper .prdRight {
     width: 100%;
   }
+  .prdWrapper .pagination li {
+    margin-bottom: 10px;
+  }
 }
 
 @media only screen and (max-width: 567px) {
   .prdWrapper .prdRight .productList > div {
     width: 100%;
     margin: 0 2% 0 0;
+  }
+  .prdWrapper .pagination {
+    flex-flow: wrap row;
   }
 }

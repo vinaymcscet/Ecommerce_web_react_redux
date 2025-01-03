@@ -10,8 +10,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalType, toggleModal } from "../../store/slice/modalSlice";
 import { useDetectOutsideClick } from "../../utils/useDetectOutsideClick";
-import { getItemsInCartData, getUserRequest, logoutRequest, searchProductData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { 
+  getItemsInCartData, 
+  getUserRequest, 
+  logoutRequest, 
+  searchProductData, 
+  viewItemsInCartData } from "../../store/slice/api_integration";
 import { device_token } from "../../utils/Constants";
+import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -20,7 +26,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const { user } = useSelector((state) => state.user);
-  const { cartItems, viewCartItems } = useSelector((state) => state.cart);
+  const { viewCartItems } = useSelector((state) => state.cart);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
@@ -52,7 +58,9 @@ const Header = () => {
     const responseObj = {
       device_token: device_token
     }
-    dispatch(logoutRequest(responseObj));
+    dispatch(logoutRequest(responseObj)).finally(() => {
+      handleOpenDialog('login');
+    });
   };
 
   const handleProfile = () => {
@@ -89,6 +97,10 @@ const Header = () => {
   useEffect(() => {
     dispatch(getUserRequest());
     dispatch(viewItemsInCartData());
+    // open by default login modal
+    const storageTokens = getTokensFromLocalStorage();
+
+    if(!storageTokens?.accessToken) handleOpenDialog('login');
   }, [])
   return (
     <div>
@@ -103,24 +115,22 @@ const Header = () => {
                     <img src="/images/icons/LOGO1.png" alt="Logo" />
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => redirectToSupport()}>
+                  <img src="/images/icons/support.png" alt="Support" />
+                  <p>Support</p>
+                </li>
+                {/* <li>
                   <img src="/images/icons/deals.png" alt="Hot Deals" />
                   <p>Hot Deals</p>
                 </li>
                 <li>
                   <img src="/images/icons/stock.png" alt="Hot Deals" />
                   <p>Clear Stock</p>
-                </li>
+                </li> */}
               </ul>
             </Grid>
             <Grid item xs={6} md={4} lg={4}>
               <div className="searchPanel">
-                {/* <select name="select category" className="selectCategory">
-                  <option>Categories</option>
-                  <option>Categories 1</option>
-                  <option>Categories 2</option>
-                  <option>Categories 3</option>
-                </select> */}
                 <div className="inputBox">
                   <input
                     type="text"
@@ -137,10 +147,6 @@ const Header = () => {
             </Grid>
             <Grid item xs={0} md={4} lg={4} className="rightHead">
               <ul className={hamburgerOpen ? "rightMenu active" : "rightMenu"}>
-                <li onClick={() => redirectToSupport()}>
-                  <img src="/images/icons/support.png" alt="Support" />
-                  <p>Support</p>
-                </li>
                 {user.length === 0 && (
                   <li onClick={() => handleOpenDialog("login")}>
                     <img src="/images/icons/login.png" alt="Login" />

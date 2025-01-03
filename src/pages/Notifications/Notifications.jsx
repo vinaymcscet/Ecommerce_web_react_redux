@@ -72,36 +72,38 @@ const Notifications = () => {
      
   return (
     <div className="notifications">
-        <h4>Notifications List</h4>
+        <div className='notificationHeader'>
+            <h4>Notifications List</h4>
+            {notifications?.length > 0 && <div className='paginationBox'>
+                {/* <div className="itemsPerPageDropdown">
+                    <label>Items per page: </label>
+                    <select value={perPage} onChange={handleNotificationsPerPageChange}>
+                        {notificationsPerPageOptions.map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </div> */}
+                {/* Pagination component */}
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={Math.max(Math.ceil(notificationCount / perPage), 1)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={(ev) => handleNotificationsPageChange(ev)}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    forcePage={page}  // Sync current page with URL
+                    disabled={notificationCount === 0} 
+                />
+                </div>
+            }
+        </div>
         {notifications && <h6 onClick={handleClearNotification}>Clear Notification</h6>}
-        {notifications?.length > 0 && <div className='paginationBox'>
-            <div className="itemsPerPageDropdown">
-                <label>Items per page: </label>
-                <select value={perPage} onChange={handleNotificationsPerPageChange}>
-                    {notificationsPerPageOptions.map(option => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            {/* Pagination component */}
-            <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={Math.max(Math.ceil(notificationCount / perPage), 1)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={(ev) => handleNotificationsPageChange(ev)}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={page}  // Sync current page with URL
-                disabled={notificationCount === 0} 
-            />
-            </div>
-        }
          {loading ? (
                 <div className="loadingContainer">
                     <CircularProgress />

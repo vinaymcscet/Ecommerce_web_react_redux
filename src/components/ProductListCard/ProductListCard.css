@@ -150,6 +150,37 @@
     min-height: auto;
     margin-top: 0;
 }
+.ratingAndCartWrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.ratingAndCartWrap button {
+    font-size: 12px;
+    width: auto;
+    height: auto;
+    min-height: auto;
+    padding: 5px 15px;
+}
+
+.ratingAndCartWrap .quantityButtons button {
+    padding: 0px 7px;
+    margin: 0 5px;
+    border: 1px solid #333;
+    background: transparent;
+    height: 20px;
+}
+
+.ratingAndCartWrap button:disabled {
+    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(19, 1, 1, 0.3));
+    color: light-dark(rgba(16, 16, 16, 0.3), rgba(255, 255, 255, 0.3));
+    border-color: light-dark(rgba(118, 118, 118, 0.3), rgba(195, 195, 1, 0.3));
+}
+
+.ratingAndCartWrap .quantityButtons span {
+    color: #333;
+}
 
 @media screen and (max-width: 1200px) {
     .productBoxes {
@@ -171,6 +202,9 @@
     .productBoxes {
         width: 30%;
         margin: 0 2% 4% 1%;
+    }
+    .productBoxes, .productList.special > div {
+        width: 25%;
     }
 }
 

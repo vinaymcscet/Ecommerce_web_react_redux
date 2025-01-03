@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
-import { addToCartData, deleteSingleWhistListData, getListOfWhistListData } from '../../store/slice/api_integration';
+import { addToCartData, deleteSingleWhistListData, getListOfWhistListData, productDetailData } from '../../store/slice/api_integration';
 import StarRating from '../../components/StarRating/StarRating';
 import { ShareProduct } from '../../utils/ShareProduct';
 import { setListWishList } from '../../store/slice/productSlice';
@@ -17,7 +17,7 @@ const Wishlist = () => {
 
     const [loading, setLoading] = useState(false);
     const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
-    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(1);
+    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(10);
     const { 
         listWishlist, 
         totalWishlistCount = 0, 
@@ -45,11 +45,16 @@ const Wishlist = () => {
     // Add to cart from wishlist page
     const handleAddToCart = (item) => {
         // Dispatch product details and quantity to Redux
-        const responseObj = {
-            sku_id: item?.sku_id,
-            type: 'increase'
+        const responseObj = { 
+            product_id: item.product_id,
         }
-        dispatch(addToCartData(responseObj))
+        dispatch(productDetailData(responseObj))
+        navigate(`/product/${item.product_id}`, { state: { product: item } });
+        // const responseObj = {
+        //     sku_id: item?.sku_id,
+        //     type: 'increase'
+        // }
+        // dispatch(addToCartData(responseObj))
     };
 
     // Pagination Code for WishList Items
@@ -107,7 +112,7 @@ const Wishlist = () => {
           <div className="wishlistContent">
               {listWishlist && (
                   <div className='paginationBox'>
-                      <div className="itemsPerPageDropdown">
+                      {/* <div className="itemsPerPageDropdown">
                           <label>Items per page: </label>
                           <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
                               {wishListItemsPerPageOptions.map(option => (
@@ -116,7 +121,7 @@ const Wishlist = () => {
                                   </option>
                               ))}
                           </select>
-                      </div>
+                      </div> */}
                       <ReactPaginate
                           previousLabel={"Previous"}
                           nextLabel={"Next"}

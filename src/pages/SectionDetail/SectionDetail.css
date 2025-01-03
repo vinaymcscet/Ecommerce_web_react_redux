@@ -9,6 +9,13 @@
 .sectionDetail .browisingHistory{
     width: 100%;
     margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sectionDetail .paginationBox {
+    margin-top: 0;
 }
 
 .sectionDetail .productHistory > div .browisingHistory  {
@@ -52,7 +59,7 @@
 
 .sectionDetail .productHistory .productList > div {
     width: 18%;
-    margin: 0 2% 0 0;
+    margin: 0 2% 2% 0;
     min-height: 350px;
 }
 
@@ -65,6 +72,20 @@
     margin: 0 auto;
 }
 
+@media screen and (max-width: 1300px) {
+    .sectionDetail .productHistory .productList > div {
+        width: 23%;
+        margin: 0 2% 0 0;
+        min-height: 350px;
+    }
+}
+@media screen and (max-width: 850px) {
+    .sectionDetail .productHistory .productList > div {
+        width: 30%;
+        margin: 0 2% 0 0;
+        min-height: 350px;
+    }
+}
 @media screen and (max-width: 767px) {
     .sectionDetail .productHistory .productList>div {
         width: 46%;
@@ -73,6 +94,13 @@
     .sectionDetail .productHistory .productList>div {
         width: 47%;
         margin: 0 3% 3% 0;
+    }
+    .sectionDetail .browisingHistory {
+        flex-flow: wrap column;
+        align-items: normal;
+    }
+    .sectionDetail .browisingHistory h3 {
+        margin: 0 0 20px 0;
     }
 }
 

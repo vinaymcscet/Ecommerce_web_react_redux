@@ -14,13 +14,8 @@ const HeaderPin = () => {
         const responseObj = { group_key: 'notice'};
         dispatch(getCMSGroupItemRequest(responseObj));
     }, [])
-    const sliderData = [
-        cmsGroupItem?.title_1, 
-        cmsGroupItem?.title_1, 
-        cmsGroupItem?.title_1, 
-        cmsGroupItem?.title_1,
-        cmsGroupItem?.title_1
-    ];
+    
+    const slidesArray = cmsGroupItem?.map((item) => item.title_1).filter(Boolean); // Ensure no undefined or empty strings
     return (
         <div className='headerPinContainer'>
             <Box sx={{ flexGrow: 1 }}>
@@ -33,7 +28,9 @@ const HeaderPin = () => {
                     </Grid>
                     <Grid item xl={6} sm={6} xs={0}>
                         <div className="frame">
-                            <QuoteSlider slides={sliderData} />
+                            {slidesArray && slidesArray.length > 0 && (
+                                <QuoteSlider slides={slidesArray} />
+                            )}
                         </div>
                     </Grid>
                     <Grid item xl={3} sm={3} xs={6}>

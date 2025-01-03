@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { SliderData } from '../../utils/QuoteSliderData';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import "./QuoteSlider.css";
 
-const QuoteSlider = ({ slides }) => {
-    
+const QuoteSlider = ({ key, slides }) => {
     const [current, setCurrent] = useState(0);
     const length = slides?.length;
 
@@ -24,14 +22,14 @@ const QuoteSlider = ({ slides }) => {
         <section className='slider'>
             <ChevronLeftIcon className='left-arrow' onClick={prevSlide} />
             <ChevronRightIcon className='right-arrow' onClick={nextSlide} />
-            {SliderData.map((slide, index) => {
+            {slides?.map((slide, index) => {
                 return (
                     <div
                         className={index === current ? 'slide active' : 'slide'}
                         key={index}
                     >
                         {index === current && (
-                            <p>{slide.name}</p>
+                            <p>{slide}</p>
                         )}
                     </div>
                 );

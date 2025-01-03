@@ -47,7 +47,9 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
         url.toLowerCase().includes("review") ||
         url.toLowerCase().includes("cart") ||
         url.toLowerCase().includes("order") ||
-        url.toLowerCase().includes("notification") 
+        url.toLowerCase().includes("notification") ||
+        url.toLowerCase().includes("homesection") ||
+        url.toLowerCase().includes("getsection")
     ) {
         const tokens = getTokensFromLocalStorage();
         config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;

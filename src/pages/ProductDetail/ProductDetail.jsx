@@ -8,13 +8,14 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addReviewProductData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData, viewItemsInCartData } from "../../store/slice/api_integration";
 import CircularProgress from '@mui/material/CircularProgress';
 import "./ProductDetail.css";
 // import { gaurnteeMessage } from "../../utils/CommonUtils";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
+import { setViewCartItems } from "../../store/slice/cartSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -22,18 +23,15 @@ const ProductDetail = () => {
   const { 
     productDetailResponse, 
     getReview, 
-    getReviewCount = 0, 
+    getReviewCount = 0,
     similarProductListResponse, 
     similarProductCount = 0,
     recentView,
-    totalRecentView = 0 } = useSelector((state) => state.product);
+    totalRecentView = 0,
+   } = useSelector((state) => state.product);
   const { user } = useSelector((state) => state.user);
-  
-  
-  
-  const [quantity, setQuantity] = useState(1);
+    
   const [activeTab, setActiveTab] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(null);
   const [progress, setProgress] = React.useState(0);
   const [sizeError, setSizeError] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -47,32 +45,36 @@ const ProductDetail = () => {
   const [userLoggedOnCart, setUserLoggedOnCart] = useState("");
   const [userLoggedOnReview, setUserLoggedOnReview] = useState("");
   const [userLoggedOnBuyNow, setUserLoggedOnBuyNow] = useState("");
+  const [triggerSkuId, setTriggerSkuId] = useState(null);
 
-  const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
+  // const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
   const [handleCartButtonOnLoad, setHandleCartButtonOnLoad] = useState(0);
   const [imageData, setImageData] = useState([
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
-    { preview: "", file: null },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
+    { imageId: '', imageUrl: '', preview: '' },
   ]);
   const [selected, setSelected] = useState({
-    sku_id: '',
-    color: '', 
-    size: '',
+    sku_id: null,
+    color: null,
+    size: null,
+    quantity: 0,
     currentPrice: 0,
     originalPrice: 0,
-    discount: ''
+    discount: 0
   });
+  const [isSelectedInitialized, setIsSelectedInitialized] = useState(false);
+  
   const [errorFileType, setErrorFileType] = useState("");
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
   const [reviewPerPage, setReviewPerPage] = useState(10);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
-  const [recentViewPerPage, setRecentViewPerPage] = useState(1);
+  const [recentViewPerPage, setRecentViewPerPage] = useState(25);
   
   const [similarProductPage, setSimilarProductPage] = useState(1);  // Default page 0 (first page)
-  const [similarProductPerPage, setSimilarProductPerPage] = useState(1);
+  const [similarProductPerPage, setSimilarProductPerPage] = useState(25);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -83,10 +85,14 @@ const ProductDetail = () => {
     fullName: "",
     email: "",
     review: "",
+    rating: "",
   });
   const [loading, setLoading] = useState(false);
+  const [reviewLoading, setreviewLoading] = useState(false);
   const [similarProductLoading, setSimilarProductLoading] = useState(false);
   const [recentlyViewLoading, setRecentlyViewLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState([]);
+  const [wistlistLoading, setWishlistLoading] = useState(false);
 
   const location = useLocation();
   const pathSegments = location.pathname.split("/"); // Split URL by `/`
@@ -127,36 +133,61 @@ const ProductDetail = () => {
   : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
 
   const handleIncrease = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+    setWishlistLoading(true);
+    if(user.length === 0) {
+      setUserLoggedOnCart("Please login to add items to cart.")
+      setWishlistLoading(false);
+      setTimeout(() => {
+        setUserLoggedOnCart("")
+      }, 1000);
+      return;
+    }
     const responseObj = {
-      sku_id: productDetailResponse?.data?.sku_id,
+      sku_id: selected?.sku_id,
       type: 'increase'
     }
-    dispatch(addToCartData(responseObj))
+    dispatch(addToCartData(responseObj)).finally(() => {
+      setSelected((prev) => ({
+        ...prev,
+        quantity: Number(prev.quantity) + 1, // Update quantity locally
+      }));
+      dispatch(viewItemsInCartData());
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj))
+      dispatch(setViewCartItems(null));
+      setWishlistLoading(false);
+    })
   };
 
   const handleDecrease = () => {
-    setQuantity((prevQuantity) => {
-      if(prevQuantity > 1) {
-        prevQuantity -= 1
-        const responseObj = {
-          sku_id: productDetailResponse?.data?.sku_id,
-          type: 'decrease'
-        }
-        dispatch(addToCartData(responseObj))
-      } else {
-        prevQuantity = 1;
-      }
-    });
-  };
-
-  const handleChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value) && value > 0) {
-      setQuantity(value);
-    } else {
-      setQuantity(1); // Reset to 1 if invalid input
+    setWishlistLoading(true);
+    if(user.length === 0) {
+      setUserLoggedOnCart("Please login to add items to cart.")
+      setWishlistLoading(false);
+      setTimeout(() => {
+        setUserLoggedOnCart("")
+      }, 1000);
+      return;
     }
+    const responseObj = {
+      sku_id: selected?.sku_id,
+      type: 'decrease'
+    }
+    dispatch(addToCartData(responseObj)).finally(() => {
+      setSelected((prev) => ({
+        ...prev,
+        quantity: Math.max(Number(prev.quantity) - 1, 0), // Update quantity, min 0
+      }));
+      dispatch(viewItemsInCartData());
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj))
+      dispatch(setViewCartItems(null));
+      setWishlistLoading(false);
+    })
   };
 
   useEffect(() => {
@@ -200,6 +231,14 @@ const ProductDetail = () => {
     });
   };
 
+  const handleOpenReviewBox = () => {
+    handleActiveTabs(2);
+    window.scrollTo({
+      top: 800,
+      behavior: "smooth", // For smooth scrolling
+    });
+  }
+
   const validate = () => {
     const newErrors = {};
     let isValid = true;
@@ -222,6 +261,11 @@ const ProductDetail = () => {
       isValid = false;
     }
 
+    if(rating === "" || rating === 0) {
+      newErrors.rating = "Rating is required"
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -230,8 +274,8 @@ const ProductDetail = () => {
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     const uploadedImages = imageData
-      .filter((data) => data.file !== null) // Exclude empty slots
-      .map((data) => data.file); // Extract the file objects
+      .filter((data) => data.imageId !== "") // Exclude empty slots
+      .map((data) => data.imageId); // Extract the file objects
     
     if (validate()) {
       const responseObj = {
@@ -240,26 +284,38 @@ const ProductDetail = () => {
         email: formData.email,
         ratings: rating,
         review_text: formData.review,
-        images: uploadedImages,
+        image_id: uploadedImages,
       }
-      dispatch(addReviewProductData(responseObj))
-      const reponseReviewObj = {
-        product_id: productDetailResponse?.data?.product_id,
-        offset: 1,
-        limit: 10
-      }
-      dispatch(getReviewProductData(reponseReviewObj))
+      dispatch(addReviewProductData(responseObj)).finally(() => {
+        const searchParams = new URLSearchParams(location.search); 
+        const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+        const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+  
+        setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+        setReviewPerPage(itemsPerPageParam);
+  
+        const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+        const limit = itemsPerPageParam;
+       const reponseReviewObj = {
+         product_id: productDetailResponse?.data?.product_id || product_id,
+         offset,
+         limit
+       }
+       dispatch(getReviewProductData(reponseReviewObj))
+      })
+
       setFormData({
         fullName: "",
         email: "",
         review: "",
       });
+      setRating(0);
       setImageData([
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
-        { preview: "", file: null },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
+        { imageId: '', imageUrl: '', preview: ''  },
       ]);
       setShowReviewForm(false);
     }
@@ -274,27 +330,6 @@ const ProductDetail = () => {
     setUserLoggedOnReview("");
   };
 
-  // handle item on cart
-  const handleAddToCart = () => {
-    if(user.length === 0) {
-      setUserLoggedOnCart("Please login to add items to cart.")
-      return;
-    }
-    setHandleCartOnLoad(1);
-    setHandleCartButtonOnLoad(1);
-    if (selected.color_code === null) {
-      setSizeError("Please select a size.");
-      return;
-    }
-   
-    const responseObj = {
-      sku_id: productDetailResponse?.data.variants[0]?.sku_id,
-      type: 'increase',
-    }
-    dispatch(addToCartData(responseObj))
-    setUserLoggedOnCart("")
-  };
-
   // Add Item on cart and redirection to cart page on But Now button click
   const handleBuyNowProduct = () => {
     if(user.length === 0) {
@@ -306,15 +341,74 @@ const ProductDetail = () => {
       type: 'increase'
     }
     dispatch(addToCartData(responseObj)).finally(() => {
-      setUserLoggedOnBuyNow("")
-      navigate("/cart");
-    });
+      // if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+        setUserLoggedOnBuyNow("")
+        dispatch(viewItemsInCartData());
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+        dispatch(setViewCartItems(null));
+        navigate("/cart");
+
+      // } else {
+      //   return;
+      // }
+    })
   }
+
+  const handleAddToCartClick = (sku_id) => {
+      setTriggerSkuId(sku_id);
+      const responseObj = {
+        sku_id,
+        type: "increase",
+      };
+      dispatch(addToCartData(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+      })
+  };
+  const handleIncrement = (sku_id) => {
+    const responseObj = { sku_id, type: "increase" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const handleDecrement = (sku_id) => {
+    const responseObj = { sku_id, type: "decrease" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedProductList();
+    });
+  };
+
+  const fetchUpdatedProductList = () => {
+    const pageParam = parseInt(searchParams.get("recentViewPage"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("RecentViewPerPage"), 10) || recentViewPerPage;
+
+    setRecentViewPage(pageParam - 1); // Adjust for 0-based indexing
+    setRecentViewPerPage(itemsPerPageParam);
+
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+
+    setRecentlyViewLoading(true);
+    const responseObj = {
+      offset,
+      limit
+    }
+    dispatch(getAllRecentViewData(responseObj)).finally(() => {
+      setRecentlyViewLoading(false);
+    });
+    dispatch(viewItemsInCartData());
+    dispatch(setViewCartItems(null));
+  };
 
   // Adding Product on whistlist
   const handleWishlistToggle = (productData) => {
+    setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnWishList("Please login to add items to wishlist.")
+      setWishlistLoading(false);
       return;
     }
 
@@ -325,6 +419,7 @@ const ProductDetail = () => {
           product_id: product_id ,
         }
         dispatch(productDetailData(responseObj))
+        setWishlistLoading(false);
       })
     } else {
         dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
@@ -332,6 +427,7 @@ const ProductDetail = () => {
             product_id: product_id ,
           }
           dispatch(productDetailData(responseObj))
+          setWishlistLoading(false);
         })
     }
     setUserLoggedOnWishList("")
@@ -339,70 +435,153 @@ const ProductDetail = () => {
 
   // select size and color of product
   useEffect(() => {
-    if (productDetailResponse?.data?.variants && productDetailResponse?.data?.variants.length > 0) {
-      // Filter unique color_code entries
-      const uniqueVariants = Array.from(
-        new Map(
-          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
-        ).values()
-      )
-      .sort((a, b) => b.quantity - a.quantity);
-      // Automatically select the first item
-      const firstItem = uniqueVariants[0];
-      
+    if (
+        productDetailResponse?.data?.variants && 
+        productDetailResponse?.data?.variants.length > 0 && 
+        !isSelectedInitialized) {
+      const firstItem = productDetailResponse?.data?.variants[0];
       setSelected({
         sku_id: firstItem.sku_id,
         color: firstItem.color,
         size: firstItem.size,
+        quantity: firstItem.quantity,
         currentPrice: firstItem.sku_price?.current,
         originalPrice: firstItem.sku_price?.original,
         discount: firstItem.sku_price?.discount_percentage,
       });
+      setIsSelectedInitialized(true); // Mark selected as initialized
     }
-  }, [productDetailResponse]); 
+  }, [productDetailResponse, isSelectedInitialized]);
+  
   const handleColorClick = (item) => {
     setSelected({ 
       sku_id: item?.sku_id,
       color: item?.color, 
       size: item?.size, 
+      quantity: item?.quantity, 
       currentPrice: item?.sku_price?.current,
       discount: item?.sku_price?.discount_percentage,
       originalPrice: item?.sku_price?.original,
     });
   };
-
+  
    // Function to handle image upload and preview
    const handleImageUpload = (e, index) => {
-    const file = e.target.files[0]; // Get the uploaded file
+    const file = e.target.files[0];
+    
     if (file && file.type.startsWith("image/")) {
-      const imageUrl = URL.createObjectURL(file);
-      setImageData((prev) =>
-        prev.map((img, i) =>
-          i === index
-            ? { preview: imageUrl, file } // Update the corresponding index
-            : img
-        )
-      );
+      const responseObj = {
+        product_id,
+        images: file,
+      };
+
+      // Set loading state for the specific image index
+      setImageLoading((prev) => {
+        const updatedLoading = [...prev];
+        updatedLoading[index] = true;
+        return updatedLoading;
+      });
+  
+      // Dispatch the API call to upload the image
+      // dispatch(setGetAnReviewImage(null));
+      dispatch(addReviewProductImageData(responseObj))
+      .then((updatedImage) => {
+        if (updatedImage?.imageId && updatedImage?.imageUrl) {
+          setImageData((prev) => {
+            const updatedImageData = [...prev];
+            updatedImageData[index] = {
+              imageId: updatedImage.imageId,
+              imageUrl: updatedImage.imageUrl,
+              preview: updatedImage.imageUrl,
+            };
+            return updatedImageData;
+          });
+        } else {
+          console.error("Image upload response is invalid.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+      })
+      .finally(() => {
+        // Clear loading state for the specific image index
+        setImageLoading((prev) => {
+          const updatedLoading = [...prev];
+          updatedLoading[index] = false;
+          return updatedLoading;
+        });
+      });
     } else {
       setErrorFileType("Please upload a valid image file");
     }
-  };
+  }
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
+  // get reviews on page load 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search); 
+    const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+    const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
 
+    setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+    setReviewPerPage(itemsPerPageParam);
+
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
+    const repoonseReviewObj = {
+      product_id: productDetailResponse?.data?.product_id,
+      offset,
+      limit, 
+    }
+    dispatch(getReviewProductData(repoonseReviewObj))
+  }, [dispatch, location.search, productDetailResponse?.data?.product_id, reviewPerPage])
   const handleActiveTabs = (value) => {
     if(activeTab == 2) {
+      const searchParams = new URLSearchParams(location.search); 
+      const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+      const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+
+      setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+      setReviewPerPage(itemsPerPageParam);
+
+      const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+      const limit = itemsPerPageParam;
       const repoonseReviewObj = {
-        product_id: productDetailResponse?.data?.product_id 
+        product_id: productDetailResponse?.data?.product_id,
+        offset,
+        limit, 
       }
       dispatch(getReviewProductData(repoonseReviewObj))
     }
     setActiveTab(value); 
   }
   
-  // Handle dropdown change for Review itemsPerPage
+   // pagination with API call for Review Items
+   useEffect(() => {
+       const searchParams = new URLSearchParams(location.search); 
+       const pageParam = parseInt(searchParams.get("page"), 10) || 1;
+       const itemsPerPageParam = parseInt(searchParams.get("itemsPerPage"), 10) || reviewPerPage;
+ 
+       setReviewPage(pageParam - 1); // Adjust for 0-based indexing
+       setReviewPerPage(itemsPerPageParam);
+ 
+       const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+       const limit = itemsPerPageParam;
+ 
+       setreviewLoading(true);
+       const reponseReviewObj = {
+        product_id: productDetailResponse?.data?.product_id || product_id,
+        offset,
+        limit,
+      }
+      dispatch(getReviewProductData(reponseReviewObj)).finally(() => {
+        setreviewLoading(false);
+       });
+   }, [location.search, reviewPerPage, dispatch]);  // Trigger this effect when the URL's query or page changes
+  
+   // Handle dropdown change for Review itemsPerPage
   const handleReviewPerPageChange = (e) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setReviewPerPage(newItemsPerPage);
@@ -524,9 +703,63 @@ const ProductDetail = () => {
 
   // Calculate total pages based on total results
   const similarViewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= similarProductCount);
-  
+  const handleAddToSimilarCartClick = (sku_id) => {
+    setTriggerSkuId(sku_id);
+    const responseObj = {
+      sku_id,
+      type: "increase",
+    };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedSimilarProductList();
+    })
+};
+const handleSimilarIncrement = (sku_id) => {
+  const responseObj = { sku_id, type: "increase" };
+  dispatch(addToCartData(responseObj)).finally(() => {
+    fetchUpdatedSimilarProductList();
+  });
+};
+
+const handleSimilarDecrement = (sku_id) => {
+  const responseObj = { sku_id, type: "decrease" };
+  dispatch(addToCartData(responseObj)).finally(() => {
+    fetchUpdatedSimilarProductList();
+  });
+};
+
+const fetchUpdatedSimilarProductList = () => {
+  const pageParam = parseInt(similarProductParams.get("SimilarViewPage"), 10) || 1;
+  const itemsPerPageParam = parseInt(similarProductParams.get("SimilarViewPerPage"), 10) || similarProductPerPage;
+
+  setSimilarProductPage(pageParam - 1); // Adjust for 0-based indexing
+  setSimilarProductPerPage(itemsPerPageParam);
+
+  const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+  const limit = itemsPerPageParam;
+
+  setSimilarProductLoading(true);
+  const similarProductPayload = {
+    product_id: product_id,
+    offset,
+    limit
+  }
+  dispatch(similarProductData(similarProductPayload)).finally(() => {
+    setSimilarProductLoading(false);
+    const responseObj = { 
+      product_id: product_id ,
+    }
+    dispatch(productDetailData(responseObj))
+  });
+  dispatch(viewItemsInCartData());
+  dispatch(setViewCartItems(null));
+}
   return (
       <div>
+        {wistlistLoading && 
+          <div className="wishlistLoadingContainer">
+            <CircularProgress />
+          </div>
+        }
         {loading ? (
           <div className="loadingContainer">
             <CircularProgress />
@@ -577,7 +810,7 @@ const ProductDetail = () => {
                   {productDetailResponse?.data?.ratings && <div className="ratingBox">
                     <span>{productDetailResponse?.data?.ratings?.average}</span>
                     {productDetailResponse?.data?.ratings && <StarRating userrating={productDetailResponse?.data?.ratings?.average} />}
-                    <div className="reviews">
+                    <div className="reviews" onClick={handleOpenReviewBox}>
                       {productDetailResponse?.data?.ratings?.total_reviews || 0} reviews
                     </div>
                   </div>}
@@ -591,28 +824,28 @@ const ProductDetail = () => {
                     )}
                   </div>
                   <div className="cartSection">
-                    <div className={`cartInputBox ${handleCartOnLoad === 0 ? 'disabled' : ''}`} >
+                    <div className={`cartInputBox`} >
                       <div className="increase" onClick={handleIncrease}>
                         +
                       </div>
                       <input
                         type="number"
                         name="cart"
-                        value={quantity}
-                        onChange={handleChange}
+                        value={selected.quantity}
                         min="1"
+                        disabled
                       />
                       <div className="decrease" onClick={handleDecrease}>
                         -
                       </div>
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       className={`addToCart ${handleCartButtonOnLoad == 0 ? '' : 'disabled'}`}
                       onClick={handleAddToCart}
                     >
                       Add to cart
-                    </button>
+                    </button> */}
                     {selected.size == '' && <p className="cartError error">{sizeError}</p>}
                     {user.length == 0 && <p className="cartError error">{userLoggedOnCart}</p>}
                   </div>
@@ -621,19 +854,13 @@ const ProductDetail = () => {
                   </div>
                   <div className="ProductColorBoxes">
                     {productDetailResponse?.data?.variants &&
-                      // Filter unique color_code entries
-                      Array.from(
-                        new Map(
-                          productDetailResponse?.data?.variants.map((item) => [item.color, item]) // Map key is `color_code`
-                        ).values()
-                      )
-                      .sort((a, b) => b.quantity - a.quantity)
-                      .map((item, index) => (
+                      productDetailResponse?.data?.variants
+                      .map((item) => (
                         // productDetailResponse?.data?.variants.map((item) => (
                         <div
                           onClick={() => handleColorClick(item)} // Update color on click
-                          className={`${selected.color === item.color ? 'selected' : ''}`}
-                          key={index}>
+                          className={`${selected.sku_id === item.sku_id ? 'selected' : ''}`}
+                          key={item.sku_id}>
                             <img
                               key={item.sku_id}
                               src={item.color_image}
@@ -830,70 +1057,74 @@ const ProductDetail = () => {
                         {!showReviewForm && (
                           <>
                             <div className="productReviewList">
-                              <h4>Customer say..</h4>
-                            {getReview?.length > 0 && <div className='paginationBox'>
-                              <div className="itemsPerPageDropdown">
-                                  <label>Items per page: </label>
-                                  <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                                      {reviewItemsPerPageOptions.map(option => (
-                                          <option key={option} value={option}>
-                                              {option}
-                                          </option>
-                                      ))}
-                                  </select>
-                              </div>
-                              {/* Pagination component */}
-                              <ReactPaginate
-                                  previousLabel={"Previous"}
-                                  nextLabel={"Next"}
-                                  breakLabel={"..."}
-                                  breakClassName={"break-me"}
-                                  pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={(ev) => handleReviewPageChange(ev)}
-                                  containerClassName={"pagination"}
-                                  activeClassName={"active"}
-                                  forcePage={reviewPage}  // Sync current page with URL
-                                  disabled={getReviewCount === 0} 
-                              />
-                            </div>
-                          }
-                              {getReview?.map((item, index) => (
-                                <div className="reviewComments" key={index}>
-                                  <div className="userImage">
-                                    <img
-                                      src={item.profile_image}
-                                      alt={item.rate_name}
-                                    />
+                              <div className="reviewHeader">
+                                <h4>Customer say..</h4>
+                                {getReview?.length > 0 && <div className='paginationBox'>
+                                  {/* <div className="itemsPerPageDropdown">
+                                      <label>Items per page: </label>
+                                      <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                                          {reviewItemsPerPageOptions.map(option => (
+                                              <option key={option} value={option}>
+                                                  {option}
+                                              </option>
+                                          ))}
+                                      </select>
+                                  </div> */}
+                                  {/* Pagination component */}
+                                  <ReactPaginate
+                                      previousLabel={"Previous"}
+                                      nextLabel={"Next"}
+                                      breakLabel={"..."}
+                                      breakClassName={"break-me"}
+                                      pageCount={Math.max(Math.ceil(getReviewCount / reviewPerPage), 1)}
+                                      marginPagesDisplayed={2}
+                                      pageRangeDisplayed={3}
+                                      onPageChange={(ev) => handleReviewPageChange(ev)}
+                                      containerClassName={"pagination"}
+                                      activeClassName={"active"}
+                                      forcePage={reviewPage}  // Sync current page with URL
+                                      disabled={getReviewCount === 0} 
+                                  />
                                   </div>
-                                  <div className="reviewRightomments">
-                                    <div className="userName">{item.name}</div>
-                                    <div className="ratingBox">
-                                      {item?.rating && (
-                                        <StarRating userrating={item.rating} />
-                                      )}
-                                      <div className="rateusername">
-                                        {item.review_text}
+                                }
+                              </div>
+                              <div className="reviewHeight">
+                                {getReview?.map((item, index) => (
+                                  <div className="reviewComments" key={index}>
+                                    <div className="userImage">
+                                      <img
+                                        src={item.profile_image}
+                                        alt={item.rate_name}
+                                      />
+                                    </div>
+                                    <div className="reviewRightomments">
+                                      <div className="userName">{item.name}</div>
+                                      <div className="ratingBox">
+                                        {item?.rating && (
+                                          <StarRating userrating={item.rating} />
+                                        )}
+                                        <div className="rateusername">
+                                          {item.review_text}
+                                        </div>
+                                      </div>
+                                      {item.description && <p>{item.description}</p>}
+                                      <div className="reviewed_image">
+                                        {item?.images &&
+                                          item?.images.map(
+                                            (review_image, index) => (
+                                              <img
+                                                key={index}
+                                                src={review_image}
+                                                alt={"Product Image"}
+                                              />
+                                            )
+                                          )}
                                       </div>
                                     </div>
-                                    {item.description && <p>{item.description}</p>}
-                                    <div className="reviewed_image">
-                                      {item?.images &&
-                                        item?.images.map(
-                                          (review_image, index) => (
-                                            <img
-                                              key={index}
-                                              src={review_image}
-                                              alt={"Product Image"}
-                                            />
-                                          )
-                                        )}
-                                    </div>
                                   </div>
-                                </div>
-                              ))}
-                              {!getReview && <p>Reviews not found.</p>}
+                                ))}
+                                {!getReview && <p>Reviews not found.</p>}
+                              </div>
                             </div>
                           </>
                         )}
@@ -949,9 +1180,14 @@ const ProductDetail = () => {
                                 <div className="form-control select">
                                   {imageData.map((data, index) => (
                                     <div className="selectFileBox" key={index}>
-                                      {data.preview ? (
-                                        <img src={data.preview} alt={`Preview ${index + 1}`} />
-                                      ) : (
+                                      {data.imageUrl && (
+                                        <img src={data.imageUrl} alt={`Preview ${index + 1}`} />
+                                      )}
+                                      {imageLoading[index] ? (
+                                        <div className="imageLoader">
+                                          <CircularProgress />
+                                        </div>
+                                      ) :  !data.imageUrl && (
                                         <img src="/images/add-file.svg" alt="Select File" />
                                       )}
                                       <input
@@ -966,6 +1202,9 @@ const ProductDetail = () => {
                               <div className="box full rating">
                                 <label for="ratings">Add Rating</label>
                                 <StarRating userrating={rating} onRatingChange={handleRatingChange} />
+                                {errors.rating && (
+                                  <p className="error">{errors.rating}</p>
+                                )}
                               </div>
                               <Button
                                 type={"submit"}
@@ -986,31 +1225,6 @@ const ProductDetail = () => {
               {recentView && recentView.length > 0 && 
                 <div className="baseAlignItems">
                   <h3>Recently Viewed</h3>
-                  <div className="paginationBox">
-                    <div className="itemsPerPageDropdown">
-                        <label>Items per page: </label>
-                        <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
-                            {recentViewItemsPerPageOptions.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        breakLabel={"..."}
-                        pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={handleRecentViewPageChange}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        forcePage={recentViewPage}
-                        disabled={totalRecentView === 0}
-                    />
-                  </div>
                 </div>
               }
                 {recentlyViewLoading ? (
@@ -1018,31 +1232,65 @@ const ProductDetail = () => {
                     <CircularProgress />
                   </div>
                   ):(
-                  <div className="productList">
-                    {recentView && recentView.length > 0 ? (
-                        recentView.map((item, index) => (
-                          <div key={index} onClick={() => handleProductClick(item)}>
-                            <ProductListCard
-                              id={item.product_id}
-                              image={item.imageUrl ? item.imageUrl : ""}
-                              name={item.name ? item.name : ""}
-                              userrating={item.rating ? item.rating : ""}
-                              discountPrice={item.discount ? item.discount : ""}
-                              originalPrice={item.price ? item.price : ""}
-                              save={item.save ? item.save : ""}
-                              coupenCode={item.coupen ? item.coupen : ""}
-                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                              bestSeller={item.bestseller ? item.bestseller : ""}
-                              time={item.time ? item.time : ""}
-                              discountLabel={item.Offerprice ? item.Offerprice : ""}
-                            />
-                          </div>
-                        ))
-                      ) : (
-                        <p>No product history available</p>
-                      )}
-                  </div>
+                    <>
+                      <div className="productList">
+                        {recentView && recentView.length > 0 && (
+                            recentView.map((item, index) => (
+                              <div key={index}>
+                                <ProductListCard
+                                  id={item.product_id}
+                                  image={item.imageUrl || "/images/no-product-available.png"}
+                                  name={item.name || ""}
+                                  userrating={item.rating || "0.0"}
+                                  discountPrice={item.discount || ""}
+                                  originalPrice={item.price || ""}
+                                  save={item.save || ""}
+                                  coupenCode={item.coupen || ""}
+                                  deliveryTime={item.deliverytime || ""}
+                                  freeDelivery={item.freedelivery || ""}
+                                  bestSeller={item.bestseller || ""}
+                                  time={item.time || ""}
+                                  discountLabel={item.Offerprice || ""}
+                                  wishlistStatus={item.wishlistStatus || ''}
+                                  sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                                  // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                                  onAddToCart={() => handleProductClick(item)}
+                                  cartQuantity={Number(item.cartQuantity)}
+                                  onIncrement={handleIncrement}
+                                  onDecrement={handleDecrement}
+                                  onProductClick={() => handleProductClick(item)}
+                                />
+                              </div>
+                            ))
+                          )}
+                      </div>
+                      <div className="paginationBox">
+                        {/* <div className="itemsPerPageDropdown">
+                            <label>Items per page: </label>
+                            <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
+                                {recentViewItemsPerPageOptions.map(option => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                        </div> */}
+                        <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            breakLabel={"..."}
+                            pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handleRecentViewPageChange}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            forcePage={recentViewPage}
+                            disabled={totalRecentView === 0}
+                        />
+                      </div>
+                    </>
+                  
                 )}
             </div>
             <div className="productHistory allcategory">
@@ -1050,8 +1298,47 @@ const ProductDetail = () => {
                 productDetailResponse?.data?.similar_products.length > 0 &&  
                 <div className="baseAlignItems">
                   <h3>Frequently bought</h3>
-                  <div className="paginationBox">
-                      <div className="itemsPerPageDropdown">
+                </div>
+              }
+              {similarProductLoading ? (
+                <div className="loadingContainer">
+                  <CircularProgress />
+                </div>
+                ): (
+                  <>
+                    <div className="productList">
+                      {similarProductListResponse && similarProductListResponse.length > 0 && (
+                        similarProductListResponse.map((item, index) => (
+                          <div key={index}>
+                            <ProductListCard
+                              id={item.product_id}
+                              image={item.imageUrl || "/images/no-product-available.png"}
+                              name={item.name || ""}
+                              userrating={item.rating || "0.0"}
+                              discountPrice={item.discount || ""}
+                              originalPrice={item.price || ""}
+                              save={item.save || ""}
+                              coupenCode={item.coupen || ""}
+                              deliveryTime={item.deliverytime || ""}
+                              freeDelivery={item.freedelivery || ""}
+                              bestSeller={item.bestseller || ""}
+                              time={item.time || ""}
+                              discountLabel={item.Offerprice || ""}
+                              wishlistStatus={item.wishlistStatus || ''}
+                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              onAddToCart={() => handleProductClick(item)}
+                              cartQuantity={Number(item.cart_quantity)}
+                              onIncrement={handleSimilarIncrement}
+                              onDecrement={handleSimilarDecrement}
+                              onProductClick={() => handleProductClick(item)}
+                            />
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="paginationBox">
+                      {/* <div className="itemsPerPageDropdown">
                           <label>Items per page: </label>
                           <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
                               {similarViewItemsPerPageOptions.map(option => (
@@ -1060,7 +1347,7 @@ const ProductDetail = () => {
                                   </option>
                               ))}
                           </select>
-                      </div>
+                      </div> */}
                       <ReactPaginate
                           previousLabel={"Previous"}
                           nextLabel={"Next"}
@@ -1074,39 +1361,8 @@ const ProductDetail = () => {
                           forcePage={similarProductPage}
                           disabled={similarProductCount === 0}
                       />
-                  </div>
-                </div>
-              }
-              {similarProductLoading ? (
-                <div className="loadingContainer">
-                  <CircularProgress />
-                </div>
-                ): (
-                    <div className="productList">
-                      {similarProductListResponse && similarProductListResponse.length > 0 ? (
-                        similarProductListResponse.map((item, index) => (
-                          <div key={index} onClick={() => handleProductClick(item)}>
-                            <ProductListCard
-                              id={item.product_id}
-                              image={item.image ? item.image : ""}
-                              name={item.name ? item.name : ""}
-                              userrating={item.rating ? item.rating : ""}
-                              discountPrice={item.discount ? item.discount : ""}
-                              originalPrice={item.price ? item.price : ""}
-                              save={item.save ? item.save : ""}
-                              coupenCode={item.coupen ? item.coupen : ""}
-                              deliveryTime={item.deliverytime ? item.deliverytime : ""}
-                              freeDelivery={item.freedelivery ? item.freedelivery : ""}
-                              bestSeller={item.bestseller ? item.bestseller : ""}
-                              time={item.time ? item.time : ""}
-                              discountLabel={item.Offerprice ? item.Offerprice : ""}
-                            />
-                          </div>
-                        ))
-                      ) : (
-                        <p>No product history available</p>
-                      )}
                     </div>
+                  </>
               )}
             </div>
           </div>

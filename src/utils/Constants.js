@@ -37,6 +37,7 @@ export const EDIT_ADDRESS_CONSTANT = 'editAddress';
 export const DELETE_ADDRESS_CONSTANT = 'deleteAddress';
 export const DEFAULT_ADDRESS_CONSTANT = 'setDefaultAddress';
 export const OFFER_LIST_CONSTANT = 'offerList';
+export const ADD_REVIEW_IMAGE_CONSTANT = 'addReviewImage';
 export const ADD_REVIEW_CONSTANT = 'addReview';
 export const GET_USER_REVIEW_CONSTANT = 'userReviews';
 export const GET_REVIEW_CONSTANT = 'getReview';
@@ -55,8 +56,10 @@ export const GET_ALL_BLOGS_CATEGORY_CONSTANT = 'blog/getBlogCategories';
 export const GET_BLOG_DETAIL_CONSTANT = 'blog/getSingleBlog';
 export const ADD_BLOG_REVIEW_CONSTANT = 'blog/addBlogReview';
 export const GET_NOTIFICATIONS_CONSTANT = 'notifications';
-export const CLEAR_NOTIFICATIONS_CONSTANT = 'clearNotification';
+export const CLEAR_NOTIFICATIONS_CONSTANT = 'clearNotifications';
 export const SUBSCRIBE_NEWS_LETTER_CONSTANT = 'subscribeToNewsLetter';
+export const COOKIES_INFO = 'cookiesInfo';
+export const COOKIES = 'cookies';
 
 export const fcm_token = "AxtyAdkasadad565asd";
 export const device_token = "60f0d009a0d53777";
@@ -69,12 +72,13 @@ export const REFUND_POLICY = 'refund-policy';
 export const RETURN_REFUND = 'returns--refunds';
 export const SHIPPING_DELIVERY = 'shipping--delivery';
 export const ORDER_CANCELLATION = 'order-cancellation';
+export const COOKIES_POLICY = 'cookies-policy';
 export const ABOUT_US = 'about-us';
 export const FAQS = 'faqs';
 
 // Message Constant
-export const PASSWORD = "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character."
-export const EMAIL_OR_MOBILE = "Please enter a valid email address or Phone number must be in the format +44XXXXXXXXXX (UK format).";
+export const PASSWORD = "Password must be 8+ characters with uppercase, lowercase, number, and special characters."
+export const EMAIL_OR_MOBILE = "Enter a valid email or +44XXXXXXXXXX.";
 export const PASSWORD_NOT_MATCH_ERROR = "Confirm Password not matched.";
 export const VALID_OTP = "Please enter a valid 6-digit OTP.";
 
@@ -97,11 +101,19 @@ export const OTP_NAME = "otpCode";
 export const OTP_ERROR = "Please enter a valid 6-digit OTP";
 
 // Stripe Payment Gateway - constants - keys
-export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 50, 100];
+export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500];
 export const STRIPE_PUBLIC_KEY = 'pk_test_51PiK0KG1GaqCQm17TPkUzvgbYGadO9htgyI4GsN2DMleueorVJfbgEYW86l5mIJpjGmST75eZCGlXxwW7cUDPdm800MOjzVQQJ';
 
 // Reason to cancel/return constants
 export const selectReason = [
     { id: 1, value: 'cancel', type: 'Cancel'},
     { id: 2, value: 'return', type: 'Return'},
+];
+
+export const deleteAccountReason = [
+    { id: 1, value: 'No longer using the app or interested in keeping the account.'},
+    { id: 2, value: 'Concerned about privacyand prefer to delete personal information.'},
+    { id: 3, value: 'The app does not meet my needs or expectations.'},
+    { id: 4, value: 'Experiencing technical issues, so i want to delete my account.'},
+    { id: 5, value: 'Found a better alternative and no longer wish to use the app.'}
 ]
