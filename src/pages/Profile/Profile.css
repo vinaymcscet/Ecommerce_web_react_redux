@@ -594,9 +594,9 @@ button.contact {
   background-color: #fff;
   margin-top: 20px;
 }
-.addressBox .addressList ul li p.address {
+/* .addressBox .addressList ul li p.address {
   min-height: 70px;
-}
+} */
 .userInvoice {
   width: 100%;
   position: relative;

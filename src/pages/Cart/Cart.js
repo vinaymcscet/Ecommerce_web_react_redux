@@ -89,14 +89,21 @@ const Cart = () => {
     startTransition(() => {
       dispatch(toggleAddressModal({ isOpen: true, address }));
       if (address) {
-        dispatch(editAddress({ id: address.id, updatedData: address }));
+        dispatch(editAddress({ id: address.id, updatedData: address }))
+        dispatch(viewItemsInCartData()); 
       }
     });
   };
 
   const handleRemoveAddress = (addressId) => {
     const responseObj = { id: addressId }
-    dispatch(deleteListAddress(responseObj));
+    dispatch(deleteListAddress(responseObj)).finally(() => {
+      const responseObj = {
+        offset: 0,
+        limit: 20
+      }
+      dispatch(getListAddress(responseObj));
+    });
   };
 
   const handleSetDefaultAddress = (addressId) => {
@@ -131,6 +138,7 @@ const Cart = () => {
           limit: 20
         }
         dispatch(getListAddress(responseObj));
+        dispatch(viewItemsInCartData());
     }
     if (activeTab === 2) { // Replace with your Publishable Key
       setCheckoutLoading(true);
@@ -391,54 +399,54 @@ const Cart = () => {
                       </div>
                       <h4>Other Addresses</h4>
                       <div className="ManageAllAddress">
-                        <div className="addressList">
-                          {viewCartItems?.address ? (
-                            <ul>
-                                <li
-                                  onClick={() => handleSelectedAddress(viewCartItems?.address)} 
-                                  className={selectedAddress && selectedAddress.id === (viewCartItems?.address?.id) ? 'active': ''}
-                                >
-                                  <h4>{viewCartItems?.address?.full_name}</h4>
-                                  <p>
-                                    Full Address: {viewCartItems?.address?.house_number}, 
-                                    {viewCartItems?.address?.street},
-                                    {viewCartItems?.address?.locality}, {viewCartItems?.address?.country},
-                                    {viewCartItems?.address?.postcode}
-                                  </p>
-                                  <p>Phone Number: {viewCartItems?.address?.mobile}</p>
-                                  <p>Email: {viewCartItems?.address?.email}</p>
-                                  <div className="action">
-                                    {/* <p onClick={() => handleAddressModal(address)}> */}
-                                    <p onClick={() => handleAddressModal(viewCartItems?.address)}>
-                                      Edit |
+                          {viewCartItems?.address?.id ? (
+                            <div className="addressList">
+                              <ul>
+                                  <li
+                                    onClick={() => handleSelectedAddress(viewCartItems?.address)} 
+                                    className={selectedAddress && selectedAddress.id === (viewCartItems?.address?.id) ? 'active': ''}
+                                  >
+                                    <h4>{viewCartItems?.address?.full_name}</h4>
+                                    <p>
+                                      Full Address: {viewCartItems?.address?.house_number}, 
+                                      {viewCartItems?.address?.street},
+                                      {viewCartItems?.address?.locality}, {viewCartItems?.address?.country},
+                                      {viewCartItems?.address?.postcode}
                                     </p>
-                                    <p
-                                      onClick={() =>
-                                        // handleRemoveAddress(address.id)
-                                        handleRemoveAddress(viewCartItems?.address?.id)
-                                      }
-                                    >
-                                      Remove |
-                                    </p>
-                                    <p onClick={() => handleAddress()}>Add New |</p>
-                                    <p
-                                      onClick={() =>
-                                        // handleSetDefaultAddress(address.id)
-                                        handleSetDefaultAddress(viewCartItems?.address?.id)
-                                      }
-                                      className={viewCartItems?.address?.isDefault === "True" ? "default" : ""}
-                                    >
-                                      {viewCartItems?.address?.isDefault.toLowerCase() === 'true'
-                                        ? "Default"
-                                        : "Set as Default"}
-                                    </p>
-                                  </div>
-                                </li>
-                            </ul>
-                          ) : (
-                            ""
+                                    <p>Phone Number: {viewCartItems?.address?.mobile}</p>
+                                    <p>Email: {viewCartItems?.address?.email}</p>
+                                    <div className="action">
+                                      {/* <p onClick={() => handleAddressModal(address)}> */}
+                                      <p onClick={() => handleAddressModal(viewCartItems?.address)}>
+                                        Edit |
+                                      </p>
+                                      <p
+                                        onClick={() =>
+                                          // handleRemoveAddress(address.id)
+                                          handleRemoveAddress(viewCartItems?.address?.id)
+                                        }
+                                      >
+                                        Remove |
+                                      </p>
+                                      <p onClick={() => handleAddress()}>Add New |</p>
+                                      <p
+                                        onClick={() =>
+                                          // handleSetDefaultAddress(address.id)
+                                          handleSetDefaultAddress(viewCartItems?.address?.id)
+                                        }
+                                        className={viewCartItems?.address?.isDefault === "True" ? "default" : ""}
+                                      >
+                                        {viewCartItems?.address?.isDefault.toLowerCase() === 'true'
+                                          ? "Default"
+                                          : "Set as Default"}
+                                      </p>
+                                    </div>
+                                  </li>
+                              </ul>
+                            </div>
+                              ) : (
+                                ""
                           )}
-                        </div>
                         <div className="addressList">
                           {user[0]?.addresses?.length > 0 && (
                             <ul>
@@ -474,7 +482,7 @@ const Cart = () => {
                             </ul>
                           )}
                         </div>
-                        {viewCartItems?.address === null && (
+                        {(viewCartItems?.address?.id === "" || user[0]?.addresses?.length === 0) && (
                           <div className="addAddress">
                             <button type="button" onClick={() => handleAddress()}>
                               Add Address

@@ -36,25 +36,26 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
         // body: data ? JSON.stringify(data) : null,
         // body: data ? jsonToFormData(data) : null,
     };
-    
-    if (
-        url.toLowerCase().includes("logout") || 
-        url.toLowerCase().includes("profile") ||
-        url.toLowerCase().includes("changepassword") ||
-        url.toLowerCase().includes("address") ||
-        url.toLowerCase().includes("wishlist") ||
-        url.toLowerCase().includes("recentlyviewed") ||
-        url.toLowerCase().includes("review") ||
-        url.toLowerCase().includes("cart") ||
-        url.toLowerCase().includes("order") ||
-        url.toLowerCase().includes("notification") ||
-        url.toLowerCase().includes("homesection") ||
-        url.toLowerCase().includes("getsection")
-    ) {
-        const tokens = getTokensFromLocalStorage();
-        config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
-    }
     const tokens = getTokensFromLocalStorage();
+        if (tokens?.accessToken) {
+        if (
+            url.toLowerCase().includes("logout") || 
+            url.toLowerCase().includes("profile") ||
+            url.toLowerCase().includes("changepassword") ||
+            url.toLowerCase().includes("address") ||
+            url.toLowerCase().includes("wishlist") ||
+            url.toLowerCase().includes("recentlyviewed") ||
+            url.toLowerCase().includes("review") ||
+            url.toLowerCase().includes("cart") ||
+            url.toLowerCase().includes("order") ||
+            url.toLowerCase().includes("notification") ||
+            url.toLowerCase().includes("homesection") ||
+            url.toLowerCase().includes("getsection") ||
+            url.toLowerCase().includes("deletionrequest") 
+        ) {
+            config.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
+        }
+    }
     if (tokens?.accessToken) {
         if( 
             url.toLowerCase().includes("singleproduct") || 

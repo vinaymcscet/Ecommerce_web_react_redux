@@ -5,6 +5,7 @@ import { addListAddress, defaultListAddress, deleteListAddress, getListAddress, 
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import { Button } from '@mui/material';
 import ReactPaginate from 'react-paginate';
+import './Address.css';
 
 const Address = () => {
     const [isInitialAddressLoad, setIsInitialAddressLoad] = useState(true);
@@ -381,7 +382,7 @@ const Address = () => {
                 ))}
                 </ul>
             ) : (
-                <p>No Address found!</p>
+                <p className='noAddressFound'>No Address found!</p>
             )}
             </div>
         </div>

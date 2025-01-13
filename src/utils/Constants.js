@@ -60,6 +60,7 @@ export const CLEAR_NOTIFICATIONS_CONSTANT = 'clearNotifications';
 export const SUBSCRIBE_NEWS_LETTER_CONSTANT = 'subscribeToNewsLetter';
 export const COOKIES_INFO = 'cookiesInfo';
 export const COOKIES = 'cookies';
+export const DELETION_REQUEST = 'deletionRequest';
 
 export const fcm_token = "AxtyAdkasadad565asd";
 export const device_token = "60f0d009a0d53777";

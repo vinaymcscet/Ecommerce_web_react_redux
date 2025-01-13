@@ -35,9 +35,9 @@ const ManageCookies = () => {
                     <div className='cookie'>
                       <div className="cookieHeader">
                         <h3>Affiliate Cookies</h3>
-                        <label class="switch">
+                        <label className="switch">
                           <input type="checkbox" />
-                          <span class="slider round"></span>
+                          <span className="slider round"></span>
                         </label>
                       </div>
                       <p>Affialate cookies are used by us to understand and measures sales from affialate partners.
@@ -47,9 +47,9 @@ const ManageCookies = () => {
                     <div className='cookie'>
                       <div className="cookieHeader">
                         <h3>Affiliate Cookies</h3>
-                        <label class="switch">
+                        <label className="switch">
                           <input type="checkbox" />
-                          <span class="slider round"></span>
+                          <span className="slider round"></span>
                         </label>
                       </div>
                       <p>Affialate cookies are used by us to understand and measures sales from affialate partners.
@@ -59,9 +59,9 @@ const ManageCookies = () => {
                     <div className='cookie'>
                       <div className="cookieHeader">
                         <h3>Affiliate Cookies</h3>
-                        <label class="switch">
+                        <label className="switch">
                           <input type="checkbox" />
-                          <span class="slider round"></span>
+                          <span className="slider round"></span>
                         </label>
                       </div>
                       <p>Affialate cookies are used by us to understand and measures sales from affialate partners.
@@ -71,9 +71,9 @@ const ManageCookies = () => {
                     <div className='cookie'>
                       <div className="cookieHeader">
                         <h3>Affiliate Cookies</h3>
-                        <label class="switch">
+                        <label className="switch">
                           <input type="checkbox" />
-                          <span class="slider round"></span>
+                          <span className="slider round"></span>
                         </label>
                       </div>
                       <p>Affialate cookies are used by us to understand and measures sales from affialate partners.
@@ -83,9 +83,9 @@ const ManageCookies = () => {
                     <div className='cookie'>
                       <div className="cookieHeader">
                         <h3>Affiliate Cookies</h3>
-                        <label class="switch">
+                        <label className="switch">
                           <input type="checkbox" />
-                          <span class="slider round"></span>
+                          <span className="slider round"></span>
                         </label>
                       </div>
                       <p>Affialate cookies are used by us to understand and measures sales from affialate partners.

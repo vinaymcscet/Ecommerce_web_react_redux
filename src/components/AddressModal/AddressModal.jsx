@@ -44,7 +44,7 @@ const AddressModal = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     let updatedValue = value;
-    if (/^\d+$/.test(value) && !value.startsWith("+44")) {
+    if (name === "mobile" && /^\d+$/.test(value) && !value.startsWith("+44")) {
       updatedValue = `+44${value}`;
       setFormData({ ...formData, [name]: updatedValue });
     } else {
@@ -74,7 +74,7 @@ const AddressModal = () => {
       !formData.email.trim() ||
       !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email address.";
     if (
-      !formData.mobile.trim() ||
+      !formData?.mobile?.trim() ||
       !/^\+44\d{10}$/.test(formData.mobile)
     ) newErrors.mobile = "Phone number must be in the format +44XXXXXXXXXX (UK format).";
     const addressErrors = validateAddressFields();
@@ -330,9 +330,9 @@ const AddressModal = () => {
                   style={{ display: activeTab === 1 ? "block" : "none" }}
                 >
                   <div className="addressList">
-                    {user[0].addresses.length > 0 ? (
+                    {user[0]?.addresses?.length > 0 ? (
                       <ul>
-                        {user[0].addresses.map((address) => (
+                        {user[0]?.addresses?.map((address) => (
                           <li key={address.id}>
                             <h4>{address.fullName}</h4>
                             <p>

@@ -25,6 +25,7 @@ const ProductListCard = ({
   onDecrement,
   cartQuantity,
   offer,
+  onProductImageClick,
 }) => {
   const [whistListBox, setWhistListBox] = useState({
     whistlist: "/images/product/whistlist.svg",
@@ -49,7 +50,8 @@ const ProductListCard = ({
           )}
         </div>
       </div>
-      {image && <img src={image} alt={name} onClick={onProductClick}  />}
+      {image && <img src={image} alt={name} onClick={onProductImageClick}  />}
+      {/* {image && <img src={image} alt={name} onClick={onProductClick}  />} */}
       {name && <h2>{name.length > 50 ? `${name.slice(0, 50)}...` : name}</h2>}
       <div className='priceList'>
         {discountPrice && <p className='discount'>£ {discountPrice}</p>}
@@ -61,12 +63,12 @@ const ProductListCard = ({
             cartQuantity === 0 ? (
             // Show Add Button if quantity is 0
             <button type="button" onClick={() => onAddToCart(sku_id)} 
-              disabled={user.length === 0 ? true : false} 
+              // disabled={user.length === 0 ? true : false} 
               title={user.length === 0 ? 'Please login to add items to cart.' : 'Add to cart'}
               >Add</button>
           ) : (
             <button type="button" onClick={() => onProductClick()} 
-              disabled={user.length === 0 ? true : false} 
+              // disabled={user.length === 0 ? true : false} 
               title={user.length === 0 ? 'Please login to add items to cart.' : 'Add to cart'}
               >Add</button>
             // Show Plus/Minus Buttons if quantity is greater than 0

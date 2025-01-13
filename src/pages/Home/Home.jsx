@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 import { shuffleProduct } from "../../utils/ShuffleProduct";
+import { toggleModal } from "../../store/slice/modalSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
   const [randomProducts, setRandomProducts] = useState([]);
+  const { user } = useSelector((state) => state.user);
   
   const [page, setPage] = useState(1);
   // const [dataLoading, setDataLoading] = useState(false);
@@ -66,8 +68,16 @@ const Home = () => {
   }, [dispatch]);
   
   const handleProductClick = (item) => {
-    navigate(`/product/${item.product_id}`, { state: { product: item } });
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+    } else {
+      navigate(`/product/${item.product_id}`, { state: { product: item } });
+    }
   };
+
+  const handleProcuctImageClick = (item) => {
+    navigate(`/product/${item.product_id}`, { state: { product: item } });
+  }
 
   const handleSectionPage = (title, group_id = 0) => {
     navigate(`/sectionDetail/${group_id}?title=${encodeURIComponent(title)}`)
@@ -193,6 +203,7 @@ const Home = () => {
                               onIncrement={handleIncrement}
                               onDecrement={handleDecrement}
                               onProductClick={() => handleProductClick(product)}
+                              onProductImageClick={() => handleProcuctImageClick(product)}
                             />
                           </div>
                         ))}
@@ -239,6 +250,7 @@ const Home = () => {
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
+                      onProductImageClick={() => handleProcuctImageClick(item)}
                     />
                   </div>
                 ))

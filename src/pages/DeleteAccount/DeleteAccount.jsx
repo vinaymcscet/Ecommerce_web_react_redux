@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../components/Button/Button';
 import { deleteAccountReason } from '../../utils/Constants';
+import { getDeleteAccount, getUserRequest } from '../../store/slice/api_integration';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import './DeleteAccount.css';
 
 const DeleteAccount = () => {
+    const [isFetched, setIsFetched] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -13,6 +16,21 @@ const DeleteAccount = () => {
         deletionReason: "",
     });
     const [errors, setErrors] = useState({});
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();    
+
+    // useEffect(() => {
+    //     if (!isFetched && (!user || user.length === 0)) {
+    //         dispatch(getUserRequest());
+    //         setIsFetched(true);
+    //     } else if (!user || Object.keys(user).length === 0) {
+    //         navigate('/');
+    //     }
+    // }, [isFetched, user, dispatch, navigate]);
+    useEffect(() => {
+        dispatch(getUserRequest());
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -65,6 +83,13 @@ const DeleteAccount = () => {
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
         } else {
+            const responseObj = {
+                name: formData.fullName,
+                email: formData.email,
+                mobile: formData.phone,
+                reason: formData.deletionReason
+            };
+            dispatch(getDeleteAccount(responseObj));
             setErrors({});
             setFormData({
                 fullName: "",
@@ -140,7 +165,7 @@ const DeleteAccount = () => {
                     </div>
                     
                     <div className="box ">
-                        <div class="notefrm">
+                        <div className="notefrm">
                             <p>Are you sure you want to delete the account?</p>
                             <p>Once you delete the account, there is no going back. Please be certain</p>
                         </div>

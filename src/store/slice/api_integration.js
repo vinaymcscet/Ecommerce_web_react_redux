@@ -60,6 +60,7 @@ import {
   ADD_REVIEW_IMAGE_CONSTANT,
   COOKIES_INFO,
   COOKIES,
+  DELETION_REQUEST,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -598,7 +599,7 @@ export const updateListAddress = (userData) => async (dispatch) => {
     }, 1000);
     const responseObj = {
       offset: 0,
-      limit: 5
+      limit: 20
     }
     dispatch(getListAddress(responseObj));
   } catch (error) {
@@ -1180,11 +1181,11 @@ export const viewItemsInCartData = (userData = null) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
+    // dispatch(setError(error.message));
     // dispatch(setViewCartItems(null));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 
@@ -1551,5 +1552,23 @@ export const getCooiesStatus = (userData) => async (dispatch) => {
     // setTimeout(() => {
     //   dispatch(resetError());
     // }, 1000);
+  }
+}
+
+// Thunk to Delete Account API call
+export const getDeleteAccount = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await POST(DELETION_REQUEST, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setSuccess(response.message));
+    setTimeout(() => {
+      dispatch(resetSuccess());
+      dispatch(setSuccess([]));
+    })
+  } catch (error) {
+    dispatch(setLoading(false));
   }
 }

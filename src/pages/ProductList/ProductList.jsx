@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import { parsePriceRange, parseRating } from "../../utils/PriceRange";
 import { setViewCartItems } from "../../store/slice/cartSlice";
+import { toggleModal } from "../../store/slice/modalSlice";
 
 const ProductList = () => {
   const [expandedParent, setExpandedParent] = useState(false);
@@ -34,6 +35,7 @@ const ProductList = () => {
   
   const searchParams = new URLSearchParams(location.search);
   const subcategory_id = searchParams.get('subcategory_id');
+  const { user } = useSelector((state) => state.user);
   
   
   useEffect(() => {
@@ -71,12 +73,24 @@ const ProductList = () => {
   };
 
   const handleProductClick = (item) => {
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+    } else {
+      const responseObj = { 
+        product_id: item.product_id,
+      }
+      dispatch(productDetailData(responseObj))
+      navigate(`/product/${item.product_id}`, { state: { product: item } });
+    }
+  };
+
+  const handleProcuctImageClick = (item) => {
     const responseObj = { 
       product_id: item.product_id,
     }
     dispatch(productDetailData(responseObj))
     navigate(`/product/${item.product_id}`, { state: { product: item } });
-  };
+  }
 
   // Generate dropdown options based on total results
   const itemsPerPageOptions = DEFAULT_OPTIONS
@@ -281,6 +295,7 @@ const ProductList = () => {
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
+                      onProductImageClick={() => handleProcuctImageClick(item)}
                     />
                   </div>
                 ))

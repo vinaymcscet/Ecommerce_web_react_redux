@@ -74,11 +74,11 @@ export const slick_banner_settings = {
 
 export const slick_settings = {
   dots: false,
-  infinite: false,
+  infinite: true,
   speed: 500,
   slidesToShow: 7,
   slidesToScroll: 1,
-  initialSlide: 1,
+  initialSlide: 0,
   responsive: [
     {
       breakpoint: 1200,
@@ -136,11 +136,11 @@ export const slick_settings = {
 
 export const slick_product_settings = {
   dots: false,
-  infinite: false,
+  infinite: true,
   speed: 500,
-  slidesToShow: 8,
+  slidesToShow: 7,
   slidesToScroll: 1,
-  initialSlide: 1,
+  initialSlide: 0,
   responsive: [
     {
       breakpoint: 1500,

@@ -8,6 +8,7 @@ import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import './Search.css';
 import { setViewCartItems } from '../../store/slice/cartSlice';
 import { CircularProgress } from '@mui/material';
+import { toggleModal } from '../../store/slice/modalSlice';
 
 const Search = () => {
     const { search, total = 0 } = useSelector(state => state.product);
@@ -18,11 +19,21 @@ const Search = () => {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [triggerSkuId, setTriggerSkuId] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { user } = useSelector((state) => state.user);
 
     // Handle product card click
     const handleProductClick = (item) => {
-        navigate(`/product/${item.product_id}`, { state: { product: item } });
+        if(user.length === 0) {
+            dispatch(toggleModal(true));
+        } else {
+            navigate(`/product/${item.product_id}`, { state: { product: item } });
+        }
     };
+
+    
+    const handleProcuctImageClick = (item) => {
+        navigate(`/product/${item.product_id}`, { state: { product: item } });
+    }
     
     // Generate dropdown options based on total results
     const itemsPerPageOptions = DEFAULT_OPTIONS
@@ -185,6 +196,7 @@ const Search = () => {
                                         onIncrement={handleIncrement}
                                         onDecrement={handleDecrement}
                                         onProductClick={() => handleProductClick(item)}
+                                        onProductImageClick={() => handleProcuctImageClick(item)}
                                     />
                                 </div>
                             ))

@@ -112,24 +112,37 @@ const handleConfirmPasswordChange = (e) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Helper function to format phone numbers with +44
+    const formatPhoneNumber = (input) => {
+      // Remove spaces and trim the input
+      let sanitizedInput = input.replace(/\s+/g, "").trim();
+      // Add +44 if not present and starts with digits
+      if (/^\d+$/.test(sanitizedInput) && !sanitizedInput.startsWith("+44")) {
+        sanitizedInput = `+44${sanitizedInput}`;
+      }
+      if (sanitizedInput.startsWith("+44")) {
+        sanitizedInput = sanitizedInput.replace(/\+440+/, "+44");
+      } 
+      
+      return sanitizedInput;
+    };
+    let updatedValue = value.trim();
+
     if (modalType === "login") {
-      let updatedValue = value;
-      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
-        updatedValue = `+44${value}`;
+      if (/^\d+$/.test(value)) {
+        updatedValue = formatPhoneNumber(value);
       }
       dispatch(setLogin({ ...login, [name]: updatedValue }));
     } else if (modalType === "signup") {
-      let updatedValue = value;
-      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
-        updatedValue = `+44${value}`;
+      if (/^\d+$/.test(value)) {
+        updatedValue = formatPhoneNumber(value);
       }
       dispatch(setSignup({ ...signup, [name]: updatedValue }));
     } else if (modalType === "otp") {
       dispatch(setOtp({ otpCode: value }));
     } else if(modalType === 'forgotPasswordAssist') {
-      let updatedValue = value;
-      if (/^\d+$/.test(value) && !value.startsWith("+44")) {
-        updatedValue = `+44${value}`;
+      if (/^\d+$/.test(value)) {
+        updatedValue = formatPhoneNumber(value);
       }
       dispatch(setForgotPasswordAssist({ ...forgotPasswordAssist, [name]: updatedValue}))
     } else if (modalType === "forgotOtp") {

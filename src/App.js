@@ -138,7 +138,11 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order-complete" element={<OrderComplete />} />
-          <Route path="delete-account" element={<DeleteAccount />} />
+          <Route path="delete-account" element={
+            <ProtectedRoute>
+              <DeleteAccount />
+            </ProtectedRoute>
+          } />
           {/* <Route path="userprofile" element={<Profile />} /> */}
           <Route path="/userprofile" element={
             <ProtectedRoute>

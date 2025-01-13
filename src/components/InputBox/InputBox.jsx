@@ -37,7 +37,7 @@ const InputField = ({
     };
 
     const handleChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value.replace(/\s+/g, '');;
         handleValidation(value);
         onChange(e);
     };

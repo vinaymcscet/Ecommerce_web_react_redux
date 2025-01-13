@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleCategoryModal } from "../../store/slice/modalSlice";
+import { toggleCategoryModal, toggleModal } from "../../store/slice/modalSlice";
 import "./Category.css";
 import { addToCartData, getAllCategoryData, getAllListProductAPI, getAllRecentViewData, getSubCategoryData, productDetailData, viewItemsInCartData } from "../../store/slice/api_integration";
 import ReactPaginate from "react-paginate";
@@ -20,6 +20,7 @@ const Category = () => {
   const [itemsPerPage,setItemsPerPage] = useState(25);
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
+  const { user } = useSelector((state) => state.user);
 
   const { allCategoryList, subCategoryList, recentView, totalRecentView = 0 } = useSelector(
     (state) => state.product
@@ -88,12 +89,25 @@ const handlePageChange = (data) => {
   const itemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= totalRecentView);
   
   const handleProductClick = (item) => {
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+    } else {
+      const responseObj = { 
+        product_id: item.product_id,
+      }
+      dispatch(productDetailData(responseObj))
+      navigate(`/product/${item.product_id}`, { state: { product: item } });
+    }
+  };
+
+  const handleProcuctImageClick = (item) => {
     const responseObj = { 
       product_id: item.product_id,
     }
     dispatch(productDetailData(responseObj))
     navigate(`/product/${item.product_id}`, { state: { product: item } });
-  };
+  }
+
   const handleAddToCartClick = (sku_id) => {
       setTriggerSkuId(sku_id);
       const responseObj = {
@@ -194,6 +208,7 @@ const handlePageChange = (data) => {
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
+                      onProductImageClick={() => handleProcuctImageClick(item)}
                     />
                   </div>
                 ))
@@ -259,6 +274,7 @@ const handlePageChange = (data) => {
                       onIncrement={handleIncrement}
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
+                      onProductImageClick={() => handleProcuctImageClick(item)}
                     />
                   </div>
                 ))

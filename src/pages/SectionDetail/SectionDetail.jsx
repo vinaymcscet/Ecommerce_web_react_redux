@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate';
 import { DEFAULT_OPTIONS } from '../../utils/Constants';
 import { formatDate } from '../../utils/FormatDateTime';
 import { setViewCartItems } from '../../store/slice/cartSlice';
+import { toggleModal } from '../../store/slice/modalSlice';
 
 const SectionDetail = () => {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const SectionDetail = () => {
     const { productSectionData, productSectionCount = 0, allOffersList } = useSelector(state => state.product);
     const { id } = useParams();
     const [triggerSkuId, setTriggerSkuId] = useState(null);
+    const { user } = useSelector((state) => state.user);
 
     const queryParams = new URLSearchParams(location.search); // Initialize queryParams here
     const title = queryParams.get("title");
@@ -64,10 +66,20 @@ const SectionDetail = () => {
     };
 
     const handleProductClick = (product) => {
+        if(user.length === 0) {
+            dispatch(toggleModal(true));
+        } else {
+            const responseObj = { product_id: product.product_id };
+            dispatch(productDetailData(responseObj));
+            navigate(`/product/${product.product_id}`, { state: { product } });
+        }
+    };
+
+    const handleProcuctImageClick = (product) => {
         const responseObj = { product_id: product.product_id };
         dispatch(productDetailData(responseObj));
         navigate(`/product/${product.product_id}`, { state: { product } });
-    };
+    }
 
     const sectionItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= productSectionCount);
 
@@ -190,6 +202,7 @@ const SectionDetail = () => {
                                     onIncrement={handleIncrement}
                                     onDecrement={handleDecrement}
                                     onProductClick={() => handleProductClick(product)}
+                                    onProductImageClick={() => handleProcuctImageClick(product)}
                                 />
                             </div>
                         ))}

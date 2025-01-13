@@ -16,6 +16,7 @@ import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
+import { toggleModal } from "../../store/slice/modalSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -136,6 +137,7 @@ const ProductDetail = () => {
     setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnCart("Please login to add items to cart.")
+      dispatch(toggleModal(true));
       setWishlistLoading(false);
       setTimeout(() => {
         setUserLoggedOnCart("")
@@ -165,6 +167,7 @@ const ProductDetail = () => {
     setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnCart("Please login to add items to cart.")
+      dispatch(toggleModal(true));
       setWishlistLoading(false);
       setTimeout(() => {
         setUserLoggedOnCart("")
@@ -324,6 +327,7 @@ const ProductDetail = () => {
   const toggleReviewForm = () => {
     if(user.length === 0) {
       setUserLoggedOnReview("Please login to add review.")
+      dispatch(toggleModal(true));
       return;
     }
     setShowReviewForm(!showReviewForm);
@@ -334,6 +338,7 @@ const ProductDetail = () => {
   const handleBuyNowProduct = () => {
     if(user.length === 0) {
       setUserLoggedOnBuyNow("Please login to add items to cart.")
+      dispatch(toggleModal(true));
       return;
     }
     const responseObj = {
@@ -408,6 +413,7 @@ const ProductDetail = () => {
     setWishlistLoading(true);
     if(user.length === 0) {
       setUserLoggedOnWishList("Please login to add items to wishlist.")
+      dispatch(toggleModal(true));
       setWishlistLoading(false);
       return;
     }
@@ -604,10 +610,20 @@ const ProductDetail = () => {
   const reviewItemsPerPageOptions = DEFAULT_OPTIONS.filter(option => option <= getReviewCount);
 
   const handleProductClick = (product) => {
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+    } else {
       const responseObj = { product_id: product.product_id };
       dispatch(productDetailData(responseObj));
       navigate(`/product/${product.product_id}`, { state: { product } });
+    }
   };
+
+  const handleProcuctImageClick = (product) => {
+    const responseObj = { product_id: product.product_id };
+    dispatch(productDetailData(responseObj));
+    navigate(`/product/${product.product_id}`, { state: { product } });
+  }
 
   // pagination with API call for recently viewed Items
   const searchParams = new URLSearchParams(location.search); 
@@ -1259,6 +1275,7 @@ const fetchUpdatedSimilarProductList = () => {
                                   onIncrement={handleIncrement}
                                   onDecrement={handleDecrement}
                                   onProductClick={() => handleProductClick(item)}
+                                  onProductImageClick={() => handleProcuctImageClick(item)}
                                 />
                               </div>
                             ))
@@ -1332,6 +1349,7 @@ const fetchUpdatedSimilarProductList = () => {
                               onIncrement={handleSimilarIncrement}
                               onDecrement={handleSimilarDecrement}
                               onProductClick={() => handleProductClick(item)}
+                              onProductImageClick={() => handleProcuctImageClick(item)}
                             />
                           </div>
                         ))
