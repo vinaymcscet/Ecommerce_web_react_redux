@@ -458,7 +458,7 @@ const handlePasswordUpdateSubmit = (e) => {
       <div className="vertical-tabs-container">
         <div className="tabs">
           <div className="profile_user_image">
-            <img src={(imagePreview ? imagePreview : profile_pic) || '/images/icons/avtar.png'} alt={fullname} />
+            <img src={(imagePreview ? imagePreview : profile_pic) || '/images/icons/avtar1.png'} alt={fullname} />
             <div className="editMode">
               <input type="file" accept="image/*" onChange={handleImageUpload} />
               <img src={'/images/icons/edit.svg'} alt={'edit icon'} />

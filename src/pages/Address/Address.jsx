@@ -10,7 +10,7 @@ import './Address.css';
 const Address = () => {
     const [isInitialAddressLoad, setIsInitialAddressLoad] = useState(true);
     const [page, setPage] = useState(0);  // Default page 0 (first page)
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(30);
     
     const { totalAddressCount = 0 } = useSelector((state) => state.product);
     const { user } = useSelector((state) => state.user);
@@ -324,67 +324,67 @@ const Address = () => {
             </form>
             </div>
             <h3>Edit, Remove and set as default addresses for orders </h3>
+            <div className="addressList">
+              {user[0].addresses ? (
+                  <ul>
+                  {user[0].addresses.map((address) => (
+                      <li key={address.id}>
+                      <h4>{address.full_name}</h4>
+                      <p className="address">
+                          Full Address: {address.house_number}, {address.street}, {address.country},
+                          {address.postcode}
+                      </p>
+                      <p>Email: {address.email}</p>
+                      <p>Phone Number: {address.mobile}</p>
+                      <div className="action">
+                          <p onClick={() => handleEditAddress(address)}>
+                          Edit |
+                          </p>
+                          <p onClick={() => handleDeleteAddress(address.id)}>
+                          Remove |
+                          </p>
+                          <p
+                          onClick={() => handleSetDefaultAddress(address.id)}
+                          className={address.isDefault === "True" ? "default" : ""}
+                          >
+                          {address.isDefault === "True" ? "Default" : "Set as Default"}
+                          </p>
+                      </div>
+                      </li>
+                  ))}
+                  </ul>
+              ) : (
+                  <p className='noAddressFound'>No Address found!</p>
+              )}
+            </div>
             {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
-                {/* <div className="itemsPerPageDropdown">
-                    <label>Items per page: </label>
-                    <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                        {itemsPerPageOptions.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-                {/* Pagination component */}
-                <ReactPaginate
-                    previousLabel={"Previous"}
-                    nextLabel={"Next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={(ev) => handlePageChange(ev)}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    forcePage={page}  // Sync current page with URL
-                    disabled={totalAddressCount === 0} 
-                />
+              {/* <div className="itemsPerPageDropdown">
+                  <label>Items per page: </label>
+                  <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                      {itemsPerPageOptions.map(option => (
+                          <option key={option} value={option}>
+                              {option}
+                          </option>
+                      ))}
+                  </select>
+              </div> */}
+              {/* Pagination component */}
+              <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={3}
+                  onPageChange={(ev) => handlePageChange(ev)}
+                  containerClassName={"pagination"}
+                  activeClassName={"active"}
+                  forcePage={page}  // Sync current page with URL
+                  disabled={totalAddressCount === 0} 
+              />
                 </div>
             }
-            <div className="addressList">
-            {user[0].addresses ? (
-                <ul>
-                {user[0].addresses.map((address) => (
-                    <li key={address.id}>
-                    <h4>{address.full_name}</h4>
-                    <p className="address">
-                        Full Address: {address.house_number}, {address.street}, {address.country},
-                        {address.postcode}
-                    </p>
-                    <p>Email: {address.email}</p>
-                    <p>Phone Number: {address.mobile}</p>
-                    <div className="action">
-                        <p onClick={() => handleEditAddress(address)}>
-                        Edit |
-                        </p>
-                        <p onClick={() => handleDeleteAddress(address.id)}>
-                        Remove |
-                        </p>
-                        <p
-                        onClick={() => handleSetDefaultAddress(address.id)}
-                        className={address.isDefault === "True" ? "default" : ""}
-                        >
-                        {address.isDefault === "True" ? "Default" : "Set as Default"}
-                        </p>
-                    </div>
-                    </li>
-                ))}
-                </ul>
-            ) : (
-                <p className='noAddressFound'>No Address found!</p>
-            )}
-            </div>
         </div>
     </>
   )

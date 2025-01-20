@@ -17,7 +17,7 @@ const Wishlist = () => {
 
     const [loading, setLoading] = useState(false);
     const [wishListPage, setWishListPage] = useState(0);  // Default page 0 (first page)
-    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(10);
+    const [wishListItemsPerPage, setWishListItemsPerPage] = useState(30);
     const { 
         listWishlist, 
         totalWishlistCount = 0, 
@@ -110,34 +110,6 @@ const Wishlist = () => {
     <div className="whistlistList">
       <h3>Your Wishlist Waiting...</h3>
           <div className="wishlistContent">
-              {listWishlist && (
-                  <div className='paginationBox'>
-                      {/* <div className="itemsPerPageDropdown">
-                          <label>Items per page: </label>
-                          <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
-                              {wishListItemsPerPageOptions.map(option => (
-                                  <option key={option} value={option}>
-                                      {option}
-                                  </option>
-                              ))}
-                          </select>
-                      </div> */}
-                      <ReactPaginate
-                          previousLabel={"Previous"}
-                          nextLabel={"Next"}
-                          breakLabel={"..."}
-                          breakClassName={"break-me"}
-                          pageCount={Math.max(Math.ceil(totalWishlistCount / wishListItemsPerPage), 1)}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={(ev) => handleWishListPageChange(ev)}
-                          containerClassName={"pagination"}
-                          activeClassName={"active"}
-                          forcePage={wishListPage}
-                          disabled={totalWishlistCount === 0} 
-                      />
-                  </div>
-              )}
               {loading ? (
                 <div className="loadingContainer">
                     <CircularProgress />
@@ -179,6 +151,34 @@ const Wishlist = () => {
                 </div>
               )}
           </div>
+            {listWishlist && (
+                <div className='paginationBox'>
+                    {/* <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={wishListItemsPerPage} onChange={handleWishListItemsPerPageChange}>
+                            {wishListItemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div> */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(totalWishlistCount / wishListItemsPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handleWishListPageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={wishListPage}
+                        disabled={totalWishlistCount === 0} 
+                    />
+                </div>
+              )}
     </div>
   )
 }

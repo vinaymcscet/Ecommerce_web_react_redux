@@ -9,7 +9,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const ActiveOrders = () => {
     const [activePage, setActivePage] = useState(0);  // Default page 0 (first page)
-    const [activeItemsPerPage, setActiveItemsPerPage] = useState(10);
+    const [activeItemsPerPage, setActiveItemsPerPage] = useState(30);
     const [activeOrderIndex, setActiveOrderIndex] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
     const [isInitialLoad, setIsInitialLoad] = useState({ active: true });
@@ -136,34 +136,6 @@ const ActiveOrders = () => {
   return (
     <>
         <div className="orderListWrapper">
-            {orderList && <div className='paginationBox'>
-                {/* <div className="itemsPerPageDropdown">
-                    <label>Items per page: </label>
-                    <select value={activeItemsPerPage} onChange={handleActiveItemsPerPageChange}>
-                        {activeItemsPerPageOptions.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-                {/* Pagination component */}
-                <ReactPaginate
-                    previousLabel={"Previous"}
-                    nextLabel={"Next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={Math.max(Math.ceil(activeOrderListCount / activeItemsPerPage), 1)}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={(ev) => handleActivePageChange(ev)}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    forcePage={activePage}  // Sync current page with URL
-                    disabled={activeOrderListCount === 0} 
-                />
-                </div>
-            }
             {orderList &&
             orderList?.map((item, index) => (
                 <div className="orderList" key={index}>
@@ -283,6 +255,34 @@ const ActiveOrders = () => {
                 </div>}
                 </div>
             ))}
+            {orderList && <div className='paginationBox'>
+                    {/* <div className="itemsPerPageDropdown">
+                        <label>Items per page: </label>
+                        <select value={activeItemsPerPage} onChange={handleActiveItemsPerPageChange}>
+                            {activeItemsPerPageOptions.map(option => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div> */}
+                    {/* Pagination component */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={Math.max(Math.ceil(activeOrderListCount / activeItemsPerPage), 1)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={(ev) => handleActivePageChange(ev)}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        forcePage={activePage}  // Sync current page with URL
+                        disabled={activeOrderListCount === 0} 
+                    />
+                </div>
+            }
             {!orderList && <p>No orders found.</p>}
         </div>
     </>

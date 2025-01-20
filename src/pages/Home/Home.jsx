@@ -5,7 +5,7 @@ import ProductSlider from "../../components/ProductSlider/ProductSlider";
 
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCartData, getHomeData, getHomeSection, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getHomeData, getHomeSection, viewItemsInCartData } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -132,6 +132,27 @@ const Home = () => {
     }
   }, [homeProductSection]);
 
+  
+  const handleWishlistToggle = (productData) => {
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+      // setWishlistLoading(false);
+      return;
+    }
+
+    const responseObj = { sku_id: Number(productData?.sku_id) }
+    if(productData?.wishlistStatus?.toLowerCase() === 'no') {
+      dispatch(addProductOnWhistList(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+        // setWishlistLoading(false);
+      })
+    } else {
+        dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+          fetchUpdatedProductList();
+          // setWishlistLoading(false);
+        })
+    }
+  }
   return (
     <div>
       {loading ? (
@@ -204,6 +225,7 @@ const Home = () => {
                               onDecrement={handleDecrement}
                               onProductClick={() => handleProductClick(product)}
                               onProductImageClick={() => handleProcuctImageClick(product)}
+                              handleWishlistToggle={() => handleWishlistToggle(product)}
                             />
                           </div>
                         ))}
@@ -251,6 +273,7 @@ const Home = () => {
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
                       onProductImageClick={() => handleProcuctImageClick(item)}
+                      handleWishlistToggle={() => handleWishlistToggle(item)}
                     />
                   </div>
                 ))

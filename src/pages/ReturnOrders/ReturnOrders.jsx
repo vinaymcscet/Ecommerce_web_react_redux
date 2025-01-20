@@ -8,7 +8,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const ReturnOrders = () => {
   const [returnPage, setReturnPage] = useState(0);  // Default page 0 (first page)
-  const [returnItemsPerPage, setReturnItemsPerPage] = useState(10);
+  const [returnItemsPerPage, setReturnItemsPerPage] = useState(30);
   const [returnOrderIndex, setReturnOrderIndex] = useState(null);
   const [isInitialLoad, setIsInitialLoad] = useState({ returned: true });
   const { 
@@ -120,34 +120,6 @@ const ReturnOrders = () => {
   return (
     <>
         <div className="orderListWrapper">
-            {orderList && <div className='paginationBox'>
-                {/* <div className="itemsPerPageDropdown">
-                    <label>Items per page: </label>
-                    <select value={returnItemsPerPage} onChange={handleReturnItemsPerPageChange}>
-                        {returnItemsPerPageOptions.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-                {/* Pagination component */}
-                <ReactPaginate
-                    previousLabel={"Previous"}
-                    nextLabel={"Next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={Math.max(Math.ceil(returnOrderListCount / returnItemsPerPage), 1)}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={(ev) => handleReturnPageChange(ev)}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    forcePage={returnPage}  // Sync current page with URL
-                    disabled={returnOrderListCount === 0} 
-                />
-                </div>
-            }
             {orderList &&
             orderList?.map((item, index) => (
                 <div className="orderList" key={index}>
@@ -264,6 +236,34 @@ const ReturnOrders = () => {
                 </div>}
                 </div>
             ))}
+            {orderList && <div className='paginationBox'>
+                {/* <div className="itemsPerPageDropdown">
+                    <label>Items per page: </label>
+                    <select value={returnItemsPerPage} onChange={handleReturnItemsPerPageChange}>
+                        {returnItemsPerPageOptions.map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </div> */}
+                {/* Pagination component */}
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={Math.max(Math.ceil(returnOrderListCount / returnItemsPerPage), 1)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={(ev) => handleReturnPageChange(ev)}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    forcePage={returnPage}  // Sync current page with URL
+                    disabled={returnOrderListCount === 0} 
+                />
+                </div>
+            }
             {!orderList && <p>No orders found.</p>}
         </div>
     </>

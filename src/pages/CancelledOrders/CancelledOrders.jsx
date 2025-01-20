@@ -8,7 +8,7 @@ import { formatDateTimeFormatProduct, formatDateTimeProduct } from '../../utils/
 
 const CancelledOrders = () => {
     const [cancelPage, setCancelPage] = useState(0);  // Default page 0 (first page)
-    const [cancelItemsPerPage, setCancelItemsPerPage] = useState(10);
+    const [cancelItemsPerPage, setCancelItemsPerPage] = useState(30);
     const [cancelOrderIndex, setCancelOrderIndex] = useState(null);
     const [isInitialLoad, setIsInitialLoad] = useState({ cancelled: true });
     const { 
@@ -122,150 +122,150 @@ const CancelledOrders = () => {
     <>
         <div className="orderListWrapper">
             <div className="orderListWrapper">
-            {orderList && <div className='paginationBox'>
-                    {/* <div className="itemsPerPageDropdown">
-                        <label>Items per page: </label>
-                        <select value={cancelItemsPerPage} onChange={handleCancelItemsPerPageChange}>
-                            {cancelItemsPerPageOptions.map(option => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div> */}
-                    {/* Pagination component */}
-                    <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={Math.max(Math.ceil(cancelledOrderListCount / cancelItemsPerPage), 1)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={(ev) => handleCancelPageChange(ev)}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        forcePage={cancelPage}  // Sync current page with URL
-                        disabled={cancelledOrderListCount === 0} 
-                    />
+              {orderList &&
+              orderList?.map((item, index) => (
+              <div className="orderList" key={index}>
+                  <div className="orderDetail">
+                  <div className="leftOrder">
+                      <img src={item.product_image} alt={item.product_name} />
+                      <div>
+                      <h3>{item.product_name}</h3>
+                      <p className="openReturnWindow">{`Return window open on ${formatDateTimeProduct(item?.order_status?.Cancelled).formattedDate}`}</p>
+                      <p>{`Order # ${item.order_number}`}</p>
+                      </div>
+                  </div>
+                  <div className="rightOrder">
+                      {orderDetail?.invoice_url && <div
+                      onClick={() => downloadPDF(orderDetail?.invoice_url)}
+                      >
+                      Invoice
+                      </div>}
+                      <div
+                      className={cancelOrderIndex === index ? "active" : "disabled"}
+                      onClick={() => {
+                          const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                          );
+                          handleNavigateToCancelledOrderDetail(matchingProducts);
+                      }}
+                      >Buy it again</div>
+                      <div onClick={(e) => handleCancelledViewOrderDetails(e, index, item)}>
+                      {cancelOrderIndex === index ? "Hide order details" : "View order details"}
+                      </div>
+                      <div
+                      className={cancelOrderIndex === index ? "active" : "disabled"}
+                      onClick={() => {
+                          const matchingProducts = orderDetail?.orderItems?.filter((order) =>
+                          order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
+                          );
+                          handleNavigateToCancelledOrderDetail(matchingProducts, true);
+                      }}
+                      >write a product review</div>
+                      <div onClick={() => redirectToSupport()}>Get product support</div>
+                  </div>
+                  </div>
+                  {orderDetail && <div className={`openOrderDetails ${
+                  cancelOrderIndex === index ? "show" : "hide"
+                  }`}>
+                  <div className="userDetails">
+                      <div className="userAddress">
+                      <h6>
+                          SHIP To:
+                          <span>{orderDetail?.shippingAddress?.name}</span>
+                      </h6>
+                      <p>{orderDetail?.shippingAddress?.house_number}, {orderDetail?.shippingAddress?.street}</p>
+                      <p>{orderDetail?.shippingAddress?.locality}, {orderDetail?.shippingAddress?.country}</p>
+                      <p>Postal Code: {orderDetail?.shippingAddress?.postcode}</p>
+                      <p>Phone Number: {orderDetail?.shippingAddress?.phone}</p>
+                      </div>
+                      <div className="user_order_details">
+                      {
+                          orderDetail?.statusDetails?.map(order => (
+                          <>
+                              <h4>{order?.status}</h4>
+                              <p>{formatDateTimeFormatProduct(order?.date)}</p>
+                          </>
+                          ))
+                      }
+                      <h4>TOTAL Quantity</h4>
+                      <p>{orderDetail?.orderItems?.map(order => (
+                          order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order.quantity: ''
+                      ))}</p>
+                      </div>
+                      <div className="user_order_track">
+                      <h4>TRACK ORDER</h4>
+                      <p className="track">{orderDetail?.orderNumber}</p>
+                      <h4>TOTAL</h4>
+                      <p className="total">
+                      {orderDetail?.orderItems?.map(order => (
+                          order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
+                      ))} include taxes
+                      </p>
+                      {orderDetail?.orderItems[0]?.variants?.Color && <h4>Color</h4>}
+                          {orderDetail && <p className="orderColor"> {`${orderDetail?.orderItems?.map(order => (
+                              order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.variants?.Color: ''
+                          ))}`}
+                      </p>}
+                      {orderDetail?.orderItems[0]?.variants?.Size && 
+                          <>
+                          <h4>Size</h4>
+                          {orderDetail && <p className="orderColor"> {`${orderDetail?.orderItems?.map(order => (
+                              order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.variants?.Size: ''
+                          ))}`}
+                          </p>}
+                          </>}
+                      </div>
+                  </div>
+                  <div className="tracking_order_status">
+                      {
+                          orderDetail?.statusDetails.map(item => (
+                          <>
+                              <div 
+                              className={
+                                  item.status.toLowerCase() === 'cancelled' 
+                                  ? 'order started cancel' 
+                                  : 'order started done'
+                              }
+                              >
+                              <h6>{`${item?.status}`}</h6>
+                              <p>{`${formatDateTimeProduct(item?.date).formattedDate}`}</p>
+                              </div>
+                          </>
+                          ))
+                      }
+                  </div>
+                  </div>}
+              </div>
+              ))}
+              {orderList && <div className='paginationBox'>
+                  {/* <div className="itemsPerPageDropdown">
+                      <label>Items per page: </label>
+                      <select value={cancelItemsPerPage} onChange={handleCancelItemsPerPageChange}>
+                          {cancelItemsPerPageOptions.map(option => (
+                              <option key={option} value={option}>
+                                  {option}
+                              </option>
+                          ))}
+                      </select>
+                  </div> */}
+                  {/* Pagination component */}
+                  <ReactPaginate
+                      previousLabel={"Previous"}
+                      nextLabel={"Next"}
+                      breakLabel={"..."}
+                      breakClassName={"break-me"}
+                      pageCount={Math.max(Math.ceil(cancelledOrderListCount / cancelItemsPerPage), 1)}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      onPageChange={(ev) => handleCancelPageChange(ev)}
+                      containerClassName={"pagination"}
+                      activeClassName={"active"}
+                      forcePage={cancelPage}  // Sync current page with URL
+                      disabled={cancelledOrderListCount === 0} 
+                  />
                 </div>
-                }
-            {orderList &&
-                orderList?.map((item, index) => (
-                <div className="orderList" key={index}>
-                    <div className="orderDetail">
-                    <div className="leftOrder">
-                        <img src={item.product_image} alt={item.product_name} />
-                        <div>
-                        <h3>{item.product_name}</h3>
-                        <p className="openReturnWindow">{`Return window open on ${formatDateTimeProduct(item?.order_status?.Cancelled).formattedDate}`}</p>
-                        <p>{`Order # ${item.order_number}`}</p>
-                        </div>
-                    </div>
-                    <div className="rightOrder">
-                        {orderDetail?.invoice_url && <div
-                        onClick={() => downloadPDF(orderDetail?.invoice_url)}
-                        >
-                        Invoice
-                        </div>}
-                        <div
-                        className={cancelOrderIndex === index ? "active" : "disabled"}
-                        onClick={() => {
-                            const matchingProducts = orderDetail?.orderItems?.filter((order) =>
-                            order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
-                            );
-                            handleNavigateToCancelledOrderDetail(matchingProducts);
-                        }}
-                        >Buy it again</div>
-                        <div onClick={(e) => handleCancelledViewOrderDetails(e, index, item)}>
-                        {cancelOrderIndex === index ? "Hide order details" : "View order details"}
-                        </div>
-                        <div
-                        className={cancelOrderIndex === index ? "active" : "disabled"}
-                        onClick={() => {
-                            const matchingProducts = orderDetail?.orderItems?.filter((order) =>
-                            order?.productName?.toLowerCase() === item?.product_name.toLowerCase()
-                            );
-                            handleNavigateToCancelledOrderDetail(matchingProducts, true);
-                        }}
-                        >write a product review</div>
-                        <div onClick={() => redirectToSupport()}>Get product support</div>
-                    </div>
-                    </div>
-                    {orderDetail && <div className={`openOrderDetails ${
-                    cancelOrderIndex === index ? "show" : "hide"
-                    }`}>
-                    <div className="userDetails">
-                        <div className="userAddress">
-                        <h6>
-                            SHIP To:
-                            <span>{orderDetail?.shippingAddress?.name}</span>
-                        </h6>
-                        <p>{orderDetail?.shippingAddress?.house_number}, {orderDetail?.shippingAddress?.street}</p>
-                        <p>{orderDetail?.shippingAddress?.locality}, {orderDetail?.shippingAddress?.country}</p>
-                        <p>Postal Code: {orderDetail?.shippingAddress?.postcode}</p>
-                        <p>Phone Number: {orderDetail?.shippingAddress?.phone}</p>
-                        </div>
-                        <div className="user_order_details">
-                        {
-                            orderDetail?.statusDetails?.map(order => (
-                            <>
-                                <h4>{order?.status}</h4>
-                                <p>{formatDateTimeFormatProduct(order?.date)}</p>
-                            </>
-                            ))
-                        }
-                        <h4>TOTAL Quantity</h4>
-                        <p>{orderDetail?.orderItems?.map(order => (
-                            order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order.quantity: ''
-                        ))}</p>
-                        </div>
-                        <div className="user_order_track">
-                        <h4>TRACK ORDER</h4>
-                        <p className="track">{orderDetail?.orderNumber}</p>
-                        <h4>TOTAL</h4>
-                        <p className="total">
-                        {orderDetail?.orderItems?.map(order => (
-                            order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
-                        ))} include taxes
-                        </p>
-                        {orderDetail?.orderItems[0]?.variants?.Color && <h4>Color</h4>}
-                            {orderDetail && <p className="orderColor"> {`${orderDetail?.orderItems?.map(order => (
-                                order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.variants?.Color: ''
-                            ))}`}
-                        </p>}
-                        {orderDetail?.orderItems[0]?.variants?.Size && 
-                            <>
-                            <h4>Size</h4>
-                            {orderDetail && <p className="orderColor"> {`${orderDetail?.orderItems?.map(order => (
-                                order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.variants?.Size: ''
-                            ))}`}
-                            </p>}
-                            </>}
-                        </div>
-                    </div>
-                    <div className="tracking_order_status">
-                        {
-                            orderDetail?.statusDetails.map(item => (
-                            <>
-                                <div 
-                                className={
-                                    item.status.toLowerCase() === 'cancelled' 
-                                    ? 'order started cancel' 
-                                    : 'order started done'
-                                }
-                                >
-                                <h6>{`${item?.status}`}</h6>
-                                <p>{`${formatDateTimeProduct(item?.date).formattedDate}`}</p>
-                                </div>
-                            </>
-                            ))
-                        }
-                    </div>
-                    </div>}
-                </div>
-                ))}
-                {!orderList && <p>No orders found.</p>}
+              }
+              {!orderList && <p>No orders found.</p>}
             </div>
         </div>
     </>

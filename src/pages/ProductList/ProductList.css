@@ -370,6 +370,20 @@ span {
   position: relative;
 }
 
+
+.searchProduct .productList > div.noProductBoxes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: wrap column;
+  width: 100%;
+}
+
+.searchProduct .productList > div.noProductBoxes p {
+  color: #aeb8c2;
+  margin-top: 10px;
+}
+
 @media only screen and (max-width: 992px) {
   .prdWrapper .prdRight .productList > div {
     width: 44%;

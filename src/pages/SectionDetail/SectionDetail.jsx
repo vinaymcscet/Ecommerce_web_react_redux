@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './SectionDetail.css';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCartData, getAllOffersData, getProductSection, productDetailData, viewItemsInCartData } from '../../store/slice/api_integration';
+import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getAllOffersData, getProductSection, productDetailData, viewItemsInCartData } from '../../store/slice/api_integration';
 import ProductListCard from '../../components/ProductListCard/ProductListCard';
 import { CircularProgress } from '@mui/material';
 import ReactPaginate from 'react-paginate';
@@ -120,6 +120,27 @@ const SectionDetail = () => {
         dispatch(viewItemsInCartData());
         dispatch(setViewCartItems(null));
     };
+    
+    const handleWishlistToggle = (productData) => {
+        if(user.length === 0) {
+          dispatch(toggleModal(true));
+          // setWishlistLoading(false);
+          return;
+        }
+    
+        const responseObj = { sku_id: Number(productData?.sku_id) }
+        if(productData?.wishlistStatus?.toLowerCase() === 'no') {
+          dispatch(addProductOnWhistList(responseObj)).finally(() => {
+            fetchUpdatedProductList();
+            // setWishlistLoading(false);
+          })
+        } else {
+            dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+              fetchUpdatedProductList();
+              // setWishlistLoading(false);
+            })
+        }
+    }
     return (
         <div className="sectionDetail">
             {loading ? (
@@ -203,6 +224,7 @@ const SectionDetail = () => {
                                     onDecrement={handleDecrement}
                                     onProductClick={() => handleProductClick(product)}
                                     onProductImageClick={() => handleProcuctImageClick(product)}
+                                    handleWishlistToggle={() => handleWishlistToggle(product)}
                                 />
                             </div>
                         ))}

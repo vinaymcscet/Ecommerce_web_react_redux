@@ -70,12 +70,12 @@ const ProductDetail = () => {
   
   const [errorFileType, setErrorFileType] = useState("");
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
-  const [reviewPerPage, setReviewPerPage] = useState(10);
+  const [reviewPerPage, setReviewPerPage] = useState(30);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
   const [recentViewPerPage, setRecentViewPerPage] = useState(25);
   
   const [similarProductPage, setSimilarProductPage] = useState(1);  // Default page 0 (first page)
-  const [similarProductPerPage, setSimilarProductPerPage] = useState(25);
+  const [similarProductPerPage, setSimilarProductPerPage] = useState(30);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -418,23 +418,52 @@ const ProductDetail = () => {
       return;
     }
 
-    const responseObj = { sku_id: Number(productData.variants[0].sku_id) }
-    if(productData?.wishlist_status?.toLowerCase() === 'no') {
-      dispatch(addProductOnWhistList(responseObj)).finally(() => {
-        const responseObj = { 
-          product_id: product_id ,
-        }
-        dispatch(productDetailData(responseObj))
-        setWishlistLoading(false);
-      })
-    } else {
-        dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+    let responseObj;
+    if(productData?.variants) {
+      responseObj = { sku_id: Number(productData?.variants[0]?.sku_id) }
+    } else  {
+      responseObj = { sku_id: Number(productData?.sku_id) }
+    }
+    if(productData?.variants) {
+      if(productData?.wishlist_status?.toLowerCase() === 'no') {
+        dispatch(addProductOnWhistList(responseObj)).finally(() => {
           const responseObj = { 
             product_id: product_id ,
           }
           dispatch(productDetailData(responseObj))
           setWishlistLoading(false);
         })
+      } else {
+          dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+            const responseObj = { 
+              product_id: product_id ,
+            }
+            dispatch(productDetailData(responseObj))
+            setWishlistLoading(false);
+          })
+      }
+    } else {
+      if(productData?.wishlistStatus?.toLowerCase() === 'no') {
+        dispatch(addProductOnWhistList(responseObj)).finally(() => {
+          const responseObj = { 
+            product_id: product_id ,
+          }
+          dispatch(productDetailData(responseObj))
+          fetchUpdatedProductList();
+          fetchUpdatedSimilarProductList();
+          setWishlistLoading(false);
+        })
+      } else {
+          dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+            const responseObj = { 
+              product_id: product_id ,
+            }
+            dispatch(productDetailData(responseObj))
+            fetchUpdatedProductList();
+            fetchUpdatedSimilarProductList();
+            setWishlistLoading(false);
+          })
+      }
     }
     setUserLoggedOnWishList("")
   };
@@ -1276,6 +1305,7 @@ const fetchUpdatedSimilarProductList = () => {
                                   onDecrement={handleDecrement}
                                   onProductClick={() => handleProductClick(item)}
                                   onProductImageClick={() => handleProcuctImageClick(item)}
+                                  handleWishlistToggle={() => handleWishlistToggle(item)}
                                 />
                               </div>
                             ))
@@ -1350,6 +1380,7 @@ const fetchUpdatedSimilarProductList = () => {
                               onDecrement={handleSimilarDecrement}
                               onProductClick={() => handleProductClick(item)}
                               onProductImageClick={() => handleProcuctImageClick(item)}
+                              handleWishlistToggle={() => handleWishlistToggle(item)}
                             />
                           </div>
                         ))

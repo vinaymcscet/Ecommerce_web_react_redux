@@ -108,7 +108,7 @@ const Header = () => {
       <header>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={5} md={4} lg={4} className="leftHead">
+            <Grid item xs={5} md={3} lg={3} className="leftHead">
               <ul className="leftHeaderMenu">
                 <li>
                   <Link to="/">
@@ -129,7 +129,7 @@ const Header = () => {
                 </li> */}
               </ul>
             </Grid>
-            <Grid item xs={6} md={4} lg={4}>
+            <Grid item xs={6} md={6} lg={6}>
               <div className="searchPanel">
                 <div className="inputBox">
                   <input
@@ -145,7 +145,7 @@ const Header = () => {
                 </div>
               </div>
             </Grid>
-            <Grid item xs={0} md={4} lg={4} className="rightHead">
+            <Grid item xs={0} md={3} lg={3} className="rightHead">
               <ul className={hamburgerOpen ? "rightMenu active" : "rightMenu"}>
                 {user.length === 0 && (
                   <li onClick={() => handleOpenDialog("login")}>
@@ -157,7 +157,7 @@ const Header = () => {
                   <div className="menu-container">
                     <li onClick={toggleUserMenu}>
                       <img 
-                          src={user[0]?.profile_pic || user[0]?.data?.profile_pic || '/images/icons/avtar.png'} 
+                          src={user[0]?.profile_pic || user[0]?.data?.profile_pic || '/images/icons/avtar1.png'} 
                           alt={user[0]?.fullname || user[0]?.data?.first_name || 'User'} 
                       />
                       {user[0]?.fullname && !user[0].fullname.toLowerCase().includes("undefined") && (

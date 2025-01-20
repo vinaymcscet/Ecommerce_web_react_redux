@@ -26,6 +26,7 @@ const ProductListCard = ({
   cartQuantity,
   offer,
   onProductImageClick,
+  handleWishlistToggle,
 }) => {
   const [whistListBox, setWhistListBox] = useState({
     whistlist: "/images/product/whistlist.svg",
@@ -39,7 +40,7 @@ const ProductListCard = ({
   return (
     <div className='productBoxes' key={id}>
       <div className="whislistBox">
-        <div className="wishlist-btn">
+        <div className="wishlist-btn" onClick={handleWishlistToggle}>
           {wishlistStatus?.toLowerCase() === 'yes' ? (
             <img
               src={whistListBox.whistlistFill}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import InputField from "../InputBox/InputBox";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +16,8 @@ import {
   resetLogin,
   resetOtp,
   resetForgotPassword,
-  resetForgotPasswordAssist
+  resetForgotPasswordAssist,
+  setLoading
 } from "../../store/slice/modalSlice";
 import "./Modal.css";
 import { getDeviceType } from "../../utils/CheckDevice";
@@ -66,11 +67,44 @@ const Modal = () => {
   } = useSelector((state) => state.modal);
   const [rememberMe, setRememberMe] = useState(false);
   const [rememberMeError, setRememberMeError] = useState(""); 
+  const [timer, setTimer] = useState(60);
+  const [otpTimer, setOtpTimer] = useState(60);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+  const [isResendOtpDisabled, setIsResendOtpDisabled] = useState(true);
+  const forgetOtpRefs = useRef([]);
+  const otpRefs = useRef([]);
+  const [forgetOtpError, setForgetOtpError] = useState("");
+  const [otpError, setOtpError] = useState("");
+
+  useEffect(() => {
+    let interval;
+    if (modalType === "forgotOtp" && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      setIsResendDisabled(false);
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [modalType, timer]);
+
+  useEffect(() => {
+    let interval;
+    if (modalType === "otp" && otpTimer > 0) {
+      interval = setInterval(() => {
+        setOtpTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (otpTimer === 0) {
+      setIsResendOtpDisabled(false);
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [modalType, otpTimer]);
 
   if (!isModalOpen) return null;
 
-  // ==============================================================
-
+// ==============================================================
 
 const validatePasswordLength1 = (password) => {
   const passwordRegex =
@@ -110,7 +144,7 @@ const handleConfirmPasswordChange = (e) => {
 };
 // ==============================================================
 
-  const handleChange = (e) => {
+  const handleChange = (e, index=null) => {
     const { name, value } = e.target;
     // Helper function to format phone numbers with +44
     const formatPhoneNumber = (input) => {
@@ -139,19 +173,40 @@ const handleConfirmPasswordChange = (e) => {
       }
       dispatch(setSignup({ ...signup, [name]: updatedValue }));
     } else if (modalType === "otp") {
-      dispatch(setOtp({ otpCode: value }));
+      const newOtp = [...otp.otpCode];
+      newOtp[index] = value;
+      dispatch(setOtp({ otpCode: newOtp.join('') }));
+      if (e.target.value && index < 5) {
+        otpRefs.current[index + 1].focus();
+      }
     } else if(modalType === 'forgotPasswordAssist') {
       if (/^\d+$/.test(value)) {
         updatedValue = formatPhoneNumber(value);
       }
       dispatch(setForgotPasswordAssist({ ...forgotPasswordAssist, [name]: updatedValue}))
     } else if (modalType === "forgotOtp") {
-      dispatch(setForgotOtp({ otpCode: value }));
+      const newOtp = [...forgotOtp.otpCode];
+      newOtp[index] = value;
+      dispatch(setForgotOtp({ otpCode: newOtp.join('') }));
+
+      if (e.target.value && index < 5) {
+        forgetOtpRefs.current[index + 1].focus();
+      }
     }
     if (modalType === "forgot") {
       if (forgotPassword[name] !== value) {
         dispatch(setForgotPassword({ ...forgotPassword, [name]: value }));
       }
+    }
+  };
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !forgotOtp.otpCode[index] && index > 0) {
+      forgetOtpRefs.current[index - 1].focus();
+    }
+  };
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otp.otpCode[index] && index > 0) {
+      otpRefs.current[index - 1].focus();
     }
   };
 
@@ -199,6 +254,11 @@ const handleConfirmPasswordChange = (e) => {
     }
 
     if (modalType === "otp") {
+      if(otp.otpCode.split("").length !== 6 || otp.otpCode.includes(" ")) {
+        setOtpError("Please enter a valid 6-digit OTP.");
+        return;
+      }
+      setOtpError("");
       const responseObj = { 
         username: signup.userPhoneOrEmail,
         password: signup.password,
@@ -240,11 +300,15 @@ const handleConfirmPasswordChange = (e) => {
       dispatch(forgetPasswordRequest(responseObj))
     }
     if (modalType === "forgotOtp") {
+      if(forgotOtp.otpCode.split("").length !== 6 || forgotOtp.otpCode.includes(" ")) {
+        setForgetOtpError("Please enter a valid 6-digit OTP.");
+        return;
+      }
+      setForgetOtpError("");
       const responseObj = { 
         username: forgotPasswordAssist.userPhoneOrEmail,
         otp: forgotOtp.otpCode 
       };
-      
       dispatch(forgetPasswordOtpRequest(responseObj));
     }
   };
@@ -260,6 +324,22 @@ const handleConfirmPasswordChange = (e) => {
     dispatch(resetForgotPassword());
     dispatch(resetForgotPasswordAssist());
     dispatch(toggleModal(false))
+  };
+  const handleResendForgetOtp = () => {
+    const responseObj = {
+      username: forgotPasswordAssist.userPhoneOrEmail
+    };
+    dispatch(forgetPasswordRequest(responseObj))
+    dispatch(setLoading(false));
+    setTimer(60);
+    setIsResendDisabled(true);
+  };
+  const handleResendOtp = () => {
+    const responseObj = { username: signup.userPhoneOrEmail };
+    dispatch(signupUser(responseObj));
+    dispatch(setLoading(false));
+    setOtpTimer(60);
+    setIsResendOtpDisabled(true);
   };
   return (
     <div>
@@ -438,8 +518,8 @@ const handleConfirmPasswordChange = (e) => {
                 </div>
               </div>
               <div className="right">
-                <form onSubmit={handleSubmit}>
-                  <InputField
+                <form onSubmit={handleSubmit} name="forgotOtp">
+                  {/* <InputField
                     label={TEMP_CODE_LABEL}
                     placeholder={TEMP_CODE_PLACEHOLDER}
                     name={OTP_NAME}
@@ -448,7 +528,23 @@ const handleConfirmPasswordChange = (e) => {
                     validate={validateOtp}
                     required
                     errorMessage={OTP_ERROR}
-                  />
+                  /> */}
+                  {[...Array(6)].map((_, index) => (
+                    <input
+                      label={TEMP_CODE_LABEL}
+                      key={index}
+                      type="text"
+                      maxLength="1"
+                      name={OTP_NAME}
+                      value={otp.otpCode[index] || ""}
+                      // value={otp.otpCode[index] || ''}
+                      onChange={(e) => handleChange(e, index)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                      ref={(el) => (otpRefs.current[index] = el)}
+                      className="otp-box"
+                    />
+                  ))}
+                  {otpError && <p className="error-message otp">{otpError}</p>}
                   <button
                     type="submit"
                     style={{
@@ -466,6 +562,11 @@ const handleConfirmPasswordChange = (e) => {
                     {!loading && <span>Submit</span>}
                   </button>
                 </form>
+                <div className="resendBox">
+                  <p>Didn't receive a otp?</p>
+                  <button onClick={handleResendOtp} disabled={isResendOtpDisabled}>Resend OTP</button>
+                  <p>in {otpTimer} seconds</p>
+                </div>
               </div>
             </>
           )}
@@ -586,7 +687,8 @@ const handleConfirmPasswordChange = (e) => {
                 </div>
               </div>
               <div className="right">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} name="forgotOtp">
+                {/*                   
                   <InputField
                     label={TEMP_CODE_LABEL}
                     placeholder={TEMP_CODE_PLACEHOLDER}
@@ -596,7 +698,23 @@ const handleConfirmPasswordChange = (e) => {
                     validate={validateOtp}
                     required
                     errorMessage={OTP_ERROR}
-                  />
+                  /> */}
+                  {[...Array(6)].map((_, index) => (
+                    <input
+                      label={TEMP_CODE_LABEL}
+                      key={index}
+                      type="text"
+                      maxLength="1"
+                      name={OTP_NAME}
+                      value={forgotOtp.otpCode[index] || ""}
+                      // value={otp.otpCode[index] || ''}
+                      onChange={(e) => handleChange(e, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      ref={(el) => (forgetOtpRefs.current[index] = el)}
+                      className="otp-box"
+                    />
+                  ))}
+                  {forgetOtpError && <p className="error-message otp">{forgetOtpError}</p>}
                   <button
                     type="submit"
                     style={{
@@ -614,6 +732,11 @@ const handleConfirmPasswordChange = (e) => {
                     {!loading && <span>Submit</span>}
                   </button>
                 </form>
+                <div className="resendBox">
+                  <p>Didn't receive a otp?</p>
+                  <button onClick={handleResendForgetOtp} disabled={isResendDisabled}>Resend OTP</button>
+                  <p>in {timer} seconds</p>
+                </div>
               </div>
             </>
           )}

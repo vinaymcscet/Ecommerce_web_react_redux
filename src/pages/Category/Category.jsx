@@ -4,7 +4,7 @@ import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCategoryModal, toggleModal } from "../../store/slice/modalSlice";
 import "./Category.css";
-import { addToCartData, getAllCategoryData, getAllListProductAPI, getAllRecentViewData, getSubCategoryData, productDetailData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getAllCategoryData, getAllListProductAPI, getAllRecentViewData, getSubCategoryData, productDetailData, viewItemsInCartData } from "../../store/slice/api_integration";
 import ReactPaginate from "react-paginate";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
@@ -17,7 +17,7 @@ const Category = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage,setItemsPerPage] = useState(25);
+  const [itemsPerPage,setItemsPerPage] = useState(30);
   const [loading, setLoading] = useState(false);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
   const { user } = useSelector((state) => state.user);
@@ -152,6 +152,28 @@ const handlePageChange = (data) => {
     dispatch(viewItemsInCartData());
     dispatch(setViewCartItems(null));
   };
+  
+  const handleWishlistToggle = (productData) => {
+    if(user.length === 0) {
+      dispatch(toggleModal(true));
+      // setWishlistLoading(false);
+      return;
+    }
+
+    const responseObj = { sku_id: Number(productData?.sku_id) }
+    if(productData?.wishlistStatus?.toLowerCase() === 'no') {
+      dispatch(addProductOnWhistList(responseObj)).finally(() => {
+        fetchUpdatedProductList();
+        // setWishlistLoading(false);
+      })
+    } else {
+        dispatch(deleteSingleWhistListData(responseObj)).finally(() => {
+          fetchUpdatedProductList();
+          // setWishlistLoading(false);
+        })
+    }
+  }
+  
 
   return (
     <>
@@ -209,6 +231,7 @@ const handlePageChange = (data) => {
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
                       onProductImageClick={() => handleProcuctImageClick(item)}
+                      handleWishlistToggle={() => handleWishlistToggle(item)}
                     />
                   </div>
                 ))
@@ -275,6 +298,7 @@ const handlePageChange = (data) => {
                       onDecrement={handleDecrement}
                       onProductClick={() => handleProductClick(item)}
                       onProductImageClick={() => handleProcuctImageClick(item)}
+                      handleWishlistToggle={() => handleWishlistToggle(item)}
                     />
                   </div>
                 ))

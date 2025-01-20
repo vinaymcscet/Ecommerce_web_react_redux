@@ -10,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 
 const Reviews = () => {
     const [reviewPage, setReviewPage] = useState(0);  // Default page 0 (first page)
-    const [reviewPerPage, setReviewPerPage] = useState(10);
+    const [reviewPerPage, setReviewPerPage] = useState(30);
     const [loading, setLoading] = useState(false);
 
     const { 
@@ -73,34 +73,6 @@ const Reviews = () => {
     <div className="reviewedItems">
         <div className="reviewHeader">
             <h3>Item Reviews</h3>
-            {userReview && <div className='paginationBox'>
-                {/* <div className="itemsPerPageDropdown">
-                    <label>Items per page: </label>
-                    <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
-                        {reviewItemsPerPageOptions.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-                {/* Pagination component */}
-                <ReactPaginate
-                    previousLabel={"Previous"}
-                    nextLabel={"Next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={(ev) => handleReviewPageChange(ev)}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    forcePage={reviewPage}  // Sync current page with URL
-                    disabled={userReviewCount === 0} 
-                />
-                </div>
-            }
         </div>
         {loading ? (
         <div className="loadingContainer">
@@ -138,6 +110,34 @@ const Reviews = () => {
             {!userReview && <p className="noReviews">No reviews found.</p>}
         </div>
         )}
+        {userReview && <div className='paginationBox'>
+            {/* <div className="itemsPerPageDropdown">
+                <label>Items per page: </label>
+                <select value={reviewPerPage} onChange={handleReviewPerPageChange}>
+                    {reviewItemsPerPageOptions.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </select>
+            </div> */}
+            {/* Pagination component */}
+            <ReactPaginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={Math.max(Math.ceil(userReviewCount / reviewPerPage), 1)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={(ev) => handleReviewPageChange(ev)}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+                forcePage={reviewPage}  // Sync current page with URL
+                disabled={userReviewCount === 0} 
+            />
+            </div>
+        }
     </div>
   )
 }

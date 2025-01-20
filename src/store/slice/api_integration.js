@@ -866,10 +866,10 @@ export const searchProductData = (userData) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 

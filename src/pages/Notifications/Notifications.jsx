@@ -10,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 
 const Notifications = () => {
     const [page, setPage] = useState(0);  // Default page 0 (first page)
-    const [perPage, setPerPage] = useState(10);
+    const [perPage, setPerPage] = useState(50);
     const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
@@ -74,6 +74,29 @@ const Notifications = () => {
     <div className="notifications">
         <div className='notificationHeader'>
             <h4>Notifications List</h4>
+        </div>
+        {notifications && <h6 onClick={handleClearNotification}>Clear Notification</h6>}
+            {loading ? (
+                <div className="loadingContainer">
+                    <CircularProgress />
+                </div>
+            ) : (
+                <div className="notificationBox">
+                    {notifications && notifications.map((notification, index) => (
+                        <div className="notify" key={index}>
+                            <div className="leftNotification">
+                                <img src={notification?.image} alt={notification?.title} />
+                            </div>
+                            <div className="rightNotification">
+                                <h4>{notification?.title}</h4>
+                                <p>{notification.message}</p>
+                                <p className='date'>Date: {FormatDateTime(notification.created_at)}</p>
+                            </div>
+                        </div>
+                    ))}
+                    {notifications === null && <p className='noNotifications'>No notifications found.</p>}
+                </div>
+            )}
             {notifications?.length > 0 && <div className='paginationBox'>
                 {/* <div className="itemsPerPageDropdown">
                     <label>Items per page: </label>
@@ -102,29 +125,6 @@ const Notifications = () => {
                 />
                 </div>
             }
-        </div>
-        {notifications && <h6 onClick={handleClearNotification}>Clear Notification</h6>}
-         {loading ? (
-                <div className="loadingContainer">
-                    <CircularProgress />
-                </div>
-            ) : (
-                <div className="notificationBox">
-                    {notifications && notifications.map((notification, index) => (
-                        <div className="notify" key={index}>
-                            <div className="leftNotification">
-                                <img src={notification?.image} alt={notification?.title} />
-                            </div>
-                            <div className="rightNotification">
-                                <h4>{notification?.title}</h4>
-                                <p>{notification.message}</p>
-                                <p className='date'>Date: {FormatDateTime(notification.created_at)}</p>
-                            </div>
-                        </div>
-                    ))}
-                    {notifications === null && <p className='noNotifications'>No notifications found.</p>}
-                </div>
-            )}
     </div>
   )
 }
