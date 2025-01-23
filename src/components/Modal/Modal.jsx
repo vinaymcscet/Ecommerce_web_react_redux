@@ -67,8 +67,8 @@ const Modal = () => {
   } = useSelector((state) => state.modal);
   const [rememberMe, setRememberMe] = useState(false);
   const [rememberMeError, setRememberMeError] = useState(""); 
-  const [timer, setTimer] = useState(60);
-  const [otpTimer, setOtpTimer] = useState(60);
+  const [timer, setTimer] = useState(180);
+  const [otpTimer, setOtpTimer] = useState(180);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [isResendOtpDisabled, setIsResendOtpDisabled] = useState(true);
   const forgetOtpRefs = useRef([]);
