@@ -8,7 +8,7 @@ import LinearProgressWithLabel from "../../components/LinearProgressWithLabel/Li
 import Button from "../../components/Button/Button";
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getReviewProductData, productDetailData, similarProductData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addReviewProductData, addReviewProductImageData, addToCartData, deleteSingleWhistListData, getAllRecentViewData, getHomeData, getListAddress, getReviewProductData, productDetailData, similarProductData, viewItemsInCartData } from "../../store/slice/api_integration";
 import CircularProgress from '@mui/material/CircularProgress';
 import "./ProductDetail.css";
 // import { gaurnteeMessage } from "../../utils/CommonUtils";
@@ -16,7 +16,8 @@ import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
-import { toggleModal } from "../../store/slice/modalSlice";
+import { toggleAddressModal, toggleModal } from "../../store/slice/modalSlice";
+import { setUserAddress } from "../../store/slice/userSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const ProductDetail = () => {
     recentView,
     totalRecentView = 0,
    } = useSelector((state) => state.product);
-  const { user } = useSelector((state) => state.user);
+  const { user, userAddress } = useSelector((state) => state.user);
     
   const [activeTab, setActiveTab] = useState(0);
   const [progress, setProgress] = React.useState(0);
@@ -46,6 +47,7 @@ const ProductDetail = () => {
   const [userLoggedOnCart, setUserLoggedOnCart] = useState("");
   const [userLoggedOnReview, setUserLoggedOnReview] = useState("");
   const [userLoggedOnBuyNow, setUserLoggedOnBuyNow] = useState("");
+  const [defaultAddressError, setDefaultAddressError] = useState("");
   const [triggerSkuId, setTriggerSkuId] = useState(null);
 
   // const [handleCartOnLoad, setHandleCartOnLoad] = useState(0);
@@ -121,7 +123,10 @@ const ProductDetail = () => {
         }, 1000);
       });
     }
-    
+    // const defaultAddressId = user[0]?.data?.default_address_id;
+    if(!userAddress) {
+      setDefaultAddressError("Please add default address before to add items on Cart.")
+    }
   }, [])
 
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
@@ -144,23 +149,28 @@ const ProductDetail = () => {
       }, 1000);
       return;
     }
-    const responseObj = {
-      sku_id: selected?.sku_id,
-      type: 'increase'
-    }
-    dispatch(addToCartData(responseObj)).finally(() => {
-      setSelected((prev) => ({
-        ...prev,
-        quantity: Number(prev.quantity) + 1, // Update quantity locally
-      }));
-      dispatch(viewItemsInCartData());
-      const responseObj = { 
-        product_id: product_id ,
-      }
-      dispatch(productDetailData(responseObj))
-      dispatch(setViewCartItems(null));
+    if(!userAddress) {
+      dispatch(toggleAddressModal({ isOpen: true }));
       setWishlistLoading(false);
-    })
+    } else {
+      const responseObj = {
+        sku_id: selected?.sku_id,
+        type: 'increase'
+      }
+      dispatch(addToCartData(responseObj)).finally(() => {
+        setSelected((prev) => ({
+          ...prev,
+          quantity: Number(prev.quantity) + 1, // Update quantity locally
+        }));
+        dispatch(viewItemsInCartData());
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+        dispatch(setViewCartItems(null));
+        setWishlistLoading(false);
+      })
+    }
   };
 
   const handleDecrease = () => {
@@ -174,23 +184,28 @@ const ProductDetail = () => {
       }, 1000);
       return;
     }
-    const responseObj = {
-      sku_id: selected?.sku_id,
-      type: 'decrease'
-    }
-    dispatch(addToCartData(responseObj)).finally(() => {
-      setSelected((prev) => ({
-        ...prev,
-        quantity: Math.max(Number(prev.quantity) - 1, 0), // Update quantity, min 0
-      }));
-      dispatch(viewItemsInCartData());
-      const responseObj = { 
-        product_id: product_id ,
-      }
-      dispatch(productDetailData(responseObj))
-      dispatch(setViewCartItems(null));
+    if(!userAddress) {
+      dispatch(toggleAddressModal({ isOpen: true }));
       setWishlistLoading(false);
-    })
+    } else {
+      const responseObj = {
+        sku_id: selected?.sku_id,
+        type: 'decrease'
+      }
+      dispatch(addToCartData(responseObj)).finally(() => {
+        setSelected((prev) => ({
+          ...prev,
+          quantity: Math.max(Number(prev.quantity) - 1, 0), // Update quantity, min 0
+        }));
+        dispatch(viewItemsInCartData());
+        const responseObj = { 
+          product_id: product_id ,
+        }
+        dispatch(productDetailData(responseObj))
+        dispatch(setViewCartItems(null));
+        setWishlistLoading(false);
+      })
+    }
   };
 
   useEffect(() => {
@@ -213,7 +228,12 @@ const ProductDetail = () => {
         prevProgress >= 100 ? 0 : prevProgress + 10
       );
     }, 800);
-
+    // get Address List
+    // const responseObj = {
+    //   offset: 0,
+    //   limit: 10,
+    // };
+    // dispatch(getListAddress(responseObj))
     return () => {
       clearInterval(timer);
     };
@@ -341,25 +361,25 @@ const ProductDetail = () => {
       dispatch(toggleModal(true));
       return;
     }
-    const responseObj = {
-      sku_id: productDetailResponse?.data.variants[0]?.sku_id,
-      type: 'increase'
-    }
-    dispatch(addToCartData(responseObj)).finally(() => {
-      // if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
-        setUserLoggedOnBuyNow("")
-        dispatch(viewItemsInCartData());
-        const responseObj = { 
-          product_id: product_id ,
+    if(!userAddress) {
+      dispatch(toggleAddressModal({ isOpen: true }));
+    } else {
+        const responseObj = {
+          sku_id: productDetailResponse?.data.variants[0]?.sku_id,
+          type: 'increase'
         }
-        dispatch(productDetailData(responseObj))
-        dispatch(setViewCartItems(null));
-        navigate("/cart");
-
-      // } else {
-      //   return;
-      // }
-    })
+        dispatch(addToCartData(responseObj)).finally(() => {
+          // if (addToCartStatusCount === 200) { // Assuming `status` in payload indicates success
+            setUserLoggedOnBuyNow("")
+            dispatch(viewItemsInCartData());
+            const responseObj = { 
+              product_id: product_id ,
+            }
+            dispatch(productDetailData(responseObj))
+            dispatch(setViewCartItems(null));
+            navigate("/cart");
+        })
+    }
   }
 
   const handleAddToCartClick = (sku_id) => {
@@ -931,6 +951,7 @@ const fetchUpdatedSimilarProductList = () => {
                     <button type="button" onClick={() => handleBuyNowProduct()}>Buy Now</button>
                   </div>
                   {user.length == 0 && <p className="cartError error">{userLoggedOnBuyNow}</p>}
+                  {!userAddress && <p className="cartError error">{defaultAddressError}</p>}
                 </div>
                 <div className="rightBar">
                   <div className="estimatedDelivery">

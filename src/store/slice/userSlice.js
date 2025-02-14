@@ -13,6 +13,7 @@ const initialState = {
   cookiesInfo: null,
   cookiesStatus: null,
   defaultUserAddress: null,
+  userAddress: null,
 };
 
 export const userSlice = createSlice({
@@ -88,6 +89,9 @@ export const userSlice = createSlice({
     setDefaultUserAddress: (state, action) => {
       state.defaultUserAddress = action.payload;
     },
+    setUserAddress: (state, action) => {
+      state.userAddress = action.payload;
+    },
   },
 });
 
@@ -108,6 +112,7 @@ export const {
   setCookiesInfo,
   setCookiesStatus,
   setDefaultUserAddress,
+  setUserAddress,
  } =
   userSlice.actions;
 export default userSlice.reducer;

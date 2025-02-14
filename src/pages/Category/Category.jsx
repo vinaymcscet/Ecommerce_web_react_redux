@@ -33,6 +33,7 @@ const Category = () => {
       isOpen: isOpen, 
       category: subCategoryList, 
       category_name: item.name,
+      category_id: item.id,
     };
     dispatch(toggleCategoryModal(subCategoryObj));
   };

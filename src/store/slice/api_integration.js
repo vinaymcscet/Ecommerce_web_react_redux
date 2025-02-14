@@ -82,7 +82,7 @@ import {
   toggleCategoryModal,
   toggleModal,
 } from "./modalSlice";
-import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setCookiesInfo, setCookiesStatus, setLogout, setNewsLetter, setNotificationsCount, setNotificationsList, setUser } from "./userSlice";
+import { setBlogCategoryList, setBlogDetailList, setBlogList, setBlogReviewList, setCookiesInfo, setCookiesStatus, setLogout, setNewsLetter, setNotificationsCount, setNotificationsList, setUser, setUserAddress } from "./userSlice";
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 import { setCMSContentType, setCmsGroupItem, setCmsSocialLinks } from "./cmsSlice";
 import {
@@ -540,6 +540,7 @@ export const getListAddress = (userData) => async (dispatch) => {
     const response = await POST(LIST_ADDRESS_CONSTANT, userData);
     
     dispatch(setLoading(false));
+    dispatch(setUserAddress(response.data));
     dispatch(setUser({addresses: response.data}));
     // dispatch(setSuccess(response.message));
     dispatch(setTotalAddressCount(response.totalCount));
@@ -763,10 +764,10 @@ export const getSubCategoryData = (userdata) => async (dispatch) => {
   } catch (error) {
 
     dispatch(setLoading(false));
-    dispatch(setError(error.message));
-    setTimeout(() => {
-      dispatch(resetError());
-    }, 1000);
+    // dispatch(setError(error.message));
+    // setTimeout(() => {
+    //   dispatch(resetError());
+    // }, 1000);
   }
 };
 

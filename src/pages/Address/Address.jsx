@@ -134,7 +134,9 @@ const Address = () => {
 
   const handleSetDefaultAddress = (addressId) => {
     const responseObj = { id: addressId }
-    dispatch(defaultListAddress(responseObj));
+    dispatch(defaultListAddress(responseObj)).finally(() => {
+      dispatch(getListAddress(responseObj));
+    });
   };
 
   const handleEditAddress = (address) => {
