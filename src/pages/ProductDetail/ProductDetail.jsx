@@ -17,7 +17,7 @@ import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 import { toggleAddressModal, toggleModal } from "../../store/slice/modalSlice";
-import { setUserAddress } from "../../store/slice/userSlice";
+import { Helmet } from 'react-helmet';
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -135,8 +135,17 @@ const ProductDetail = () => {
   ? productDetailResponse?.data?.images.map((item) => ({
     original: item || '/images/no-product-available.png',
     thumbnail: item || '/images/no-product-available.png',
+    originalAlt: productDetailResponse?.data?.name,
+    thumbnailAlt: productDetailResponse?.data?.name,
   }))
-  : [{ original: '/images/no-product-available.png', thumbnail: '/images/no-product-available.png' }];
+  : [
+    { 
+      original: '/images/no-product-available.png', 
+      thumbnail: '/images/no-product-available.png',
+      originalAlt: productDetailResponse?.data?.name,
+      thumbnailAlt: productDetailResponse?.data?.name,
+    }
+  ];
 
   const handleIncrease = () => {
     setWishlistLoading(true);
@@ -818,8 +827,13 @@ const fetchUpdatedSimilarProductList = () => {
   dispatch(viewItemsInCartData());
   dispatch(setViewCartItems(null));
 }
+
   return (
       <div>
+        <Helmet>
+            <title>{productDetailResponse?.data?.name}</title>
+            <meta name="description" content={productDetailResponse?.data?.description.content[0]} />
+        </Helmet>
         {wistlistLoading && 
           <div className="wishlistLoadingContainer">
             <CircularProgress />
@@ -988,24 +1002,24 @@ const fetchUpdatedSimilarProductList = () => {
             <div className="productDetailReview">
               <div className="tabs-container">
                 <div className="tabs-buttons">
-                  <button
-                    className={activeTab === 0 ? "active" : ""}
+                  <h2
+                    className={activeTab === 0 ? "active prdDetailTabsBtn" : "prdDetailTabsBtn"}
                     onClick={() => handleActiveTabs(0)}
                   >
                     Product Description
-                  </button>
-                  <button
-                    className={activeTab === 1 ? "active" : ""}
+                  </h2>
+                  <h3
+                    className={activeTab === 1 ? "active prdDetailTabsBtn" : "prdDetailTabsBtn"}
                     onClick={() => handleActiveTabs(1)}
                   >
                     Additional Information
-                  </button>
-                  <button
-                    className={activeTab === 2 ? "active" : ""}
+                  </h3>
+                  <h4
+                    className={activeTab === 2 ? "active prdDetailTabsBtn" : "prdDetailTabsBtn"}
                     onClick={() => handleActiveTabs(2)}
                   >
                     FikFis Verified Reviews
-                  </button>
+                  </h4>
                 </div>
                 <div className="tabs-content">
                   <div

@@ -184,7 +184,7 @@
   width: 100%;
   object-fit: cover;
   height: 100%;
-  border: 1px solid #E3E3E2;
+  border: 1px solid #e3e3e2;
 }
 
 .rightDetailInfo .leftBar {
@@ -604,7 +604,8 @@
 }
 
 /* Styling for each tab button */
-.tabs-buttons button {
+.tabs-buttons button,
+.tabs-buttons .prdDetailTabsBtn {
   background: none;
   border: none;
   padding: 0;
@@ -621,8 +622,15 @@
   position: relative;
 }
 
+.tabs-buttons .prdDetailTabsBtn {
+  min-height: auto;
+  margin: 0;
+  text-align: center;
+}
+
 /* Active tab button styling */
-.tabs-buttons button:before {
+.tabs-buttons button:before,
+.tabs-buttons .prdDetailTabsBtn:before {
   content: "";
   position: absolute;
   bottom: 0;
@@ -632,7 +640,10 @@
   left: 15px;
 }
 
-.tabs-buttons button.active:before {
+.tabs-buttons button.active:before,
+.tabs-buttons .prdDetailTabsBtn.active:before,
+.tabs-buttons .prdDetailTabsBtn.active:before,
+.tabs-buttons .prdDetailTabsBtn.active:before {
   background-color: #fbb540;
 }
 
@@ -761,8 +772,11 @@ table tr td:first-child {
   line-height: 30px;
 }
 
-.detailLinearRivewProgress .reviewProgress .progressBar span.MuiLinearProgress-root {
-  background-color: #D2D2D2;
+.detailLinearRivewProgress
+  .reviewProgress
+  .progressBar
+  span.MuiLinearProgress-root {
+  background-color: #d2d2d2;
 }
 .progressBar {
   width: 80%;
@@ -1082,7 +1096,7 @@ button.review {
 }
 
 .priceSection .discountLabel {
-  background: #DD3333;
+  background: #dd3333;
   border-radius: 5px;
   padding: 0 5px;
   color: #fff;
@@ -1145,7 +1159,6 @@ button.review {
 .reviewHeader .paginationBox {
   margin-top: 20px;
 }
-
 
 @media only screen and (max-width: 1300px) {
   .leftBar h1 {
@@ -1289,7 +1302,7 @@ button.review {
     width: 28%;
   }
   .productHistory .productList > div {
-      width: 46%;
+    width: 46%;
   }
   .image-gallery-thumbnails {
     margin: 20px 0 0 0;
@@ -1315,13 +1328,13 @@ button.review {
     margin: 0 2% 2% 0;
   }
   .productHistory .productList > div {
-      width: 100%;
-      margin: 0 0 2% 0;
+    width: 100%;
+    margin: 0 0 2% 0;
   }
   .detailProductContent img.prd-small,
   .detailProductContent img {
-      width: 100%;
-      margin: 0 0 20px 0;
+    width: 100%;
+    margin: 0 0 20px 0;
   }
   .productDetailReview .tabs-buttons button {
     font-size: 16px;

@@ -53,7 +53,7 @@ const ProductListCard = ({
       </div>
       {image && <img src={image} alt={name} onClick={onProductImageClick}  />}
       {/* {image && <img src={image} alt={name} onClick={onProductClick}  />} */}
-      {name && <h2>{name.length > 50 ? `${name.slice(0, 50)}...` : name}</h2>}
+      {name && <h4>{name.length > 50 ? `${name.slice(0, 50)}...` : name}</h4>}
       <div className='priceList'>
         {discountPrice && <p className='discount'>£ {discountPrice}</p>}
         {originalPrice && <p className='original'>£ {originalPrice}</p>}

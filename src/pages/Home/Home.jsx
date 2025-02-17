@@ -197,7 +197,7 @@ const Home = () => {
                     <div key={index}>
                       <div className="browisingHistory">
                         <h3>{item.title}</h3>
-                        <div className="detailSection" onClick={() => handleSectionPage(item.title, item.group_id)}><img src="/images/icons/right_arrow.svg" /></div>
+                        <div className="detailSection" onClick={() => handleSectionPage(item.title, item.group_id)}><img src="/images/icons/right_arrow.svg" alt="right arrow" /></div>
                       </div>
                         <div className="productList">
                         {item?.products.map((product, index) => (
