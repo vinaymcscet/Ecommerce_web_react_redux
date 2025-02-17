@@ -69,8 +69,8 @@ const Footer = () => {
                             <div className="list store">
                                 <h4>Download the FikFis App</h4>
                                 <ul>
-                                    <li><Link to="/"><img src="/images/icons/Play-store.svg" alt='Play Store' /> </Link></li>
-                                    <li><Link to="/"><img src="/images/icons/Apple-store.svg" alt='Apple Store' /></Link> </li>
+                                    <li><Link to="https://play.google.com/store/apps/details?id=com.fikfis&pli=1" target='_blank'><img src="/images/icons/Play-store.svg" alt='Play Store' /> </Link></li>
+                                    <li><Link to="https://apps.apple.com/gb/app/fikfis-smart-shopping/id6670311561" target='_blank'><img src="/images/icons/Apple-store.svg" alt='Apple Store' /></Link> </li>
                                 </ul>
                             </div>
                         </Grid>

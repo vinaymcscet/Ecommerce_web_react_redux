@@ -34,7 +34,7 @@ const HeaderPin = () => {
                         </div>
                     </Grid>
                     <Grid item xl={3} sm={3} xs={6}>
-                        <div className="getApp">
+                        <div className="getApp" onClick={() => window.open('https://apps.apple.com/gb/app/fikfis-smart-shopping/id6670311561', '_blank')}>
                             <img src="/images/Smartphone.svg" alt='Free Shipping' />
                             <p>Get the FikFis App</p>
                         </div>
