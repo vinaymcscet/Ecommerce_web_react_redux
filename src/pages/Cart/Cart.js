@@ -1,5 +1,6 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Helmet } from "react-helmet";
 import StarRating from "../../components/StarRating/StarRating";
 import { setViewCartItems, setAllOffetList, setCheckOutFormModal } from "../../store/slice/cartSlice";
 import {
@@ -217,6 +218,11 @@ const Cart = () => {
   }
   return (
     <div className="staticContent">
+      <Helmet>
+          <title>{'Your Shopping Cart | FikFis'}</title>
+          <meta name="description" content={"Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis."} />
+          <meta name="keywords" content={'Your Shopping Cart | FikFis'} />
+      </Helmet>
       {checkoutLoading && <div className="loadingContainer loadingPosition">
           <CircularProgress />
       </div>}

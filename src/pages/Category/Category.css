@@ -45,7 +45,7 @@
 }
 
 .categoryList > div {
-    width: 110px;
+    width: 130px;
     margin: 0 20px 0 0;
 }
 
@@ -78,8 +78,8 @@
 }
 
 .allCategory .categoryList .product img {
-    width: 110px;
-    height: 110px;
+    width: 130px;
+    height: 130px;
     border-radius: 9px;
     border: 1px solid #eaeaea;
 }

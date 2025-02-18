@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setChangePassword } from "../../store/slice/userSlice";
@@ -454,6 +455,11 @@ const handlePasswordUpdateSubmit = (e) => {
   
     return (
     <div className="userProfile">
+      <Helmet>
+          <title>{'Your Profile | Manage Account & Orders | FikFis'}</title>
+          <meta name="description" content={"Access and manage your FikFis account, track orders, update details, and personalize your shopping experience—all in one place."} />
+          <meta name="keywords" content={'Your Profile | Manage Account & Orders | FikFis'} />
+      </Helmet>
       <h1>Your Profile</h1>
       <div className="vertical-tabs-container">
         <div className="tabs">

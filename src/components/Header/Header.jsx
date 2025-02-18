@@ -135,7 +135,7 @@ const Header = () => {
                   <input
                     type="text"
                     name="search"
-                    placeholder="Search all categories products"
+                    placeholder="Your Searched Items"
                     value={searchValue}
                     onChange={(ev) => setSearchValue(ev.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

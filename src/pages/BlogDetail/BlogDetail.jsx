@@ -12,6 +12,7 @@ import { addBlogReviewData, getAllBlogsCategory, getBlogDetailData } from "../..
 import "./BlogDetail.css";
 import { FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 import { CircularProgress } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 // import Button from '@mui/material/Button';
 
@@ -109,6 +110,11 @@ const BlogDetail = () => {
   
   return (
     <div className="Blogs detail">
+      <Helmet>
+          <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
+          <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
+          <meta name="keywords" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+      </Helmet>
       {loading ? (
           <div className="loadingContainer">
               <CircularProgress />
@@ -124,7 +130,7 @@ const BlogDetail = () => {
                 <>
                   <img src={blogDetail[0].blog_image} alt={blogDetail[0].blog_title} />
                   <h4>{blogDetail[0].blog_title}</h4>
-                  <p>{blogDetail[0].blog_description}</p>
+                  <p className='description' dangerouslySetInnerHTML={{__html:blogDetail[0].blog_description}} />
                   <h6>{blogDetail[0].slug}</h6>
                   <p>Category: <span>{blogDetail[0].parent_category_name}</span></p>
                   <p>Sub-category: <span>{blogDetail[0].category_name}</span></p>

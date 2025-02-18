@@ -71,8 +71,8 @@ const Subscribe = () => {
         <Grid container spacing={2}>
             <Grid item xs={12} lg={6} md={12} className="leftHead">
                 <div className="subscribeMessage">
-                  <h2>Subscribe to our emails</h2>
-                  <p>Enter your email below to be the first to know about new collections and offers. </p>
+                  <h2>Stay Updated with FikFis! Subscribe to Our Newsletter</h2>
+                  <p>Sign up for the FikFis newsletter and be the first to know about exclusive deals, latest trends, and new arrivals. Enter your email below and join our community!</p>
                 </div>
             </Grid>
             <Grid item xs={12} lg={6} md={12} className="rightSection">

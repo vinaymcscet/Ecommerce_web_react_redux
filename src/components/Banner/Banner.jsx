@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Slider from "react-slick"
 import { bannerList, slick_banner_settings } from '../../utils/ProductData';
 import './Banner.css';
@@ -10,6 +10,8 @@ const Banner = () => {
     const { homeProductData, subCategoryList } = useSelector(state => state.product);
     const [isOpen] = useState(true);
     const dispatch = useDispatch();
+    const initialImage = homeProductData?.banners[0]?.banner_image || bannerList[0]?.banner_image || "/images/banner/web_banner.jpg";
+    const [imageUrl, setImageUrl] = useState(initialImage);
     
     const handleProductClick = (title, banner_id = 0) => {
         const responseObj = { category_id: banner_id };
@@ -21,6 +23,25 @@ const Banner = () => {
         };
         dispatch(toggleCategoryModal(subCategoryObj));
     }
+        useEffect(() => {
+            if (homeProductData?.banners?.length > 0) {
+                setImageUrl(homeProductData.banners[0].banner_image);
+            }
+        }, [homeProductData]);
+      
+      useEffect(() => {
+        if (!imageUrl) return;
+        
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.href = imageUrl;
+        document.head.appendChild(link);
+
+        return () => {
+            document.head.removeChild(link);
+        };
+    }, [imageUrl]);
     return (
         <div className="bannerContainer">
             <div className="bannerContent">
@@ -30,11 +51,16 @@ const Banner = () => {
                             <img src={item.banner_image} alt={item.name} />
                         </div>
                     ))}
-                    {!homeProductData && bannerList && bannerList.map((item, index) => (
+                    {!homeProductData?.banners?.length && (
+                        <div>
+                            <img src={imageUrl} alt={imageUrl} />
+                        </div>
+                    )}
+                    {/* {!homeProductData && bannerList && bannerList.map((item, index) => (
                         <div key={index}>
                             <img src={item.banner_image} alt={item.name} />
                         </div>
-                    ))}
+                    ))} */}
                 </Slider>
             </div>
         </div>

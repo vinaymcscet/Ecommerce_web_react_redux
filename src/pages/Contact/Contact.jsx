@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import "./Contact.css";
 import Button from "../../components/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -89,6 +90,12 @@ const Contact = () => {
   };
   return (
     <div className="contact">
+      {/* SEO Meta Tags */}
+      <Helmet>
+          <title>{'Contact Us | Get in Touch with FikFis'}</title>
+          <meta name="description" content={"Have questions or need assistance? Contact FikFis today! Reach out to our team for support, inquiries, or feedback—we're here to help."} />
+          <meta name="keywords" content={'Contact Us | Get in Touch with FikFis'} />
+      </Helmet>
       <h4>Contact</h4>
       <div className="leaveMessage">
         <h6>Leave A Message</h6>
