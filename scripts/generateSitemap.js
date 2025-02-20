@@ -28,10 +28,7 @@ const fetchDynamicPages = async () => {
   try {
     const blogResponse = await axios.get(`${API_BASE_URL}/blog/getBlogs`);
     
-    const blogUrls = blogResponse.data.map((blog) => `/blog/${blog.blog_id}`);
-    const productUrls = productResponse.data.map(
-      (product) => `/product/${product.id}`
-    );
+    const blogUrls = blogResponse.data.map((blog) => `/blog/${blog.id}`);
 
     return [...blogUrls];
   } catch (error) {
