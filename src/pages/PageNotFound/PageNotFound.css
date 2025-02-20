@@ -1,30 +1,62 @@
 .notFound {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-flow: wrap column;
-    margin: 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: wrap column;
+  margin: 30px 0;
 }
 
 .notFound h4 {
-    font-size: 40px;
-    color: #FFB545;
+  font-size: 40px;
+  color: #ffb545;
+  margin: 0 0 20px 0;
+  text-align: center;
 }
 
 .notFound img {
-    width: 50%;
-    margin: auto;
+  width: 50%;
+  margin: auto;
 }
 
 .notFound p {
-    color: #666666;
-    font-size: 20px;
-    line-height: 40px;
-    margin-top: 20px;
+  color: #666666;
+  font-size: 20px;
+  line-height: 40px;
+  margin-top: 20px;
+  width: 70%;
+  text-align: center;
 }
 
 .notFound button {
-    width: auto;
-    min-width: 150px;
-    margin-top: 20px;
+  width: auto;
+  min-width: 150px;
+  margin: 20px 10px 0 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .notFound h4 {
+    font-size: 20px;
   }
+
+  .notFound img {
+    width: 70%;
+  }
+
+  .notFound p {
+    font-size: 16px;
+    line-height: 30px;
+  }
+  .btn-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap row;
+  }
+  .notFound button {
+    width: auto;
+    min-width: 100px;
+    margin: 10px auto;
+    font-size: 16px;
+    min-height: auto;
+  }
+}

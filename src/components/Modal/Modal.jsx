@@ -353,8 +353,7 @@ const handleConfirmPasswordChange = (e) => {
               <div className="left">
                 <h4>Sign Up</h4>
                 <p>
-                  Just enter your email or mobile number, and we'll send you a
-                  text message with a temporary code.
+                Join FikFis today and enjoy a seamless shopping experience with exclusive deals, faster checkout, and order tracking.
                 </p>
                 <div className="name">Welcome to FikFis</div>
               </div>
@@ -420,7 +419,7 @@ const handleConfirmPasswordChange = (e) => {
             <>
               <div className="left">
                 <h4>Login</h4>
-                <p>Get access to your Orders, wishlist, and Recommendations.</p>
+                <p>Log in to your account to access your orders, wishlist, and exclusive member perks.</p>
                 <div className="name">Welcome Back to FikFis</div>
               </div>
               <div className="right">
@@ -634,7 +633,7 @@ const handleConfirmPasswordChange = (e) => {
             <>
               <div className="left">
                 <h4>Password Assistance</h4>
-                <p>No Problem! Just enter your email or mobile number, and we'll send you a text message with a temporary code.</p>
+                <p>Don’t worry! Enter your registered email below, and we’ll send you a link to reset your password securely.</p>
                 <div className="name">
                   Need help?
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
