@@ -1,3 +1,16 @@
+RewriteEngine On
+
+# Allow access to /about and /contact, and let other files be processed normally
+RewriteCond %{REQUEST_URI} !^/(home|about|contact|privacy-policy|sectionDetail/:id|blog/:id|terms-condition|disclaimer|refund-policy|return-and-refund|cookies-policy|shipping-and-delivery|order-cancellation|allcategory|faq|productlist|product/:id|cart|order-complete|delete-account|userprofile|search)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ - [R=404,L]
+
+# Allow only fikfis.co.uk and www.fikfis.co.uk
+RewriteCond %{HTTP_HOST} !^fikfis\.co\.uk$ [NC]
+RewriteCond %{HTTP_HOST} !^www\.fikfis\.co\.uk$ [NC]
+RewriteRule ^ - [F]s
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
