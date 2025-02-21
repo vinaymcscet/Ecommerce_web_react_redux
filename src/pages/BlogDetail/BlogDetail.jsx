@@ -13,6 +13,7 @@ import "./BlogDetail.css";
 import { FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 import { CircularProgress } from "@mui/material";
 import { Helmet } from "react-helmet";
+import { ShareBlogs } from "../../utils/ShareProduct";
 
 // import Button from '@mui/material/Button';
 
@@ -129,13 +130,25 @@ const BlogDetail = () => {
               {blogDetail && blogDetail[0] ? (
                 <>
                   <img src={blogDetail[0].blog_image} alt={blogDetail[0].blog_title} />
-                  <h4>{blogDetail[0].blog_title}</h4>
+                  <div className="blogHeaderWrapper">
+                    <h4>{blogDetail[0].blog_title}</h4>
+                    <div className="shareItem">
+                      <div 
+                        className="icon"
+                        onClick={() => ShareBlogs(id)}
+                      >
+                        <img
+                          src="/images/icons/share.svg"
+                          alt="share Item"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <p className='description' dangerouslySetInnerHTML={{__html:blogDetail[0].blog_description}} />
                   <h6>{blogDetail[0].slug}</h6>
                   <p>Category: <span>{blogDetail[0].parent_category_name}</span></p>
                   <p>Sub-category: <span>{blogDetail[0].category_name}</span></p>
-                  <div className="date">{formatDateTimeProduct(blogDetail[0].blog_created_at).formattedDate} {formatDateTimeProduct(blogDetail[0].blog_created_at).time}</div>
-                
+                  <div className="date"><p>Posted at: </p> {formatDateTimeProduct(blogDetail[0].blog_created_at).formattedDate} {formatDateTimeProduct(blogDetail[0].blog_created_at).time}</div>
                   <div className="blogReviewForm">
                     <h4>Write Your Review</h4>
                     <div className="reviewForm">

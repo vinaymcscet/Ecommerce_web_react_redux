@@ -39,14 +39,18 @@
 }
 
 .blogContent .leftBlogContent p {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
-  margin: 0 0 20px 0;
+  margin: 0 0 5px 0;
 }
 
 .blogContent .leftBlogContent .date {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
+  display: flex;
+}
+.blogContent .leftBlogContent .date p {
+  margin: 0 10px 0 0;
 }
 
 .blogContent .leftBlogContent h6 {
@@ -55,6 +59,24 @@
   margin: 20px 0;
 }
 
+.blogContent .leftBlogContent .shareItem .icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #FFB545;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px;
+  padding: 7px;
+}
+.blogHeaderWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .blogsection {
   width: 100%;
   display: flex;
@@ -70,6 +92,7 @@
 
 .blogContent p span {
   font-weight: 500;
+  color: #f6aa37;
 }
 
 .blogReviewForm {
