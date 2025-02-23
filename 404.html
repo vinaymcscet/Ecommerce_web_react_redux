@@ -1,1 +1,120 @@
-404
+<html>
+  <head>
+    <title>Oops! Page Not Found | FikFis</title>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta
+      name="description"
+      content="The page you’re looking for doesn’t exist or may have been moved. Don’t worry, let’s get you back on track!"
+    />
+    <style type="text/css">
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      .deleteHeaderBox {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        margin: 20px auto 0 auto;
+      }
+
+      .rightHeader {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .rightHeader button {
+        font-size: 16px;
+        font-weight: 400;
+        width: auto;
+        margin: 0 10px;
+        min-height: auto;
+        padding: 5px 15px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 20px;
+        font-family: Poppins;
+        font-style: normal;
+      }
+
+      .rightHeader button.headerContact {
+        background-color: #ffb545;
+        border: 1px solid #ffb545;
+      }
+      .rightHeader button.support {
+        border: 1px solid #ffb545;
+        background-color: #fff;
+      }
+
+      .rightHeader button.support,
+      .rightHeader button.headerContact {
+        transition: all 0.5s ease-in-out;
+        -webkit-transition: all 0.5s ease-in-out;
+        -ms-transition: all 0.5s ease-in-out;
+        -moz-transition: all 0.5s ease-in-out;
+        -o-transition: all 0.5s ease-in-out;
+      }
+      .rightHeader button.support:hover,
+      .rightHeader button.support:focus {
+        background-color: #ffb545;
+      }
+
+      .rightHeader button.headerContact:hover,
+      .rightHeader button.headerContact:focus {
+        background-color: #fff;
+      }
+      .notFoundBody {
+        margin: 20px auto;
+      }
+      .notFoundBody img {
+        width: auto;
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+        display: block;
+      }
+      .notFoundBodyContent {
+        width: max-content;
+        margin: 0 auto;
+        text-align: center;
+        background: #fcf5e3;
+        padding: 10px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .notFoundBodyContent p {
+        margin: 0;
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: #000000;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="deleteHeaderBox">
+      <div class="leftLogo">
+        <a href="/">
+          <img src="./public/images/icons/logo.svg" alt="Logo" />
+        </a>
+      </div>
+      <div class="rightHeader">
+        <button type="button" class="headerContact" onclick="window.location.href='https://fikfis.co.uk/';">Home</button>
+        <button type="button" class="headerContact" onclick="window.location.href='https://fikfis.co.uk/allcategory';">New Collections</button>
+        <button type="button" class="headerContact" onclick="window.location.href='https://fikfis.co.uk/contact';">Contact Us</button>
+      </div>
+    </div>
+    <div class="notFoundBody">
+      <img src="./public/images/404-Image.png" alt="Page not found" />
+    </div>
+    <div class="notFoundBodyContent">
+        <p>The page you’re looking for doesn't exist or may have been removed.</p>
+        <p>Don't worry, let's get you back on track!</p>
+    </div>
+  </body>
+</html>
