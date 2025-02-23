@@ -17,7 +17,7 @@ import ReactPaginate from "react-paginate";
 import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 import { toggleAddressModal, toggleModal } from "../../store/slice/modalSlice";
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -74,10 +74,10 @@ const ProductDetail = () => {
   const [reviewPage, setReviewPage] = useState(1);  // Default page 0 (first page)
   const [reviewPerPage, setReviewPerPage] = useState(30);
   const [recentViewPage, setRecentViewPage] = useState(1);  // Default page 0 (first page)
-  const [recentViewPerPage, setRecentViewPerPage] = useState(25);
+  const [recentViewPerPage, setRecentViewPerPage] = useState(5);
   
   const [similarProductPage, setSimilarProductPage] = useState(1);  // Default page 0 (first page)
-  const [similarProductPerPage, setSimilarProductPerPage] = useState(30);
+  const [similarProductPerPage, setSimilarProductPerPage] = useState(5);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -999,6 +999,155 @@ const fetchUpdatedSimilarProductList = () => {
                 </div>
               </div>
             </div>
+            <div className="productHistory allcategory">
+              {recentView && recentView.length > 0 && 
+                <div className="baseAlignItems">
+                  <h3>Recently Viewed</h3>
+                </div>
+              }
+                {recentlyViewLoading ? (
+                  <div className="loadingContainer">
+                    <CircularProgress />
+                  </div>
+                  ):(
+                    <>
+                      <div className="productList">
+                        {recentView && recentView.length > 0 && (
+                            recentView.map((item, index) => (
+                              <div key={index}>
+                                <ProductListCard
+                                  id={item.product_id}
+                                  image={item.imageUrl || "/images/no-product-available.png"}
+                                  name={item.name || ""}
+                                  userrating={item.rating || "0.0"}
+                                  discountPrice={item.discount || ""}
+                                  originalPrice={item.price || ""}
+                                  save={item.save || ""}
+                                  coupenCode={item.coupen || ""}
+                                  deliveryTime={item.deliverytime || ""}
+                                  freeDelivery={item.freedelivery || ""}
+                                  bestSeller={item.bestseller || ""}
+                                  time={item.time || ""}
+                                  discountLabel={item.Offerprice || ""}
+                                  wishlistStatus={item.wishlistStatus || ''}
+                                  sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                                  // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                                  onAddToCart={() => handleProductClick(item)}
+                                  cartQuantity={Number(item.cartQuantity)}
+                                  onIncrement={handleIncrement}
+                                  onDecrement={handleDecrement}
+                                  onProductClick={() => handleProductClick(item)}
+                                  onProductImageClick={() => handleProcuctImageClick(item)}
+                                  handleWishlistToggle={() => handleWishlistToggle(item)}
+                                />
+                              </div>
+                            ))
+                          )}
+                      </div>
+                      {recentView && recentView.length > 0 &&
+                        <div className="paginationBox">
+                          {/* <div className="itemsPerPageDropdown">
+                              <label>Items per page: </label>
+                              <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
+                                  {recentViewItemsPerPageOptions.map(option => (
+                                      <option key={option} value={option}>
+                                          {option}
+                                      </option>
+                                  ))}
+                              </select>
+                          </div> */}
+                          <ReactPaginate
+                              previousLabel={"Previous"}
+                              nextLabel={"Next"}
+                              breakLabel={"..."}
+                              pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={handleRecentViewPageChange}
+                              containerClassName={"pagination"}
+                              activeClassName={"active"}
+                              forcePage={recentViewPage}
+                              disabled={totalRecentView === 0}
+                          />
+                        </div>
+                      }
+                    </>
+                )}
+            </div>
+            <div className="productHistory allcategory">
+              {productDetailResponse?.data?.similar_products && 
+                productDetailResponse?.data?.similar_products.length > 0 &&  
+                <div className="baseAlignItems">
+                  <h3>Frequently bought</h3>
+                </div>
+              }
+              {similarProductLoading ? (
+                <div className="loadingContainer">
+                  <CircularProgress />
+                </div>
+                ): (
+                  <>
+                    <div className="productList">
+                      {similarProductListResponse && similarProductListResponse.length > 0 && (
+                        similarProductListResponse.map((item, index) => (
+                          <div key={index}>
+                            <ProductListCard
+                              id={item.product_id}
+                              image={item.imageUrl || "/images/no-product-available.png"}
+                              name={item.name || ""}
+                              userrating={item.rating || "0.0"}
+                              discountPrice={item.discount || ""}
+                              originalPrice={item.price || ""}
+                              save={item.save || ""}
+                              coupenCode={item.coupen || ""}
+                              deliveryTime={item.deliverytime || ""}
+                              freeDelivery={item.freedelivery || ""}
+                              bestSeller={item.bestseller || ""}
+                              time={item.time || ""}
+                              discountLabel={item.Offerprice || ""}
+                              wishlistStatus={item.wishlistStatus || ''}
+                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                              onAddToCart={() => handleProductClick(item)}
+                              cartQuantity={Number(item.cart_quantity)}
+                              onIncrement={handleSimilarIncrement}
+                              onDecrement={handleSimilarDecrement}
+                              onProductClick={() => handleProductClick(item)}
+                              onProductImageClick={() => handleProcuctImageClick(item)}
+                              handleWishlistToggle={() => handleWishlistToggle(item)}
+                            />
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="paginationBox">
+                      {/* <div className="itemsPerPageDropdown">
+                          <label>Items per page: </label>
+                          <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
+                              {similarViewItemsPerPageOptions.map(option => (
+                                  <option key={option} value={option}>
+                                      {option}
+                                  </option>
+                              ))}
+                          </select>
+                      </div> */}
+                      <ReactPaginate
+                          previousLabel={"Previous"}
+                          nextLabel={"Next"}
+                          breakLabel={"..."}
+                          pageCount={Math.max(Math.ceil(similarProductCount / similarProductPerPage), 1)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={handleSimilarViewPageChange}
+                          containerClassName={"pagination"}
+                          activeClassName={"active"}
+                          forcePage={similarProductPage}
+                          disabled={similarProductCount === 0}
+                      />
+                    </div>
+                  </>
+              )}
+            </div>
             <div className="productDetailReview">
               <div className="tabs-container">
                 <div className="tabs-buttons">
@@ -1300,154 +1449,6 @@ const fetchUpdatedSimilarProductList = () => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="productHistory allcategory">
-              {recentView && recentView.length > 0 && 
-                <div className="baseAlignItems">
-                  <h3>Recently Viewed</h3>
-                </div>
-              }
-                {recentlyViewLoading ? (
-                  <div className="loadingContainer">
-                    <CircularProgress />
-                  </div>
-                  ):(
-                    <>
-                      <div className="productList">
-                        {recentView && recentView.length > 0 && (
-                            recentView.map((item, index) => (
-                              <div key={index}>
-                                <ProductListCard
-                                  id={item.product_id}
-                                  image={item.imageUrl || "/images/no-product-available.png"}
-                                  name={item.name || ""}
-                                  userrating={item.rating || "0.0"}
-                                  discountPrice={item.discount || ""}
-                                  originalPrice={item.price || ""}
-                                  save={item.save || ""}
-                                  coupenCode={item.coupen || ""}
-                                  deliveryTime={item.deliverytime || ""}
-                                  freeDelivery={item.freedelivery || ""}
-                                  bestSeller={item.bestseller || ""}
-                                  time={item.time || ""}
-                                  discountLabel={item.Offerprice || ""}
-                                  wishlistStatus={item.wishlistStatus || ''}
-                                  sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                                  // onAddToCart={() => handleAddToCartClick(item.sku_id)}
-                                  onAddToCart={() => handleProductClick(item)}
-                                  cartQuantity={Number(item.cartQuantity)}
-                                  onIncrement={handleIncrement}
-                                  onDecrement={handleDecrement}
-                                  onProductClick={() => handleProductClick(item)}
-                                  onProductImageClick={() => handleProcuctImageClick(item)}
-                                  handleWishlistToggle={() => handleWishlistToggle(item)}
-                                />
-                              </div>
-                            ))
-                          )}
-                      </div>
-                      <div className="paginationBox">
-                        {/* <div className="itemsPerPageDropdown">
-                            <label>Items per page: </label>
-                            <select value={recentViewPerPage} onChange={handleRecentViewItemsPerPageChange}>
-                                {recentViewItemsPerPageOptions.map(option => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
-                        </div> */}
-                        <ReactPaginate
-                            previousLabel={"Previous"}
-                            nextLabel={"Next"}
-                            breakLabel={"..."}
-                            pageCount={Math.max(Math.ceil(totalRecentView / recentViewPerPage), 1)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handleRecentViewPageChange}
-                            containerClassName={"pagination"}
-                            activeClassName={"active"}
-                            forcePage={recentViewPage}
-                            disabled={totalRecentView === 0}
-                        />
-                      </div>
-                    </>
-                  
-                )}
-            </div>
-            <div className="productHistory allcategory">
-              {productDetailResponse?.data?.similar_products && 
-                productDetailResponse?.data?.similar_products.length > 0 &&  
-                <div className="baseAlignItems">
-                  <h3>Frequently bought</h3>
-                </div>
-              }
-              {similarProductLoading ? (
-                <div className="loadingContainer">
-                  <CircularProgress />
-                </div>
-                ): (
-                  <>
-                    <div className="productList">
-                      {similarProductListResponse && similarProductListResponse.length > 0 && (
-                        similarProductListResponse.map((item, index) => (
-                          <div key={index}>
-                            <ProductListCard
-                              id={item.product_id}
-                              image={item.imageUrl || "/images/no-product-available.png"}
-                              name={item.name || ""}
-                              userrating={item.rating || "0.0"}
-                              discountPrice={item.discount || ""}
-                              originalPrice={item.price || ""}
-                              save={item.save || ""}
-                              coupenCode={item.coupen || ""}
-                              deliveryTime={item.deliverytime || ""}
-                              freeDelivery={item.freedelivery || ""}
-                              bestSeller={item.bestseller || ""}
-                              time={item.time || ""}
-                              discountLabel={item.Offerprice || ""}
-                              wishlistStatus={item.wishlistStatus || ''}
-                              sku_id={item.sku_id} // Pass SKU ID for Add to Cart
-                              // onAddToCart={() => handleAddToCartClick(item.sku_id)}
-                              onAddToCart={() => handleProductClick(item)}
-                              cartQuantity={Number(item.cart_quantity)}
-                              onIncrement={handleSimilarIncrement}
-                              onDecrement={handleSimilarDecrement}
-                              onProductClick={() => handleProductClick(item)}
-                              onProductImageClick={() => handleProcuctImageClick(item)}
-                              handleWishlistToggle={() => handleWishlistToggle(item)}
-                            />
-                          </div>
-                        ))
-                      )}
-                    </div>
-                    <div className="paginationBox">
-                      {/* <div className="itemsPerPageDropdown">
-                          <label>Items per page: </label>
-                          <select value={similarProductPerPage} onChange={handleSimilarViewItemsPerPageChange}>
-                              {similarViewItemsPerPageOptions.map(option => (
-                                  <option key={option} value={option}>
-                                      {option}
-                                  </option>
-                              ))}
-                          </select>
-                      </div> */}
-                      <ReactPaginate
-                          previousLabel={"Previous"}
-                          nextLabel={"Next"}
-                          breakLabel={"..."}
-                          pageCount={Math.max(Math.ceil(similarProductCount / similarProductPerPage), 1)}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={handleSimilarViewPageChange}
-                          containerClassName={"pagination"}
-                          activeClassName={"active"}
-                          forcePage={similarProductPage}
-                          disabled={similarProductCount === 0}
-                      />
-                    </div>
-                  </>
-              )}
             </div>
           </div>
         )}

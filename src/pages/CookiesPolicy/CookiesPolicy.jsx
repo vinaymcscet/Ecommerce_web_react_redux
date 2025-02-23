@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./CookiesPolicy.css";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { FormatDateTime } from "../../utils/FormatDateTime";
 import { getCMSRequest } from "../../store/slice/api_integration";
 import { COOKIES_POLICY } from "../../utils/Constants";

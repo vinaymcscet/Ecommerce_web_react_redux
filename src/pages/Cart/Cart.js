@@ -1,6 +1,6 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import StarRating from "../../components/StarRating/StarRating";
 import { setViewCartItems, setAllOffetList, setCheckOutFormModal } from "../../store/slice/cartSlice";
 import {

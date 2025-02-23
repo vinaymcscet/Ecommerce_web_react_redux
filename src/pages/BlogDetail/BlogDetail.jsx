@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BlogCategoryList, BlogsList } from "../../utils/BlogsList";
 import Button from "../../components/Button/Button";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -12,7 +11,7 @@ import { addBlogReviewData, getAllBlogsCategory, getBlogDetailData } from "../..
 import "./BlogDetail.css";
 import { FormatDateTime, formatDateTimeProduct } from "../../utils/FormatDateTime";
 import { CircularProgress } from "@mui/material";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { ShareBlogs } from "../../utils/ShareProduct";
 
 // import Button from '@mui/material/Button';
@@ -109,12 +108,20 @@ const BlogDetail = () => {
     setExpanded(isExpanded ? panel : false);
   };
   
+  const currentUrl = window.location.href;
   return (
     <div className="Blogs detail">
       <Helmet>
           <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
           <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
           <meta name="keywords" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+          <meta property="og:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+          <meta property="og:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
+          {blogDetail && blogDetail[0] && (
+            <meta property="og:image" content={blogDetail[0]?.blog_image} />
+          )}
+          <meta property="og:url" content={currentUrl} />
+          <meta property="og:type" content="article" />
       </Helmet>
       {loading ? (
           <div className="loadingContainer">

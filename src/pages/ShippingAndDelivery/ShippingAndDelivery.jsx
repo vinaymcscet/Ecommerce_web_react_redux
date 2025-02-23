@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCMSRequest } from '../../store/slice/api_integration';
 import { SHIPPING_DELIVERY } from '../../utils/Constants';
 import { FormatDateTime } from '../../utils/FormatDateTime';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const ShippingAndDelivery = () => {
     const dispatch = useDispatch();

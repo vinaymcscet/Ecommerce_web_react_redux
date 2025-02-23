@@ -12,6 +12,7 @@ import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 import { shuffleProduct } from "../../utils/ShuffleProduct";
 import { toggleModal } from "../../store/slice/modalSlice";
+import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -155,6 +156,12 @@ const Home = () => {
   }
   return (
     <div>
+      {/* SEO Meta Tags */}
+      <Helmet>
+          <title>{'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'}</title>
+          <meta name="description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
+          <meta name="keywords" content={'FikFis | Home'} />
+      </Helmet>
       {loading ? (
           <div className="loadingContainer">
               <CircularProgress />

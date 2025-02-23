@@ -11,12 +11,15 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'; 
+import { HelmetProvider } from "react-helmet-async";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Provider store={store}>
-        <App />
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
     </Provider>
   </BrowserRouter>
 );

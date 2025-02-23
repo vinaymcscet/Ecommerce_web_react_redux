@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCMSRequest } from '../../store/slice/api_integration';
 import { TERMS_CONDITION } from '../../utils/Constants';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { FormatDateTime } from '../../utils/FormatDateTime';
 import './Terms.css';
 import { useNavigate } from 'react-router-dom';

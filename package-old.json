@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/node": "^7.26.0",
-    "@babel/preset-env": "^7.26.9",
-    "@babel/preset-react": "^7.26.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fontsource/roboto": "^5.0.14",
@@ -24,12 +21,10 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
-    "react-helmet-async": "^2.0.5",
     "react-image-gallery": "^1.3.0",
     "react-paginate": "^8.2.0",
     "react-redux": "^9.1.2",
     "react-router-dom": "^6.26.1",
-    "react-router-sitemap-generator": "^0.0.8",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
@@ -39,7 +34,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "generate-sitemap": "npm run babel-node sitemap.js",
+    "generate-sitemap": "node scripts/generateSitemap.js",
     "start": "cross-env REACT_APP_MODE=development react-scripts start",
     "build": "cross-env REACT_APP_MODE=production npm run generate-sitemap && react-scripts build",
     "test": "react-scripts test",

@@ -4,7 +4,7 @@ import BlogCard from '../../components/BlogCard/BlogCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBlogs } from '../../store/slice/api_integration';
 import { CircularProgress } from '@mui/material';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const Blog = () => {
     const dispatch = useDispatch();

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCMSRequest } from '../../store/slice/api_integration';
 import { RETURN_REFUND } from '../../utils/Constants';
 import { FormatDateTime } from '../../utils/FormatDateTime';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
 const ReturnAndRefund = () => {

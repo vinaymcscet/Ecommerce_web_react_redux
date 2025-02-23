@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCMSRequest } from '../../store/slice/api_integration';
 import { PRIVACY_POICY } from '../../utils/Constants';
 import { FormatDateTime } from '../../utils/FormatDateTime';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './PrivacyPolicy.css';
 import { useNavigate } from 'react-router-dom';
 

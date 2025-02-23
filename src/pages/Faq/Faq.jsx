@@ -3,7 +3,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { faqList } from "../../utils/CommonUtils";
 import "./Faq.css";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { FormatDateTime } from "../../utils/FormatDateTime";
 import { getCMSRequest } from "../../store/slice/api_integration";
 import { FAQS } from "../../utils/Constants";
