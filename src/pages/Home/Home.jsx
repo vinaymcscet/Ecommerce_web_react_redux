@@ -164,7 +164,7 @@ const Home = () => {
           {/* <!-- Open Graph / Facebook --> */}
           <meta property="og:title" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
           <meta property="og:description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
-          <meta property="og:image" content={homeProductData.banners[0].banner_image} />
+          <meta property="og:image" content={homeProductData?.banners[0]?.banner_image || '/images/icons/LOGO1.png'} />
           <meta property="og:url" content={currentUrl} />
           <meta property="og:type" content="article" />
           {/* <!-- Twitter --> */}
@@ -172,7 +172,7 @@ const Home = () => {
           <meta property="twitter:url" content={currentUrl} />
           <meta property="twitter:title" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
           <meta property="twitter:description" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
-          <meta property="twitter:image" content={homeProductData.banners[0].banner_image} />
+          <meta property="twitter:image" content={homeProductData?.banners[0]?.banner_image || '/images/icons/LOGO1.png'} />
       </Helmet>
       {loading ? (
           <div className="loadingContainer">
