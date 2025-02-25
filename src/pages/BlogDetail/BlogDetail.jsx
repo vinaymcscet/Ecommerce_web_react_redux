@@ -122,6 +122,14 @@ const BlogDetail = () => {
           )}
           <meta property="og:url" content={currentUrl} />
           <meta property="og:type" content="article" />
+          {/* <!-- Twitter --> */}
+          <meta property="twitter:card" content="article" />
+          <meta property="twitter:url" content={currentUrl} />
+          <meta property="twitter:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+          <meta property="twitter:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
+          {blogDetail && blogDetail[0] && (
+            <meta property="twitter:image" content={ blogDetail[0]?.blog_image ||'/images/icons/LOGO1.png'} />
+          )}
       </Helmet>
       {loading ? (
           <div className="loadingContainer">

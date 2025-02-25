@@ -827,12 +827,24 @@ const fetchUpdatedSimilarProductList = () => {
   dispatch(viewItemsInCartData());
   dispatch(setViewCartItems(null));
 }
-
+const currentUrl = window.location.href;
   return (
       <div>
         <Helmet>
             <title>{productDetailResponse?.data?.name}</title>
             <meta name="description" content={productDetailResponse?.data?.description.content[0]} />
+            {/* <!-- Open Graph / Facebook --> */}
+            <meta property="og:title" content={productDetailResponse?.data?.name} />
+            <meta property="og:description" content={productDetailResponse?.data?.description.content[0]} />
+            <meta property="og:image" content={'/images/icons/LOGO1.png'} />
+            <meta property="og:url" content={currentUrl} />
+            <meta property="og:type" content="Product" />
+            {/* <!-- Twitter --> */}
+            <meta property="twitter:card" content="article" />
+            <meta property="twitter:url" content={currentUrl} />
+            <meta property="twitter:title" content={productDetailResponse?.data?.name} />
+            <meta property="twitter:description" content={productDetailResponse?.data?.description.content[0]} />
+            <meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
         </Helmet>
         {wistlistLoading && 
           <div className="wishlistLoadingContainer">

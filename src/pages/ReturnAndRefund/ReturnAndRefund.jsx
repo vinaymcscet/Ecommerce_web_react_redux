@@ -30,7 +30,7 @@ const ReturnAndRefund = () => {
     const handleInvalidPage = () => {
         navigate("/");
     }
-    
+    const currentUrl = window.location.href;
     return (
         <div className='staticContent'>
             {/* SEO Meta Tags */}
@@ -38,7 +38,19 @@ const ReturnAndRefund = () => {
                 <title>{cmsContentType?.meta_title || 'Return and Refund'}</title>
                 <meta name="description" content={cmsContentType?.meta_desc || 'Read our return and refund policy'} />
                 <meta name="keywords" content={cmsContentType?.meta_keywords || 'Return and refund policy'} />
-            </Helmet>
+				{/* <!-- Open Graph / Facebook --> */}
+				<meta property="og:title" content={cmsContentType?.meta_title} />
+				<meta property="og:description" content={cmsContentType?.meta_desc} />
+				<meta property="og:image" content={'/images/icons/LOGO1.png'} />
+				<meta property="og:url" content={currentUrl} />
+				<meta property="og:type" content="article" />
+				{/* <!-- Twitter --> */}
+				<meta property="twitter:card" content="article" />
+				<meta property="twitter:url" content={currentUrl} />
+				<meta property="twitter:title" content={cmsContentType?.meta_title} />
+				<meta property="twitter:description" content={cmsContentType?.meta_desc} />
+				<meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
+			</Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>
             <p dangerouslySetInnerHTML={{__html: cmsContentType?.long_desc}} />

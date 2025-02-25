@@ -216,12 +216,25 @@ const Cart = () => {
     const payload = {isOpen: isOpen};
     dispatch(setAllOffetList(payload))
   }
+  const currentUrl = window.location.href;
   return (
     <div className="staticContent">
       <Helmet>
           <title>{'Your Shopping Cart | FikFis'}</title>
           <meta name="description" content={"Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis."} />
           <meta name="keywords" content={'Your Shopping Cart | FikFis'} />
+          {/* <!-- Open Graph / Facebook --> */}
+          <meta property="og:title" content={'Your Shopping Cart | FikFis'} />
+          <meta property="og:description" content={'Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis.'} />
+          <meta property="og:image" content={'/images/icons/LOGO1.png'} />
+          <meta property="og:url" content={currentUrl} />
+          <meta property="og:type" content="article" />
+          {/* <!-- Twitter --> */}
+          <meta property="twitter:card" content="article" />
+          <meta property="twitter:url" content={currentUrl} />
+          <meta property="twitter:title" content={'Your Shopping Cart | FikFis'} />
+          <meta property="twitter:description" content={'Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis.'} />
+          <meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
       </Helmet>
       {checkoutLoading && <div className="loadingContainer loadingPosition">
           <CircularProgress />

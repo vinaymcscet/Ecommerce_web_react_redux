@@ -133,7 +133,6 @@ const Home = () => {
     }
   }, [homeProductSection]);
 
-  
   const handleWishlistToggle = (productData) => {
     if(user.length === 0) {
       dispatch(toggleModal(true));
@@ -154,6 +153,7 @@ const Home = () => {
         })
     }
   }
+  const currentUrl = window.location.href;
   return (
     <div>
       {/* SEO Meta Tags */}
@@ -161,6 +161,18 @@ const Home = () => {
           <title>{'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'}</title>
           <meta name="description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
           <meta name="keywords" content={'FikFis | Home'} />
+          {/* <!-- Open Graph / Facebook --> */}
+          <meta property="og:title" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
+          <meta property="og:description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
+          <meta property="og:image" content={homeProductData.banners[0].banner_image} />
+          <meta property="og:url" content={currentUrl} />
+          <meta property="og:type" content="article" />
+          {/* <!-- Twitter --> */}
+          <meta property="twitter:card" content="article" />
+          <meta property="twitter:url" content={currentUrl} />
+          <meta property="twitter:title" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
+          <meta property="twitter:description" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
+          <meta property="twitter:image" content={homeProductData.banners[0].banner_image} />
       </Helmet>
       {loading ? (
           <div className="loadingContainer">

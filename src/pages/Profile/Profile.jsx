@@ -459,6 +459,18 @@ const handlePasswordUpdateSubmit = (e) => {
           <title>{'Your Profile | Manage Account & Orders | FikFis'}</title>
           <meta name="description" content={"Access and manage your FikFis account, track orders, update details, and personalize your shopping experience—all in one place."} />
           <meta name="keywords" content={'Your Profile | Manage Account & Orders | FikFis'} />
+          {/* <!-- Open Graph / Facebook --> */}
+          <meta property="og:title" content={'Your Profile | Manage Account & Orders | FikFis'} />
+          <meta property="og:description" content={"Access and manage your FikFis account, track orders, update details, and personalize your shopping experience—all in one place."} />
+          <meta property="og:image" content={'/images/icons/LOGO1.png'} />
+          <meta property="og:url" content={window.location.href} />
+          <meta property="og:type" content="article" />
+          {/* <!-- Twitter --> */}  
+          <meta property="twitter:card" content="article" />
+          <meta property="twitter:url" content={window.location.href} />
+          <meta property="twitter:title" content={'Your Profile | Manage Account & Orders | FikFis'} />
+          <meta property="twitter:description" content={"Access and manage your FikFis account, track orders, update details, and personalize your shopping experience—all in one place."} />
+          <meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
       </Helmet>
       <h1>Your Profile</h1>
       <div className="vertical-tabs-container">

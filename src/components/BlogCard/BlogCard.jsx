@@ -15,11 +15,18 @@ const BlogCard = ({ card }) => {
                             <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
                             <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
                             <meta name="keywords" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+                            {/* <!-- Open Graph / Facebook --> */}
                             <meta property="og:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
                             <meta property="og:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
                             <meta property="og:image" content={data.blog_image} />
                             <meta property="og:url" content={currentUrl} />
                             <meta property="og:type" content="article" />
+                            {/* <!-- Twitter --> */}
+                            <meta property="twitter:card" content="article" />
+                            <meta property="twitter:url" content={currentUrl} />
+                            <meta property="twitter:title" content="FikFis Blog | Trends, Tips & Shopping Guides" />
+                            <meta property="twitter:description" content="Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!" />
+                            <meta property="twitter:image" content={data.blog_image} />
                         </Helmet>
                         <img src={data.blog_image} alt={data.blog_title} />
                         <div className="date">{formatDateTimeProduct(data.created_at).formattedDate}</div>
