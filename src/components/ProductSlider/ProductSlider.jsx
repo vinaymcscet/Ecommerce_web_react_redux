@@ -28,6 +28,7 @@ const ProductSlider = ({ title, tile }) => {
 
   const handleProductClick = (item) => {
     const responseObj = { category_id: item.id };
+    
     dispatch(getSubCategoryData(responseObj))
     const subCategoryObj = { 
       isOpen: isOpen, 

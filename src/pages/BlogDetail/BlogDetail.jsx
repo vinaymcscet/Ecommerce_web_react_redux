@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -109,27 +109,28 @@ const BlogDetail = () => {
   };
   
   const currentUrl = window.location.href;
+  console.log("blogDetail", blogDetail);
+  
+  
   return (
     <div className="Blogs detail">
       <Helmet>
-          <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
-          <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-          <meta name="keywords" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
-          <meta property="og:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
-          <meta property="og:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-          {blogDetail && blogDetail[0] && (
-            <meta property="og:image" content={blogDetail[0]?.blog_image} />
-          )}
+          {blogDetail && blogDetail.length > 0 && <title>{blogDetail[0].blog_title}</title>}
+          {blogDetail && blogDetail.length > 0 && <meta name="description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+          {blogDetail && blogDetail.length > 0 && <meta name="keywords" content={blogDetail[0].blog_title} />}
+          {/* <!-- Open Graph / Facebook --> */}
+          {blogDetail && blogDetail.length > 0 && <meta property="og:title" content={blogDetail[0].blog_title} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="og:description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="og:image" content={blogDetail[0].blog_image} />}
+          {/* <meta property="og:image" content={ '/images/icons/LOGO1.png'} /> */}
           <meta property="og:url" content={currentUrl} />
           <meta property="og:type" content="article" />
           {/* <!-- Twitter --> */}
           <meta property="twitter:card" content="article" />
           <meta property="twitter:url" content={currentUrl} />
-          <meta property="twitter:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
-          <meta property="twitter:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-          {blogDetail && blogDetail[0] && (
-            <meta property="twitter:image" content={ blogDetail[0]?.blog_image ||'/images/icons/LOGO1.png'} />
-          )}
+          {blogDetail && blogDetail.length > 0 && <meta property="twitter:title" content={blogDetail[0].blog_title} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="twitter:description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="twitter:image" content={blogDetail[0].blog_image} />}
       </Helmet>
       {loading ? (
           <div className="loadingContainer">
@@ -138,7 +139,7 @@ const BlogDetail = () => {
       ) : (
           <>
             <div className="blogsHeader">
-              <h2>Blogs</h2>
+              <h2><img src="/images/icons/left-arrow.svg" alt="Left Arrow" /><Link to="/blog">Blog</Link></h2>
             </div>
             <div className="blogContent">
               <div className="leftBlogContent">
@@ -215,8 +216,8 @@ const BlogDetail = () => {
                   </div>
                   <div className="commentLists">
                   {blogDetail[0]?.reviews &&
-                      JSON.parse(blogDetail[0]?.reviews).map((sub) => (
-                      <div className="commentItem">
+                      JSON.parse(blogDetail[0]?.reviews).map((sub, index) => (
+                      <div className="commentItem" key={index}>
                         <div className="leftComment">
                           <img src={sub.reviewer_image} alt={sub.full_name} />
                         </div>

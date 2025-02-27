@@ -89,6 +89,7 @@ const Contact = () => {
     }
   };
   const currentUrl = window.location.href;
+  const baseUrl = window.origin;
   return (
     <div className="contact">
       {/* SEO Meta Tags */}
@@ -99,7 +100,7 @@ const Contact = () => {
           {/* <!-- Open Graph / Facebook --> */}
           <meta property="og:title" content={'Contact Us | Get in Touch with FikFis'} />
           <meta property="og:description" content={"Have questions or need assistance? Contact FikFis today! Reach out to our team for support, inquiries, or feedback—we're here to help."} />
-          <meta property="og:image" content={'/images/icons/LOGO1.png'} />
+          <meta property="og:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
           <meta property="og:url" content={currentUrl} />
           <meta property="og:type" content="article" />
           {/* <!-- Twitter --> */}
@@ -107,7 +108,7 @@ const Contact = () => {
           <meta property="twitter:url" content={currentUrl} />
           <meta property="twitter:title" content={'Contact Us | Get in Touch with FikFis'} />
           <meta property="twitter:description" content={"Have questions or need assistance? Contact FikFis today! Reach out to our team for support, inquiries, or feedback—we're here to help."} />
-          <meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
+          <meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
       </Helmet>
       <h4>Contact</h4>
       <div className="leaveMessage">

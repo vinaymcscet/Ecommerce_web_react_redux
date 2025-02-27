@@ -10,7 +10,6 @@ const Blog = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const { blogList } = useSelector(state => state.user);
-    console.log("blogList", blogList);
     
     useEffect(() => {
         setLoading(true)
@@ -24,21 +23,23 @@ const Blog = () => {
     <div className='Blogs'>
         {/* SEO Meta Tags */}
         <Helmet>
-            <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
-            <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-            <meta name="keywords" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
+            {blogList && blogList.length > 0 && <title>{blogList[0].blog_title}</title>}
+            {blogList && blogList.length > 0 && <meta name="description" content={blogList[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+            {blogList && blogList.length > 0 && <meta name="keywords" content={blogList[0].blog_title} />}
             {/* <!-- Open Graph / Facebook --> */}
-            <meta property="og:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
-            <meta property="og:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-            <meta property="og:image" content={ blogList[0]?.blog_image ||'/images/icons/LOGO1.png'} />
+            {blogList && blogList.length > 0 && <meta property="og:title" content={blogList[0].blog_title} />}
+            {blogList && blogList.length > 0 && <meta property="og:description" content={blogList[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+            {blogList && blogList.length > 0 && <meta property="og:image" content={blogList[0].blog_image} />}
+            {/* <meta property="og:image" content={ '/images/icons/LOGO1.png'} /> */}
             <meta property="og:url" content={currentUrl} />
             <meta property="og:type" content="article" />
             {/* <!-- Twitter --> */}
             <meta property="twitter:card" content="article" />
             <meta property="twitter:url" content={currentUrl} />
-            <meta property="twitter:title" content={'FikFis Blog | Trends, Tips & Shopping Guides'} />
-            <meta property="twitter:description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
-            <meta property="twitter:image" content={ blogList[0]?.blog_image ||'/images/icons/LOGO1.png'} />
+            {blogList && blogList.length > 0 && <meta property="twitter:title" content={blogList[0].blog_title} />}
+            {blogList && blogList.length > 0 && <meta property="twitter:description" content={blogList[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+            {blogList && blogList.length > 0 && <meta property="twitter:image" content={blogList[0].blog_image} />}
+            {/* <meta property="twitter:image" content={ '/images/icons/LOGO1.png'} /> */}
         </Helmet>
         {loading ? (
             <div className="loadingContainer">

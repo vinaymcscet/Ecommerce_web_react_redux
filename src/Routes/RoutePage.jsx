@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 const Home = React.lazy(() => import("../pages/Home/Home"));
 const ReturnAndRefund = React.lazy(() => import("../pages/ReturnAndRefund/ReturnAndRefund"));
 const CookiesPolicy = React.lazy(() => import("../pages/CookiesPolicy/CookiesPolicy"));
@@ -33,6 +33,7 @@ const RoutePage = () => {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/sectionDetail/:id" element={<SectionDetail />} />
+          <Route path="/about-us" element={<Navigate to="/about" replace />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />

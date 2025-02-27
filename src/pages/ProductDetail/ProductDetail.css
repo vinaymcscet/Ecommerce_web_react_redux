@@ -24,6 +24,12 @@
 .prdDetail .catProduct:nth-child(1) {
   margin-top: 30px;
 }
+.prdDetail .catProduct .catProduct .slick-list {
+  margin-bottom: 0;
+}
+.prdDetail .listPageCategoryItems .catProduct {
+  margin-top: 10px;
+}
 
 /* .prdDetail .catProduct .product img {
   width: 110px;
@@ -185,6 +191,7 @@
   object-fit: cover;
   height: 100%;
   border: 1px solid #e3e3e2;
+  max-width: 100%;
 }
 
 .rightDetailInfo .leftBar {

@@ -828,6 +828,7 @@ const fetchUpdatedSimilarProductList = () => {
   dispatch(setViewCartItems(null));
 }
 const currentUrl = window.location.href;
+const baseUrl = window.origin;
   return (
       <div>
         <Helmet>
@@ -836,7 +837,7 @@ const currentUrl = window.location.href;
             {/* <!-- Open Graph / Facebook --> */}
             <meta property="og:title" content={productDetailResponse?.data?.name} />
             <meta property="og:description" content={productDetailResponse?.data?.description.content[0]} />
-            <meta property="og:image" content={'/images/icons/LOGO1.png'} />
+            <meta property="og:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
             <meta property="og:url" content={currentUrl} />
             <meta property="og:type" content="Product" />
             {/* <!-- Twitter --> */}
@@ -844,7 +845,7 @@ const currentUrl = window.location.href;
             <meta property="twitter:url" content={currentUrl} />
             <meta property="twitter:title" content={productDetailResponse?.data?.name} />
             <meta property="twitter:description" content={productDetailResponse?.data?.description.content[0]} />
-            <meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
+            <meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
         </Helmet>
         {wistlistLoading && 
           <div className="wishlistLoadingContainer">
@@ -860,9 +861,9 @@ const currentUrl = window.location.href;
           ) : (
           <div className="prdDetail">
             <ProductSlider title={false} tile={10} />
-            {/* <div className="listPageCategoryItems">
+            <div className="listPageCategoryItems">
               <CategorySlider />
-            </div> */}
+            </div>
             <div className="productDetailInfo">
               <div className="leftDetailInfo">
                 <ImageGallery items={images} />

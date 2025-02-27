@@ -31,6 +31,7 @@ const ShippingAndDelivery = () => {
         navigate("/");
     }
     const currentUrl = window.location.href;
+	const baseUrl = window.origin;
     return (
         <div className='staticContent'>
             {/* SEO Meta Tags */}
@@ -41,7 +42,7 @@ const ShippingAndDelivery = () => {
 				{/* <!-- Open Graph / Facebook --> */}
 				<meta property="og:title" content={cmsContentType?.meta_title} />
 				<meta property="og:description" content={cmsContentType?.meta_desc} />
-				<meta property="og:image" content={'/images/icons/LOGO1.png'} />
+				<meta property="og:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
 				<meta property="og:url" content={currentUrl} />
 				<meta property="og:type" content="article" />
 				{/* <!-- Twitter --> */}
@@ -49,7 +50,7 @@ const ShippingAndDelivery = () => {
 				<meta property="twitter:url" content={currentUrl} />
 				<meta property="twitter:title" content={cmsContentType?.meta_title} />
 				<meta property="twitter:description" content={cmsContentType?.meta_desc} />
-				<meta property="twitter:image" content={'/images/icons/LOGO1.png'} />
+				<meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
 			</Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>
