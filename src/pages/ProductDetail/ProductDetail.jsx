@@ -217,15 +217,15 @@ const ProductDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const scrollToTab = () => {
-      if (window.innerWidth <= 768) {
-        // Mobile screen width threshold
-        tabRefs[activeTab].current.scrollIntoView({ behavior: "smooth" });
-      }
-    };
-    scrollToTab();
-  }, [activeTab]);
+  // useEffect(() => {
+  //   const scrollToTab = () => {
+  //     if (window.innerWidth <= 768) {
+  //       // Mobile screen width threshold
+  //       tabRefs[activeTab].current.scrollIntoView({ behavior: "smooth" });
+  //     }
+  //   };
+  //   scrollToTab();
+  // }, [activeTab]);
 
   function capitalizeFirstLetter(string) {
     return string.replace(/\b\w/g, (char) => char.toUpperCase());

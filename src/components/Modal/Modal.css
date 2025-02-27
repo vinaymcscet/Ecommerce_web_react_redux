@@ -402,3 +402,12 @@ ul.status {
     margin: 10px 0;
   }
 }
+@media only screen and (max-width: 400px) {
+  .right form {
+    margin-bottom: 0;
+  }
+  .right .name {
+    display: flex;
+    flex-flow: wrap column;
+  }
+}

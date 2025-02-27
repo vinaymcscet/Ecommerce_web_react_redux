@@ -155,4 +155,7 @@
   .slick-previous {
     left: 30px;
   }
+  .slick-list {
+    width: 100%;
+  }
 }
