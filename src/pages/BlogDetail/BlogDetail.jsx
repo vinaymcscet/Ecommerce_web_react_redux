@@ -115,12 +115,12 @@ const BlogDetail = () => {
   return (
     <div className="Blogs detail">
       <Helmet>
-          {blogDetail && blogDetail.length > 0 && <title>{blogDetail[0].blog_title}</title>}
-          {blogDetail && blogDetail.length > 0 && <meta name="description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
-          {blogDetail && blogDetail.length > 0 && <meta name="keywords" content={blogDetail[0].blog_title} />}
+          {blogDetail && blogDetail.length > 0 && <title>{blogDetail[0].meta_title}</title>}
+          {blogDetail && blogDetail.length > 0 && <meta name="description" content={blogDetail[0].meta_desc} />}
+          {blogDetail && blogDetail.length > 0 && <meta name="keywords" content={blogDetail[0].meta_keywords} />}
           {/* <!-- Open Graph / Facebook --> */}
-          {blogDetail && blogDetail.length > 0 && <meta property="og:title" content={blogDetail[0].blog_title} />}
-          {blogDetail && blogDetail.length > 0 && <meta property="og:description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="og:title" content={blogDetail[0].meta_title} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="og:description" content={blogDetail[0].meta_desc} />}
           {blogDetail && blogDetail.length > 0 && <meta property="og:image" content={blogDetail[0].blog_image} />}
           {/* <meta property="og:image" content={ '/images/icons/LOGO1.png'} /> */}
           <meta property="og:url" content={currentUrl} />
@@ -128,8 +128,8 @@ const BlogDetail = () => {
           {/* <!-- Twitter --> */}
           <meta property="twitter:card" content="article" />
           <meta property="twitter:url" content={currentUrl} />
-          {blogDetail && blogDetail.length > 0 && <meta property="twitter:title" content={blogDetail[0].blog_title} />}
-          {blogDetail && blogDetail.length > 0 && <meta property="twitter:description" content={blogDetail[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="twitter:title" content={blogDetail[0].meta_title} />}
+          {blogDetail && blogDetail.length > 0 && <meta property="twitter:description" content={blogDetail[0].meta_desc} />}
           {blogDetail && blogDetail.length > 0 && <meta property="twitter:image" content={blogDetail[0].blog_image} />}
       </Helmet>
       {loading ? (
