@@ -230,7 +230,10 @@ const ProductDetail = () => {
   function capitalizeFirstLetter(string) {
     return string.replace(/\b\w/g, (char) => char.toUpperCase());
   }
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prevProgress) =>
