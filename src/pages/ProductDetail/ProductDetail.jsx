@@ -18,6 +18,7 @@ import { ShareProduct } from "../../utils/ShareProduct";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 import { toggleAddressModal, toggleModal } from "../../store/slice/modalSlice";
 import { Helmet } from 'react-helmet-async';
+import ProductSchemaMarkup from "../../components/ProductSchemaMarkup/ProductSchemaMarkup";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -863,6 +864,7 @@ const baseUrl = window.origin;
             <p className="prdDetailNotFound">No Product found</p>
           ) : (
           <div className="prdDetail">
+            <ProductSchemaMarkup product={productDetailResponse} />
             <ProductSlider title={false} tile={10} />
             <div className="listPageCategoryItems">
               <CategorySlider />

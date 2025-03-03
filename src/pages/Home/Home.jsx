@@ -160,11 +160,11 @@ const Home = () => {
       {/* SEO Meta Tags */}
       <Helmet>
           <title>{'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'}</title>
-          <meta name="description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
+          <meta name="description" content={'Welcome to FikFis, your ultimate destination for top-quality products across multiple categories! Shop online at unbeatable prices on everything you need.'} />
           <meta name="keywords" content={'FikFis | Home'} />
           {/* <!-- Open Graph / Facebook --> */}
           <meta property="og:title" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
-          <meta property="og:description" content={'FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place'} />
+          <meta property="og:description" content={'Welcome to FikFis, your ultimate destination for top-quality products across multiple categories! Shop online at unbeatable prices on everything you need.'} />
           <meta property="og:image" content={homeProductData?.banners[0]?.banner_image || `${baseUrl}/images/icons/LOGO1.png`} />
           <meta property="og:url" content={currentUrl} />
           <meta property="og:type" content="article" />
@@ -172,7 +172,7 @@ const Home = () => {
           <meta property="twitter:card" content="article" />
           <meta property="twitter:url" content={currentUrl} />
           <meta property="twitter:title" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
-          <meta property="twitter:description" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
+          <meta property="twitter:description" content="Welcome to FikFis, your ultimate destination for top-quality products across multiple categories! Shop online at unbeatable prices on everything you need." />
           <meta property="twitter:image" content={homeProductData?.banners[0]?.banner_image || `${baseUrl}/images/icons/LOGO1.png`} />
       </Helmet>
       {loading ? (
