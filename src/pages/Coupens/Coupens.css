@@ -71,7 +71,7 @@
     font-weight: 400;
     margin: 0;
     position: relative;
-    padding-left: 20px;
+    padding-left: 0px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -84,8 +84,12 @@
     height: 4px;
     border-radius: 50%;
     background-color: #000;
-    left: 0;
+    left: -10px;
     position: absolute;
+}
+
+.coupens .coupensList .availableCoupen ul li ul li:before  {
+    left: -20px;
 }
 
 .coupens .coupensList .availableCoupen ul li p {

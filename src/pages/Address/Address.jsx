@@ -215,178 +215,182 @@ const Address = () => {
   return (
     <>
         <div className="addressBox">
-            <h3>Add addresses for orders </h3>
-            <div className="addressForm">
-            <form onSubmit={handleAddressSubmit}>
-                <div className="box">
-                <div className="form-control">
-                    <label>Full name (First and Last name)</label>
-                    <input
-                    type="text"
-                    name="fullName"
-                    value={addressFormData.fullName}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.fullName && (
-                    <p className="error">{formErrors.fullName}</p>
-                    )}
-                </div>
-                <div className="form-control">
-                    <label>Mobile Number</label>
-                    <input
-                    type="text"
-                    name="phone"
-                    value={addressFormData.phone}
-                    onChange={handleAddressInputMobileChange}
-                    />
-                    {formErrors.phone && (
-                    <p className="error">{formErrors.phone}</p>
-                    )}
-                </div>
-                </div>
-                <div className="box">
-                <div className="form-control">
-                    <label>Email</label>
-                    <input
-                    type="email"
-                    name="email"
-                    value={addressFormData.email}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.email && (
-                    <p className="error">{formErrors.email}</p>
-                    )}
-                </div>
-                <div className="form-control">
-                    <label>House Number</label>
-                    <input
-                    type="text"
-                    name="house_no"
-                    value={addressFormData.house_no}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.house_no && (
-                    <p className="error">{formErrors.house_no}</p>
-                    )}
-                </div>
-                </div>
-                <div className="box">
-                <div className="form-control">
-                    <label>Full Address</label>
-                    <input
-                    type="text"
-                    name="address"
-                    value={addressFormData.address}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.address && (
-                    <p className="error">{formErrors.address}</p>
-                    )}
-                </div>
-                <div className="form-control">
-                    <label>Town/City</label>
-                    <input
-                    type="text"
-                    name="city"
-                    value={addressFormData.city}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.city && (
-                    <p className="error">{formErrors.city}</p>
-                    )}
-                </div>
-                </div>
-                <div className="box">
-                <div className="form-control">
-                    <label>Postal code</label>
-                    <input
-                    type="text"
-                    name="pincode"
-                    value={addressFormData.pincode}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.pincode && (
-                    <p className="error">{formErrors.pincode}</p>
-                    )}
-                </div>
-                <div className="form-control">
-                    <label>Country/Region</label>
-                    <input
-                    type="text"
-                    name="country"
-                    value={addressFormData.country}
-                    onChange={handleAddressInputChange}
-                    />
-                    {formErrors.country && (
-                    <p className="error">{formErrors.country}</p>
-                    )}
-                </div>
-                </div>
-                <button type="submit">{isEditingAddress ? "Update Address" : "Save Address"}</button>
-            </form>
-            </div>
-            <h3>Edit, Remove and set as default addresses for orders </h3>
-            <div className="addressList">
-              {user[0].addresses ? (
-                  <ul>
-                  {user[0].addresses.map((address) => (
-                      <li key={address.id}>
-                      <h4>{address.full_name}</h4>
-                      <p className="address">
-                          Full Address: {address.house_number}, {address.street}, {address.country},
-                          {address.postcode}
-                      </p>
-                      <p>Email: {address.email}</p>
-                      <p>Phone Number: {address.mobile}</p>
-                      <div className="action">
-                          <p onClick={() => handleEditAddress(address)}>
-                          Edit |
+            <div className='parentAddressBox'>
+              <div className="addressForm">
+                <h3>Add addresses for orders </h3>
+                <form onSubmit={handleAddressSubmit}>
+                    <div className="box">
+                    <div className="form-control">
+                        <label>Full name (First and Last name)</label>
+                        <input
+                        type="text"
+                        name="fullName"
+                        value={addressFormData.fullName}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.fullName && (
+                        <p className="error">{formErrors.fullName}</p>
+                        )}
+                    </div>
+                    <div className="form-control">
+                        <label>Mobile Number</label>
+                        <input
+                        type="text"
+                        name="phone"
+                        value={addressFormData.phone}
+                        onChange={handleAddressInputMobileChange}
+                        />
+                        {formErrors.phone && (
+                        <p className="error">{formErrors.phone}</p>
+                        )}
+                    </div>
+                    </div>
+                    <div className="box">
+                    <div className="form-control">
+                        <label>Email</label>
+                        <input
+                        type="email"
+                        name="email"
+                        value={addressFormData.email}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.email && (
+                        <p className="error">{formErrors.email}</p>
+                        )}
+                    </div>
+                    <div className="form-control">
+                        <label>House Number</label>
+                        <input
+                        type="text"
+                        name="house_no"
+                        value={addressFormData.house_no}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.house_no && (
+                        <p className="error">{formErrors.house_no}</p>
+                        )}
+                    </div>
+                    </div>
+                    <div className="box">
+                    <div className="form-control">
+                        <label>Full Address</label>
+                        <input
+                        type="text"
+                        name="address"
+                        value={addressFormData.address}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.address && (
+                        <p className="error">{formErrors.address}</p>
+                        )}
+                    </div>
+                    <div className="form-control">
+                        <label>Town/City</label>
+                        <input
+                        type="text"
+                        name="city"
+                        value={addressFormData.city}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.city && (
+                        <p className="error">{formErrors.city}</p>
+                        )}
+                    </div>
+                    </div>
+                    <div className="box">
+                    <div className="form-control">
+                        <label>Postal code</label>
+                        <input
+                        type="text"
+                        name="pincode"
+                        value={addressFormData.pincode}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.pincode && (
+                        <p className="error">{formErrors.pincode}</p>
+                        )}
+                    </div>
+                    <div className="form-control">
+                        <label>Country/Region</label>
+                        <input
+                        type="text"
+                        name="country"
+                        value={addressFormData.country}
+                        onChange={handleAddressInputChange}
+                        />
+                        {formErrors.country && (
+                        <p className="error">{formErrors.country}</p>
+                        )}
+                    </div>
+                    </div>
+                    <button type="submit">{isEditingAddress ? "Update Address" : "Save Address"}</button>
+                </form>
+              </div>
+              <div className="saveAddressWrapper">
+                <h3>Edit, Remove and set as default addresses for orders </h3>
+                <div className="addressList">
+                  {user[0].addresses ? (
+                      <ul>
+                      {user[0].addresses.map((address) => (
+                          <li key={address.id}>
+                          <h4>{address.full_name}</h4>
+                          <p className="address">
+                              Full Address: {address.house_number}, {address.street}, {address.country},
+                              {address.postcode}
                           </p>
-                          <p onClick={() => handleDeleteAddress(address.id)}>
-                          Remove |
-                          </p>
-                          <p
-                          onClick={() => handleSetDefaultAddress(address.id)}
-                          className={address.isDefault === "True" ? "default" : ""}
-                          >
-                          {address.isDefault === "True" ? "Default" : "Set as Default"}
-                          </p>
-                      </div>
-                      </li>
-                  ))}
-                  </ul>
-              ) : (
-                  <p className='noAddressFound'>No Address found!</p>
-              )}
-            </div>
-            {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
-              {/* <div className="itemsPerPageDropdown">
-                  <label>Items per page: </label>
-                  <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                      {itemsPerPageOptions.map(option => (
-                          <option key={option} value={option}>
-                              {option}
-                          </option>
+                          <p>Email: {address.email}</p>
+                          <p>Phone Number: {address.mobile}</p>
+                          <div className="action">
+                              <p onClick={() => handleEditAddress(address)}>
+                              Edit |
+                              </p>
+                              <p onClick={() => handleDeleteAddress(address.id)}>
+                              Remove |
+                              </p>
+                              <p
+                              onClick={() => handleSetDefaultAddress(address.id)}
+                              className={address.isDefault === "True" ? "default" : ""}
+                              >
+                              {address.isDefault === "True" ? "Default" : "Set as Default"}
+                              </p>
+                          </div>
+                          </li>
                       ))}
-                  </select>
-              </div> */}
-              {/* Pagination component */}
-              <ReactPaginate
-                  previousLabel={"Previous"}
-                  nextLabel={"Next"}
-                  breakLabel={"..."}
-                  breakClassName={"break-me"}
-                  pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={3}
-                  onPageChange={(ev) => handlePageChange(ev)}
-                  containerClassName={"pagination"}
-                  activeClassName={"active"}
-                  forcePage={page}  // Sync current page with URL
-                  disabled={totalAddressCount === 0} 
-              />
+                      </ul>
+                  ) : (
+                      <p className='noAddressFound'>No Address found!</p>
+                  )}
                 </div>
-            }
+                {user[0]?.addresses?.length > 0 && <div className='paginationBox'>
+                  {/* <div className="itemsPerPageDropdown">
+                      <label>Items per page: </label>
+                      <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                          {itemsPerPageOptions.map(option => (
+                              <option key={option} value={option}>
+                                  {option}
+                              </option>
+                          ))}
+                      </select>
+                  </div> */}
+                  {/* Pagination component */}
+                  <ReactPaginate
+                      previousLabel={"Previous"}
+                      nextLabel={"Next"}
+                      breakLabel={"..."}
+                      breakClassName={"break-me"}
+                      pageCount={Math.max(Math.ceil(totalAddressCount / itemsPerPage), 1)}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      onPageChange={(ev) => handlePageChange(ev)}
+                      containerClassName={"pagination"}
+                      activeClassName={"active"}
+                      forcePage={page}  // Sync current page with URL
+                      disabled={totalAddressCount === 0} 
+                  />
+                    </div>
+                }
+              </div>
+            </div>
         </div>
     </>
   )
