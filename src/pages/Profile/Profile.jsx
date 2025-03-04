@@ -484,7 +484,7 @@ const handlePasswordUpdateSubmit = (e) => {
             </div>
           </div>
           {errorFileType && <div className="error errorImageType">{errorFileType}</div>}
-          <p>{user[0]?.fullname.slice(0, 15)}</p>
+          <p>{user[0]?.fullname? user[0]?.fullname.slice(0, 15) : ''}</p>
           <div className="email">{email}</div>
           <div
             className={`tab ${activeTab === 0 ? "active" : ""}`}
