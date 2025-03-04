@@ -25,6 +25,9 @@ const Home = () => {
   const { user } = useSelector((state) => state.user);
   
   const [page, setPage] = useState(1);
+  useEffect(() => {
+      navigate("/", { replace: true });
+  }, [navigate]);
   // const [dataLoading, setDataLoading] = useState(false);
 
   // const handleScroll = () => {
