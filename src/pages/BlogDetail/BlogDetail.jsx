@@ -223,7 +223,7 @@ const BlogDetail = () => {
                         </div>
                         <div className="rightComment">
                           <div className="name">{sub.full_name}</div>
-                          <div className="name">{sub.reviewer_email}</div>
+                          {/* <div className="name">{sub.reviewer_email}</div> */}
                           <div className="commentDesc">{sub.review_text}</div>
                           <div className="commentDesc">{FormatDateTime(sub.created_at)}</div>
                         </div>

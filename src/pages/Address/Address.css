@@ -2,21 +2,21 @@
     width: 100%;
     margin: 20px 0 0 0;
 }
+.parentAddressBox {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: wrap column;
+}
+.parentAddressBox .addressForm {
+    order: 2;
+}
+.parentAddressBox .saveAddressWrapper {
+    order: 1;
+}
 
 @media only screen and (max-width: 767px) {
     .noAddressFound {
         margin: 40px 0 0 0;
-    }
-    .parentAddressBox {
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        flex-flow: wrap column;
-    }
-    .parentAddressBox .addressForm {
-        order: 2;
-    }
-    .parentAddressBox .saveAddressWrapper {
-        order: 1;
     }
 }
