@@ -351,11 +351,11 @@ const handleConfirmPasswordChange = (e) => {
           {modalType === "signup" && (
             <>
               <div className="left">
-                <h4>Sign Up</h4>
+                <h4>Sign Up Page</h4>
                 <p>
-                Join FikFis today and enjoy a seamless shopping experience with exclusive deals, faster checkout, and order tracking.
+                Sign up for Fikfis today and enjoy a seamless shopping experience with exclusive deals, top offers, and amazing discounts!
                 </p>
-                <div className="name">Welcome to FikFis</div>
+                {/* <div className="name">Welcome to FikFis</div> */}
               </div>
               <div className="right">
                 <form onSubmit={handleSubmit}>
@@ -397,7 +397,7 @@ const handleConfirmPasswordChange = (e) => {
                     )}
                     {!loading && <span>Submit</span>}
                   </button>
-                  <ul className="status">
+                  {/* <ul className="status">
                     <li>
                       By continuing, you agree to FikFis Terms of Use and
                       Privacy Policy.
@@ -406,7 +406,7 @@ const handleConfirmPasswordChange = (e) => {
                       To verify your number, we will send you a text message
                       with a temporary code.
                     </li>
-                  </ul>
+                  </ul> */}
                 </form>
                 <div className="name">
                   Already have an account?
@@ -419,8 +419,8 @@ const handleConfirmPasswordChange = (e) => {
             <>
               <div className="left">
                 <h4>Login</h4>
-                <p>Log in to your account to access your orders, wishlist, and exclusive member perks.</p>
-                <div className="name">Welcome Back to FikFis</div>
+                <p>Sign In to Your Account – Enjoy fast checkout and exclusive perks.</p>
+                <div className="name">Welcome back to Fikfis! Shop your favorites and grab the best deals.</div>
               </div>
               <div className="right">
                 <form onSubmit={handleSubmit}>
@@ -501,7 +501,7 @@ const handleConfirmPasswordChange = (e) => {
                 </form>
                 <div className="name">
                   Don’t have an account?
-                  <a onClick={() => openModal("signup")}> Sign Up</a>
+                  <a onClick={() => openModal("signup")}> Sign up now! </a>
                 </div>
               </div>
             </>
@@ -512,7 +512,7 @@ const handleConfirmPasswordChange = (e) => {
                 <h4>Password Assistance</h4>
                 <p>Please enter the temporary code sent via text message.</p>
                 <div className="name">
-                  Need help?
+                  Need help? Email us to 
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
                 </div>
               </div>
@@ -575,7 +575,7 @@ const handleConfirmPasswordChange = (e) => {
                 <h4>Create Password</h4>
                 <p>Your password must be a minimum of 8 characters long.</p>
                 <div className="name">
-                  Need help?
+                  Need help? Email us to 
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
                 </div>
               </div>
@@ -633,9 +633,9 @@ const handleConfirmPasswordChange = (e) => {
             <>
               <div className="left">
                 <h4>Password Assistance</h4>
-                <p>Don’t worry! Enter your registered email below, and we’ll send you a link to reset your password securely.</p>
+                <p>No worries! Just enter your registered email, and we’ll send you a secure link to reset your password.</p>
                 <div className="name">
-                  Need help?
+                Need help? Email us to 
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
                 </div>
               </div>
@@ -669,9 +669,9 @@ const handleConfirmPasswordChange = (e) => {
                     {!loading && <span>Submit</span>}
                   </button>
                 </form>
-                <div className="name">
+                {/* <div className="name">
                   To verify your number, we will send you a text message with a temporary code.
-                </div>
+                </div> */}
               </div>
             </>
           )}
@@ -681,7 +681,7 @@ const handleConfirmPasswordChange = (e) => {
                 <h4>Password Assistance</h4>
                 <p>Please enter the temporary code sent via text message.</p>
                 <div className="name">
-                  Need help?
+                  Need help? Email us to 
                   <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
                 </div>
               </div>

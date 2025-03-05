@@ -99,7 +99,6 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    console.log("user", user);
     if(user.length > 0) dispatch(getUserRequest());
     else navigate("/");
   }, [])

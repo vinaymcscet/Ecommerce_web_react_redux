@@ -108,9 +108,7 @@ const BlogDetail = () => {
     setExpanded(isExpanded ? panel : false);
   };
   
-  const currentUrl = window.location.href;
-  console.log("blogDetail", blogDetail);
-  
+  const currentUrl = window.location.href;  
   
   return (
     <div className="Blogs detail">

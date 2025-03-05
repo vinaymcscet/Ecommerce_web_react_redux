@@ -83,9 +83,9 @@ export const EMAIL_OR_MOBILE = "Enter a valid email or +44XXXXXXXXXX.";
 export const PASSWORD_NOT_MATCH_ERROR = "Confirm Password not matched.";
 export const VALID_OTP = "Please enter a valid 6-digit OTP.";
 
-export const EMAIL_OR_MOBILE_LABEL = "Enter your credentials";
+export const EMAIL_OR_MOBILE_LABEL = "Enter your email or phone number";
 export const EMAIL_LABEL = "userPhoneOrEmail";
-export const PASSWORD_LABEL = "Password";
+export const PASSWORD_LABEL = "Enter your password";
 export const PASSWORD_TYPE = "password";
 export const OLD_PASSWORD_LABEL = "Old Password";
 export const NEW_PASSWORD_LABEL = "New Password";
