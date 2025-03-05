@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import './Blog.css';
-import BlogCard from '../../components/BlogCard/BlogCard';
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllBlogs } from '../../store/slice/api_integration';
+import { getAllBlogs, getAllBlogsCategory } from '../../store/slice/api_integration';
 import { CircularProgress } from '@mui/material';
 import { Helmet } from "react-helmet-async";
+import './Blog.css';
+import BlogCard from '../../components/BlogCard/BlogCard';
 
 const Blog = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const { blogList } = useSelector(state => state.user);
+    const [expanded, setExpanded] = useState(false);
+    const { blogList, blogCategoryList } = useSelector(state => state.user);
     
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
+        dispatch(getAllBlogsCategory());
         dispatch(getAllBlogs()).finally(() => {
             setLoading(false);
         });
     }, [])
+    
+    const handleBlogChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
     const currentUrl = window.location.href;
     
   return (
@@ -51,7 +62,44 @@ const Blog = () => {
                     <h2>Blogs</h2>
                 </div>
                 <div className="blogsList">
-                    <BlogCard card={blogList} />
+                    <div className="leftBlogContent">
+                        <BlogCard card={blogList} />
+                    </div>
+                    <div className="rightBlogContent">
+                    <div className="blogCategory">
+                        <h4>Categories</h4>
+                        <div className="blogCategoryList">
+                            {blogCategoryList?.map((category) => (
+                            <Accordion 
+                                key={category.id}
+                                expanded={expanded === category.category_id}
+                                onChange={handleBlogChange(category.category_id)}
+                                >
+                                <AccordionSummary
+                                expandIcon={
+                                    expanded === category.category_id ? <RemoveIcon /> : <AddIcon />
+                                }
+                                aria-controls={`panel-${category.category_id}-content`}
+                                id={`panel-${category.category_id}-header`}
+                                >
+                                {category.category_name}
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                <ul>
+                                {category?.children &&
+                                    JSON.parse(category?.children).map((sub) => (
+                                    <li key={sub.category_id}>{sub.category_name}</li>
+                                ))}
+                                {!category?.children && 
+                                    <li>{`No subcategory under ${category?.category_name} is available`}</li>
+                                }
+                                </ul>
+                                </AccordionDetails>
+                            </Accordion>
+                            ))}
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </>
         )}

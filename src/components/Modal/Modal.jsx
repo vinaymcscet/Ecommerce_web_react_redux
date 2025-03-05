@@ -40,7 +40,9 @@ import {
       TEMP_CODE_LABEL,
       OTP_NAME,
       TEMP_CODE_PLACEHOLDER,
-      OTP_ERROR
+      OTP_ERROR,
+      EMAIL_OR_MOBILE_LABEL_PLACEHOLDER,
+      PASSWORD_LABEL_PLACEHOLDER
   } from "../../utils/Constants";
 import { forgetPasswordConfirmRequest, forgetPasswordOtpRequest, forgetPasswordRequest, loginUser, signupUser, signupUserWithOtp } from "../../store/slice/api_integration";
 
@@ -355,13 +357,13 @@ const handleConfirmPasswordChange = (e) => {
                 <p>
                 Sign up for Fikfis today and enjoy a seamless shopping experience with exclusive deals, top offers, and amazing discounts!
                 </p>
-                {/* <div className="name">Welcome to FikFis</div> */}
+                <div className="name">Welcome to FikFis</div>
               </div>
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
                     label = {EMAIL_OR_MOBILE_LABEL}
-                    placeholder= {EMAIL_OR_MOBILE_LABEL}
+                    placeholder= {EMAIL_OR_MOBILE_LABEL_PLACEHOLDER}
                     name={EMAIL_LABEL}
                     value={signup.userPhoneOrEmail}
                     onChange={handleChange}
@@ -371,7 +373,7 @@ const handleConfirmPasswordChange = (e) => {
                   />
                   <InputField
                     label={PASSWORD_LABEL}
-                    placeholder={PASSWORD_LABEL}
+                    placeholder={PASSWORD_LABEL_PLACEHOLDER}
                     type={PASSWORD_TYPE}
                     name={PASSWORD_TYPE}
                     value={signup.password}
@@ -397,7 +399,7 @@ const handleConfirmPasswordChange = (e) => {
                     )}
                     {!loading && <span>Submit</span>}
                   </button>
-                  {/* <ul className="status">
+                  <ul className="status">
                     <li>
                       By continuing, you agree to FikFis Terms of Use and
                       Privacy Policy.
@@ -406,7 +408,7 @@ const handleConfirmPasswordChange = (e) => {
                       To verify your number, we will send you a text message
                       with a temporary code.
                     </li>
-                  </ul> */}
+                  </ul>
                 </form>
                 <div className="name">
                   Already have an account?
@@ -420,13 +422,13 @@ const handleConfirmPasswordChange = (e) => {
               <div className="left">
                 <h4>Login</h4>
                 <p>Sign In to Your Account – Enjoy fast checkout and exclusive perks.</p>
-                <div className="name">Welcome back to Fikfis! Shop your favorites and grab the best deals.</div>
+                <div className="name">Welcome back to Fikfis!</div>
               </div>
               <div className="right">
                 <form onSubmit={handleSubmit}>
                   <InputField
                     label={EMAIL_OR_MOBILE_LABEL}
-                    placeholder={EMAIL_OR_MOBILE_LABEL}
+                    placeholder={EMAIL_OR_MOBILE_LABEL_PLACEHOLDER}
                     name={EMAIL_LABEL}
                     value={login.userPhoneOrEmail}
                     onChange={handleChange}
@@ -436,7 +438,7 @@ const handleConfirmPasswordChange = (e) => {
                   />
                   <InputField
                     label={PASSWORD_LABEL}
-                    placeholder={PASSWORD_LABEL}
+                    placeholder={PASSWORD_LABEL_PLACEHOLDER}
                     type={PASSWORD_TYPE}
                     name={PASSWORD_TYPE}
                     value={login.password}
@@ -636,14 +638,14 @@ const handleConfirmPasswordChange = (e) => {
                 <p>No worries! Just enter your registered email, and we’ll send you a secure link to reset your password.</p>
                 <div className="name">
                 Need help? Email us to 
-                  <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
+                  <a href="mailto:support@fikfis.uk"> support@fikfis.uk</a>
                 </div>
               </div>
               <div className="right forgot-password">
                 <form onSubmit={handleSubmit} name="forgotPasswordAssist">
                   <InputField
                     label={EMAIL_OR_MOBILE_LABEL}
-                    placeholder={EMAIL_OR_MOBILE_LABEL}
+                    placeholder={EMAIL_OR_MOBILE_LABEL_PLACEHOLDER}
                     name={EMAIL_LABEL}
                     value={forgotPasswordAssist.userPhoneOrEmail}
                     onChange={handleChange}
@@ -682,7 +684,7 @@ const handleConfirmPasswordChange = (e) => {
                 <p>Please enter the temporary code sent via text message.</p>
                 <div className="name">
                   Need help? Email us to 
-                  <a href="mailto:support@fikfis.uk">support@fikfis.uk</a>
+                  <a href="mailto:support@fikfis.uk"> support@fikfis.uk</a>
                 </div>
               </div>
               <div className="right">
