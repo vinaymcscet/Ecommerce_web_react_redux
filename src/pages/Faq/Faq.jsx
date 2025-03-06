@@ -64,7 +64,7 @@ const Faq = () => {
     }
     const currentUrl = window.location.href;
     const baseUrl = window.origin;
-	const schemaMarkup = const schemaMarkup = {
+	const schemaMarkup = {
 		"@context": "https://schema.org",
 		"@type": "FAQPage",
 		"mainEntity": [
