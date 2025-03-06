@@ -32,6 +32,30 @@ const ReturnAndRefund = () => {
     }
     const currentUrl = window.location.href;
 	const baseUrl = window.origin;
+	const schemaMarkup = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"mainEntityOfPage": {
+		  "@type": "WebPage",
+		  "@id": "https://fikfis.co.uk/return-and-refund"
+		},
+		"headline": "Return & Refund Policy | FikFis",
+		"description": "Return & Refund Policy to understand the process for returns, exchanges, and refunds. Shop with confidence knowing your satisfaction is our priority.",
+		"image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+		"author": {
+		  "@type": "Organization",
+		  "name": "FikFis"
+		},  
+		"publisher": {
+		  "@type": "Organization",
+		  "name": "",
+		  "logo": {
+			"@type": "ImageObject",
+			"url": ""
+		  }
+		},
+		"datePublished": "2025-03-06"
+	  }
     return (
         <div className='staticContent'>
             {/* SEO Meta Tags */}
@@ -51,6 +75,9 @@ const ReturnAndRefund = () => {
 				<meta property="twitter:title" content={cmsContentType?.meta_title} />
 				<meta property="twitter:description" content={cmsContentType?.meta_desc} />
 				<meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
+				<script type="application/ld+json">
+					{JSON.stringify(schemaMarkup)}
+				</script>
 			</Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>

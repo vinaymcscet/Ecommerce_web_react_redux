@@ -218,6 +218,30 @@ const Cart = () => {
   }
   const currentUrl = window.location.href;
   const baseUrl = window.origin; 
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fikfis.co.uk/cart"
+    },
+    "headline": "Your Shopping Cart | FikFis",
+    "description": "Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis.",
+    "image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+    "author": {
+      "@type": "Organization",
+      "name": "FikFis"
+    },  
+    "publisher": {
+      "@type": "Organization",
+      "name": "",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ""
+      }
+    },
+    "datePublished": "2025-03-06"
+  }
   return (
     <div className="staticContent">
       <Helmet>
@@ -236,6 +260,9 @@ const Cart = () => {
           <meta property="twitter:title" content={'Your Shopping Cart | FikFis'} />
           <meta property="twitter:description" content={'Review your selected items before checkout. Edit quantities, apply discounts, and proceed to secure payment for a seamless shopping experience at FikFis.'} />
           <meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
+          <script type="application/ld+json">
+              {JSON.stringify(schemaMarkup)}
+          </script>
       </Helmet>
       {checkoutLoading && <div className="loadingContainer loadingPosition">
           <CircularProgress />

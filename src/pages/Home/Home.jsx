@@ -158,6 +158,23 @@ const Home = () => {
   }
   const currentUrl = window.location.href;
   const baseUrl = window.origin;
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "FikFis",
+    "alternateName": "FikFis LTD",
+    "url": "https://fikfis.co.uk/",
+    "logo": "https://fikfis.co.uk/images/icons/LOGO1.png",
+    "sameAs": [
+      "https://www.facebook.com/fikfisltd",
+      "https://x.com/Fikfisltd",
+      "https://www.instagram.com/fikfisltd",
+      "https://www.youtube.com/@Fikfisltd",
+      "https://www.linkedin.com/company/fikfisltd",
+      "https://uk.pinterest.com/fikfisltd/",
+      "https://fikfis.co.uk/"
+    ]
+  }
   return (
     <div>
       {/* SEO Meta Tags */}
@@ -177,6 +194,9 @@ const Home = () => {
           <meta property="twitter:title" content="FikFis | Discover  Latest Clothing, Beauty, Home, Jewelry, Fashion, Beauty & Lifestyle in One Place" />
           <meta property="twitter:description" content="Welcome to FikFis, your ultimate destination for top-quality products across multiple categories! Shop online at unbeatable prices on everything you need." />
           <meta property="twitter:image" content={homeProductData?.banners[0]?.banner_image || `${baseUrl}/images/icons/LOGO1.png`} />
+          <script type="application/ld+json">
+              {JSON.stringify(schemaMarkup)}
+          </script>
       </Helmet>
       {loading ? (
           <div className="loadingContainer">

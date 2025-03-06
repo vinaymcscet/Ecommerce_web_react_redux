@@ -64,6 +64,93 @@ const Faq = () => {
     }
     const currentUrl = window.location.href;
     const baseUrl = window.origin;
+	const schemaMarkup = const schemaMarkup = {
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+		  {
+			"@type": "Question",
+			"name": "What is Fikfis Ltd?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "Fikfis Ltd is a UK-based online retailer specializing in both direct e-Commerce and drop shipping. We offer a wide selection of high-quality products from various categories like electronics, fashion, home goods, and more. Through our platform, we connect customers to top suppliers, including Ali Express, to ensure competitive pricing and fast delivery for a smooth shopping experience. As a drop shipping business, we source products directly from suppliers, so the items you purchase may be shipped directly from these suppliers."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "How can I contact Fikfis Ltd?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "You can reach out to us in several ways: \n- Email: Send us an email at support@fikfis.co.uk. \n- Phone: Contact our customer service team at +44 07917 948706. \n- Live Chat: Use the live chat feature available on our website and mobile apps (iOS and Android) for instant assistance. \n- Social Media: Connect with us on Facebook, Twitter, and Instagram for updates and support. \nFor more contact methods and detailed support, please visit our Contact Us page."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "What types of shipping do you offer?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "We offer various shipping options to suit your needs: \n- Standard Shipping: Estimated delivery within 14 working days. \n- Express Shipping: Faster delivery within 5 working days. \n- Next-Day Delivery: Available for certain UK locations and specific products. \n- International Shipping: We ship globally, with delivery times and costs varying based on your location. \nShipping fees are calculated at checkout and depend on your order size, weight, and destination."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "How do I track my order?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "Once your order is dispatched, you will receive an email with tracking details. You can use the tracking number to follow your order's journey on the courier's website or mobile app. Alternatively, you can log into your account on our website or mobile apps (iOS and Android) and view the 'Order History' section to track the status of your order."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "Do you offer free shipping?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "Yes, we offer free UK standard shipping on qualifying orders. If your order meets the minimum threshold, free shipping will be automatically applied at checkout. For international orders, free shipping may be available during special promotions or for orders over a specific amount. Please check our website for current offers and conditions."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "What is your returns policy?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "We offer a 14-day return window from the date your order arrives. To be eligible for a return, items must be unused, in original packaging, and in a resellable condition. Certain products, such as personalized goods, perishable items, or intimate apparel, may not be eligible for returns. To start the return process, visit our Returns Page or contact our customer service team for assistance."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "How do I return an item?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "To initiate a return: \n1. Log in to your account and go to the 'Order History' section. \n2. Select the item(s) you'd like to return and click on 'Request Return'. \n3. Follow the instructions to generate a return label. \n4. Carefully pack the item and return it to us. \nOnce we receive the item and confirm its condition, we will process your refund or exchange as quickly as possible."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "How long will it take for my refund to be processed?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "Refunds are processed after we receive and inspect the returned item. Typically, refunds are issued within 30 working days to your original payment method. Depending on your bank or payment provider, it may take additional time for the refund to appear in your account."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "Can I cancel my order after placing it?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "Orders are processed promptly, but if you act quickly, you can cancel your order within 30 minutes of placing it. To cancel, please contact our customer support team via email, phone, or live chat immediately. \nOnce your order has been dispatched, it cannot be canceled. However, you can still return the item once it arrives."
+			}
+		  },
+		  {
+			"@type": "Question",
+			"name": "What should I do if I want to modify my order after placing it?",
+			"acceptedAnswer": {
+			  "@type": "Answer",
+			  "text": "If you need to make any changes to your order, such as changing the shipping address or adding/removing items, please contact us immediately. We can only accommodate changes if the order has not yet been processed or shipped. Once the order is dispatched, we cannot modify it, but you can return the item once it arrives."
+			}
+		  }
+		]
+	  };
+	  
     return (
         <div className='staticContent'>
             {/* SEO Meta Tags */}
@@ -83,6 +170,9 @@ const Faq = () => {
 				<meta property="twitter:title" content={cmsContentType?.meta_title} />
 				<meta property="twitter:description" content={cmsContentType?.meta_desc} />
 				<meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
+				<script type="application/ld+json">
+					{JSON.stringify(schemaMarkup)}
+				</script>
             </Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>

@@ -61,6 +61,30 @@ const CookiesPolicy = () => {
     }
     const currentUrl = window.origin;
     const baseUrl = window.origin;
+	const schemaMarkup = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"mainEntityOfPage": {
+		  "@type": "WebPage",
+		  "@id": "https://fikfis.co.uk/cookies-policy"
+		},
+		"headline": "Cookies Policy | FikFis",
+		"description": "Learn how FikFis uses cookies to enhance your browsing experience. Read our Cookies Policy to understand how we collect, use, and manage cookie data on our website.",
+		"image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+		"author": {
+		  "@type": "Organization",
+		  "name": "FikFis"
+		},  
+		"publisher": {
+		  "@type": "Organization",
+		  "name": "",
+		  "logo": {
+			"@type": "ImageObject",
+			"url": ""
+		  }
+		},
+		"datePublished": "2025-03-06"
+	  }
     return (
         <div className='staticContent'>
             {/* SEO Meta Tags */}
@@ -80,6 +104,9 @@ const CookiesPolicy = () => {
 				<meta property="twitter:title" content={cmsContentType?.meta_title} />
 				<meta property="twitter:description" content={cmsContentType?.meta_desc} />
 				<meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
+				<script type="application/ld+json">
+					{JSON.stringify(schemaMarkup)}
+				</script>
             </Helmet>
             {cmsContentType && (<><h4>{cmsContentType?.page_title.toUpperCase()}</h4>
             <h6>{cmsContentType?.title_1}</h6>

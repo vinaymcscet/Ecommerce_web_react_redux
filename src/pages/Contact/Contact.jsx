@@ -90,6 +90,30 @@ const Contact = () => {
   };
   const currentUrl = window.location.href;
   const baseUrl = window.origin;
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fikfis.co.uk/contact"
+    },
+    "headline": "Contact Us | Get in Touch with FikFis",
+    "description": "Have questions or need assistance? Contact FikFis today! Reach out to our team for support, inquiries, or feedback—we're here to help.",
+    "image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+    "author": {
+      "@type": "Organization",
+      "name": "FikFis LTD"
+    },  
+    "publisher": {
+      "@type": "Organization",
+      "name": "",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ""
+      }
+    },
+    "datePublished": "2025-03-06"
+  }
   return (
     <div className="contact">
       {/* SEO Meta Tags */}
@@ -109,6 +133,9 @@ const Contact = () => {
           <meta property="twitter:title" content={'Contact Us | Get in Touch with FikFis'} />
           <meta property="twitter:description" content={"Have questions or need assistance? Contact FikFis today! Reach out to our team for support, inquiries, or feedback—we're here to help."} />
           <meta property="twitter:image" content={`${baseUrl}/images/icons/LOGO1.png`} />
+          <script type="application/ld+json">
+              {JSON.stringify(schemaMarkup)}
+          </script>
       </Helmet>
       <h4>Contact</h4>
       <div className="leaveMessage">

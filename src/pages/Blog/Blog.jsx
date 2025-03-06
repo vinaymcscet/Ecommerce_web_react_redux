@@ -29,7 +29,30 @@ const Blog = () => {
         setExpanded(isExpanded ? panel : false);
     };
     const currentUrl = window.location.href;
-    
+    const schemaMarkup = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://fikfis.co.uk/blog"
+        },
+        "headline": "FikFis Blog | Trends, Tips & Shopping Guides",
+        "description": "Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!",
+        "image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+        "author": {
+          "@type": "Organization",
+          "name": "FikFis LTD"
+        },  
+        "publisher": {
+          "@type": "Organization",
+          "name": "",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "2025-03-06"
+          }
+        },
+        "datePublished": ""
+      }
   return (
     <div className='Blogs'>
         {/* SEO Meta Tags */}
@@ -51,6 +74,9 @@ const Blog = () => {
             {blogList && blogList.length > 0 && <meta property="twitter:description" content={blogList[0].blog_description.replace(/<\/?[^>]+(>|$)/g, "")} />}
             {blogList && blogList.length > 0 && <meta property="twitter:image" content={blogList[0].blog_image} />}
             {/* <meta property="twitter:image" content={ '/images/icons/LOGO1.png'} /> */}
+            <script type="application/ld+json">
+                {JSON.stringify(schemaMarkup)}
+            </script>
         </Helmet>
         {loading ? (
             <div className="loadingContainer">

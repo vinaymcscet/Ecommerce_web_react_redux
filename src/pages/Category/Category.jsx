@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { DEFAULT_OPTIONS } from "../../utils/Constants";
 import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
+import { Helmet } from 'react-helmet-async';
 
 const Category = () => {
   const dispatch = useDispatch();
@@ -175,9 +176,38 @@ const handlePageChange = (data) => {
     }
   }
   
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fikfis.co.uk/allcategory"
+    },
+    "headline": "Welcome to FikFis, your ultimate destination for top-quality products.",
+    "description": "FikFis brings you a hassle-free online shopping experience with a wide range of quality products at unbeatable prices.",
+    "image": "https://fikfis.co.uk/images/icons/LOGO1.png",  
+    "author": {
+      "@type": "Organization",
+      "name": "FikFis"
+    },  
+    "publisher": {
+      "@type": "Organization",
+      "name": "",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ""
+      }
+    },
+    "datePublished": "2025-03-06"
+  }
 
   return (
     <>
+      <Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(schemaMarkup)}
+          </script>
+      </Helmet>
       {loading ? (
         <div className="loadingContainer">
             <CircularProgress />
