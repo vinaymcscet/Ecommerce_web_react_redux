@@ -26,6 +26,7 @@ const Category = () => {
   const { allCategoryList, subCategoryList, recentView, totalRecentView = 0 } = useSelector(
     (state) => state.product
   );
+  console.log("allCategoryList", allCategoryList[0]?.[0]?.category_image);
   
   const handleCategory = (item) => {
     const responseObj = { category_id: item.id };
@@ -200,10 +201,27 @@ const handlePageChange = (data) => {
     },
     "datePublished": "2025-03-06"
   }
-
+  
+  const currentUrl = window.location.href;
+  const baseUrl = window.origin;
   return (
     <>
       <Helmet>
+          <title>{'Welcome to FikFis, your ultimate destination for top-quality products.'}</title>
+          <meta name="description" content={'FikFis brings you a hassle-free online shopping experience with a wide range of quality products at unbeatable prices.'} />
+          <meta name="keywords" content={'FikFis | Category'} />
+          {/* <!-- Open Graph / Facebook --> */}
+          <meta property="og:title" content={'Welcome to FikFis, your ultimate destination for top-quality products.'} />
+          <meta property="og:description" content={'FikFis brings you a hassle-free online shopping experience with a wide range of quality products at unbeatable prices.'} />
+          <meta property="og:image" content={allCategoryList[0]?.[0]?.category_image || `${baseUrl}/images/icons/LOGO1.png`} />
+          <meta property="og:url" content={currentUrl} />
+          <meta property="og:type" content="article" />
+          {/* <!-- Twitter --> */}
+          <meta property="twitter:card" content="article" />
+          <meta property="twitter:url" content={currentUrl} />
+          <meta property="twitter:title" content="Welcome to FikFis, your ultimate destination for top-quality products." />
+          <meta property="twitter:description" content="FikFis brings you a hassle-free online shopping experience with a wide range of quality products at unbeatable prices." />
+          <meta property="twitter:image" content={allCategoryList[0]?.[0]?.category_image || `${baseUrl}/images/icons/LOGO1.png`} />
           <script type="application/ld+json">
             {JSON.stringify(schemaMarkup)}
           </script>
