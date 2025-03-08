@@ -1,17 +1,20 @@
 import React from 'react'
 import './BlogCard.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatDateTimeProduct } from '../../utils/FormatDateTime';
 import { Helmet } from "react-helmet-async";
 
 const BlogCard = ({ card }) => {
+    const navigate = useNavigate();
     const currentUrl = window.location.href;
-    
+    const truncateText = (text, maxLength = 43) => {
+        return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    };
     return (
         <>
             {
                 card?.map((data, index) => (
-                    <div className='blogCard' key={index}>
+                    <div className='blogCard' key={index} onClick={() => navigate(`/blog/${data.id}`)}>
                         <Helmet>
                             <title>{'FikFis Blog | Trends, Tips & Shopping Guides'}</title>
                             <meta name="description" content={'Stay updated with the latest trends, shopping tips, and lifestyle guides on the FikFis Blog. Explore expert insights, fashion updates, and more!'} />
@@ -32,7 +35,7 @@ const BlogCard = ({ card }) => {
                         </Helmet>
                         <img src={data.blog_image} alt={data.blog_title} />
                         <div className="date">{formatDateTimeProduct(data.created_at).formattedDate}</div>
-                        <h3>{data.blog_title}</h3>
+                        <h3>{truncateText(data.blog_title)}</h3>
                         <p className='description' dangerouslySetInnerHTML={{__html:data.blog_description}} />
                         <p>Category: <span>{data.parent_category_name}</span></p>
                         <p>Sub-category: <span>{data.sub_category_name}</span></p>

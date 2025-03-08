@@ -189,7 +189,7 @@ const BlogDetail = () => {
                   <p>Category: <span>{blogDetail[0].parent_category_name}</span></p>
                   <p>Sub-category: <span>{blogDetail[0].category_name}</span></p>
                   <div className="date"><p>Posted at: </p> {formatDateTimeProduct(blogDetail[0].blog_created_at).formattedDate} {formatDateTimeProduct(blogDetail[0].blog_created_at).time}</div>
-                  <div className="blogReviewForm">
+                  {/* <div className="blogReviewForm">
                     <h4>Write Your Review</h4>
                     <div className="reviewForm">
                       <form onSubmit={handleSubmit}>
@@ -237,23 +237,23 @@ const BlogDetail = () => {
                         />
                       </form>
                     </div>
-                  </div>
-                  <div className="commentLists">
-                  {blogDetail[0]?.reviews &&
-                      JSON.parse(blogDetail[0]?.reviews).map((sub, index) => (
-                      <div className="commentItem" key={index}>
-                        <div className="leftComment">
-                          <img src={sub.reviewer_image} alt={sub.full_name} />
+                  </div> */}
+                  {/* <div className="commentLists">
+                    {blogDetail[0]?.reviews &&
+                        JSON.parse(blogDetail[0]?.reviews).map((sub, index) => (
+                        <div className="commentItem" key={index}>
+                          <div className="leftComment">
+                            <img src={sub.reviewer_image} alt={sub.full_name} />
+                          </div>
+                          <div className="rightComment">
+                            <div className="name">{sub.full_name}</div>
+                            {/* <div className="name">{sub.reviewer_email}</div> */}
+                            {/* <div className="commentDesc">{sub.review_text}</div>
+                            <div className="commentDesc">{FormatDateTime(sub.created_at)}</div>
+                          </div>
                         </div>
-                        <div className="rightComment">
-                          <div className="name">{sub.full_name}</div>
-                          {/* <div className="name">{sub.reviewer_email}</div> */}
-                          <div className="commentDesc">{sub.review_text}</div>
-                          <div className="commentDesc">{FormatDateTime(sub.created_at)}</div>
-                        </div>
-                      </div>
-                  ))}
-                </div>
+                    ))}
+                  </div> */}
                 </>
               ) : (
                 <p>Loading blog details...</p>

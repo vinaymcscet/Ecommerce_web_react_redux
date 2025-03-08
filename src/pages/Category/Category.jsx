@@ -26,7 +26,6 @@ const Category = () => {
   const { allCategoryList, subCategoryList, recentView, totalRecentView = 0 } = useSelector(
     (state) => state.product
   );
-  console.log("allCategoryList", allCategoryList[0]?.[0]?.category_image);
   
   const handleCategory = (item) => {
     const responseObj = { category_id: item.id };
@@ -39,7 +38,6 @@ const Category = () => {
     };
     dispatch(toggleCategoryModal(subCategoryObj));
   };
- 
   useEffect(() => {
     setLoading(true)
     dispatch(getAllCategoryData()).finally(() => {
