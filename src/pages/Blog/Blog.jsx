@@ -22,11 +22,16 @@ const Blog = () => {
     useEffect(() => {
         setLoading(true);
         dispatch(getAllBlogsCategory())
-        setCategories(blogCategoryList);
         dispatch(getAllBlogs()).finally(() => {
             setLoading(false);
         });
-    }, [])
+    }, [dispatch])
+
+    useEffect(() => {
+        if (blogCategoryList?.length) {
+            setCategories(blogCategoryList);
+        }
+    }, [blogCategoryList]);
     
     const handleBlogChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
