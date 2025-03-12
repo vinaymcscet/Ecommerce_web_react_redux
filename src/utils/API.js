@@ -77,7 +77,6 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
 
     // const response = await fetch(`${API_BASE_URL}${url}`, config);
     const response = await fetch(fullUrl, config);
-    
     const responseData = await response.json();
 
     if (!response.ok) {

@@ -9,6 +9,7 @@ import { setViewCartItems } from "../../store/slice/cartSlice";
 const OrderComplete = () => {
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
     const { createOrderResponse, confirmOrderResponse } = useSelector((state) => state.cart);
@@ -17,6 +18,10 @@ const OrderComplete = () => {
     const paymentIntentId = params.get("payment_intent");
     
     useEffect(() => {
+        if(!createOrderResponse || !confirmOrderResponse) {
+            navigate('/');
+            return;
+        }
         setLoading(true)
         const responseObj = {
             payment_intent: createOrderResponse?.paymentIntentId || paymentIntentId,
@@ -26,7 +31,6 @@ const OrderComplete = () => {
             dispatch(setViewCartItems(null));
         });
     }, [])
-    const navigate = useNavigate();
     return (
         <>
             {loading ? (
@@ -34,7 +38,8 @@ const OrderComplete = () => {
                     <CircularProgress />
                 </div>
             ) : (
-                <div className="order-complete">
+                confirmOrderResponse ? (
+                    <div className="order-complete">
                     <h1>Thank you</h1>
                     <p>for your order</p>
                     <img src="/images/check-mark.svg" alt="complete Order" />
@@ -43,6 +48,7 @@ const OrderComplete = () => {
 
                     <button type="button" onClick={() => navigate('/')}>continue shopping</button>
                 </div>
+                ) : ""
             )}
         </>
     )

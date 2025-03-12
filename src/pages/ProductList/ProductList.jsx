@@ -30,7 +30,7 @@ const ProductList = () => {
   const location = useLocation();
   const { productList, totalFilterList, totalProductListCount = 0, subCategoryList } = useSelector((state) => state.product);
   const [page, setPage] = useState(0);  // Default page 0 (first page)
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [triggerSkuId, setTriggerSkuId] = useState(null);
   
   const searchParams = new URLSearchParams(location.search);

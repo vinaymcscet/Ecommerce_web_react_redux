@@ -97,6 +97,10 @@
   margin: 0;
 }
 
+.blogCategoryList ul li:hover a {
+  text-decoration: underline;
+}
+
 .blogCategoryList ul li:before {
   content: "";
   position: absolute;

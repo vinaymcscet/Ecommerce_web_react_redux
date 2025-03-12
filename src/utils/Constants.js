@@ -53,6 +53,7 @@ export const REASON_LIST_CONSTANT = 'getReasonList';
 export const SELECTED_REASON_PRODUCT_CONSTANT = 'addCancelReturnProducts';
 export const GET_ALL_BLOGS_CONSTANT = 'blog/getBlogs';
 export const GET_ALL_BLOGS_CATEGORY_CONSTANT = 'blog/getBlogCategories';
+export const GET_BLOGS_BY_CATEGORY_CONSTANT = 'blog/getBlogsByCategory';
 export const GET_BLOG_DETAIL_CONSTANT = 'blog/getSingleBlog';
 export const ADD_BLOG_REVIEW_CONSTANT = 'blog/addBlogReview';
 export const GET_NOTIFICATIONS_CONSTANT = 'notifications';
@@ -85,7 +86,7 @@ export const VALID_OTP = "Please enter a valid 6-digit OTP.";
 
 export const EMAIL_OR_MOBILE_LABEL = "Enter your credentials";
 export const EMAIL_OR_MOBILE_LABEL_PLACEHOLDER = "Enter your email or phone number";
-export const EMAIL_LABEL = "Enter your email or phone number";
+export const EMAIL_LABEL = "userPhoneOrEmail";
 export const PASSWORD_LABEL = "Password";
 export const PASSWORD_LABEL_PLACEHOLDER = "Enter your Password";
 export const PASSWORD_TYPE = "password";

@@ -1,3 +1,7 @@
+.staticContent {
+    width: 90%;
+    margin: 0 auto;
+}
 .cartWrapper {
     width: 100%;
     display: flex;

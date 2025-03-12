@@ -148,6 +148,7 @@ const handleConfirmPasswordChange = (e) => {
 
   const handleChange = (e, index=null) => {
     const { name, value } = e.target;
+    
     // Helper function to format phone numbers with +44
     const formatPhoneNumber = (input) => {
       // Remove spaces and trim the input

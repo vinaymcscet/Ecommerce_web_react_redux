@@ -5,7 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllBlogs, getAllBlogsCategory } from '../../store/slice/api_integration';
+import { getAllBlogs, getAllBlogsCategory, getBlogsByCategory } from '../../store/slice/api_integration';
 import { CircularProgress } from '@mui/material';
 import { Helmet } from "react-helmet-async";
 import './Blog.css';
@@ -16,10 +16,14 @@ const Blog = () => {
     const [loading, setLoading] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const { blogList, blogCategoryList } = useSelector(state => state.user);
+    const [categories, setCategories] = useState([]);
     
+    console.log("blogCategoryList", blogCategoryList)
     useEffect(() => {
         setLoading(true);
-        dispatch(getAllBlogsCategory());
+        dispatch(getAllBlogsCategory()).finally(() => {
+            setCategories(blogCategoryList);
+        })
         dispatch(getAllBlogs()).finally(() => {
             setLoading(false);
         });
@@ -52,7 +56,25 @@ const Blog = () => {
           }
         },
         "datePublished": ""
-      }
+    }
+
+    const getBlogByCategory = (category_id, subcategory_id) => {
+        // Move the clicked parent category to the top
+        setCategories((prevCategories) => {
+            const newCategories = [...prevCategories]; // Create a new array
+            const index = newCategories.findIndex(cat => cat.category_id === category_id);
+            if (index !== -1) {
+                const [selectedCategory] = newCategories.splice(index, 1);
+                return [selectedCategory, ...newCategories]; // Return reordered array
+            }
+            return newCategories;
+        });
+
+        const payload = { category_id: category_id };
+        dispatch(getBlogsByCategory(payload)).finally(() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    };
   return (
     <div className='Blogs'>
         {/* SEO Meta Tags */}
@@ -92,38 +114,42 @@ const Blog = () => {
                         <BlogCard card={blogList} />
                     </div>
                     <div className="rightBlogContent">
-                    <div className="blogCategory">
-                        <h4>Categories</h4>
-                        <div className="blogCategoryList">
-                            {blogCategoryList?.map((category) => (
-                            <Accordion 
-                                key={category.id}
-                                expanded={expanded === category.category_id}
-                                onChange={handleBlogChange(category.category_id)}
-                                >
-                                <AccordionSummary
-                                expandIcon={
-                                    expanded === category.category_id ? <RemoveIcon /> : <AddIcon />
-                                }
-                                aria-controls={`panel-${category.category_id}-content`}
-                                id={`panel-${category.category_id}-header`}
-                                >
-                                {category.category_name}
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                <ul>
-                                {category?.children &&
-                                    JSON.parse(category?.children).map((sub) => (
-                                    <li key={sub.category_id}>{sub.category_name}</li>
+                        <div className="blogCategory">
+                            <h4>Categories</h4>
+                            <div className="blogCategoryList">
+                                {categories.map((category) => (
+                                    <Accordion 
+                                        key={category.category_id}
+                                        expanded={expanded === category.category_id}
+                                        onChange={handleBlogChange(category.category_id)}
+                                    >
+                                        <AccordionSummary
+                                            expandIcon={expanded === category.category_id ? <RemoveIcon /> : <AddIcon />}
+                                            aria-controls={`panel-${category.category_id}-content`}
+                                            id={`panel-${category.category_id}-header`}
+                                        >
+                                            {category.category_name}
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <ul>
+                                                {category.children && category.children.length > 0 ? (
+                                                    JSON.parse(category.children).map((sub) => (
+                                                        <li key={sub.id}>
+                                                            <a 
+                                                                onClick={() => getBlogByCategory(category.category_id, sub.id)}
+                                                            >
+                                                                {sub.category_name}
+                                                            </a>
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li>No subcategory under {category.category_name} is available</li>
+                                                )}
+                                            </ul>
+                                        </AccordionDetails>
+                                    </Accordion>
                                 ))}
-                                {!category?.children && 
-                                    <li>{`No subcategory under ${category?.category_name} is available`}</li>
-                                }
-                                </ul>
-                                </AccordionDetails>
-                            </Accordion>
-                            ))}
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>

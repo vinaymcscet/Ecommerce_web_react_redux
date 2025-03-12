@@ -61,6 +61,7 @@ import {
   COOKIES_INFO,
   COOKIES,
   DELETION_REQUEST,
+  GET_BLOGS_BY_CATEGORY_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -1398,6 +1399,29 @@ export const getAllBlogsCategory = () => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setBlogCategoryList(response.data));
+    // dispatch(setSuccess(response.message));
+    // dispatch(viewItemsInCartData());
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Thunk to get All Blogs Category List API call
+export const getBlogsByCategory = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(GET_BLOGS_BY_CATEGORY_CONSTANT, null, userData);
+    
+    dispatch(setLoading(false));
+    dispatch(setBlogList(response.data));
     // dispatch(setSuccess(response.message));
     // dispatch(viewItemsInCartData());
     // setTimeout(() => {
