@@ -21,9 +21,8 @@ const Blog = () => {
     console.log("blogCategoryList", blogCategoryList)
     useEffect(() => {
         setLoading(true);
-        dispatch(getAllBlogsCategory()).finally(() => {
-            setCategories(blogCategoryList);
-        })
+        dispatch(getAllBlogsCategory())
+        setCategories(blogCategoryList);
         dispatch(getAllBlogs()).finally(() => {
             setLoading(false);
         });
@@ -117,7 +116,7 @@ const Blog = () => {
                         <div className="blogCategory">
                             <h4>Categories</h4>
                             <div className="blogCategoryList">
-                                {categories.map((category) => (
+                                {categories?.map((category) => (
                                     <Accordion 
                                         key={category.category_id}
                                         expanded={expanded === category.category_id}
