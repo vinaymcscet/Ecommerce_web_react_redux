@@ -16,12 +16,9 @@ const Blog = () => {
     const [loading, setLoading] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const { blogList, blogCategoryList } = useSelector(state => state.user);
-    const { error } = useSelector(state => state.modal);
     const [categories, setCategories] = useState([]);
     const [parentCategoryName, setParentCategoryName] = useState("");
     
-    console.log("blogCategoryList", blogCategoryList)
-    console.log("error", error);
     useEffect(() => {
         setLoading(true);
         setParentCategoryName("");
