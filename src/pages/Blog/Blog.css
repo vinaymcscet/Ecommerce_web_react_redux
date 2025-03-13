@@ -9,6 +9,15 @@
   font-weight: 500;
 }
 
+.blogsHeader .allBlogs {
+  cursor: pointer;
+  outline: none;
+}
+
+.blogsHeader .allBlogs:hover {
+  text-decoration: underline;
+}
+
 .Blogs {
   width: 90%;
   margin: auto;

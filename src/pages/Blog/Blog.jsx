@@ -16,11 +16,15 @@ const Blog = () => {
     const [loading, setLoading] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const { blogList, blogCategoryList } = useSelector(state => state.user);
+    const { error } = useSelector(state => state.modal);
     const [categories, setCategories] = useState([]);
+    const [parentCategoryName, setParentCategoryName] = useState("");
     
     console.log("blogCategoryList", blogCategoryList)
+    console.log("error", error);
     useEffect(() => {
         setLoading(true);
+        setParentCategoryName("");
         dispatch(getAllBlogsCategory())
         dispatch(getAllBlogs()).finally(() => {
             setLoading(false);
@@ -62,7 +66,14 @@ const Blog = () => {
         "datePublished": ""
     }
 
-    const getBlogByCategory = (category_id, subcategory_id) => {
+    const fetchAllBlogs = () => {
+        dispatch(getAllBlogs());
+        setParentCategoryName("");
+    }
+
+    const getBlogByCategory = (category_id, category_name, subcategory_id) => {
+        console.log("category_name", category_name);
+        setParentCategoryName(category_name);
         // Move the clicked parent category to the top
         setCategories((prevCategories) => {
             const newCategories = [...prevCategories]; // Create a new array
@@ -73,7 +84,7 @@ const Blog = () => {
             }
             return newCategories;
         });
-
+        
         const payload = { category_id: category_id };
         dispatch(getBlogsByCategory(payload)).finally(() => {
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -111,7 +122,8 @@ const Blog = () => {
         ) : (
             <>
                 <div className="blogsHeader">
-                    <h2>Blogs</h2>
+                    <h2> {parentCategoryName ? `Blogs | ${parentCategoryName}` : 'All Blogs'}</h2>
+                    {parentCategoryName ? <div onClick={() => fetchAllBlogs()} className='allBlogs'>All Blogs</div> : ""}
                 </div>
                 <div className="blogsList">
                     <div className="leftBlogContent">
@@ -140,7 +152,7 @@ const Blog = () => {
                                                     JSON.parse(category.children).map((sub) => (
                                                         <li key={sub.id}>
                                                             <a 
-                                                                onClick={() => getBlogByCategory(category.category_id, sub.id)}
+                                                                onClick={() => getBlogByCategory(category.category_id, category.category_name, sub.id)}
                                                             >
                                                                 {sub.category_name}
                                                             </a>

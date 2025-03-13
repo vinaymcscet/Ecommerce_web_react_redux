@@ -1429,6 +1429,7 @@ export const getBlogsByCategory = (userData) => async (dispatch) => {
     // }, 1000);
   } catch (error) {
     dispatch(setLoading(false));
+    console.log("blog api error", error.message);
     dispatch(setError(error.message));
     setTimeout(() => {
       dispatch(resetError());
