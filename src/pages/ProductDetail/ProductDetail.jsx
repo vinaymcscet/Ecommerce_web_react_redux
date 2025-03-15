@@ -130,6 +130,11 @@ const ProductDetail = () => {
     }
   }, [])
 
+  const categoryParams = new URLSearchParams(location.search);
+  const subcategory_id = categoryParams.get('subcategory_id');
+  console.log("subcategory_id", subcategory_id);
+  
+
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
 
   const images = productDetailResponse?.data?.images?.length
@@ -790,49 +795,49 @@ const ProductDetail = () => {
     dispatch(addToCartData(responseObj)).finally(() => {
       fetchUpdatedSimilarProductList();
     })
-};
-const handleSimilarIncrement = (sku_id) => {
-  const responseObj = { sku_id, type: "increase" };
-  dispatch(addToCartData(responseObj)).finally(() => {
-    fetchUpdatedSimilarProductList();
-  });
-};
+  };
+  const handleSimilarIncrement = (sku_id) => {
+    const responseObj = { sku_id, type: "increase" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedSimilarProductList();
+    });
+  };
 
-const handleSimilarDecrement = (sku_id) => {
-  const responseObj = { sku_id, type: "decrease" };
-  dispatch(addToCartData(responseObj)).finally(() => {
-    fetchUpdatedSimilarProductList();
-  });
-};
+  const handleSimilarDecrement = (sku_id) => {
+    const responseObj = { sku_id, type: "decrease" };
+    dispatch(addToCartData(responseObj)).finally(() => {
+      fetchUpdatedSimilarProductList();
+    });
+  };
 
-const fetchUpdatedSimilarProductList = () => {
-  const pageParam = parseInt(similarProductParams.get("SimilarViewPage"), 10) || 1;
-  const itemsPerPageParam = parseInt(similarProductParams.get("SimilarViewPerPage"), 10) || similarProductPerPage;
+  const fetchUpdatedSimilarProductList = () => {
+    const pageParam = parseInt(similarProductParams.get("SimilarViewPage"), 10) || 1;
+    const itemsPerPageParam = parseInt(similarProductParams.get("SimilarViewPerPage"), 10) || similarProductPerPage;
 
-  setSimilarProductPage(pageParam - 1); // Adjust for 0-based indexing
-  setSimilarProductPerPage(itemsPerPageParam);
+    setSimilarProductPage(pageParam - 1); // Adjust for 0-based indexing
+    setSimilarProductPerPage(itemsPerPageParam);
 
-  const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
-  const limit = itemsPerPageParam;
+    const offset = ((pageParam - 1) * itemsPerPageParam) + 1;
+    const limit = itemsPerPageParam;
 
-  setSimilarProductLoading(true);
-  const similarProductPayload = {
-    product_id: product_id,
-    offset,
-    limit
-  }
-  dispatch(similarProductData(similarProductPayload)).finally(() => {
-    setSimilarProductLoading(false);
-    const responseObj = { 
-      product_id: product_id ,
+    setSimilarProductLoading(true);
+    const similarProductPayload = {
+      product_id: product_id,
+      offset,
+      limit
     }
-    dispatch(productDetailData(responseObj))
-  });
-  dispatch(viewItemsInCartData());
-  dispatch(setViewCartItems(null));
-}
-const currentUrl = window.location.href;
-const baseUrl = window.origin;
+    dispatch(similarProductData(similarProductPayload)).finally(() => {
+      setSimilarProductLoading(false);
+      const responseObj = { 
+        product_id: product_id ,
+      }
+      dispatch(productDetailData(responseObj))
+    });
+    dispatch(viewItemsInCartData());
+    dispatch(setViewCartItems(null));
+  }
+  const currentUrl = window.location.href;
+  const baseUrl = window.origin;
   return (
       <div>
         <Helmet>
@@ -866,9 +871,9 @@ const baseUrl = window.origin;
           <div className="prdDetail">
             <ProductSchemaMarkup product={productDetailResponse} />
             <ProductSlider title={false} tile={10} />
-            <div className="listPageCategoryItems">
-              <CategorySlider />
-            </div>
+            {/* <div className="listPageCategoryItems">
+              <CategorySlider subCategoryId={subcategory_id}  />
+            </div> */}
             <div className="productDetailInfo">
               <div className="leftDetailInfo">
                 <ImageGallery items={images} />
