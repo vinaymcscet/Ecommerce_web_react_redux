@@ -1016,9 +1016,9 @@ const ProductDetail = () => {
                       <p>No offers available at the moment.</p>
                     )}
                   </div>
-                  <div className="stockItemLeft">
+                  {/* <div className="stockItemLeft">
                     Hurry! Only {productDetailResponse?.data?.availability?.stock_count} Items Left In Stock
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
