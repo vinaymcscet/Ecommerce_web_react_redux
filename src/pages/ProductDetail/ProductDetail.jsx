@@ -1111,7 +1111,7 @@ const baseUrl = window.origin;
                           <div key={index}>
                             <ProductListCard
                               id={item.product_id}
-                              image={item.imageUrl || "/images/no-product-available.png"}
+                              image={item.image || "/images/no-product-available.png"}
                               name={item.name || ""}
                               userrating={item.rating || "0.0"}
                               discountPrice={item.discount || ""}

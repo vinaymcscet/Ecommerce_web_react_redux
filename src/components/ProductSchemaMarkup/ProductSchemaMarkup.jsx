@@ -12,7 +12,7 @@ const ProductSchemaMarkup = ({ product }) => {
     "sku": product.data.variants[0].sku_id,
     "brand": {
       "@type": "Brand",
-      "name": product?.data?.additional_info.filter((info) => info?.title.toLowerCase().includes("brand"))[0].value,
+      "name": product?.data?.additional_info.filter((info) => info?.title.toLowerCase().includes("brand"))[0]?.value,
     },
     "offers": {
       "@type": "Offer",

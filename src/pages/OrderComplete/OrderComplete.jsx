@@ -18,7 +18,7 @@ const OrderComplete = () => {
     const paymentIntentId = params.get("payment_intent");
     
     useEffect(() => {
-        if(!createOrderResponse || !confirmOrderResponse) {
+        if(!createOrderResponse && !confirmOrderResponse) {
             navigate('/');
             return;
         }
