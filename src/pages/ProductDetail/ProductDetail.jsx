@@ -19,6 +19,7 @@ import { setViewCartItems } from "../../store/slice/cartSlice";
 import { toggleAddressModal, toggleModal } from "../../store/slice/modalSlice";
 import { Helmet } from 'react-helmet-async';
 import ProductSchemaMarkup from "../../components/ProductSchemaMarkup/ProductSchemaMarkup";
+import { setDefaultUserAddress } from "../../store/slice/userSlice";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -32,8 +33,8 @@ const ProductDetail = () => {
     recentView,
     totalRecentView = 0,
    } = useSelector((state) => state.product);
-  const { user, userAddress } = useSelector((state) => state.user);
-    
+  const { user, userAddress, defaultUserAddress } = useSelector((state) => state.user);
+  
   const [activeTab, setActiveTab] = useState(0);
   const [progress, setProgress] = React.useState(0);
   const [sizeError, setSizeError] = useState("");
@@ -103,6 +104,10 @@ const ProductDetail = () => {
   const product_id = pathSegments[pathSegments.length - 1];
 
   useEffect(() => {
+      dispatch(getListAddress());
+    }, [dispatch]);
+
+  useEffect(() => {
     setLoading(true);
     dispatch(getHomeData())
     if(product_id === undefined) {
@@ -131,9 +136,7 @@ const ProductDetail = () => {
   }, [])
 
   const categoryParams = new URLSearchParams(location.search);
-  const subcategory_id = categoryParams.get('subcategory_id');
-  console.log("subcategory_id", subcategory_id);
-  
+  const subcategory_id = categoryParams.get('subcategory_id');  
 
   const tabRefs = [useRef(null), useRef(null), useRef(null)];
 

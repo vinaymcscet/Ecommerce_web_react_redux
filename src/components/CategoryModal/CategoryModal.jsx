@@ -56,6 +56,7 @@ const CategoryModal = () => {
     dispatch(getProductOnSubCategory(responseObj));
     // const filterResponse = {sub_category_id: item.id}
     navigate(`/productlist?category=${category_id}&&subcategory_id=${item.id}`);
+    closeModal();
   }
 
   return (

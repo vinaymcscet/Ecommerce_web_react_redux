@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCheckOutFormModal } from '../../store/slice/cartSlice';
 import CloseIcon from "@mui/icons-material/Close"
 import { CircularProgress } from "@mui/material";
-import { STRIPE_PUBLIC_PRODUCTION_KEY } from '../../utils/Constants';
+import { STRIPE_PUBLIC_KEY, STRIPE_PUBLIC_PRODUCTION_KEY } from '../../utils/Constants';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../../pages/CheckoutForm/CheckoutForm';
 import { Elements } from "@stripe/react-stripe-js";
@@ -35,8 +35,8 @@ const CheckoutModal = () => {
         dispatch(setCheckOutFormModal(false));
     };
     if (!isCheckoutFormModal) return null;
-    // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-    const stripePromise = loadStripe(STRIPE_PUBLIC_PRODUCTION_KEY);
+    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+    // const stripePromise = loadStripe(STRIPE_PUBLIC_PRODUCTION_KEY);
     const appearance = {
         theme: 'stripe',
     };
