@@ -51,7 +51,11 @@ const RoutePage = () => {
           <Route path="/productlist" element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/order-complete" element={<OrderComplete />} />
+          <Route path="/order-complete" element={
+            <ProtectedRoute>
+              <OrderComplete />
+            </ProtectedRoute>
+            } />
           <Route path="delete-account" element={
             <ProtectedRoute>
               <DeleteAccount />

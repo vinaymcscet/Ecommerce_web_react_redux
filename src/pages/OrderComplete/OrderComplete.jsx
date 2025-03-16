@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './OrderComplete.css'
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { confirmOrderData, viewItemsInCartData } from "../../store/slice/api_integration";
+import { confirmOrderData } from "../../store/slice/api_integration";
 import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 
@@ -18,10 +18,10 @@ const OrderComplete = () => {
     const paymentIntentId = params.get("payment_intent");
     
     useEffect(() => {
-        if(!createOrderResponse && !confirmOrderResponse) {
-            navigate('/');
-            return;
-        }
+        // if(!confirmOrderResponse) {
+        //     navigate('/');
+        //     return;
+        // }
         setLoading(true)
         const responseObj = {
             payment_intent: createOrderResponse?.paymentIntentId || paymentIntentId,
@@ -38,7 +38,6 @@ const OrderComplete = () => {
                     <CircularProgress />
                 </div>
             ) : (
-                confirmOrderResponse ? (
                     <div className="order-complete">
                     <h1>Thank you</h1>
                     <p>for your order</p>
@@ -48,7 +47,6 @@ const OrderComplete = () => {
 
                     <button type="button" onClick={() => navigate('/')}>continue shopping</button>
                 </div>
-                ) : ""
             )}
         </>
     )
