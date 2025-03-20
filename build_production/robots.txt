@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /order-history/
+Disallow: /search/
+Disallow: /login/
+Disallow: /register/
+Sitemap: https://fikfis.co.uk/sitemap.xml
+

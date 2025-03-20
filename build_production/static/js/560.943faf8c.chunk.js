@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfikfis=self.webpackChunkfikfis||[]).push([[560],{4560:(s,e,i)=>{i.d(e,{jR:()=>f});const f=[{id:"2",label:"Pay Online"}]}}]);
+//# sourceMappingURL=560.943faf8c.chunk.js.map

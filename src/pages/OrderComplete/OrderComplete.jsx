@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './OrderComplete.css'
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { confirmOrderData } from "../../store/slice/api_integration";
+// import { confirmOrderData } from "../../store/slice/api_integration";
 import { CircularProgress } from "@mui/material";
 import { setViewCartItems } from "../../store/slice/cartSlice";
 
@@ -26,10 +26,11 @@ const OrderComplete = () => {
         const responseObj = {
             payment_intent: createOrderResponse?.paymentIntentId || paymentIntentId,
         }
-        dispatch(confirmOrderData(responseObj)).finally(() => {
-            setLoading(false);
-            dispatch(setViewCartItems(null));
-        });
+        // dispatch(confirmOrderData(responseObj)).finally(() => {
+        //     setLoading(false);
+        //     dispatch(setViewCartItems(null));
+        // });
+        setLoading(false);
     }, [])
     return (
         <>
@@ -43,8 +44,9 @@ const OrderComplete = () => {
                     <p>for your order</p>
                     <img src="/images/check-mark.svg" alt="complete Order" />
                     <div className="trackOrder">Track your order</div>
-                    <p>Order number: {confirmOrderResponse?.orderNumber}</p>
+                    {/* <p>Order number: {confirmOrderResponse?.orderNumber}</p> */}
 
+                    <button type="button" onClick={() => navigate('/userprofile', { state: { activeTab: 2 } })}>View your order details</button>
                     <button type="button" onClick={() => navigate('/')}>continue shopping</button>
                 </div>
             )}

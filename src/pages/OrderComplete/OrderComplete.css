@@ -40,5 +40,6 @@
 }
 
 .order-complete button {
-    margin: 100px 0;
+    /* margin: 100px 0; */
+    margin: 20px 0;
 }

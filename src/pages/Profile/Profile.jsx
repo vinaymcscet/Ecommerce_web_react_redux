@@ -453,6 +453,12 @@ const handlePasswordUpdateSubmit = (e) => {
       setActiveOrderTab(value);
     }
     const baseUrl = window.origin;
+
+    const params = new URLSearchParams(location.search);
+    const initialTab = parseInt(params.get("tab")) || 1;
+    useEffect(() => {
+      setActiveTab(initialTab);
+    }, [initialTab]);
     return (
     <div className="userProfile">
       <Helmet>
