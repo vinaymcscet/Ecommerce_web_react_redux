@@ -457,6 +457,14 @@ const handlePasswordUpdateSubmit = (e) => {
     const params = new URLSearchParams(location.search);
     const initialTab = parseInt(params.get("tab")) || 1;
     useEffect(() => {
+      if(initialTab === 1) {
+        const responseObj = {
+          status: 1,
+          offset: 1,
+          limit: 10
+          }
+          dispatch(OrderListData(responseObj));
+      }
       setActiveTab(initialTab);
     }, [initialTab]);
     return (

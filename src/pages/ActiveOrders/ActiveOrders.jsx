@@ -219,10 +219,13 @@ const ActiveOrders = () => {
                     <div className="user_order_track">
                         <h4>TRACK ORDER</h4>
                         <p className="track">{orderDetail?.orderNumber}</p>
-                        <h4>TOTAL INVOICE</h4>
+                        {orderDetail?.orderItems?.map(order => (
+                        order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? `<h4>TOTAL INVOICE</h4>` : ''
+                        ))}
+                        
                         <p className="total">
-                        £ {orderDetail?.orderItems?.map(order => (
-                        order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? order?.totalPrice : ''
+                        {orderDetail?.orderItems?.map(order => (
+                        order?.productName.toLowerCase() === item?.product_name.toLowerCase() ? `£ ${order?.totalPrice}` : ''
                         ))}
                         </p>
                         {orderDetail?.orderItems[0]?.variants?.Size && <h4>Color</h4>}
