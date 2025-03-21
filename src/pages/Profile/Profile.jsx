@@ -454,8 +454,7 @@ const handlePasswordUpdateSubmit = (e) => {
     }
     const baseUrl = window.origin;
 
-    const params = new URLSearchParams(location.search);
-    const initialTab = parseInt(params.get("tab")) || 1;
+    const initialTab = location.state?.activeTab;
     useEffect(() => {
       if(initialTab === 1) {
         const responseObj = {
@@ -464,8 +463,11 @@ const handlePasswordUpdateSubmit = (e) => {
           limit: 10
           }
           dispatch(OrderListData(responseObj));
+          setActiveTab(initialTab);
+      } else {
+        setActiveTab(0);
       }
-      setActiveTab(initialTab);
+
     }, [initialTab]);
     return (
     <div className="userProfile">

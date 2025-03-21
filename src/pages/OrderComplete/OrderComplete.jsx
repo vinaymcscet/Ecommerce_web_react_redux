@@ -46,7 +46,7 @@ const OrderComplete = () => {
                     <div className="trackOrder">Track your order</div>
                     {/* <p>Order number: {confirmOrderResponse?.orderNumber}</p> */}
 
-                    <button type="button" onClick={() => navigate('/userprofile', { state: { activeTab: 2 } })}>View your order details</button>
+                    <button type="button" onClick={() => navigate('/userprofile', { state: { activeTab: 1 } })}>View your order details</button>
                     <button type="button" onClick={() => navigate('/')}>continue shopping</button>
                 </div>
             )}
