@@ -35,8 +35,8 @@ const CheckoutModal = () => {
         dispatch(setCheckOutFormModal(false));
     };
     if (!isCheckoutFormModal) return null;
-    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-    // const stripePromise = loadStripe(STRIPE_PUBLIC_PRODUCTION_KEY);
+    // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+    const stripePromise = loadStripe(STRIPE_PUBLIC_PRODUCTION_KEY);
     const appearance = {
         theme: 'stripe',
     };
