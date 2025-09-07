@@ -93,6 +93,7 @@ const Header = () => {
         keyword: searchValue,
         offset: 0,
         limit: 10,
+        isAutoComplete: false
       }
       dispatch(searchProductData(responseObj));
       navigate(`/search?query=${encodeURIComponent(searchValue)}`);
@@ -107,7 +108,8 @@ const Header = () => {
       const responseObj = {
         keyword: ev.target.value,
         offset: 0,
-        limit: 5, // Limit suggestions to 5 items
+        limit: 10,
+        isAutoComplete: true
       }
       dispatch(searchProductData(responseObj))
       // console.log("Search suggestions response:", search);
@@ -119,9 +121,11 @@ const Header = () => {
   useEffect(() => {
     if (searchLoad && Array.isArray(searchLoad)) {
       console.log("Search suggestions response:", searchLoad);
-      setSearchSuggestions(searchLoad);
+      // if (location.pathname !== '/search') {
+        setSearchSuggestions(searchLoad);
+      // }
     }
-  }, [searchLoad]);
+  }, [searchLoad, location.pathname]);
 
   const handleSuggestionClick = (item) => {
     setSearchValue(item.name);

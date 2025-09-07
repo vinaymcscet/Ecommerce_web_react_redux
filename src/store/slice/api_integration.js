@@ -858,14 +858,20 @@ export const getAllProducts = () => async (dispatch) => {
 // Thunk to handle search result Data API call
 export const searchProductData = (userData) => async (dispatch) => {
   try {
-    dispatch(setSearch([]));
+    if (!userData.isAutoComplete) {
+      dispatch(setSearch([]));
+    }
     dispatch(setLoading(true));
     // Call the API to sign up the user
     const response = await POST(SEARCH_PRODUCT_CONSTANT, userData);
     
     dispatch(setLoading(false));
-    dispatch(setSearch(response.data));
-    dispatch(setSearchLoad(response.subCategoies));
+    if (!userData.isAutoComplete) {
+      dispatch(setSearch(response.data));
+    }
+    if (userData.isAutoComplete) {
+      dispatch(setSearchLoad(response.subCategoies));
+    }
     dispatch(setTotalResults(response.totalCount));
     return response 
   } catch (error) {
