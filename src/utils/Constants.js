@@ -1,6 +1,6 @@
-export const BASE_URL = 'https://gateway.fikfis.co.uk/';
+// export const BASE_URL = 'https://gateway.fikfis.co.uk/';
 // export const BASE_URL = 'http://localhost:8080/';
-// export const BASE_URL = 'https://b6dbd06231a9.ngrok-free.app/';
+export const BASE_URL = 'https://b6dbd06231a9.ngrok-free.app/';
 
 export const REGISTER_USER_BASE_CONSTANT = 'registerUser';
 export const REGISTER_USER_OTP_BASE_CONSTANT = 'registerUserOtp';

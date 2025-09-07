@@ -104,6 +104,7 @@ import {
   setRecentView, 
   setReviewCount, 
   setSearch, 
+  setSearchLoad, 
   setSimilarProductCount, 
   setSimilarProductListResponse, 
   setSubCategoryList, 
@@ -864,6 +865,7 @@ export const searchProductData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setSearch(response.data));
+    dispatch(setSearchLoad(response.subCategoies));
     dispatch(setTotalResults(response.totalCount));
     return response 
   } catch (error) {

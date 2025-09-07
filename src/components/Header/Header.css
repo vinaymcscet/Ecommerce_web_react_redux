@@ -226,8 +226,8 @@ li:not(:last-child) {
   }
   
   .suggestion-item img {
-    width: 40px;
-    height: 40px;
+    width: 25px;
+    height: 25px;
     object-fit: cover;
     margin-right: 12px;
     border-radius: 4px;

@@ -13,6 +13,7 @@ const initialState = {
   subCategoryList: null,
   recentView: null,
   search: [],
+  searchLoad: [],
   total: 0,
   totalRecentView: 0,
   totalFilterList: null,
@@ -77,6 +78,9 @@ export const cartSlice = createSlice({
     },
     setSearch: (state, action) => {
       state.search = action.payload || [];
+    },
+    setSearchLoad: (state, action) => {
+      state.searchLoad = action.payload || [];
     },
     setTotalResults: (state, action) => {
       state.total = action.payload;
@@ -150,6 +154,7 @@ export const {
   setSubCategoryList,
   setRecentView,
   setSearch,
+  setSearchLoad,
   setTotalResults,
   setTotalRecentViewResults,
   setTotalProductListCount,

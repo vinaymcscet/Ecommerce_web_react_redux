@@ -16,7 +16,7 @@ import {
   logoutRequest, 
   searchProductData, 
   viewItemsInCartData } from "../../store/slice/api_integration";
-import { device_token } from "../../utils/Constants";
+import { BASE_URL, device_token } from "../../utils/Constants";
 import { getTokensFromLocalStorage } from "../../utils/StorageTokens";
 
 const Header = () => {
@@ -30,7 +30,7 @@ const Header = () => {
 
   const { user } = useSelector((state) => state.user);
   const { viewCartItems } = useSelector((state) => state.cart);
-  const { search } = useSelector((state) => state.product);
+  const { search, searchLoad } = useSelector((state) => state.product);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
@@ -117,11 +117,11 @@ const Header = () => {
     }
   };
   useEffect(() => {
-    if (search && Array.isArray(search)) {
-      console.log("Search suggestions response:", search);
-      setSearchSuggestions(search);
+    if (searchLoad && Array.isArray(searchLoad)) {
+      console.log("Search suggestions response:", searchLoad);
+      setSearchSuggestions(searchLoad);
     }
-  }, [search]);
+  }, [searchLoad]);
 
   const handleSuggestionClick = (item) => {
     setSearchValue(item.name);
@@ -199,7 +199,7 @@ const Header = () => {
                         className="suggestion-item"
                         onClick={() => handleSuggestionClick(item)}
                       >
-                        <img src={item.image} alt={item.name} />
+                        <img src={item.image? `${BASE_URL}`/item.image : '/images/icons/dummy-product.svg'} alt={item.name} />
                         <span>{item.name}</span>
                       </div>
                     ))}
