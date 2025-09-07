@@ -1,4 +1,6 @@
 export const BASE_URL = 'https://gateway.fikfis.co.uk/';
+// export const BASE_URL = 'http://localhost:8080/';
+// export const BASE_URL = 'https://b6dbd06231a9.ngrok-free.app/';
 
 export const REGISTER_USER_BASE_CONSTANT = 'registerUser';
 export const REGISTER_USER_OTP_BASE_CONSTANT = 'registerUserOtp';
@@ -108,6 +110,7 @@ export const OTP_ERROR = "Please enter a valid 6-digit OTP";
 export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500];
 export const STRIPE_PUBLIC_KEY = 'pk_test_51PiK0KG1GaqCQm17TPkUzvgbYGadO9htgyI4GsN2DMleueorVJfbgEYW86l5mIJpjGmST75eZCGlXxwW7cUDPdm800MOjzVQQJ';
 export const STRIPE_PUBLIC_PRODUCTION_KEY = 'pk_live_51PiK0KG1GaqCQm171SUM3bOxn5yXLq7xZ2oKFDTOxwS1kizNKOp1MJcFgycyudtR5BJFczOd2DO3fvODtI4mfgp300lsIZaKWL';
+export const paypalPaymentUrl = `${BASE_URL}/paypal`;
 
 // Reason to cancel/return constants
 export const selectReason = [

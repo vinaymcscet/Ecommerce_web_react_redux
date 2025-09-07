@@ -24,9 +24,13 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
+  // Add this with other state declarations
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const { user } = useSelector((state) => state.user);
   const { viewCartItems } = useSelector((state) => state.cart);
+  const { search } = useSelector((state) => state.product);
   
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [toggleModalState, setToggleModalState] = useState(true)
@@ -94,6 +98,50 @@ const Header = () => {
       navigate(`/search?query=${encodeURIComponent(searchValue)}`);
     }   
   }
+  // Add these new functions in your component
+  const handleSearchInput = (ev) => {
+    setSearchValue(ev.target.value);
+    setShowSuggestions(true);
+    // Call your API to get suggestions based on search input
+    if (ev.target.value.length > 2) {
+      const responseObj = {
+        keyword: ev.target.value,
+        offset: 0,
+        limit: 5, // Limit suggestions to 5 items
+      }
+      dispatch(searchProductData(responseObj))
+      // console.log("Search suggestions response:", search);
+      // setSearchSuggestions(search || []);
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+  useEffect(() => {
+    if (search && Array.isArray(search)) {
+      console.log("Search suggestions response:", search);
+      setSearchSuggestions(search);
+    }
+  }, [search]);
+
+  const handleSuggestionClick = (item) => {
+    setSearchValue(item.name);
+    setShowSuggestions(false);
+    navigate(`/search?query=${encodeURIComponent(item.name)}`);
+  };
+
+  // Add useEffect to handle clicking outside of search panel
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.searchPanel')) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     dispatch(getUserRequest());
     dispatch(viewItemsInCartData());
@@ -137,11 +185,26 @@ const Header = () => {
                     name="search"
                     placeholder="Your Searched Items"
                     value={searchValue}
-                    onChange={(ev) => setSearchValue(ev.target.value)}
+                    onChange={handleSearchInput}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    onFocus={() => setShowSuggestions(true)}
                   />
                   <SearchRoundedIcon 
                     onClick={handleSearch} />
+                    {showSuggestions && searchSuggestions.length > 0 && (
+                  <div className="search-suggestions">
+                    {searchSuggestions.map((item, index) => (
+                      <div 
+                        key={index} 
+                        className="suggestion-item"
+                        onClick={() => handleSuggestionClick(item)}
+                      >
+                        <img src={item.image} alt={item.name} />
+                        <span>{item.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 </div>
               </div>
             </Grid>

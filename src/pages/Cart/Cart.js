@@ -2,7 +2,7 @@ import React, { startTransition, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet-async";
 import StarRating from "../../components/StarRating/StarRating";
-import { setViewCartItems, setAllOffetList, setCheckOutFormModal } from "../../store/slice/cartSlice";
+import { setViewCartItems, setAllOffetList, setCheckOutFormModal, setCartPayload } from "../../store/slice/cartSlice";
 import {
   toggleAddressModal,
   editAddress,
@@ -26,6 +26,8 @@ import { ShareProduct } from "../../utils/ShareProduct";
 import { getDeviceType } from "../../utils/CheckDevice";
 import { CircularProgress } from "@mui/material";
 import { setDefaultUserAddress } from "../../store/slice/userSlice";
+// import PayPalCheckout from "../Paypal/PaypalCheckout";
+// import { SafetyCheckSharp } from "@mui/icons-material";
 
 const Cart = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -48,6 +50,7 @@ const Cart = () => {
   
   // const { addresses, defaultAddressId } = useSelector((state) => state.modal);
   const { user, defaultUserAddress } = useSelector((state) => state.user);
+  const [showPayPal, setShowPayPal] = useState(false);
 
   useEffect(() => {
     dispatch(viewItemsInCartData());
@@ -143,23 +146,42 @@ const Cart = () => {
     }
     if (activeTab === 2) { // Replace with your Publishable Key
       setCheckoutLoading(true);
-      const responseObj = {
+      // const responseObj = {
+      //   address_id : viewCartItems?.address?.id,
+      //   // cart_amount : viewCartItems?.cartPrice?.totalAmount,
+      //   // subtotal_amount : viewCartItems?.cartPrice?.totalAmount,
+      //   // coupon_code: coupenCode,
+      //   // discount: viewCartItems?.cartPrice?.discount,
+      //   // total_delivery_charge: viewCartItems?.cartPrice?.deliveryCharge,
+      //   // tax: viewCartItems?.cartPrice?.tax,
+      //   device_type : getDeviceType(),
+      //   offer_id: filteredCoupenId
+      // }
+      // dispatch(createOrderData(responseObj)).finally(() => {
+      //   // setActiveTab(activeTab + 1);
+      //   const payload = {isOpen: isOpen};
+      //   dispatch(setCheckOutFormModal(payload))
+      //   setCheckoutLoading(false);
+      // })
+      const payloadResponse = {
+        productName: "Fixfis payment checkout",
+        // quantity: 1,
         address_id : viewCartItems?.address?.id,
-        // cart_amount : viewCartItems?.cartPrice?.totalAmount,
-        // subtotal_amount : viewCartItems?.cartPrice?.totalAmount,
-        // coupon_code: coupenCode,
-        // discount: viewCartItems?.cartPrice?.discount,
-        // total_delivery_charge: viewCartItems?.cartPrice?.deliveryCharge,
-        // tax: viewCartItems?.cartPrice?.tax,
+        offer_id: filteredCoupenId,
         device_type : getDeviceType(),
-        offer_id: filteredCoupenId
-      }
-      dispatch(createOrderData(responseObj)).finally(() => {
-        // setActiveTab(activeTab + 1);
-        const payload = {isOpen: isOpen};
-        dispatch(setCheckOutFormModal(payload))
-        setCheckoutLoading(false);
-      })
+        amount: viewCartItems?.cartPrice?.totalAmount,
+        currency: "USD",
+        isOpen: isOpen
+      };
+      
+      // navigate("/paypal-checkout", { state: payloadResponse });
+      setCheckoutLoading(true)
+      // setActiveTab(activeTab + 1);
+
+      dispatch(setCartPayload(payloadResponse));
+      dispatch(setCheckOutFormModal(payloadResponse))
+      setCheckoutLoading(false)
+      
     }
     else setActiveTab(activeTab + 1);
   };

@@ -8,20 +8,22 @@ import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../../pages/CheckoutForm/CheckoutForm';
 import { Elements } from "@stripe/react-stripe-js";
 import './CheckoutModal.css';
+import PaypalCheckout from '../../pages/Paypal/PaypalCheckout';
 
 const CheckoutModal = () => {
-    const { isCheckoutFormModal } = useSelector((state) => state.cart);
+    const { isCheckoutFormModal, cartPayload } = useSelector((state) => state.cart);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    // const modalRef = useRef(null); 
+    const modalRef = useRef(null); 
+    console.log("cartPayload:", cartPayload);
     const { viewCartItems, clientSecret, createOrderResponse, dpmCheckerLink } = useSelector((state) => state.cart);
     
-    // const handleClickOutside = (event) => {
-    //     // Close the modal if the click is outside the modal content
-    //     if (modalRef.current && !modalRef.current.contains(event.target)) {
-    //         closeModal();
-    //     }
-    // };
+    const handleClickOutside = (event) => {
+        // Close the modal if the click is outside the modal content
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+            closeModal();
+        }
+    };
     // useEffect(() => {
     //     // Add event listener to detect clicks outside the modal
     //     document.addEventListener("mousedown", handleClickOutside);
@@ -58,9 +60,17 @@ const CheckoutModal = () => {
                 </div>
             ) : (
                 <>
-                    {createOrderResponse && <Elements options={{clientSecret, appearance, loader}} stripe={stripePromise}>
+                    {/* {createOrderResponse && <Elements options={{clientSecret, appearance, loader}} stripe={stripePromise}>
                         <CheckoutForm amount={viewCartItems?.cartPrice?.totalAmount} dpmCheckerLink={dpmCheckerLink} />
-                    </Elements>}         
+                    </Elements>}          */}
+                    <PaypalCheckout 
+                      amount={cartPayload.amount} 
+                      currency={cartPayload.currency} 
+                      productName={cartPayload.productName} 
+                      address_id={cartPayload.address_id} 
+                      offer_id={cartPayload.offer_id} 
+                      device_type={cartPayload.device_type}
+                    />
                 </>
             )}
         </div>

@@ -864,10 +864,12 @@ export const searchProductData = (userData) => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setSearch(response.data));
-    dispatch(setTotalResults(response.totalCount)); 
+    dispatch(setTotalResults(response.totalCount));
+    return response 
   } catch (error) {
 
     dispatch(setLoading(false));
+    return [];
     // dispatch(setError(error.message));
     // setTimeout(() => {
     //   dispatch(resetError());
