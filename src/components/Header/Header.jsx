@@ -203,7 +203,7 @@ const Header = () => {
                         className="suggestion-item"
                         onClick={() => handleSuggestionClick(item)}
                       >
-                        <img src={item.image? `${BASE_URL}`/item.image : '/images/icons/dummy-product.svg'} alt={item.name} />
+                        <img src={item.image? `${BASE_URL}/${item.image}` : '/images/icons/dummy-product.svg'} alt={item.name} />
                         <span>{item.name}</span>
                       </div>
                     ))}

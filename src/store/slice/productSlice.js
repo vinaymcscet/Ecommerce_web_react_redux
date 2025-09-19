@@ -8,7 +8,9 @@ const initialState = {
   homeProductData: null,
   homeProductSection: null,
   productSectionData: [],
+  productMixData: [],
   productSectionCount: 0,
+  productMixSectionCount: 0,
   allCategoryList: [],
   subCategoryList: null,
   recentView: null,
@@ -60,6 +62,9 @@ export const cartSlice = createSlice({
     setProductSectionCount: (state, action) => {
       state.productSectionCount = action.payload;
     },
+    setProductMixSectionCount: (state, action) => {
+      state.productMixSectionCount = action.payload;
+    },
     setAllCategoryList: (state, action) => {
       const product = action.payload;
       state.allCategoryList.push(product);
@@ -72,6 +77,18 @@ export const cartSlice = createSlice({
     },
     setProductSectionData: (state, action) => {
       state.productSectionData = action.payload;
+    },
+    setProductMixData: (state, action) => {
+      if (action.payload?.page > 1) {
+      // Append new products to existing ones
+      state.productMixData = {
+        ...state.productMixData,
+        products: [...state.productMixData.products, ...action.payload.products]
+      };
+    } else {
+      // First page - set initial data
+      state.productMixData = action.payload;
+    }
     },
     setRecentView: (state, action) => {
       state.recentView = action.payload;
@@ -150,6 +167,7 @@ export const {
   setHomeProductData,
   setHomeProductSection,
   setProductSectionData,
+  setProductMixData,
   setAllCategoryList,
   setSubCategoryList,
   setRecentView,
@@ -173,6 +191,7 @@ export const {
   setGetAnReviewCount,
   setGetAnReviewImage,
   setProductSectionCount,
+  setProductMixSectionCount,
   setAllOffersList,
   setAddToCartStatusCount,
 } = cartSlice.actions;

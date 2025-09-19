@@ -170,7 +170,7 @@ const Cart = () => {
         offer_id: filteredCoupenId,
         device_type : getDeviceType(),
         amount: viewCartItems?.cartPrice?.totalAmount,
-        currency: "USD",
+        currency: "GBP",
         isOpen: isOpen
       };
       

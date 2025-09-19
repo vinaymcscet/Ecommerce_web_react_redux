@@ -62,6 +62,7 @@ import {
   COOKIES,
   DELETION_REQUEST,
   GET_BLOGS_BY_CATEGORY_CONSTANT,
+  HOME_MIX_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -99,6 +100,8 @@ import {
   setOfferList, 
   setProductDetailResponse, 
   setProductList, 
+  setProductMixData, 
+  setProductMixSectionCount, 
   setProductSectionCount, 
   setProductSectionData, 
   setRecentView, 
@@ -725,6 +728,28 @@ export const getProductSection = (userData) => async (dispatch) => {
     
   } catch (error) {
 
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+
+// Thunk to handle get Product Section API call
+export const getMixProductSection = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(HOME_MIX_CONSTANT, null, null, userData);
+    console.log("getMixProductSection response", response);
+    dispatch(setLoading(false));
+    dispatch(setProductMixData({ ...response, page: userData.offset }));
+    dispatch(setProductMixSectionCount(response.pagination.total));
+    
+  } catch (error) {
+    console.log("getMixProduct Error Section response", error);
     dispatch(setLoading(false));
     dispatch(setError(error.message));
     setTimeout(() => {

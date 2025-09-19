@@ -31,7 +31,7 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
 
     const loadPayPalSDK = () => {
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=AUF5mbPQuzIOBudyk7Bkn7GRs9Xf9-wZVueNue1kyBHMcUk8PmJnWteIJdFpU4IT150EdvZjSGZhu6VN&buyer-country=US&currency=USD&components=buttons&enable-funding=card`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=card`;
       script.async = true;
       script.onload = () => setPaypalLoaded(true);
       script.onerror = () => {
@@ -175,7 +175,7 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
           </div>
           <div className="order-total">
             <span>Total</span>
-            <span>£{amount} USD</span>
+            <span>£{amount} GBP</span>
           </div>
         </div>
       </div>

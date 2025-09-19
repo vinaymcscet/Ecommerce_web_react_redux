@@ -5,7 +5,7 @@ import ProductSlider from "../../components/ProductSlider/ProductSlider";
 
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getHomeData, getHomeSection, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getHomeData, getHomeSection, getMixProductSection, viewItemsInCartData } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -16,7 +16,7 @@ import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { homeProductData, homeProductSection } = useSelector(state => state.product);
+  const { homeProductData, homeProductSection, productMixData, productMixSectionCount } = useSelector(state => state.product);
   const [productTile] = useState(true);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -70,6 +70,37 @@ const Home = () => {
       // setDataLoading(false);
     })
   }, [dispatch]);
+
+  useEffect(() => {
+    if (page === 1) { // Only load initial data when page is 1
+      setLoading(true);
+      const responseObj = {
+        offset: page,
+        limit: 10
+      };
+      dispatch(getMixProductSection(responseObj)).finally(() => {
+        setLoading(false);
+      });
+    }
+  }, [dispatch]);
+
+  // Add this function with your other handlers
+  const handleExploreMore = () => {
+    if (productMixData?.products?.length < productMixSectionCount) {
+      setLoading(true);
+      const nextPage = page + 1;
+      setPage(nextPage);
+      
+      const responseObj = {
+        offset: nextPage,
+        limit: 10
+      };
+      
+      dispatch(getMixProductSection(responseObj)).finally(() => {
+        setLoading(false);
+      });
+    }
+  };
   
   const handleProductClick = (item) => {
     if(user.length === 0) {
@@ -321,6 +352,58 @@ const Home = () => {
                   </div>
                 ))
               }
+            </div>
+          </div>}
+          {productMixData?.products?.length > 0 && <div className="productHistory">
+            <div className="browisingHistory">
+              <h3>{productMixData?.section?.title}</h3>
+            </div>
+          </div>}
+          {productMixData?.products?.length > 0 && <div className="productHistory">
+            <div className="productList">
+              {productMixData?.products && productMixData?.products?.length > 0 &&
+                productMixData?.products.map((item, index) => (
+                  <div key={index}>
+                    <ProductListCard
+                      id={index}
+                      image={item.product_image ? item.product_image : "/images/no-product-available.png"}
+                      name={item.product_name || ""}
+                      userrating={item.avg_rating || "0.0"}
+                      discountPrice={item.discountedPrice || ""}
+                      originalPrice={item.sku_price || ""}
+                      save={item.offer ? item.offer : ""}
+                      coupenCode={item.coupen || ""}
+                      deliveryTime={item.deliverytime || ""}
+                      freeDelivery={item.freedelivery || ""}
+                      bestSeller={item.bestseller || ""}
+                      time={item.time || ""}
+                      discountLabel={item.offer || ""}
+                      wishlistStatus={item.wishlistStatus || 'no'}
+                      sku_id={item.sku_id} // Pass SKU ID for Add to Cart
+                      // onAddToCart={() => handleAddToCartClick(item.sku_id)}
+                      onAddToCart={() => handleProductClick(item)}
+                      cartQuantity={Number(item.cartQuantity)}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                      onProductClick={() => handleProductClick(item)}
+                      onProductImageClick={() => handleProcuctImageClick(item)}
+                      handleWishlistToggle={() => handleWishlistToggle(item)}
+                    />
+                  </div>
+                ))
+              }
+            </div>
+            {/* // Replace the existing explore-products div */}
+            <div className="explore-products">
+              <button 
+                type="button"
+                onClick={handleExploreMore}
+                disabled={productMixData?.products?.length >= productMixSectionCount}
+              >
+                {productMixData?.products?.length >= productMixSectionCount 
+                  ? "No More Products" 
+                  : "Explore More"}
+              </button>
             </div>
           </div>}
         </>

@@ -1,6 +1,6 @@
-// export const BASE_URL = 'https://gateway.fikfis.co.uk/';
+export const BASE_URL = 'https://gateway.fikfis.co.uk/';
 // export const BASE_URL = 'http://localhost:8080/';
-export const BASE_URL = 'https://b6dbd06231a9.ngrok-free.app/';
+// export const BASE_URL = 'https://1758d67f1bd4.ngrok-free.app';
 
 export const REGISTER_USER_BASE_CONSTANT = 'registerUser';
 export const REGISTER_USER_OTP_BASE_CONSTANT = 'registerUserOtp';
@@ -18,6 +18,7 @@ export const CMS_CONTACT_US_CONSTANT = 'cms/saveEnquiry';
 export const CMS_GROUP_ITEM_CONSTANT = 'cms/getGroupItem';
 export const HOME_DATA_CONSTANT = 'homeData';
 export const HOME_SECTION_CONSTANT = 'homeSection';
+export const HOME_MIX_CONSTANT = 'products/section/mixed_products';
 export const PRODUCT_SECTION_CONSTANT = 'getSection';
 export const ALL_CATEGORIES_CONSTANT = 'categories';
 export const SUB_CATEGORIES_CONSTANT = 'category';

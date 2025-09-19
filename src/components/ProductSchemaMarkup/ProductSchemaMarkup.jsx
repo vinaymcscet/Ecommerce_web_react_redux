@@ -17,7 +17,7 @@ const ProductSchemaMarkup = ({ product }) => {
     "offers": {
       "@type": "Offer",
       "url": window.location.href,
-      "priceCurrency": "USD",
+      "priceCurrency": "GBP",
       "price": product.data.variants[0].sku_price.current,
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition"

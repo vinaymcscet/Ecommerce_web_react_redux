@@ -24,10 +24,15 @@ const jsonToFormData = (json, formData = new FormData(), parentKey = null) => {
 };
 
 const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => {
-    const queryParams = params && Object.keys(params).length
-        ? `?${new URLSearchParams(params).toString()}`
+    const queryParams = method === 'GET' && data
+        ? { ...params, ...data }
+        : params;
+        
+    const queryString = Object.keys(queryParams).length
+        ? `?${new URLSearchParams(queryParams).toString()}`
         : '';
-    const fullUrl = `${API_BASE_URL}${url}${queryParams}`;
+        
+    const fullUrl = `${API_BASE_URL}${url}${queryString}`;
     const config = {
         method,
         headers: {
@@ -95,7 +100,7 @@ const apiCall = async(url, method='GET', data=null, headers={}, params = {}) => 
     return responseData;
 }
 
-export const GET = (url, headers, params = {}) => apiCall(url, 'GET', null, headers, params);
+export const GET = (url, data, headers, params = {}) => apiCall(url, 'GET', null, headers, params);
 export const POST = (url, data, headers, params = {}) => apiCall(url, 'POST', data, headers, params);
 export const PUT = (url, data, headers, params = {}) => apiCall(url, 'PUT', data, headers, params);
 export const DEL = (url, headers, params = {}) => apiCall(url, 'DELETE', null, headers, params);

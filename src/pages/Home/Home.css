@@ -133,6 +133,17 @@
     width: 100%;
 }
 
+.explore-products {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explore-products button {
+    max-width: 200px;
+    width: auto;
+}
+
 @media screen and (max-width: 1800px) {
     .limitedOffer img {
         height: 43vh;
