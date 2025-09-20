@@ -23,11 +23,12 @@ const Home = () => {
   const [triggerSkuId, setTriggerSkuId] = useState(null);
   const [randomProducts, setRandomProducts] = useState([]);
   const { user } = useSelector((state) => state.user);
+  const [mixLoading, setMixLoading] = useState(false);
   
   const [page, setPage] = useState(1);
-  useEffect(() => {
-      navigate("/", { replace: true });
-  }, [navigate]);
+  // useEffect(() => {
+  //     navigate("/", { replace: true });
+  // }, [navigate]);
   // const [dataLoading, setDataLoading] = useState(false);
 
   // const handleScroll = () => {
@@ -87,7 +88,7 @@ const Home = () => {
   // Add this function with your other handlers
   const handleExploreMore = () => {
     if (productMixData?.products?.length < productMixSectionCount) {
-      setLoading(true);
+      setMixLoading(true);
       const nextPage = page + 1;
       setPage(nextPage);
       
@@ -97,7 +98,7 @@ const Home = () => {
       };
       
       dispatch(getMixProductSection(responseObj)).finally(() => {
-        setLoading(false);
+        setMixLoading(false);
       });
     }
   };
@@ -395,15 +396,19 @@ const Home = () => {
             </div>
             {/* // Replace the existing explore-products div */}
             <div className="explore-products">
-              <button 
-                type="button"
-                onClick={handleExploreMore}
-                disabled={productMixData?.products?.length >= productMixSectionCount}
-              >
-                {productMixData?.products?.length >= productMixSectionCount 
-                  ? "No More Products" 
-                  : "Explore More"}
-              </button>
+               {mixLoading ? (
+                  <CircularProgress size={28} />
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={handleExploreMore}
+                    disabled={productMixData?.products?.length >= productMixSectionCount}
+                  >
+                    {productMixData?.products?.length >= productMixSectionCount 
+                      ? "No More Products" 
+                      : "Explore More"}
+                  </button>
+                )}
             </div>
           </div>}
         </>

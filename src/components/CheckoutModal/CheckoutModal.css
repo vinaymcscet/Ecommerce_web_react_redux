@@ -1,9 +1,10 @@
 .checkoutModal .modalContent {
     flex-flow: wrap column;
     width: 45%;
-    height: 450px;
+    height: auto;
     min-height: auto;
     overflow: auto;
+    background: transparent;
 }
 
 .coupens {
