@@ -18,12 +18,12 @@ const CheckoutModal = () => {
     console.log("cartPayload:", cartPayload);
     const { viewCartItems, clientSecret, createOrderResponse, dpmCheckerLink } = useSelector((state) => state.cart);
     
-    const handleClickOutside = (event) => {
-        // Close the modal if the click is outside the modal content
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
-            closeModal();
-        }
-    };
+    // const handleClickOutside = (event) => {
+    //     // Close the modal if the click is outside the modal content
+    //     if (modalRef.current && !modalRef.current.contains(event.target)) {
+    //         closeModal();
+    //     }
+    // };
     // useEffect(() => {
     //     // Add event listener to detect clicks outside the modal
     //     document.addEventListener("mousedown", handleClickOutside);
@@ -33,9 +33,9 @@ const CheckoutModal = () => {
     //     };
     // }, []);
 
-    const closeModal = () => {
-        dispatch(setCheckOutFormModal(false));
-    };
+    // const closeModal = () => {
+    //     dispatch(setCheckOutFormModal(false));
+    // };
     if (!isCheckoutFormModal) return null;
     // const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
     const stripePromise = loadStripe(STRIPE_PUBLIC_PRODUCTION_KEY);
@@ -51,9 +51,9 @@ const CheckoutModal = () => {
       <div className="modalBackdrop">
         {/* <div className="modalContent" ref={modalRef}> */}
         <div className="modalContent">
-          <div className="close" onClick={() => closeModal()}>
+          {/* <div className="close" onClick={() => closeModal()}>
             <CloseIcon />
-          </div>
+          </div> */}
             {loading ? (
                 <div className="loadingContainer">
                     <CircularProgress />

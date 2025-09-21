@@ -93,7 +93,7 @@ const Home = () => {
       setPage(nextPage);
       
       const responseObj = {
-        offset: nextPage,
+        page: nextPage,
         limit: 10
       };
       

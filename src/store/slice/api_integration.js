@@ -745,7 +745,7 @@ export const getMixProductSection = (userData) => async (dispatch) => {
     const response = await GET(HOME_MIX_CONSTANT, null, null, userData);
     console.log("getMixProductSection response", response);
     dispatch(setLoading(false));
-    dispatch(setProductMixData({ ...response, page: userData.offset }));
+    dispatch(setProductMixData({ ...response, page: userData.page }));
     dispatch(setProductMixSectionCount(response.pagination.total));
     
   } catch (error) {
