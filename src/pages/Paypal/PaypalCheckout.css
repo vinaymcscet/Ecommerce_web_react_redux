@@ -20,6 +20,7 @@
     color: #2d2d2d;
     margin-bottom: 8px;
     font-size: 24px;
+    margin-top: 0;
   }
   
   .checkout-header p {
@@ -38,6 +39,7 @@
     margin-bottom: 15px;
     font-size: 18px;
     color: #2d2d2d;
+    margin-top: 0;
   }
   
   .order-details {

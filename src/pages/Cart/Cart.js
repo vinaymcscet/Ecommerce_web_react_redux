@@ -164,7 +164,7 @@ const Cart = () => {
       //   setCheckoutLoading(false);
       // })
       const payloadResponse = {
-        productName: "Fixfis payment checkout",
+        productName: "FikFis payment checkout",
         // quantity: 1,
         address_id : viewCartItems?.address?.id,
         offer_id: filteredCoupenId,
@@ -174,13 +174,13 @@ const Cart = () => {
         isOpen: isOpen
       };
       
-      // navigate("/paypal-checkout", { state: payloadResponse });
-      setCheckoutLoading(true)
+      navigate("/paypal-checkout", { state: payloadResponse });
+      // setCheckoutLoading(true)
       // setActiveTab(activeTab + 1);
 
-      dispatch(setCartPayload(payloadResponse));
-      dispatch(setCheckOutFormModal(payloadResponse))
-      setCheckoutLoading(false)
+      // dispatch(setCartPayload(payloadResponse));
+      // dispatch(setCheckOutFormModal(payloadResponse))
+      // setCheckoutLoading(false)
       
     }
     else setActiveTab(activeTab + 1);

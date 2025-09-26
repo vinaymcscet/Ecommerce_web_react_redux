@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route, Navigate } from "react-router-dom";
+import PaypalCheckout from '../pages/Paypal/PaypalCheckout';
 const Home = React.lazy(() => import("../pages/Home/Home"));
 const ReturnAndRefund = React.lazy(() => import("../pages/ReturnAndRefund/ReturnAndRefund"));
 const CookiesPolicy = React.lazy(() => import("../pages/CookiesPolicy/CookiesPolicy"));
@@ -65,6 +66,11 @@ const RoutePage = () => {
           <Route path="/userprofile" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/paypal-checkout" element={
+            <ProtectedRoute>
+              <PaypalCheckout />
             </ProtectedRoute>
           } />
           <Route path="/search" element={<Search />} />

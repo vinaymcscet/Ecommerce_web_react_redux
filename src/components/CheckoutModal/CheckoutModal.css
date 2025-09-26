@@ -151,4 +151,8 @@ form#payment-form button {
     .coupens h3 {
         font-size: 18px;
     }
+    .checkoutModal .modalContent {
+        width: 100%;
+        max-width: 100%;
+    }
 }

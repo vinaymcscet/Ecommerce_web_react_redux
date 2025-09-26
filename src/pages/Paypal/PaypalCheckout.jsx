@@ -10,12 +10,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { GET, POST } from "../../utils/API";
 
-const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, device_type}) => {
+const PaypalCheckout = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  // const { amount: total_amount, currency } = location.state || {};
-  // console.log("PaypalCheckout props:", total_amount, currency);
+  const { amount, currency, productName, address_id, offer_id, device_type } = location.state || {};
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,7 +30,9 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
 
     const loadPayPalSDK = () => {
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=card`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=venmo,paylater,card,googlepay`;
+      // script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=venmo,paylater,card,applepay,googlepay`;
+      script.setAttribute("data-sdk-integration-source", "developer-studio");
       script.async = true;
       script.onload = () => setPaypalLoaded(true);
       script.onerror = () => {
@@ -126,7 +127,6 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
           label: "paypal",
           height: 45,
         },
-
         createOrder: createOrder,
         onApprove: onApprove,
 
@@ -152,6 +152,37 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
         setMessage('PayPal is not available in your region');
         setPaymentStatus('error');
       }
+       // 🔹 Apple Pay Button
+        // if (window.paypal.FUNDING.APPLEPAY) {
+        //   const applePayBtn = window.paypal.Buttons({
+        //     fundingSource: window.paypal.FUNDING.APPLEPAY,
+        //     style: { shape: "rect", label: "pay", height: 45 },
+        //     createOrder,
+        //     onApprove,
+        //   });
+
+        //   if (applePayBtn.isEligible()) {
+        //     applePayBtn.render("#applepay-btn").catch((err) => {
+        //       console.error("Failed to render Apple Pay button:", err);
+        //     });
+        //   }
+        // }
+
+        // 🔹 Google Pay Button
+        if (window.paypal.FUNDING.GOOGLEPAY) {
+          const googlePayBtn = window.paypal.Buttons({
+            fundingSource: window.paypal.FUNDING.GOOGLEPAY,
+            style: { shape: "rect", label: "pay", height: 45 },
+            createOrder,
+            onApprove,
+          });
+
+          if (googlePayBtn.isEligible()) {
+            googlePayBtn.render("#googlepay-btn").catch((err) => {
+              console.error("Failed to render Google Pay button:", err);
+            });
+          }
+        }
     } catch (error) {
       console.error('Error initializing PayPal:', error);
       setMessage('Failed to initialize PayPal');
@@ -184,6 +215,8 @@ const PaypalCheckout = ({ amount, currency, productName, address_id, offer_id, d
         <h3>Payment Method</h3>
         <div className="paypal-button-wrapper">
           <div id="paypal-button-container"></div>
+          {/* <div id="applepay-btn"></div> */}
+          <div id="googlepay-btn"></div>
           {loading && <div className="payment-loading">Processing payment...</div>}
           {message && (
             <div className={`payment-message ${paymentStatus}`}>
