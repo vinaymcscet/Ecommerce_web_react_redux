@@ -17,6 +17,8 @@ export const CMS_SOCIAL_LINK_CONSTANT = 'cms/getSocialLink';
 export const CMS_CONTACT_US_CONSTANT = 'cms/saveEnquiry';
 export const CMS_GROUP_ITEM_CONSTANT = 'cms/getGroupItem';
 export const HOME_DATA_CONSTANT = 'homeData';
+export const HOME_PRODUCT_CONSTANT = 'products/sections';
+export const SECTION_PRODUCTS_CONSTANT = 'products/section';
 export const HOME_SECTION_CONSTANT = 'homeSection';
 export const HOME_MIX_CONSTANT = 'products/section/mixed_products';
 export const PRODUCT_SECTION_CONSTANT = 'getSection';
@@ -106,6 +108,7 @@ export const TEMP_CODE_LABEL = "Temporary code (OTP)";
 export const TEMP_CODE_PLACEHOLDER = "Enter a temporary code";
 export const OTP_NAME = "otpCode";
 export const OTP_ERROR = "Please enter a valid 6-digit OTP";
+export const PAYPAL_CLIENT_ID = "AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O";
 
 // Stripe Payment Gateway - constants - keys
 export const DEFAULT_OPTIONS = [1,2,3,4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500];

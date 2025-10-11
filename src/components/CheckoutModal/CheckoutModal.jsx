@@ -15,7 +15,6 @@ const CheckoutModal = () => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const modalRef = useRef(null); 
-    console.log("cartPayload:", cartPayload);
     const { viewCartItems, clientSecret, createOrderResponse, dpmCheckerLink } = useSelector((state) => state.cart);
     
     // const handleClickOutside = (event) => {

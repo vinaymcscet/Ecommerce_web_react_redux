@@ -63,6 +63,8 @@ import {
   DELETION_REQUEST,
   GET_BLOGS_BY_CATEGORY_CONSTANT,
   HOME_MIX_CONSTANT,
+  HOME_PRODUCT_CONSTANT,
+  SECTION_PRODUCTS_CONSTANT,
 } from "../../utils/Constants";
 import { GET, POST } from "../../utils/API";
 import {
@@ -96,6 +98,7 @@ import {
   setGetAnReviewImage, 
   setHomeProductData, 
   setHomeProductSection, 
+  setHomeProductSectionListData, 
   setListWishList, 
   setOfferList, 
   setProductDetailResponse, 
@@ -108,6 +111,7 @@ import {
   setReviewCount, 
   setSearch, 
   setSearchLoad, 
+  setSectionProducts, 
   setSimilarProductCount, 
   setSimilarProductListResponse, 
   setSubCategoryList, 
@@ -681,6 +685,55 @@ export const getHomeData = () => async (dispatch) => {
     
     dispatch(setLoading(false));
     dispatch(setHomeProductData(response.homePage));
+    // dispatch(setSuccess(response.message));
+    // setTimeout(() => {
+    //   dispatch(resetSuccess());
+    // }, 1000);
+  } catch (error) {
+
+    dispatch(setLoading(false));
+    dispatch(setError(error.message));
+    setTimeout(() => {
+      dispatch(resetError());
+    }, 1000);
+  }
+};
+
+// Add new action to fetch section products
+export const getSectionProducts = (sectionType, page = 1, limit = 10) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await GET(`${SECTION_PRODUCTS_CONSTANT}/${sectionType}`, null, null, {
+      page,
+      limit
+    });
+    
+    dispatch(setSectionProducts({
+      sectionType,
+      data: response
+    }));
+    dispatch(setLoading(false));
+  } catch (error) {
+    dispatch(setLoading(false));
+    console.error(`Error fetching products for section ${sectionType}:`, error);
+  }
+};
+// Thunk to handle get Home Product section List API call
+export const getHomeProductSectionList = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    // Call the API to sign up the user
+    const response = await GET(HOME_PRODUCT_CONSTANT);
+    
+    dispatch(setHomeProductSectionListData(response.sections));
+    // Fetch products for each section in parallel
+    const sectionPromises = response.sections.map(section => 
+      dispatch(getSectionProducts(section.section_type))
+    );
+    
+    await Promise.all(sectionPromises);
+    
+    dispatch(setLoading(false));
     // dispatch(setSuccess(response.message));
     // setTimeout(() => {
     //   dispatch(resetSuccess());

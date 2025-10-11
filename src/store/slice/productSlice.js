@@ -6,6 +6,7 @@ const initialState = {
   categorySlide: [],
   allCategories: [],
   homeProductData: null,
+  homeProductSectionListData: null,
   homeProductSection: null,
   productSectionData: [],
   productMixData: [],
@@ -35,6 +36,7 @@ const initialState = {
   getReviewImage: null,
   allOffersList: null,
   addToCartStatusCount: null,
+  sectionProducts: {},
 };
 
 export const cartSlice = createSlice({
@@ -77,6 +79,9 @@ export const cartSlice = createSlice({
     },
     setProductSectionData: (state, action) => {
       state.productSectionData = action.payload;
+    },
+    setHomeProductSectionListData: (state, action) => {
+      state.homeProductSectionListData = action.payload;
     },
     setProductMixData: (state, action) => {
       if (action.payload?.page > 1) {
@@ -156,6 +161,10 @@ export const cartSlice = createSlice({
     setAddToCartStatusCount: (state, action) => {
       state.addToCartStatusCount = action.payload;
     },
+    setSectionProducts: (state, action) => {
+      const { sectionType, data } = action.payload;
+      state.sectionProducts[sectionType] = data;
+    },
   },
 });
 
@@ -166,6 +175,7 @@ export const {
   setAllCategories,
   setHomeProductData,
   setHomeProductSection,
+  setHomeProductSectionListData,
   setProductSectionData,
   setProductMixData,
   setAllCategoryList,
@@ -194,5 +204,6 @@ export const {
   setProductMixSectionCount,
   setAllOffersList,
   setAddToCartStatusCount,
+  setSectionProducts,
 } = cartSlice.actions;
 export default cartSlice.reducer;

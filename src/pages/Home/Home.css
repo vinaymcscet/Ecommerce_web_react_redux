@@ -82,6 +82,7 @@
 .productHistory {
     width: 90%;
     margin: auto;
+    overflow-x: hidden;
 }
 
 .productHistory .productList > div {

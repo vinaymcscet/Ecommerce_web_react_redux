@@ -5,7 +5,7 @@ import ProductSlider from "../../components/ProductSlider/ProductSlider";
 
 import ProductListCard from "../../components/ProductListCard/ProductListCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getHomeData, getHomeSection, getMixProductSection, viewItemsInCartData } from "../../store/slice/api_integration";
+import { addProductOnWhistList, addToCartData, deleteSingleWhistListData, getHomeData, getHomeProductSectionList, getHomeSection, getMixProductSection, viewItemsInCartData } from "../../store/slice/api_integration";
 import { formatDate } from "../../utils/FormatDateTime";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -16,7 +16,14 @@ import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { homeProductData, homeProductSection, productMixData, productMixSectionCount } = useSelector(state => state.product);
+  const { 
+    homeProductData, 
+    homeProductSection, 
+    productMixData, 
+    productMixSectionCount, 
+    homeProductSectionListData, 
+    sectionProducts 
+  } = useSelector(state => state.product);
   const [productTile] = useState(true);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -62,6 +69,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true)
     dispatch(getHomeData())
+    dispatch(getHomeProductSectionList())
     const responseObj = {
       offset: page,
       limit: 1000
@@ -411,6 +419,57 @@ const Home = () => {
                 )}
             </div>
           </div>}
+          {homeProductSectionListData?.map((section, sectionIndex) => {
+            // Rename to avoid conflict with sectionProducts from useSelector
+            const sectionProductsList = sectionProducts[section.section_type]?.products;
+            
+            if (!sectionProductsList || sectionProductsList.length === 0) {
+              return null; // Don't render anything if no products
+            }
+
+            return (
+              <div key={section.id} className="productHistory">
+                <div className="browisingHistory">
+                  <h3>{section.title}</h3>
+                  <div 
+                    className="detailSection" 
+                    onClick={() => handleSectionPage(section.title, section.id)}
+                  >
+                    <img src="/images/icons/right_arrow.svg" alt="right arrow" />
+                  </div>
+                </div>
+                
+                <div className="productList">
+                  {sectionProductsList.map((product, index) => (
+                    <div key={index}>
+                      <ProductListCard
+                        id={product?.product_id}
+                        image={product?.product_image || "/images/no-product-available.png"}
+                        name={product.name || ""}
+                        userrating={product.avg_rating || "0.0"}
+                        discountPrice={product?.discountedPrice}
+                        originalPrice={product?.sku_price}
+                        save={product?.offer}
+                        coupenCode={product?.coupon_title}
+                        deliveryTime={product?.deliverytime}
+                        freeDelivery={product?.freedelivery}
+                        bestSeller={product?.bestseller}
+                        wishlistStatus={product?.wishlistStatus || 'no'}
+                        sku_id={product?.sku_id}
+                        onAddToCart={() => handleProductClick(product)}
+                        cartQuantity={Number(product.cartQuantity)}
+                        onIncrement={handleIncrement}
+                        onDecrement={handleDecrement}
+                        onProductClick={() => handleProductClick(product)}
+                        onProductImageClick={() => handleProcuctImageClick(product)}
+                        handleWishlistToggle={() => handleWishlistToggle(product)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </>
       )}
     </div>

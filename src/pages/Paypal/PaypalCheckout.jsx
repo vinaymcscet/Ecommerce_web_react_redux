@@ -30,9 +30,8 @@ const PaypalCheckout = () => {
 
     const loadPayPalSDK = () => {
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=venmo,paylater,card,googlepay`;
-      // script.src = `https://www.paypal.com/sdk/js?client-id=AYszEucXIryRjrQR6oXBO5ExO3dEPCb3GrPhE9MhJTHFD0djo4HfkSHuYQrAjCsGRsJrBq43AnVsoE3O&buyer-country=US&currency=GBP&components=buttons&enable-funding=venmo,paylater,card,applepay,googlepay`;
-      script.setAttribute("data-sdk-integration-source", "developer-studio");
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=GBP&components=buttons,funding-eligibility&enable-funding=googlepay,applepay`;
+      script.setAttribute("data-sdk-integration-source", "button-factory");
       script.async = true;
       script.onload = () => setPaypalLoaded(true);
       script.onerror = () => {
@@ -119,70 +118,48 @@ const PaypalCheckout = () => {
     if (!paypalLoaded || !window.paypal) return;
 
     try {
-      const buttons = window.paypal.Buttons({
-        style: {
-          shape: "rect",
-          layout: "vertical",
-          color: "gold",
-          label: "paypal",
-          height: 45,
+      const buttons = [
+        {
+          fundingSource: window.paypal.FUNDING.PAYPAL,
+          containerId: 'paypal-button-container'
         },
-        createOrder: createOrder,
-        onApprove: onApprove,
-
-        onError: (err) => {
-          console.error("PayPal error:", err);
-          setMessage("Payment failed to initialize");
-          setPaymentStatus('error');
+        {
+          fundingSource: window.paypal.FUNDING.CARD,
+          containerId: 'card-button-container'
         },
+        {
+          fundingSource: window.paypal.FUNDING.GOOGLEPAY,
+          containerId: 'googlepay-button-container'
+        },
+        {
+          fundingSource: window.paypal.FUNDING.APPLEPAY,
+          containerId: 'applepay-button-container'
+        }
+      ];
 
-        onClick: () => {
-          setMessage('');
-          setPaymentStatus('idle');
+      buttons.forEach(({ fundingSource, containerId }) => {
+        const button = window.paypal.Buttons({
+          fundingSource,
+          style: {
+            shape: 'rect',
+            layout: 'vertical',
+            height: 45
+          },
+          createOrder,
+          onApprove,
+          onError: (err) => {
+            console.error("PayPal error:", err);
+            setMessage("Payment failed to initialize");
+            setPaymentStatus('error');
+          }
+        });
+
+        if (button.isEligible()) {
+          button.render(`#${containerId}`).catch(err => {
+            console.error(`Failed to render ${fundingSource} button:`, err);
+          });
         }
       });
-
-      if (buttons.isEligible()) {
-        buttons.render("#paypal-button-container").catch(err => {
-          console.error('Failed to render PayPal buttons:', err);
-          setMessage('Failed to initialize payment buttons');
-          setPaymentStatus('error');
-        });
-      } else {
-        setMessage('PayPal is not available in your region');
-        setPaymentStatus('error');
-      }
-       // 🔹 Apple Pay Button
-        // if (window.paypal.FUNDING.APPLEPAY) {
-        //   const applePayBtn = window.paypal.Buttons({
-        //     fundingSource: window.paypal.FUNDING.APPLEPAY,
-        //     style: { shape: "rect", label: "pay", height: 45 },
-        //     createOrder,
-        //     onApprove,
-        //   });
-
-        //   if (applePayBtn.isEligible()) {
-        //     applePayBtn.render("#applepay-btn").catch((err) => {
-        //       console.error("Failed to render Apple Pay button:", err);
-        //     });
-        //   }
-        // }
-
-        // 🔹 Google Pay Button
-        if (window.paypal.FUNDING.GOOGLEPAY) {
-          const googlePayBtn = window.paypal.Buttons({
-            fundingSource: window.paypal.FUNDING.GOOGLEPAY,
-            style: { shape: "rect", label: "pay", height: 45 },
-            createOrder,
-            onApprove,
-          });
-
-          if (googlePayBtn.isEligible()) {
-            googlePayBtn.render("#googlepay-btn").catch((err) => {
-              console.error("Failed to render Google Pay button:", err);
-            });
-          }
-        }
     } catch (error) {
       console.error('Error initializing PayPal:', error);
       setMessage('Failed to initialize PayPal');
@@ -215,8 +192,9 @@ const PaypalCheckout = () => {
         <h3>Payment Method</h3>
         <div className="paypal-button-wrapper">
           <div id="paypal-button-container"></div>
-          {/* <div id="applepay-btn"></div> */}
-          <div id="googlepay-btn"></div>
+          <div id="card-button-container"></div>
+          <div id="googlepay-button-container"></div>
+          <div id="applepay-button-container"></div>
           {loading && <div className="payment-loading">Processing payment...</div>}
           {message && (
             <div className={`payment-message ${paymentStatus}`}>
