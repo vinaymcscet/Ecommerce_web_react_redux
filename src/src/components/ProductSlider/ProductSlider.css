@@ -1,0 +1,161 @@
+.productHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  margin: 2em auto 1em auto;
+}
+
+.productHeader h3 {
+  font-weight: 600;
+  position: relative;
+  margin: 0;
+}
+
+.productHeader h3:before {
+  content: "";
+  width: 30%;
+  height: 2px;
+  background-color: #ffb545;
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+}
+
+.slick-track {
+  display: flex;
+}
+
+.slick-slider {
+  display: flex;
+  align-items: center;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+/* 
+.slick-slide {
+  padding-right: 10px;
+} */
+
+.slick-slide:last-child {
+  padding-right: 0;
+}
+
+.slick-slide img {
+  display: block;
+}
+
+.slick-list {
+  margin: 0 15px;
+  width: 90%;
+  margin: 10px auto 20px auto;
+}
+
+.slick-prev {
+  width: 34px;
+  left: 0;
+  top: 40%;
+  position: absolute;
+  height: 34px;
+  background: #fff;
+  border: 1px solid #cfcfcf;
+  z-index: 1;
+  border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.slick-next {
+  width: 34px;
+  right: 0;
+  top: 40%;
+  position: absolute;
+  height: 34px;
+  background: #fff;
+  border: 1px solid #cfcfcf;
+  z-index: 1;
+  border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.slick-prev:focus,
+.slick-prev:hover,
+.slick-next:hover,
+.slick-next:focus {
+  color: transparent;
+  outline: none;
+  background: #cfcfcf;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.slick-prev:before {
+  content: "";
+  background: url("../../../public/images/icons/Downarrow.svg") no-repeat center
+    center;
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: block;
+  left: 10px;
+  transform: rotate(180deg);
+}
+.catProduct .slick-prev,
+.catProduct .slick-next {
+  min-height: 34px;
+  background: #fcca7f;
+  border-color: #fcca7f;
+}
+
+.slick-next:before {
+  content: "";
+  background: url("../../../public/images/icons/Downarrow.svg") no-repeat center
+    center;
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: block;
+  left: 10px;
+  transform: rotate(360deg);
+}
+
+.catProduct .slick-arrow.slick-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+  background: #cfcfcf;
+  border-color: #cfcfcf;
+  display: none !important;
+}
+
+@media screen and (max-width: 1900px) {
+  .catProduct .slick-arrow.slick-prev {
+      left: 30px;
+  }
+  .catProduct .slick-arrow.slick-next {
+      right: 30px;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .slick-prev {
+    left: 20px;
+  }
+
+  .slick-next {
+    right: 20px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .slick-next {
+    right: 30px;
+  }
+  .slick-previous {
+    left: 30px;
+  }
+  .slick-list {
+    width: 100%;
+  }
+}

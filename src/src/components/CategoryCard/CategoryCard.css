@@ -1,0 +1,26 @@
+.categoryItem p {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 0px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.categoryItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border:1px solid #E4E4E4;
+    border-radius: 20px;
+    margin-right: 1%;
+    cursor: pointer;
+    outline: none;
+    /* width: max-content; */
+    transition: all 0.4s ease-in;
+    -webkit-transition: all 0.4s ease-in;
+    -moz-transition: all 0.4s ease-in;
+    -ms-transition: all 0.4s ease-in;
+    -o-transition: all 0.4s ease-in;
+}

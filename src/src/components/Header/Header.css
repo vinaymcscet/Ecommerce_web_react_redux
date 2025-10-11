@@ -1,0 +1,386 @@
+header {
+    background-color: #1f1f1f;
+    padding: 14px 20px;
+}
+
+ul,
+li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    outline: none;
+}
+
+.leftHead li:first-child img {
+    width: 100px;
+}
+
+.rightHead ul {
+    justify-content: flex-end;
+}
+
+.rightHead {
+    align-items: center;
+    display: flex;
+    justify-content: end;
+}
+
+li img {
+    width: 30px;
+}
+
+.menu-container li img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+li p {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    padding-left: 10px;
+}
+
+li:hover p {
+    color: #FFB545;
+}
+
+li:not(:last-child) {
+    margin-right: 15px;
+}
+
+.searchPanel {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    top: 5px;
+}
+
+.selectCategory {
+    padding: 10px 5px;
+    font-size: 12px;
+    background-color: #FCCA7F;
+    border: 0;
+    height: 36px;
+    border-radius: 3px;
+    max-width: 98px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.inputBox {
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+
+.inputBox input {
+    padding: 3px 30px 0px 10px;
+    border: 0;
+    width: 100%;
+    font-family: 'Poppins';
+    height: 36px;
+    border-radius: 3px;
+}
+
+.inputBox input:focus,
+.inputBox input:focus-visible {
+    outline: none;
+}
+
+.inputBox svg {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    font-size: 20px;
+    color: #A2A2A2;
+}
+/* menu dropdown */
+.menu-container {
+    margin-right: 15px;
+}
+.menu {
+    background: #1f1f1f;
+    border-radius: 0;
+    position: absolute;
+    top: 100px;
+    right: 90px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 140px;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    z-index: 1;
+  }
+  
+  .menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-flow: wrap column;
+    width: 100%;
+  }
+  
+  .menu li {
+    border-bottom: 1px solid #dddddd;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .menu li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 20px;
+    display: block;
+    font-weight: 400;
+    text-transform: uppercase;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .menu li a span {
+    margin-left: 10px;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .menu li a img{
+    width: 25px;
+    height: auto;
+  }
+
+  .menu li a:hover {
+    color: #fbb540;
+  }
+
+  .menu li a:hover span {
+    color: #fbb540;
+  }
+
+  .cartCount {
+    position: absolute;
+    left: 20px;
+    top: -5px;
+    text-align: center;
+    border-radius: 7px;
+    width: 18px;
+    height: 18px;
+    background-color: #ff6161;
+    border: 1px solid #fff;
+    font-weight: 400;
+    color: #f0f0f0;
+    line-height: 16px;
+    font-size: 12px;
+  }
+
+  .cartItem {
+    position: relative;
+  }
+
+  .searchPanel {
+    position: relative;
+  }
+  
+  .search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .suggestion-item img {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    margin-right: 12px;
+    border-radius: 4px;
+  }
+  
+  .suggestion-item span {
+    font-size: 14px;
+    color: #333;
+  }
+
+  
+@media screen and (max-width: 1200px) {
+    li:not(:last-child) {
+        margin-right: 10px;
+    }
+
+    header .MuiGrid-item {
+        padding-left: 0 !important;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    header li p {
+        width: 60%;
+        word-break: break-word;
+    }
+    header li,
+    header li:not(:last-child) {
+        margin-right: 0px;
+        width: 40%;
+    }
+    header  nav.menu li {
+        width: 100%;
+    }
+    
+    .menu-container li {
+        width: 100%;
+        margin-right: 10px;
+    }
+    .menu-container {
+        margin: 0;
+    }
+    .rightHead ul {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .rightMenu {
+        display: none;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-flow: wrap column;
+        position: absolute;
+        width: 170px;
+        top: 109px;
+        z-index: 1;
+        background: #000;
+        right: 0;
+        transform: translateX(1000%);
+        transition: all 0.3s linear;
+    }
+
+    .rightHead ul.rightMenu {
+        width: 170px;
+        z-index: 9;
+    }
+
+    .rightMenu.active {
+        display: flex;
+        transform: translateX(0%);
+    }
+
+    .rightMenu li,
+    .rightHead ul.rightMenu li {
+        width: 100%;
+        margin: 0;
+        padding: 7px 0;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .rightMenu .menu-container li {
+        flex-wrap: wrap;
+    }
+
+    .rightMenu .menu-container li .menu {
+        top: 10px;
+        right: 0;
+        width: 100%;
+        position: relative;
+        display: none;
+    }
+
+    .rightMenu .menu-container li .menu.active {
+        display: flex;
+    }
+    .rightMenu.active ~ .hamburgerMenu .burger1 {
+        position: relative;
+        top: -6px;
+    }
+    .menu-container {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    header .leftHeaderMenu li:not(:first-child) {
+        width: auto;
+        margin: 0 10px;
+    }
+    .leftHeaderMenu li p {
+        display: none;
+    }
+
+    .frame p {
+        width: 80%;
+        margin: auto;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .rightMenu {
+        top: 104px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .frame p {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .leftHead li:first-child img {
+        width: 80px;
+    }
+
+    .leftHeaderMenu {
+        top: 10%;
+        position: relative;
+    }
+    .leftHeaderMenu li:not(:last-child) {
+        margin-right: 20%;
+    }
+    .rightMenu {
+        top: 100px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    .frame {
+        display: none;
+    }
+}

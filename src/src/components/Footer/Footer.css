@@ -1,0 +1,135 @@
+.footercontainer {
+    margin-top: 50px;
+}
+.mainFooter {
+    background-color: #1E1E1E;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.mainFooter .MuiBox-root {
+    width: 90%;
+    margin: 0 auto;
+    padding: 30px 70px;
+}
+
+.mainFooter .list {
+    width: 100%;
+}
+
+.mainFooter .list.store {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap column;
+}
+
+.mainFooter .list h4 {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.mainFooter .list ul {
+    display: block;
+}
+
+.mainFooter .list ul li {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.mainFooter .list ul li a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mainFooter .list ul li a  span {
+    color: inherit;
+}
+
+.mainFooter .list ul li a:hover {
+    color: #FCCA7F;
+    text-decoration: underline;
+}
+
+.mainFooter .list.connect ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainFooter .list.connect ul li {
+    margin-bottom: 30px;
+}
+
+.mainFooter .list.connect ul li a img {
+    margin-right: 20px;
+    width: 28px;
+    height: 28px;
+}
+
+.mainFooter .list.store ul li {
+    margin-bottom: 20px;
+}
+
+.mainFooter .list.store ul li a img {
+    margin-right: 20px;
+    width: auto;
+    height: auto;
+}
+
+.mainFooter .css-mhc70k-MuiGrid-root>.MuiGrid-item {
+    padding-left: 70px;
+}
+
+@media screen and (max-width: 1600px) {
+    .mainFooter .css-mhc70k-MuiGrid-root>.MuiGrid-item {
+        padding-left: 55px;
+    }
+    .mainFooter .MuiBox-root {
+        padding: 30px 70px;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    .mainFooter .MuiBox-root {
+        padding: 30px 70px;
+    }
+}
+@media screen and (max-width: 1200px) {
+    .mainFooter .list.store {
+        align-items: flex-start;
+    }
+}
+@media screen and (max-width: 992px) {
+    .mainFooter .MuiBox-root {
+        padding: 30px 110px;
+    }
+    .mainFooter .css-mhc70k-MuiGrid-root>.MuiGrid-item {
+        padding-left: 0px;
+    }
+}
+@media screen and (max-width: 800px) {
+    .mainFooter .MuiBox-root {
+        width: 90%;
+        margin: 0 auto;
+        padding: 30px 70px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .mainFooter .css-mhc70k-MuiGrid-root>.MuiGrid-item {
+        padding-left: 15px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .mainFooter .MuiBox-root {
+        width: 100%;
+        padding: 30px 30px;
+    }
+}

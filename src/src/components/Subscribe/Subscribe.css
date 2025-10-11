@@ -1,0 +1,156 @@
+.subscribe {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #FCCA7F;
+}
+
+.subscribe .MuiBox-root {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.subscribeMessage {
+    width: 100%;
+    padding-left: 0px;
+}
+
+.subscribeMessage h2 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.subscribeMessage p {
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.emailSection {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 30px;
+    position: relative;
+}
+
+.emailSection form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.emailSection input {
+    width: 75%;
+    min-height: 50px;
+    border-radius: 50px;
+    padding: 0 140px 0 20px;
+    border: 1px solid #D1D1D1;
+}
+
+.emailSection input:focus {
+    outline: none;
+}
+
+.emailSection .emailBtn {
+    position: absolute;
+    right: 0%;
+    background: #1E1E1E;
+    color: #fff;
+    border-radius: 50px;
+    min-height: 50px;
+    padding: 0 30px;
+    border: 1px solid #D1D1D1;
+    cursor: pointer;
+    outline: none;
+    width: auto;
+}
+
+.subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:last-child {
+    padding-right: 50px;
+}
+
+.subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:first-child {
+    padding-left: 40px;
+}
+
+.subscribe .error {
+    margin: 5px 0 0 20px;
+    font-size: 12px;
+    color: #d52424;
+    text-align: right;
+}
+
+.newsletterMessage {
+    margin: 5px 0 0 20px;
+    font-size: 12px;
+    color: #06934c;
+    text-align: right;
+}
+
+
+.subscribe .loadingContainer {
+    text-align: right;
+    padding-right: 20px;
+    height: auto;
+    justify-content: flex-end;
+
+}
+
+
+
+@media screen and (max-width: 1200px) {
+    .subscribeMessage { text-align: center; }
+    .emailSection {
+        justify-content: center;
+        padding-bottom: 30px;
+        width: 60%;
+        margin: 0 auto;
+    }
+    .emailSection input {
+        width: 100%;
+    }
+    .emailSection form {
+        justify-content: center;
+    }
+    /* .emailSection .emailBtn {
+        right: 12%;
+    } */
+}
+@media screen and (max-width: 800px) {
+    .emailSection input {
+        width: 85%;
+    }
+    .emailSection {
+        width: 100%;
+    }
+
+    .emailSection .emailBtn {
+        right: 4%;
+    }
+    .subscribe .MuiBox-root {
+        width: 90%;
+    }
+}
+@media screen and (max-width: 576px) {
+    .subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:first-child {
+        padding-left: 10px;
+    }
+    .subscribeMessage h2 {
+        font-size: 23px;
+    }
+    .subscribeMessage p {
+        font-size: 14px;
+    }
+    .emailSection input {
+        width: 100%;
+    }
+    .emailSection .emailBtn {
+        right: 0%;
+    }
+    .subscribe .css-mhc70k-MuiGrid-root>.MuiGrid-item:last-child {
+        padding-right: 0px;
+    }
+}

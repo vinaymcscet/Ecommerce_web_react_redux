@@ -1,0 +1,23 @@
+.notFound {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap column;
+    margin: 30px 0;
+}
+
+.notFound h4 {
+    font-size: 40px;
+    color: #FFB545;
+}
+
+.notFound img {
+    width: 50%;
+    margin: auto;
+}
+
+.notFound p {
+    color: #666666;
+    font-size: 20px;
+    line-height: 40px;
+}

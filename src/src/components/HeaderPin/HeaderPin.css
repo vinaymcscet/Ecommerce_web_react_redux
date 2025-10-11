@@ -1,0 +1,38 @@
+.headerPinContainer {
+    background-color: #FCCA7F;
+    padding: 6px 15px;
+}
+.getApp {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+.getApp img {
+    margin-right: 10px;
+}
+img {
+    cursor: pointer;
+    outline: none;
+}
+
+.freeItems {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.freeItems img {
+    margin-right: 10px;
+}
+.freeItems p {
+    font-weight: 500;
+    font-size: 12px;
+}
+
+@media only screen and (max-width:600px) {
+    .headerPinContainer .css-mhc70k-MuiGrid-root>.MuiGrid-item:nth-child(2) {
+        display: none;
+    }
+}

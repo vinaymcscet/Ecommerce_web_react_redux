@@ -1,0 +1,24 @@
+.input-field {
+    margin-bottom: 20px;
+}
+.input-field > label {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    display: block;
+  }
+.input-field input {
+    border-radius:50px;
+    border: 1px solid #d1d1d1;
+    min-height: 50px;
+    padding: 0 20px;
+    width: 90%;
+}
+.input-field .error-message {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #ef6e6e;
+    margin: 5px 0 0 15px;
+}
+  
